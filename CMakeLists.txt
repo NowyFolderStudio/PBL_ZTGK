@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 
 # NAPRAWA BŁĘDU: Dodaliśmy język C, żeby kompilator mógł przetrawić glad.c
-project(NowyFolderStudioEngine VERSION 1.0 LANGUAGES C CXX)
+project(PBL_ZTGK VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -26,9 +26,14 @@ FetchContent_MakeAvailable(glfw)
 # ==========================================
 # NASZ SILNIK
 # ==========================================
-# Dodajemy nasz kod C++ oraz plik glad.c z nowego folderu vendor
+
+# 1. Automatyczne wyszukiwanie wszystkich plików .cpp w folderze src i podfolderach
+# Flaga CONFIGURE_DEPENDS pilnuje, żeby CMake zauważył nowe pliki!
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
+
+# 2. Dodajemy nasz kod (zmienna SRC_FILES) oraz plik glad.c z folderu thirdparty
 add_executable(${PROJECT_NAME} 
-    src/main.cpp 
+    ${SRC_FILES} 
     thirdparty/glad/src/glad.c
 )
 
