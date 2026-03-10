@@ -1,0 +1,14 @@
+# Foldery budowania (CMake tu będzie generował pliki)
+build/
+out/
+bin/
+
+# Pliki IDE (Visual Studio, CLion)
+.vs/
+.idea/
+*.user
+
+# Pliki binarne
+*.exe
+*.dll
+*.lib
