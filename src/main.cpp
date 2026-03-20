@@ -1,6 +1,11 @@
 #include <glad/glad.h>   // GLAD ZAWSZE NA SAMEJ GÓRZE!
 #include <GLFW/glfw3.h>
+#include <stb/stb_image.h>
+#include <stb/stb_truetype.h>
+#include <glm/glm.hpp>
 #include <iostream>
+#include <fmod.hpp>
+#include <assimp/Importer.hpp>
 
 // Funkcja, która pozwala zamknąć okno klawiszem ESC
 void processInput(GLFWwindow* window) {
@@ -17,11 +22,11 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // 2. Tworzenie okna
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Echoes Engine - Core", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Nowy Folder Studio", nullptr, nullptr);
     if (!window) {
         std::cerr << "Nie udalo sie utworzyc okna GLFW!" << std::endl;
         glfwTerminate();
-        return -1;
+        return -1;      
     }
     glfwMakeContextCurrent(window);
 

@@ -27,21 +27,46 @@ FetchContent_MakeAvailable(glfw)
 # NASZ SILNIK
 # ==========================================
 
-# 1. Automatyczne wyszukiwanie wszystkich plików .cpp w folderze src i podfolderach
-# Flaga CONFIGURE_DEPENDS pilnuje, żeby CMake zauważył nowe pliki!
+# 1. Automatyczne wyszukiwanie wszystkich plików .cpp w folderze src
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
 
-# 2. Dodajemy nasz kod (zmienna SRC_FILES) oraz plik glad.c z folderu thirdparty
+# 2. Dodajemy nasz kod oraz pliki C/CPP z thirdparty
 add_executable(${PROJECT_NAME} 
     ${SRC_FILES} 
     thirdparty/glad/src/glad.c
+    thirdparty/stb/stb_impl.cpp   # <-- DODANE: Ręcznie wskazujemy plik stb!
 )
 
-# Mówimy kompilatorowi, gdzie leżą nagłówki GLADa
-target_include_directories(${PROJECT_NAME} PRIVATE thirdparty/glad/include)
+# 3. Mówimy kompilatorowi, gdzie leżą nagłówki (pliki .h i .hpp)
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    thirdparty/glad/include
+    thirdparty/fmod/include
+    thirdparty/assimp/include
+    thirdparty/glm
+    thirdparty
+    include
+)
 
-# Łączymy wszystko w całość
+# 4. Łączymy wszystko w całość
 target_link_libraries(${PROJECT_NAME} PRIVATE
     glfw
     OpenGL::GL
+    ${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/fmod_vc.lib
+    ${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/fmodstudio_vc.lib
+    ${CMAKE_SOURCE_DIR}/thirdparty/assimp/lib/assimp-vc143-mt.lib
+)
+
+# 5. AUTOMATYCZNE KOPIOWANIE PLIKÓW .dll DO FOLDERU Z GRĄ
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/thirdparty/fmod/bin/fmod.dll"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/thirdparty/fmod/bin/fmodstudio.dll"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${CMAKE_SOURCE_DIR}/thirdparty/assimp/bin/assimp-vc143-mt.dll"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )
