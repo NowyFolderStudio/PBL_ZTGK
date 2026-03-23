@@ -29,7 +29,9 @@ void AudioManager::LoopSound(const std::string& soundFile, float volume) {
 
 	FMOD::Sound* sound = nullptr;
 
-	FMOD_RESULT result = fmodSystem->createSound(soundFile.c_str(), FMOD_DEFAULT | FMOD_LOOP_NORMAL, nullptr, &sound);
+	std::string  fullPath = "assets/audio/" + soundFile;
+
+	FMOD_RESULT result = fmodSystem->createSound(fullPath.c_str(), FMOD_DEFAULT | FMOD_LOOP_NORMAL, nullptr, &sound);
 
 	if (result != FMOD_OK) {
 		std::cerr << "[FMOD BLAD] Nie udalo sie zaladowac pliku: " << soundFile << " (Kod bledu: " << result << ")" << std::endl;

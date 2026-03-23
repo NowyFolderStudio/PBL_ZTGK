@@ -30,6 +30,9 @@ FetchContent_MakeAvailable(glfw)
 # 1. Automatyczne wyszukiwanie wszystkich plików .cpp w folderze src
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
 
+# -- kopiowanie folderu assets do folderu z grą (tam, gdzie jest .exe)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+
 # 2. Dodajemy nasz kod oraz pliki C/CPP z thirdparty
 add_executable(${PROJECT_NAME} 
     ${SRC_FILES} 
@@ -70,3 +73,4 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     "${CMAKE_SOURCE_DIR}/thirdparty/assimp/bin/assimp-vc143-mt.dll"
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 )
+

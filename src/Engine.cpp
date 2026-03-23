@@ -26,7 +26,9 @@ bool Engine::Init() {
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return false;
 
-	audioManager.LoopSound("doWyrzucenia/PrototypeMusicProjectFile.wav", 0.05f); // temporary
+	Shader shader("basic.vert", "basic.frag"); // temporary
+
+	audioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f); // temporary
 
 	return true;
 }

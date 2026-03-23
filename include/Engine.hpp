@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "AudioManager.hpp"
+#include "Shader.hpp"
 
 class Engine {
 public:
