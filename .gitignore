@@ -18,3 +18,5 @@ bin/
 *.exe
 *.dll
 *.lib
+
+CMakeSettings.json
