@@ -1,3 +1,9 @@
+# --- Wyjatki dla zewnetrznych bibliotek ---
+!thirdparty/**/*.lib
+!thirdparty/**/*.dll
+!thirdparty/**/lib/
+!thirdparty/**/bin/
+
 # Foldery budowania (CMake tu będzie generował pliki)
 build/
 out/
