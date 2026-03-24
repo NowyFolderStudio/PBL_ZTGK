@@ -3,6 +3,7 @@
 #include "Shader.hpp"
 #include "Texture.hpp"
 #include "Quad2D.hpp"
+#include "Text.hpp"
 
 class Game {
 public:
@@ -17,4 +18,6 @@ private:
     Shader* myShader = nullptr;
     Texture* myTexture = nullptr;
     Quad2D* myQuad = nullptr;
+    Text* myText = nullptr;
+    Shader* textShader = nullptr;
 };
