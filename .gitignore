@@ -1,9 +1,3 @@
-# --- Wyjatki dla zewnetrznych bibliotek ---
-!thirdparty/**/*.lib
-!thirdparty/**/*.dll
-!thirdparty/**/lib/
-!thirdparty/**/bin/
-
 # Foldery budowania (CMake tu będzie generował pliki)
 build/
 out/
@@ -18,5 +12,12 @@ bin/
 *.exe
 *.dll
 *.lib
+
+# Wyjatki dla zewnetrznych bibliotek
+!thirdparty/
+!thirdparty/**/*.lib
+!thirdparty/**/*.dll
+!thirdparty/**/lib/
+!thirdparty/**/bin/
 
 CMakeSettings.json

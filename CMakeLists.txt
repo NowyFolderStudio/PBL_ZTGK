@@ -48,29 +48,70 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 # 4. Łączymy wszystko w całość
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw
-    OpenGL::GL
-    ${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/fmod_vc.lib
-    ${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/fmodstudio_vc.lib
-    ${CMAKE_SOURCE_DIR}/thirdparty/assimp/lib/assimp-vc143-mt.lib
-)
+if(WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        glfw
+        OpenGL::GL
+        ${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/win/fmod_vc.lib
+        ${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/win/fmodstudio_vc.lib
+        ${CMAKE_SOURCE_DIR}/thirdparty/assimp/lib/assimp-vc143-mt.lib
+    )
+
+else()
+    # Ścieżki dla Linuxa
+    set(FMOD_LIBS 
+        "${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/linux/libfmod.so"
+        "${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/linux/libfmodstudio.so"
+    )
+    # --- ASSIMP: FetchContent (Zamiast plików lokalnych) ---
+    FetchContent_Declare(
+        assimp
+        GIT_REPOSITORY https://github.com/assimp/assimp.git
+        GIT_TAG v5.3.1
+    )
+    # Optymalizacja: Wyłączamy zbędne rzeczy w Assimpie, żeby budował się szybciej
+    set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+    set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE) # Assimp sam sobie zbuduje zlib
+
+    FetchContent_MakeAvailable(assimp)
+    
+    # Na Linuxie ustawiamy RPATH, żeby program wiedział gdzie szukać plików .so przy starcie
+    set_target_properties(${PROJECT_NAME} PROPERTIES 
+        INSTALL_RPATH "${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/linux"
+        BUILD_WITH_INSTALL_RPATH TRUE
+    )
+
+    # Łączymy wszystko w całość
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        glfw
+        OpenGL::GL
+        ${FMOD_LIBS}
+        assimp
+        dl    # Linux wymaga biblioteki dl (dynamic linker)
+        m     # Linux wymaga biblioteki math
+    )
+endif()
 
 # 5. AUTOMATYCZNE KOPIOWANIE PLIKÓW .dll DO FOLDERU Z GRĄ
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CMAKE_SOURCE_DIR}/thirdparty/fmod/bin/fmod.dll"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CMAKE_SOURCE_DIR}/thirdparty/fmod/bin/fmodstudio.dll"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+if(WIN32)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/thirdparty/fmod/bin/fmod.dll"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
 
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-    "${CMAKE_SOURCE_DIR}/thirdparty/assimp/bin/assimp-vc143-mt.dll"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
-    
-)
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/thirdparty/fmod/bin/fmodstudio.dll"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_SOURCE_DIR}/thirdparty/assimp/bin/assimp-vc143-mt.dll"
+        "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+        
+    )
+endif()
 
 # 6. SYSTEM ZARZĄDZANIA ZASOBAMI (Asset Pipeline)
 # Tworzymy osobne zadanie, które ZAWSZE się wykonuje przed startem gry
