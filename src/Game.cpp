@@ -4,6 +4,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <assimp/version.h>
+
+#include "stb/stb_truetype.h"
+
 #include <GLFW/glfw3.h>
 
 Game::Game() {}
@@ -20,6 +24,15 @@ void Game::Init() {
     myTexture = new Texture("cat.png");
     myQuad = new Quad2D();
 
+    std::cout << "DEBUG::ASSIMP: Version " << aiGetVersionMajor() << "." << aiGetVersionMinor() << std::endl;
+
+    std::ifstream fontFile("assets/fonts/Roboto-Regular.ttf", std::ios::binary);
+    if (fontFile) {
+        std::cout << "DEBUG::STB_TRUETYPE: Font file loaded successfully!" << std::endl;
+    }
+    else {
+        std::cout << "DEBUG::STB_TRUETYPE: Failed to find font file!" << std::endl;
+    }
 }
 
 void Game::Update() {
