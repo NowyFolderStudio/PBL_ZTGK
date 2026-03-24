@@ -4,8 +4,10 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #include "AudioManager.hpp"
 #include "Shader.hpp"
+#include "Game.hpp"
 
 class Engine {
 public:
@@ -19,6 +21,7 @@ public:
 private:
 	GLFWwindow* window;
 	AudioManager audioManager;
+	Game* activeGame = nullptr;
 
 	void ProcessInput();
 	void Update();

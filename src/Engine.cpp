@@ -26,10 +26,13 @@ bool Engine::Init() {
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return false;
 
-	Shader shader("basic.vert", "basic.frag"); // temporary
+	// temporary?
+	activeGame = new Game();
+	activeGame->Init();
 
-	audioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f); // temporary
-
+	audioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f);
+	// temporary?
+	
 	return true;
 }
 
@@ -55,15 +58,24 @@ void Engine::ProcessInput() {
 
 void Engine::Update() {
 	audioManager.Update();
+
+	if (activeGame) activeGame->Update();
 }
 
 void Engine::Render() {
 	glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+
+	if (activeGame) activeGame->Render();
 }
 
 void Engine::Cleanup() {
 	audioManager.Cleanup();
+
+	if (activeGame) {
+		delete activeGame;
+		activeGame = nullptr;
+	}
 
 	if (window) {
 		glfwDestroyWindow(window);
