@@ -1,5 +1,11 @@
 #include "Game.hpp"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include <GLFW/glfw3.h>
+
 Game::Game() {}
 
 Game::~Game() {
@@ -23,4 +29,15 @@ void Game::Render() {
     if (myQuad && myShader && myTexture) {
         myQuad->Draw(*myShader, *myTexture);
     }
+
+    glm::mat4 model = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+
+    glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+
+    myShader->use();
+    myShader->setMat4("model", model);
+    myShader->setMat4("view", view);
+    myShader->setMat4("projection", projection);
 }
