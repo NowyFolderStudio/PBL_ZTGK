@@ -9,9 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Znajdujemy systemową bibliotekę OpenGL
 find_package(OpenGL REQUIRED)
 
-# ==========================================
 # POBIERANIE GLFW PROSTO Z GITHUBA
-# ==========================================
 include(FetchContent)
 FetchContent_Declare(
     glfw
@@ -23,19 +21,18 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(glfw)
 
-# ==========================================
 # NASZ SILNIK
-# ==========================================
 
 # 1. Automatyczne wyszukiwanie wszystkich plików .cpp w folderze src
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
 
-# -- kopiowanie folderu assets do folderu z grą (tam, gdzie jest .exe)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/assets DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+# --- NOWE: Łapiemy wszystkie pliki z folderu assets ---
+file(GLOB_RECURSE ASSET_FILES CONFIGURE_DEPENDS "assets/*")
 
 # 2. Dodajemy nasz kod oraz pliki C/CPP z thirdparty
 add_executable(${PROJECT_NAME} 
     ${SRC_FILES} 
+    ${ASSET_FILES}
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp   # <-- DODANE: Ręcznie wskazujemy plik stb!
 )
@@ -72,5 +69,17 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     "${CMAKE_SOURCE_DIR}/thirdparty/assimp/bin/assimp-vc143-mt.dll"
     "$<TARGET_FILE_DIR:${PROJECT_NAME}>"
+    
 )
 
+# 6. SYSTEM ZARZĄDZANIA ZASOBAMI (Asset Pipeline)
+# Tworzymy osobne zadanie, które ZAWSZE się wykonuje przed startem gry
+add_custom_target(CopyAssets ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    "${CMAKE_SOURCE_DIR}/assets"
+    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/assets"
+    COMMENT "Kopiowanie najnowszych zasobow (Shaderow, Tekstur)..."
+)
+
+# Mówimy kompilatorowi: "Zanim włączysz PBL_ZTGK.exe, musisz najpierw wykonać CopyAssets!"
+add_dependencies(${PROJECT_NAME} CopyAssets)
