@@ -8,6 +8,7 @@
 #include "AudioManager.hpp"
 #include "Shader.hpp"
 #include "Game.hpp"
+#include "Input.hpp"
 
 class Engine {
 public:
@@ -18,7 +19,12 @@ public:
 	void Run();
 	void Cleanup();
 
+	inline static Engine& Get() {return *instance;}
+	inline GLFWwindow* GetNativeWindow() const {return window;}
+
 private:
+	static Engine* instance;
+
 	GLFWwindow* window;
 	AudioManager audioManager;
 	Game* activeGame = nullptr;

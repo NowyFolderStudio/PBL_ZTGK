@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "Input.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -77,5 +78,19 @@ void Game::Render() {
     textShader->use();
     textShader->setMat4("projection", orthoProj);
 
-    myText->Draw(*textShader, "MEOW", 50.0f, 50.0f, 1.0f, glm::vec3(1.0f, 1.0f, 0.0f));
+
+    // Testowanie inputu klawiatury i myszy
+    glm::vec3 currentTextColor = glm::vec3(1.0f, 1.0f, 0.0f);
+    std::string currentText = "MEOW";
+
+    if (Input::IsKeyPressed(GLFW_KEY_SPACE)) {
+        currentTextColor = glm::vec3(0.0f, 1.0f, 0.0f);
+    }
+
+    if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        currentText = "X: " + std::to_string((int)Input::GetMouseX())
+         + " Y: " + std::to_string((int)Input::GetMouseY());
+    }
+
+    myText->Draw(*textShader, currentText, 50.0f, 50.0f, 1.0f, currentTextColor);
 }

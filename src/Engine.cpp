@@ -1,4 +1,5 @@
 #include "Engine.hpp"
+#include "WindowsInput.hpp"
 #include <iostream>
 
 Engine::Engine() : window(nullptr) {}
@@ -9,6 +10,8 @@ Engine::~Engine() {
 
 bool Engine::Init() {
 	if (!glfwInit()) return false;
+
+	Input::instance = new WindowsInput();
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);

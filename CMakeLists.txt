@@ -34,7 +34,10 @@ add_executable(${PROJECT_NAME}
     ${SRC_FILES} 
     ${ASSET_FILES}
     thirdparty/glad/src/glad.c
-    thirdparty/stb/stb_impl.cpp   # <-- DODANE: Ręcznie wskazujemy plik stb!
+    thirdparty/stb/stb_impl.cpp
+        include/Input.hpp
+        Platforms/WindowsInput.cpp
+        Platforms/WindowsInput.hpp   # <-- DODANE: Ręcznie wskazujemy plik stb!
 )
 
 # 3. Mówimy kompilatorowi, gdzie leżą nagłówki (pliki .h i .hpp)
@@ -45,6 +48,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     thirdparty/glm
     thirdparty
     include
+    Platforms
 )
 
 # 4. Łączymy wszystko w całość
