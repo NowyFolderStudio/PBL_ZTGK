@@ -1,5 +1,5 @@
 #include "Engine.hpp"
-#include "WindowsInput.hpp"
+#include "Platforms/WindowsInput.hpp"
 #include <iostream>
 
 Engine::Engine() : window(nullptr) {}
