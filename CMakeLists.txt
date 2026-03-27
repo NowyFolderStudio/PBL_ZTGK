@@ -35,9 +35,8 @@ add_executable(${PROJECT_NAME}
     ${ASSET_FILES}
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
-        include/Input.hpp
-        Platforms/WindowsInput.cpp
-        Platforms/WindowsInput.hpp   # <-- DODANE: Ręcznie wskazujemy plik stb!
+    # ZMIANA: Usunąłem stąd ręczne wpisy dla Platforms. 
+    # GLOB_RECURSE powyżej automatycznie znajdzie pliki w src/Platforms/!
 )
 
 # 3. Mówimy kompilatorowi, gdzie leżą nagłówki (pliki .h i .hpp)
@@ -48,7 +47,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     thirdparty/glm
     thirdparty
     include
-    Platforms
+    src    # ZMIANA: Dodałem 'src', a usunąłem 'Platforms'. Dzięki temu kompilator znajdzie i folder include, i nowe foldery w src!
 )
 
 # 4. Łączymy wszystko w całość
@@ -73,33 +72,29 @@ else()
         GIT_REPOSITORY https://github.com/assimp/assimp.git
         GIT_TAG v5.3.1
     )
-    # Optymalizacja: Wyłączamy zbędne rzeczy w Assimpie, żeby budował się szybciej
     set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
     set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
-    set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE) # Assimp sam sobie zbuduje zlib
+    set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE) 
 
     FetchContent_MakeAvailable(assimp)
     
-    # Na Linuxie ustawiamy RPATH, żeby program wiedział gdzie szukać plików .so przy starcie
     set_target_properties(${PROJECT_NAME} PROPERTIES 
         INSTALL_RPATH "${CMAKE_SOURCE_DIR}/thirdparty/fmod/lib/linux"
         BUILD_WITH_INSTALL_RPATH TRUE
     )
 
-    # Łączymy wszystko w całość
     target_link_libraries(${PROJECT_NAME} PRIVATE
         glfw
         OpenGL::GL
         ${FMOD_LIBS}
         assimp
-        dl    # Linux wymaga biblioteki dl (dynamic linker)
-        m     # Linux wymaga biblioteki math
+        dl    
+        m     
     )
 endif()
 
 # 5. AUTOMATYCZNE KOPIOWANIE PLIKÓW .dll DO FOLDERU Z GRĄ
-
 if(WIN32)
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
@@ -118,7 +113,6 @@ if(WIN32)
 endif()
 
 # 6. SYSTEM ZARZĄDZANIA ZASOBAMI (Asset Pipeline)
-# Tworzymy osobne zadanie, które ZAWSZE się wykonuje przed startem gry
 add_custom_target(CopyAssets ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_SOURCE_DIR}/assets"
@@ -126,5 +120,4 @@ add_custom_target(CopyAssets ALL
     COMMENT "Kopiowanie najnowszych zasobow (Shaderow, Tekstur)..."
 )
 
-# Mówimy kompilatorowi: "Zanim włączysz PBL_ZTGK.exe, musisz najpierw wykonać CopyAssets!"
 add_dependencies(${PROJECT_NAME} CopyAssets)
