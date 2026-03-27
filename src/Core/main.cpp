@@ -1,8 +1,8 @@
-#include "Engine.hpp"
+#include "Core/Engine.hpp"
 #include <iostream>
 
 int main() {
-	Engine gameEngine;
+	NFSEngine::Engine gameEngine;
 
 	if (!gameEngine.Init()) {
 		std::cerr << "Failed to initialize the game engine!" << std::endl;
@@ -12,4 +12,4 @@ int main() {
 	gameEngine.Run();
 
 	return 0;
-}
+};
