@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Input.hpp"
+#include <utility>
 
 class WindowsInput : public Input {
     protected:

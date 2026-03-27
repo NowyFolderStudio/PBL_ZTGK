@@ -1,5 +1,6 @@
 #include "WindowsInput.hpp"
 #include "Engine.hpp"
+#include <GLFW/glfw3.h>
 
 Input* Input::instance = nullptr;
 

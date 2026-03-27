@@ -2,8 +2,8 @@
 
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 #include "stb/stb_truetype.h"
 
 class Shader;

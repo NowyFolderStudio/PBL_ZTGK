@@ -2,87 +2,66 @@
 #include "Platforms/WindowsInput.hpp"
 #include <iostream>
 
-Engine::Engine() : window(nullptr) {}
+Engine* Engine::s_Instance = nullptr;
+
+Engine::Engine() {
+	s_Instance = this;
+}
 
 Engine::~Engine() {
 	Cleanup();
 }
 
 bool Engine::Init() {
-	if (!glfwInit()) return false;
+	m_Window = std::unique_ptr<Window>(Window::Create("Nowy Folder Studio", 1280, 720));
+	if (!m_Window) return false;
 
 	Input::instance = new WindowsInput();
 
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	if (!m_AudioManager.Init()) return false;
 
-	window = glfwCreateWindow(1280, 720, "Nowy Folder Studio", nullptr, nullptr);
-	if (!window) {
-		glfwTerminate();
-		return false;
-	}
+	m_ActiveGame = new Game();
+	m_ActiveGame->Init();
 
-	if (!audioManager.Init()) return false;
-	
-	glfwMakeContextCurrent(window);
+	m_AudioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return false;
-
-	// temporary?
-	activeGame = new Game();
-	activeGame->Init();
-
-	audioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f);
-	// temporary?
-	
 	return true;
 }
 
 void Engine::Run() {
-	while (!glfwWindowShouldClose(window)) {
+	while (m_Running && !m_Window->ShouldClose()) {
+
+		m_Window->OnUpdate();
+
 		ProcessInput();
-
 		Update();
-
 		Render();
-
-		glfwSwapBuffers(window);
-
-		glfwPollEvents();
 	}
 }
 
 void Engine::ProcessInput() {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
+	if (Input::IsKeyPressed(GLFW_KEY_ESCAPE)) {
+		m_Running = false;
 	}
 }
 
 void Engine::Update() {
-	audioManager.Update();
-
-	if (activeGame) activeGame->Update();
+	m_AudioManager.Update();
+	if (m_ActiveGame) m_ActiveGame->Update();
 }
 
 void Engine::Render() {
 	glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	if (activeGame) activeGame->Render();
+	if (m_ActiveGame) m_ActiveGame->Render();
 }
 
 void Engine::Cleanup() {
-	audioManager.Cleanup();
+	m_AudioManager.Cleanup();
 
-	if (activeGame) {
-		delete activeGame;
-		activeGame = nullptr;
+	if (m_ActiveGame) {
+		delete m_ActiveGame;
+		m_ActiveGame = nullptr;
 	}
-
-	if (window) {
-		glfwDestroyWindow(window);
-		window = nullptr;
-	}
-	glfwTerminate();
 }

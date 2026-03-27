@@ -1,0 +1,108 @@
+[33mcommit 75933094d4588f017f4f088b050296eb39fad15c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 6b8db1b bc1ca9e
+Author: gugapl <ogorekigor@gmail.com>
+Date:   Fri Mar 27 19:57:20 2026 +0100
+
+    Merge branch 'main' of https://github.com/NowyFolderStudio/PBL_ZTGK
+
+[33mcommit bc1ca9e6bfef9dae617e39f4dbcd2f2a56780bb1[m
+Author: gugapl <ogorekigor@gmail.com>
+Date:   Fri Mar 27 12:30:54 2026 +0100
+
+    [PBL-18] Refactorization of direcotry layout
+
+[33mcommit 6b8db1b63e34335bada97239a9a95bc55ee910b0[m
+Author: gugapl <ogorekigor@gmail.com>
+Date:   Fri Mar 27 12:30:54 2026 +0100
+
+    Reorganizacja struktury plików
+
+[33mcommit 8c8a3e81cb852c14b496c41ff90e52c171f4b188[m
+Author: KossaQ <45899559+KossaQ@users.noreply.github.com>
+Date:   Thu Mar 26 20:34:40 2026 +0100
+
+    [PBL-17] Create Basic Input System
+
+[33mcommit e0c0a7ef360a1cf9bda9bbed4d98303f6ddbdc1c[m
+Author: zmoreq <91459732+zmoreq@users.noreply.github.com>
+Date:   Wed Mar 25 08:58:34 2026 +0100
+
+    [PBL-7] Add simple Cube implementation
+
+[33mcommit 6987294e808bdeb13525483e843a57f5b003eada[m
+Author: Dawid Gradowski <d.gradowski23@gmail.com>
+Date:   Tue Mar 24 22:21:24 2026 +0100
+
+    [PBL-10] Implement basic Text class using stb_truetype
+
+[33mcommit 58105f7de37deca5a21a6357ceb70d4f76cdad13[m
+Author: Dawid Gradowski <d.gradowski23@gmail.com>
+Date:   Tue Mar 24 19:57:52 2026 +0100
+
+    [PBL-9 Modify CMakeLists so the project can be compiled on Linux]
+
+[33mcommit 05c4badabf44191fe8f3a8893b89353cbda8395d[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Tue Mar 24 14:44:44 2026 +0100
+
+    [PBL-7] Add verifying tests for third-party libraries
+
+[33mcommit 7bb06da0e53c9f4e5250017d8a24b94a63922adc[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Tue Mar 24 14:10:57 2026 +0100
+
+    [PBL-7] Implement basic 3D perspective
+
+[33mcommit d98e4f8e144d960e2c1c31203f2d2b344d415929[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Tue Mar 24 13:33:20 2026 +0100
+
+    [PBL-6] Implement textured 2D object rendering
+
+[33mcommit c2ac61a933d688632d874360410017470d65286e[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Tue Mar 24 13:32:40 2026 +0100
+
+    [PBL-6] Update CMake with automated Asset Pipeline
+
+[33mcommit ee3d295bca52d4e02d600673053d773bf09dc129[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Mon Mar 23 19:53:18 2026 +0100
+
+    [PBL-5] Implement basic Shader class and shader files
+
+[33mcommit bc69bfb743cef658f2ff74481fe154133123cf5b[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Mon Mar 23 18:25:47 2026 +0100
+
+    [PBL-04] Initial project setup with GLFW and FMOD
+
+[33mcommit 53de67554d1b814caa94261e8a17297beac19f5a[m
+Author: zmoreq <91459732+zmoreq@users.noreply.github.com>
+Date:   Mon Mar 23 16:57:33 2026 +0100
+
+    Update .dll .lib for assimp and fmod
+
+[33mcommit d9af7e216fafff33227ef005598ef217b9464043[m
+Author: zmoreq <91459732+zmoreq@users.noreply.github.com>
+Date:   Mon Mar 23 16:51:40 2026 +0100
+
+    Update .gitignore
+
+[33mcommit 171c56db5c3426c53ad5a53dd6995d6c22105699[m
+Author: zmoreq <91459732+zmoreq@users.noreply.github.com>
+Date:   Fri Mar 20 20:38:44 2026 +0100
+
+    integrate GLFW, GLAD, GLM, STB, FMOD, and Assimp
+
+[33mcommit b3c75f67390fd752c6c7d04007ccf06a107fcc90[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Tue Mar 10 14:03:39 2026 +0100
+
+    Update CMakeLists
+
+[33mcommit 9ea7cc631167f8e6ed156d220d0cc89a41181c2e[m
+Author: rdzierzbicki <robert.dzierzbicki@gmail.com>
+Date:   Tue Mar 10 13:28:35 2026 +0100
+
+    Initial commit
