@@ -1,92 +1,71 @@
 #include "Core/Engine.hpp"
 #include "Platforms/WindowsInput.hpp"
+#include "Platforms/Window.hpp"
 #include <iostream>
 
 namespace NFSEngine {
 
-	Engine::Engine() : window(nullptr) {}
-	
+	Engine* Engine::s_Instance = nullptr;
+
+	Engine::Engine() {
+		s_Instance = this;
+	}
+
 	Engine::~Engine() {
 		Cleanup();
 	}
-	
+
 	bool Engine::Init() {
-		if (!glfwInit()) return false;
-		
+		m_Window = std::unique_ptr<Window>(Window::Create("Nowy Folder Studio", 1280, 720));
+		if (!m_Window) return false;
+
 		Input::instance = new WindowsInput();
-		
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-		
-		window = glfwCreateWindow(1280, 720, "Nowy Folder Studio", nullptr, nullptr);
-		if (!window) {
-			glfwTerminate();
-			return false;
-		}
-		
-		if (!audioManager.Init()) return false;
-		
-		glfwMakeContextCurrent(window);
-		
-		if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) return false;
-		
-		// temporary?
-		activeGame = new Game();
-		activeGame->Init();
-		
-		audioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f);
-		// temporary?
-		
+
+		if (!m_AudioManager.Init()) return false;
+
+		m_ActiveGame = new Game();
+		m_ActiveGame->Init();
+
+		m_AudioManager.LoopSound("PrototypeMusicProjectFile.wav", 0.05f);
+
 		return true;
 	}
-	
+
 	void Engine::Run() {
-		while (!glfwWindowShouldClose(window)) {
+		while (m_Running && !m_Window->ShouldClose()) {
+
+			m_Window->OnUpdate();
+
 			ProcessInput();
-			
 			Update();
-			
 			Render();
-			
-			glfwSwapBuffers(window);
-			
-			glfwPollEvents();
 		}
-	}
-	
-	void Engine::ProcessInput() {
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-			glfwSetWindowShouldClose(window, true);
-		}
-	}
-	
-	void Engine::Update() {
-		audioManager.Update();
-		
-		if (activeGame) activeGame->Update();
-	}
-	
-	void Engine::Render() {
-		glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		if (activeGame) activeGame->Render();
-	}
-	
-	void Engine::Cleanup() {
-		audioManager.Cleanup();
-		
-		if (activeGame) {
-			delete activeGame;
-			activeGame = nullptr;
-		}
-		
-		if (window) {
-			glfwDestroyWindow(window);
-			window = nullptr;
-		}
-		glfwTerminate();
 	}
 
+	void Engine::ProcessInput() {
+		if (Input::IsKeyPressed(GLFW_KEY_ESCAPE)) {
+			m_Running = false;
+		}
+	}
+
+	void Engine::Update() {
+		m_AudioManager.Update();
+		if (m_ActiveGame) m_ActiveGame->Update();
+	}
+
+	void Engine::Render() {
+		glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		if (m_ActiveGame) m_ActiveGame->Render();
+	}
+
+	void Engine::Cleanup() {
+		m_AudioManager.Cleanup();
+
+		if (m_ActiveGame) {
+			delete m_ActiveGame;
+			m_ActiveGame = nullptr;
+		}
+	}
 }

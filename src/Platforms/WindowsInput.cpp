@@ -1,5 +1,6 @@
 #include "Platforms/WindowsInput.hpp"
 #include "Core/Engine.hpp"
+#include <GLFW/glfw3.h>
 
 namespace NFSEngine {
 
