@@ -36,6 +36,10 @@ namespace NFSEngine {
 
 			m_Window->OnUpdate();
 
+			if (Input::instance) {
+				Input::instance->UpdateStatesImpl();
+			}
+
 			ProcessInput();
 			Update();
 			Render();

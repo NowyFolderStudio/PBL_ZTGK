@@ -42,58 +42,76 @@ namespace NFSEngine {
     
     void Game::Render() {
         if (!myQuad || !myCube || !myShader || !myTexture || !myText || !textShader) return;
-        
+
+        static int pressedCount = 0;
+        static int releasedCount = 0;
+
+        if (Input::IsKeyDown(GLFW_KEY_SPACE) || Input::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+            pressedCount++;
+        }
+
+        if (Input::IsKeyUp(GLFW_KEY_SPACE) || Input::IsMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT)) {
+            releasedCount++;
+        }
+
+        std::string counterText1 = "C: " + std::to_string(pressedCount);
+        std::string counterText2 = "R: " + std::to_string(releasedCount);
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
-        
+
         myShader->use();
-        
+
         glm::mat4 model3D = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 view3D = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection3D = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
-        
+
         myShader->setMat4("model", model3D);
         myShader->setMat4("view", view3D);
         myShader->setMat4("projection", projection3D);
-        
+
         myCube->Draw(*myShader, *myTexture);
-        
+
         glDisable(GL_DEPTH_TEST);
-        
+
         glm::mat4 model2D = glm::mat4(1.0f);
-        
+
         model2D = glm::translate(model2D, glm::vec3(-0.7f, 0.7f, 0.0f));
         model2D = glm::scale(model2D, glm::vec3(0.4f, 0.4f, 1.0f));
-        
+
         myShader->setMat4("model", model2D);
         myShader->setMat4("view", glm::mat4(1.0f));
         myShader->setMat4("projection", glm::mat4(1.0f));
-        
+
         myQuad->Draw(*myShader, *myTexture);
-        
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
+
         glm::mat4 orthoProj = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f);
         textShader->use();
         textShader->setMat4("projection", orthoProj);
-        
-        
+
+
         // Testowanie inputu klawiatury i myszy
         glm::vec3 currentTextColor = glm::vec3(1.0f, 1.0f, 0.0f);
         std::string currentText = "MEOW";
-        
+
         if (Input::IsKeyPressed(GLFW_KEY_SPACE)) {
             currentTextColor = glm::vec3(0.0f, 1.0f, 0.0f);
         }
-        
+
         if (Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
             currentText = "X: " + std::to_string((int)Input::GetMouseX())
             + " Y: " + std::to_string((int)Input::GetMouseY());
         }
-        
+
         myText->Draw(*textShader, currentText, 50.0f, 50.0f, 1.0f, currentTextColor);
+
+        float uiX = 950.0f;
+        myText->Draw(*textShader, counterText1, uiX, 50.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
+        myText->Draw(*textShader, counterText2, uiX, 90.0f, 0.6f, glm::vec3(0.8f, 0.8f, 0.8f));
     }
 }
