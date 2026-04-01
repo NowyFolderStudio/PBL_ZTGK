@@ -5,6 +5,8 @@
 #include "Quad2D.hpp"
 #include "Text.hpp"
 #include "Cube.hpp"
+#include "UI/Canvas.hpp"
+#include "UI/UIRenderer.hpp"
 
 namespace NFSEngine {
 
@@ -20,10 +22,11 @@ namespace NFSEngine {
         private:
         Shader* myShader = nullptr;
         Texture* myTexture = nullptr;
-        Quad2D* myQuad = nullptr;
         Text* myText = nullptr;
         Shader* textShader = nullptr;
         Cube* myCube = nullptr;
+
+		Canvas* canvas = nullptr;
     };
     
 }

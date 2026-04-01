@@ -1,5 +1,6 @@
 #include "Core/Game.hpp"
 #include "Core/Input.hpp"
+#include "UI/UIFactory.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -21,6 +22,9 @@ namespace NFSEngine {
         if (myText) delete myText;
         if (textShader) delete textShader;
         if (myCube) delete myCube;
+
+		delete canvas;
+        UIRenderer::Shutdown();
     }
     
     void Game::Init() {
@@ -30,6 +34,13 @@ namespace NFSEngine {
         textShader = new Shader("text.vert", "text.frag");  
         myCube = new Cube();
 
+		UIRenderer::Init();
+		UIRenderer::SetProjection(1280.0f, 720.0f);
+        canvas = new Canvas();
+
+        UI::Image(*canvas, glm::vec3(640.0f, 360.0f, 2.0f), 1240.0f, 680.0f, glm::vec4(0.0f, 0.5f, 1.0f, 0.3f));
+        UI::Image(*canvas, glm::vec3(640.0f, 360.0f, 1.0f), 150.0f, 50.0f, glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+    
         std::cout << "DEBUG::ASSIMP: Version " << aiGetVersionMajor() << "." << aiGetVersionMinor() << std::endl;
     }
     
@@ -84,6 +95,8 @@ namespace NFSEngine {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+		canvas->Draw();
 
         glm::mat4 orthoProj = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f);
         textShader->use();

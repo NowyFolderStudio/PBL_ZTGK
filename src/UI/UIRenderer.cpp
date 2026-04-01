@@ -37,7 +37,7 @@ namespace NFSEngine {
 			return;
 		}
 
-		s_Data->ProjectionMatrix = glm::ortho(0.0f, windowWidth, windowHeight, 0.0f, -1.0f, 1.0f);
+		s_Data->ProjectionMatrix = glm::ortho(0.0f, windowWidth, windowHeight, 0.0f, -100.0f, 100.0f);
 	}
 
 	void UIRenderer::DrawQuad(const RectTransform& transform, const ImageComponent& image) {
