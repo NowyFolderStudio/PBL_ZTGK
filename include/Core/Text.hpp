@@ -16,7 +16,7 @@ namespace NFSEngine {
         Text(const std::string& fontPath, float fontSize = 48.0f);
         ~Text();
         
-        void Draw(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color);
+        void Draw(std::string text, float x, float y, float scale);
         
         private:
         GLuint VAO, VBO;

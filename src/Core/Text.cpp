@@ -6,6 +6,10 @@
 namespace NFSEngine {
 
     Text::Text(const std::string& fontPath, float fontSize) {
+		VAO = 0;
+		VBO = 0;
+		texture = 0;
+
         std::ifstream fontFile(fontPath, std::ios::binary | std::ios::ate);
         if (!fontFile.is_open()) {
             std::cerr << "ERROR::TEXT: Failed to load font: " << fontPath << std::endl;
@@ -63,10 +67,8 @@ namespace NFSEngine {
         glDeleteTextures(1, &texture);
     }
     
-    void Text::Draw(Shader& shader, std::string text, float x, float y, float scale, glm::vec3 color) {
-        shader.use();
-        shader.setVec3("textColor", color);
-        
+    void Text::Draw(std::string text, float x, float y, float scale) {
+
         glActiveTexture(GL_TEXTURE0);
         glBindVertexArray(VAO);
         glBindTexture(GL_TEXTURE_2D, texture);

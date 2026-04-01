@@ -3,6 +3,7 @@
 #include "UI/Canvas.hpp"
 #include "UI/UIRenderer.hpp"
 #include "UI/ButtonLogic.hpp"
+#include "UI/UIFactory.hpp"
 
 namespace NFSEngine {
 
@@ -38,5 +39,15 @@ namespace NFSEngine {
 
 			return obj;
 		};
+
+		UIObject& Label(Canvas& canvas, glm::vec3 position, const std::string& text, Text* font, glm::vec4 color, float scale) {
+			UIObject& obj = canvas.CreateUIObject();
+
+			obj.Transform.Position = position;
+
+			obj.AddComponent<TextComponent>(text, font, color, scale);
+
+			return obj;
+		}
 	}
 }

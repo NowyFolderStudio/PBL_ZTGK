@@ -42,6 +42,7 @@ namespace NFSEngine {
         UI::Button(*canvas, glm::vec3(640.0f, 360.0f, 2.0f), 150.0f, 50.0f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), []() {
             std::cout << "Button clicked!" << std::endl;
 			});
+        UI::Label(*canvas, glm::vec3(600.0f, 370.0f, 3.0f), "PLAY", nullptr, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
     
         std::cout << "DEBUG::ASSIMP: Version " << aiGetVersionMajor() << "." << aiGetVersionMinor() << std::endl;
     }
@@ -118,10 +119,7 @@ namespace NFSEngine {
             + " Y: " + std::to_string((int)Input::GetMouseY());
         }
 
-        myText->Draw(*textShader, currentText, 50.0f, 50.0f, 1.0f, currentTextColor);
 
         float uiX = 950.0f;
-        myText->Draw(*textShader, counterText1, uiX, 50.0f, 0.6f, glm::vec3(1.0f, 1.0f, 1.0f));
-        myText->Draw(*textShader, counterText2, uiX, 90.0f, 0.6f, glm::vec3(0.8f, 0.8f, 0.8f));
     }
 }

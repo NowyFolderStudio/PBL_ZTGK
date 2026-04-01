@@ -47,4 +47,18 @@ namespace NFSEngine {
 		ImageComponent(const glm::vec4& color) : Color(color) {}
 		ImageComponent(const std::shared_ptr<Texture>& texture, const glm::vec4& tintColor = glm::vec4(1.0f)) : TexturePtr(texture), Color(tintColor) {}
 	};
+
+	class Text;
+
+	struct TextComponent : public UIComponent {
+		std::string TextString = "";
+		Text* Font = nullptr;
+		glm::vec4 Color = glm::vec4(1.0f);
+		float Scale = 1.0f;
+
+		TextComponent() = default;
+		TextComponent(std::string text, Text* font, glm::vec4 color, float scale = 1.0f)
+			: TextString(text), Font(font), Color(color), Scale(scale) {
+		}
+	};
 }

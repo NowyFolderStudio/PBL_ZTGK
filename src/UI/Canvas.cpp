@@ -48,6 +48,10 @@ namespace NFSEngine {
 				ImageComponent* image = uiObject->GetComponent<ImageComponent>();
 				UIRenderer::DrawQuad(uiObject->Transform, *image);
 			}
+
+			if (uiObject->HasComponent<TextComponent>()) {
+				UIRenderer::DrawText(uiObject->Transform, *uiObject->GetComponent<TextComponent>());
+			}
 		}
 	}
 

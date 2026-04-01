@@ -13,6 +13,7 @@ namespace NFSEngine {
 
         static void DrawQuad(const RectTransform& transform, const ImageComponent& image);
 
+		static void DrawText(const RectTransform& transform, const TextComponent& text);
     
     private:
         UIRenderer() = delete;
