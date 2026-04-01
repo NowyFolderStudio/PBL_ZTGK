@@ -16,7 +16,6 @@ namespace NFSEngine {
     Game::Game() {}
     
     Game::~Game() {
-        if (myQuad) delete myQuad;
         if (myTexture) delete myTexture;
         if (myShader) delete myShader;
         if (myText) delete myText;
@@ -25,14 +24,12 @@ namespace NFSEngine {
     }
     
     void Game::Init() {
-        
         myShader = new Shader("basic.vert", "basic.frag");
         myTexture = new Texture("cat.png");
-        myQuad = new Quad2D();
         myText = new Text("assets/fonts/Roboto-Regular.ttf");
         textShader = new Shader("text.vert", "text.frag");  
         myCube = new Cube();
-        
+
         std::cout << "DEBUG::ASSIMP: Version " << aiGetVersionMajor() << "." << aiGetVersionMinor() << std::endl;
     }
     
@@ -41,7 +38,7 @@ namespace NFSEngine {
     }
     
     void Game::Render() {
-        if (!myQuad || !myCube || !myShader || !myTexture || !myText || !textShader) return;
+        if (!myCube || !myShader || !myTexture || !myText || !textShader) return;
 
         static int pressedCount = 0;
         static int releasedCount = 0;
@@ -84,8 +81,6 @@ namespace NFSEngine {
         myShader->setMat4("model", model2D);
         myShader->setMat4("view", glm::mat4(1.0f));
         myShader->setMat4("projection", glm::mat4(1.0f));
-
-        myQuad->Draw(*myShader, *myTexture);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

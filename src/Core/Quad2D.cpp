@@ -15,10 +15,10 @@ namespace NFSEngine {
     void Quad2D::Setup() {
         float vertices[] = {
             // Pozycje (X, Y, Z)    // Tekstury (U, V)
-            0.5f,  0.5f, 0.0f,     1.0f, 1.0f, // Prawy górny
-            0.5f, -0.5f, 0.0f,     1.0f, 0.0f, // Prawy dolny
-            -0.5f, -0.5f, 0.0f,     0.0f, 0.0f, // Lewy dolny
-            -0.5f,  0.5f, 0.0f,     0.0f, 1.0f  // Lewy górny
+            1.0f, 1.0f, 0.0f,       1.0f, 1.0f, // Prawy dolny
+            1.0f, 0.0f, 0.0f,       1.0f, 0.0f, // Prawy górny
+            0.0f, 0.0f, 0.0f,       0.0f, 0.0f, // Lewy górny
+            0.0f, 1.0f, 0.0f,       0.0f, 1.0f  // Lewy dolny
         };
         unsigned int indices[] = {
             0, 1, 3,
@@ -47,9 +47,7 @@ namespace NFSEngine {
         glBindVertexArray(0);
     }
     
-    void Quad2D::Draw(Shader& shader, Texture& texture) {
-        shader.use();
-        texture.Bind();
+    void Quad2D::Draw() {
         
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

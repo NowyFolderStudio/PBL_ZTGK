@@ -10,7 +10,7 @@ namespace NFSEngine {
         Quad2D();
         ~Quad2D();
         
-        void Draw(Shader& shader, Texture& texture);
+        void Draw();
         
         private:
         unsigned int VAO, VBO, EBO;

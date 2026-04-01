@@ -14,6 +14,8 @@ namespace NFSEngine {
 	struct RectTransform : public UIComponent {
 		glm::vec3 Position = glm::vec3(0.0f);
 
+		glm::vec2 Pivot = glm::vec2(0.5f);
+
 		float Width = 100.0f;
 		float Height = 100.0f;
 		float Rotation = 0.0f;
@@ -24,6 +26,8 @@ namespace NFSEngine {
 			transform = glm::translate(transform, Position);
 			transform = glm::rotate(transform, glm::radians(Rotation), glm::vec3(0.0f, 0.0f, 1.0f));
 			transform = glm::scale(transform, glm::vec3(Width, Height, 1.0f));
+
+			transform = glm::translate(transform, glm::vec3(-Pivot.x, -Pivot.y, 0.0f));
 
 			return transform;
 		}

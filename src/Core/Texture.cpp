@@ -34,6 +34,25 @@ namespace NFSEngine {
         
         stbi_image_free(data);
     }
+
+    Texture::Texture(uint32_t width, uint32_t height) : width(width), height(height), nrChannels(4) {
+        glGenTextures(1, &ID);
+        glBindTexture(GL_TEXTURE_2D, ID);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+	}
+
+    void Texture::SetData(void* data, uint32_t size) {
+        glBindTexture(GL_TEXTURE_2D, ID);
+
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	}
     
     void Texture::Bind() const {
         glBindTexture(GL_TEXTURE_2D, ID);
