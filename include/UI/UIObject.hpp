@@ -18,6 +18,9 @@ namespace NFSEngine {
 		template<typename T, typename... Args>
 		T& AddComponent(Args&&... args) {
 			auto newComponent = std::make_unique<T>(std::forward<Args>(args)...);
+
+			newComponent->Owner = this;
+
 			T& componentRef = *newComponent;
 			m_Components.push_back(std::move(newComponent));
 

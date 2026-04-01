@@ -1,4 +1,6 @@
 #include "UI/Canvas.hpp"
+#include "UI/ButtonLogic.hpp"
+#include <iostream>
 
 namespace NFSEngine {
 
@@ -45,6 +47,14 @@ namespace NFSEngine {
 			if (uiObject->HasComponent<ImageComponent>()) {
 				ImageComponent* image = uiObject->GetComponent<ImageComponent>();
 				UIRenderer::DrawQuad(uiObject->Transform, *image);
+			}
+		}
+	}
+
+	void Canvas::Update() {
+		for (const auto& uiObject : m_UIObjects) {
+			if (uiObject->HasComponent<ButtonLogic>()) {
+				uiObject->GetComponent<ButtonLogic>()->Update();
 			}
 		}
 	}

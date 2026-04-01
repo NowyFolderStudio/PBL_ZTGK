@@ -21,6 +21,7 @@ namespace NFSEngine {
 		std::vector<class UIObject*> GetUIObjects() const;
 
 		void Draw();
+		void Update();
 		
 	private:
 		std::vector<std::unique_ptr<UIObject>> m_UIObjects;
