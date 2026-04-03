@@ -1,0 +1,44 @@
+#pragma once
+
+#include "Core/Application.hpp"
+#include <utility>
+
+namespace NFSEngine {
+    
+    class Input {
+        public:
+        static bool IsKeyPressed(int keycode){return instance -> IsKeyPressedImpl(keycode); }
+        static bool IsKeyDown(int keycode) { return instance->IsKeyDownImpl(keycode); }
+        static bool IsKeyUp(int keycode) { return instance->IsKeyUpImpl(keycode); }
+        
+        static bool IsMouseButtonPressed(int button){return instance -> IsMouseButtonPressedImpl(button); }
+        static bool IsMouseButtonDown(int button) { return instance->IsMouseButtonDownImpl(button); }
+        static bool IsMouseButtonUp(int button) { return instance->IsMouseButtonUpImpl(button); }
+
+        static std::pair<float, float> GetMousePos(){return instance -> GetMousePosImpl(); }
+        static float GetMouseX(){return instance -> GetMouseXImpl(); }
+        static float GetMouseY(){return instance -> GetMouseYImpl(); }
+        
+        protected:
+        virtual bool IsKeyPressedImpl(int keycode) = 0;
+        virtual bool IsKeyDownImpl(int keycode) = 0;
+        virtual bool IsKeyUpImpl(int keycode) = 0;
+        
+        virtual bool IsMouseButtonPressedImpl(int button) = 0;
+        virtual bool IsMouseButtonDownImpl(int button) = 0;
+        virtual bool IsMouseButtonUpImpl(int button) = 0;
+
+        virtual std::pair<float, float> GetMousePosImpl() = 0;
+        virtual float GetMouseXImpl() = 0;
+        virtual float GetMouseYImpl() = 0;
+
+        virtual void UpdateStatesImpl() = 0;
+        
+        private:
+        static Input* instance;
+        
+        friend class Engine;
+        friend class Application;
+    };
+    
+}
