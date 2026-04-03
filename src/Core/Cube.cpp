@@ -1,8 +1,12 @@
 #include "Core/Cube.hpp"
+#include "Renderer/Buffer.hpp"
 
 namespace NFSEngine {
 
     Cube::Cube() {
+
+        m_VertexArray = std::shared_ptr<VertexArray>(VertexArray::Create());
+
         float vertices[] = {
             // Pozycje            // Tekstury
             -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -48,27 +52,24 @@ namespace NFSEngine {
             -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
         };
         
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);
-        
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-    }
-    
-    Cube::~Cube() {
-        glDeleteVertexArrays(1, &VAO);
-        glDeleteBuffers(1, &VBO);
+        std::shared_ptr<VertexBuffer> vbo;
+        vbo = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(vertices, sizeof(vertices)));
+
+        BufferLayout layout = {
+            { ShaderDataType::Float3, "a_Position"},
+            { ShaderDataType::Float2, "a_TexCoord"}
+        };
+
+        vbo->SetLayout(layout);
+
+        m_VertexArray->AddVertexBuffer(vbo);
     }
     
     void Cube::Draw(Shader& shader, Texture& texture) {
+        shader.use();
         texture.Bind();
-        glBindVertexArray(VAO);
+        m_VertexArray->Bind();
+
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
 

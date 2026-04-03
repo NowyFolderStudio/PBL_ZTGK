@@ -18,7 +18,10 @@ namespace NFSEngine {
 			case ShaderDataType::Int3:		return GL_INT;
 			case ShaderDataType::Int4:		return GL_INT;
 			case ShaderDataType::Bool:		return GL_BOOL;
+			case ShaderDataType::one:       return GL_NONE;
 		}
+
+		return 0;
 	}
 
 	OpenGLVertexArray::OpenGLVertexArray()
