@@ -26,7 +26,7 @@ namespace NFSEngine {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
-		glCreateVertexArrays(1, &m_RendererID);
+		glGenVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
