@@ -1,17 +1,23 @@
 #pragma once
-#include <glad/glad.h>
+
+#include <memory>
 #include "Shader.hpp"
 #include "Texture.hpp"
+#include "Renderer/VertexArray.hpp"
+
+
 
 namespace NFSEngine {
 
     class Cube {
-        private:
-        unsigned int VAO, VBO;
         public:
-        Cube();
-        ~Cube();
-        void Draw(Shader& shader, Texture& texture);
+            Cube(); 
+            ~Cube() = default;
+
+            void Draw(Shader& shader, Texture& texture);
+
+        private:
+            std::shared_ptr<VertexArray> m_VertexArray;
     };
     
 }
