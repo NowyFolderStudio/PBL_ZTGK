@@ -17,6 +17,7 @@ namespace NFSEngine {
         ~Text();
         
         void Draw(std::string text, float x, float y, float scale);
+		float GetTextWidth(std::string text, float scale);
         
         private:
         GLuint VAO, VBO;

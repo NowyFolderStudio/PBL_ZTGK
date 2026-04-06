@@ -68,13 +68,16 @@ namespace NFSEngine {
 		if (!s_Data) return;
 
 		Text* fontToUse = textComp.Font ? textComp.Font : s_Data->DefaultFont.get();
-
 		if (!fontToUse) return;
 
 		s_Data->UITextShader->use();
 		s_Data->UITextShader->setMat4("projection", s_Data->ProjectionMatrix);
 		s_Data->UITextShader->setVec3("textColor", glm::vec3(textComp.Color.r, textComp.Color.g, textComp.Color.b));
 
-		fontToUse->Draw(textComp.TextString, transform.Position.x, transform.Position.y, textComp.Scale);
+		float textWidth = fontToUse->GetTextWidth(textComp.TextString, textComp.Scale);
+		float startX = transform.Position.x - textWidth * transform.Pivot.x;
+		float startY = transform.Position.y + (fontToUse->GetTextWidth("H", textComp.Scale) * transform.Pivot.y); // potencjalnie do zmiany / nie w kazdym foncie H bedzie najwyzsze
+
+		fontToUse->Draw(textComp.TextString, startX, startY, textComp.Scale);
 	}
 }

@@ -112,4 +112,16 @@ namespace NFSEngine {
         glBindVertexArray(0);
     }
 
+
+    float Text::GetTextWidth(std::string text, float scale) {
+        float width = 0.0f;
+        
+        for (char c : text) {
+            if (c < firstChar || c >= firstChar + charCount) continue;
+            stbtt_packedchar& ch = charInfo[c - firstChar];
+            width += ch.xadvance * scale;
+        }
+        
+        return width;
+	}
 }

@@ -17,8 +17,14 @@ namespace NFSEngine {
 		ButtonState State = ButtonState::Idle;
 
 		glm::vec4 NormalColor = glm::vec4(1.0f);
-		glm::vec4 HoverColor = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-		glm::vec4 PressedColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
+		glm::vec4 HoverColor = glm::vec4(1.0f);
+		glm::vec4 PressedColor = glm::vec4(1.0f);
+
+		void SetColor(glm::vec4 baseColor) {
+			NormalColor = baseColor;
+			HoverColor = glm::vec4(glm::vec3(baseColor) * 0.8f, baseColor.a);
+			PressedColor = glm::vec4(glm::vec3(baseColor) * 0.5f, baseColor.a);
+		}
 
 		std::function<void()> OnClick = nullptr;
 

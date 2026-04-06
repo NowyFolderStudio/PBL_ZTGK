@@ -43,16 +43,37 @@
         textShader = new NFSEngine::Shader("text.vert", "text.frag");  
         myCube = new NFSEngine::Cube();
 
+		float windowWidth = (float)NFSEngine::Application::Get().GetConfig().WindowWidth;
+		float windowHeight = (float)NFSEngine::Application::Get().GetConfig().WindowHeight;
+
+        // przykladowe ui - styl inicjowania tego moze sie jeszcze zmienic bo nie jest idealnie intuicyjny ale na razie to nie jest priorytet raczej
+
 		NFSEngine::UIRenderer::Init();
-		NFSEngine::UIRenderer::SetProjection(1280.0f, 720.0f);
+		NFSEngine::UIRenderer::SetProjection(windowWidth, windowHeight); // tu musi byc przekazywana aktualna szerokosc i wysokosc okna, zeby UI bylo poprawnie skalowane i pozycjonowane
         canvas = new NFSEngine::Canvas();
 
-        NFSEngine::UI::Image(*canvas, glm::vec3(640.0f, 360.0f, 1.0f), 1240.0f, 680.0f, glm::vec4(0.0f, 0.5f, 1.0f, 0.3f));
-        NFSEngine::UI::Button(*canvas, glm::vec3(640.0f, 360.0f, 2.0f), 150.0f, 50.0f, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f), []() {
+		NFSEngine::UI::ButtonParameters buttonParams;
+		buttonParams.position = glm::vec3(500, 300, 2.0f);
+		buttonParams.text = "PLAY";
+        buttonParams.onClick = []() {
             std::cout << "Button clicked!" << std::endl;
-			});
-        NFSEngine::UI::Label(*canvas, glm::vec3(600.0f, 370.0f, 3.0f), "PLAY", nullptr, glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-    
+			};
+		NFSEngine::UI::Button(*canvas, buttonParams);
+
+		NFSEngine::UI::ImageParameters imageParams;
+		imageParams.position = glm::vec3(500, 300, 1.0f);
+		imageParams.width = 950;
+		imageParams.height = 550;
+		imageParams.color = glm::vec4(0.0f, 0.5f, 1.0f, 0.3f);
+		NFSEngine::UI::Image(*canvas, imageParams);
+
+		NFSEngine::UI::CheckboxParameters checkboxParams;
+		checkboxParams.position = glm::vec3(200, 300, 0.0f);
+        checkboxParams.onToggle = [](bool checked) {
+            std::cout << "Checkbox toggled: " << (checked ? "Checked" : "Unchecked") << std::endl;
+			};
+		NFSEngine::UI::Checkbox(*canvas, checkboxParams);
+        // koniec ui
     }
     
     void LayerExample::Update() {

@@ -8,46 +8,78 @@
 namespace NFSEngine {
 
 	namespace UI {
-
-		UIObject& Image(Canvas& canvas, glm::vec3 position, float width, float height, glm::vec4 color) {
+		UIObject& Image(Canvas& canvas, const ImageParameters& params) {
 			UIObject& obj = canvas.CreateUIObject();
 
-			obj.Transform.Position = position;
-			obj.Transform.Width = width;
-			obj.Transform.Height = height;
+			obj.Transform.Position = params.position;
+			obj.Transform.Width = params.width;
+			obj.Transform.Height = params.height;
 
-			obj.AddComponent<ImageComponent>(color);
+			obj.AddComponent<ImageComponent>(params.color);
 
 			return obj;
 		}
 
-		UIObject& Button(Canvas& canvas, glm::vec3 position, float width, float height, glm::vec4 color, std::function<void()> onClick) {
+		UIObject& Button(Canvas& canvas, const ButtonParameters& params) {
 			UIObject& obj = canvas.CreateUIObject();
 
-			obj.Transform.Position = position;
-			obj.Transform.Width = width;
-			obj.Transform.Height = height;
+			obj.Transform.Position = params.position;
+			obj.Transform.Width = params.width;
+			obj.Transform.Height = params.height;
 
-			obj.AddComponent<ImageComponent>(color);
+			obj.AddComponent<ImageComponent>(params.color);
 
 			auto& logic = obj.AddComponent<ButtonLogic>();
-			logic.OnClick = onClick;
+			logic.OnClick = params.onClick;
 
-			logic.NormalColor = color * logic.NormalColor;
-			logic.HoverColor = color * logic.HoverColor;
-			logic.PressedColor = color * logic.PressedColor;
+			logic.SetColor(params.color);
+
+			obj.AddComponent<TextComponent>(params.text, params.font, params.textColor, params.textScale);
 
 			return obj;
 		};
 
-		UIObject& Label(Canvas& canvas, glm::vec3 position, const std::string& text, Text* font, glm::vec4 color, float scale) {
+
+		UIObject& Label(Canvas& canvas, const LabelParameters& params) {
 			UIObject& obj = canvas.CreateUIObject();
 
-			obj.Transform.Position = position;
+			obj.Transform.Position = params.position;
 
-			obj.AddComponent<TextComponent>(text, font, color, scale);
+			obj.AddComponent<TextComponent>(params.text, params.font, params.color, params.scale);
 
 			return obj;
 		}
+
+        UIObject& Checkbox(Canvas& canvas, const CheckboxParameters& params) {
+            UIObject& obj = canvas.CreateUIObject();
+
+            obj.Transform.Position = params.position;
+            obj.Transform.Width = params.size;
+            obj.Transform.Height = params.size;
+
+            obj.AddComponent<ImageComponent>(params.color);
+
+            auto& logic = obj.AddComponent<ButtonLogic>();
+
+            ButtonLogic* logicPtr = &logic;
+
+            logic.OnClick = [logicPtr, params, isChecked = false]() mutable {
+
+                isChecked = !isChecked;
+
+                if (isChecked) {
+					logicPtr->SetColor(params.checkColor);
+                }
+                else {
+					logicPtr->SetColor(params.color);
+                }
+
+                if (params.onToggle) {
+                    params.onToggle(isChecked);
+                }
+                };
+
+            return obj;
+        }
 	}
 }
