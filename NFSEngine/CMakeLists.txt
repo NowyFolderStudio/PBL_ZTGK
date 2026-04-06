@@ -22,6 +22,7 @@ add_library(${PROJECT_NAME} STATIC
     ${SRC_FILES} 
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
+        include/Core/KeyCodes.hpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC 

@@ -16,7 +16,8 @@ namespace NFSEngine {
         int height = config.WindowHeight;
 
         m_Window = Window::Create(title, width, height);
-        Input::instance = new WindowsInput();
+        static WindowsInput windowsInput;
+        Input::instance = &windowsInput;
 	}
 
     Application::~Application() {
@@ -39,13 +40,13 @@ namespace NFSEngine {
 
     void Application::Run() {
         while (m_Running && !m_Window->ShouldClose()) {
-            Input::instance->UpdateStatesImpl();
+            Input::UpdateStates();
 
             for (Layer* layer : m_LayerStack) {
                 layer->OnUpdate();
             }
 
-            if (Input::IsKeyPressed(GLFW_KEY_ESCAPE)) {
+            if (Input::IsKeyPressed(Key::Escape)) {
                 m_Running = false;
             }
 

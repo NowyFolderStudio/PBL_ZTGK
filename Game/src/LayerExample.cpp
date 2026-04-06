@@ -68,11 +68,11 @@
         static int pressedCount = 0;
         static int releasedCount = 0;
 
-        if (NFSEngine::Input::IsKeyDown(GLFW_KEY_SPACE) || NFSEngine::Input::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (NFSEngine::Input::IsKeyDown(NFSEngine::Key::Space) || NFSEngine::Input::IsMouseButtonDown(NFSEngine::Mouse::ButtonLeft)) {
             pressedCount++;
         }
 
-        if (NFSEngine::Input::IsKeyUp(GLFW_KEY_SPACE) || NFSEngine::Input::IsMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (NFSEngine::Input::IsKeyUp(NFSEngine::Key::Space) || NFSEngine::Input::IsMouseButtonUp(NFSEngine::Mouse::ButtonLeft)) {
             releasedCount++;
         }
 
@@ -119,11 +119,11 @@
         glm::vec3 currentTextColor = glm::vec3(1.0f, 1.0f, 0.0f);
         std::string currentText = "MEOW";
 
-        if (NFSEngine::Input::IsKeyPressed(GLFW_KEY_SPACE)) {
+        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space)) {
             currentTextColor = glm::vec3(0.0f, 1.0f, 0.0f);
         }
 
-        if (NFSEngine::Input::IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        if (NFSEngine::Input::IsMouseButtonPressed(NFSEngine::Mouse::ButtonLeft)) {
             currentText = "X: " + std::to_string((int)NFSEngine::Input::GetMouseX())
             + " Y: " + std::to_string((int)NFSEngine::Input::GetMouseY());
         }

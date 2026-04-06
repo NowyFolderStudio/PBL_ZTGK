@@ -25,10 +25,10 @@ namespace NFSEngine {
 		bool isHovered = mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom;
 
 		if (isHovered) {
-			if (Input::IsMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+			if (Input::IsMouseButtonDown(Mouse::ButtonLeft)) {
 				State = ButtonState::Pressed;
 			}
-			else if (Input::IsMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT) && State == ButtonState::Pressed) {
+			else if (Input::IsMouseButtonUp(Mouse::ButtonLeft) && State == ButtonState::Pressed) {
 				if (OnClick) {
 					OnClick();
 				}

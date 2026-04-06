@@ -20,10 +20,10 @@ namespace NFSEngine {
         void UpdateStatesImpl() override;
 
     private:
-        bool m_Keys[350] = { false };
-        bool m_KeysLast[350] = { false };
-        bool m_Mouse[8] = { false };
-        bool m_MouseLast[8] = { false };
+        bool m_Keys[512] = { false };
+        bool m_KeysLast[512] = { false };
+        bool m_Mouse[16] = { false };
+        bool m_MouseLast[16] = { false };
     };
 
 }
