@@ -6,12 +6,14 @@
 #include "Core/Application.hpp"
 #include "Core/Cube.hpp"
 #include "Core/Input.hpp"
+#include "Core/KeyCodes.hpp"
 #include "Core/Layer.hpp"
 #include "Core/LayerStack.hpp"
 #include "Core/Quad2D.hpp"
 #include "Core/Shader.hpp"
 #include "Core/Text.hpp"
 #include "Core/Texture.hpp"
+#include "Core/GameObject.hpp"
 
 #include "Platforms/Window.hpp"
 #include "Platforms/WindowsInput.hpp"
@@ -22,3 +24,7 @@
 #include "UI/UIFactory.hpp"
 #include "UI/UIObject.hpp"
 #include "UI/UIRenderer.hpp"
+
+#include "Core/Components/Component.hpp"
+#include "Core/Components/CubeMesh.hpp"
+#include "Core/Components/Transform.hpp"

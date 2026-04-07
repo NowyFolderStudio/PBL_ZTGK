@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/GameObject.hpp"
 #include "NFSEngine.h"
 
 class LayerExample : public NFSEngine::Layer {
@@ -22,4 +23,6 @@ private:
     NFSEngine::Shader* textShader = nullptr;
     NFSEngine::Cube* myCube = nullptr;
 	NFSEngine::Canvas* canvas = nullptr;
+
+    NFSEngine::GameObject* movingCube = nullptr;
 };

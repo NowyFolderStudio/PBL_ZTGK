@@ -1,6 +1,14 @@
 #include "LayerExample.hpp"
 #include "Core/Application.hpp"
+#include "Core/Components/CubeMesh.hpp"
+#include "Core/Components/Transform.hpp"
+#include "Core/DeltaTime.hpp"
+#include "Core/GameObject.hpp"
+#include "Core/Shader.hpp"
+#include "Core/Texture.hpp"
 #include "GLFW/glfw3.h"
+#include <memory>
+#include "Components/CubeControl.hpp"
 
 
     LayerExample::LayerExample() {
@@ -10,6 +18,7 @@
         canvas = nullptr;
         myText = nullptr;
         textShader = nullptr;
+        movingCube = nullptr;
     }
     
     LayerExample::~LayerExample() {
@@ -25,6 +34,15 @@
 
     void LayerExample::OnAttach() {
         Init();
+        movingCube = new NFSEngine::GameObject("Moving Cube");
+        movingCube->AddComponent<NFSEngine::Transform>();
+        std::shared_ptr<NFSEngine::Shader> shader = std::make_shared<NFSEngine::Shader>("basic.vert", "basic.frag");
+        movingCube->AddComponent<NFSEngine::CubeMesh>(shader, std::make_shared<NFSEngine::Texture>("cat.png"));
+        movingCube->AddComponent<CubeControl>();
+
+        myShader = shader.get();
+
+        movingCube->Awake();
     }
 
     void LayerExample::OnDetach() {
@@ -78,6 +96,7 @@
     
     void LayerExample::Update() {
 		canvas->Update();
+        movingCube->Update(NFSEngine::DeltaTime(0.1f));
     }
     
     void LayerExample::Render() {
@@ -116,6 +135,7 @@
         myShader->setMat4("projection", projection3D);
 
         myCube->Draw(*myShader, *myTexture);
+        movingCube->Render();
 
         glDisable(GL_DEPTH_TEST);
 
