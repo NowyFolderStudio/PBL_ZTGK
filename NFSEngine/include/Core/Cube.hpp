@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "Shader.hpp"
-#include "Texture.hpp"
+#include "Renderer/Texture.hpp"
 #include "Renderer/VertexArray.hpp"
 
 

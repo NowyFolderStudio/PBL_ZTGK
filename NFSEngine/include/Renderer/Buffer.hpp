@@ -33,7 +33,7 @@ namespace NFSEngine {
 	struct BufferElement
 	{
 		std::string Name;
-		ShaderDataType Type;	
+		ShaderDataType Type;
 		uint32_t Size;
 		uint32_t Offset;
 		bool Normalized;

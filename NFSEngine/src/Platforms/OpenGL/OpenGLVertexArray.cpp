@@ -1,4 +1,4 @@
-#include "OpenGLVertexArray.hpp"
+#include "Platforms/OpenGL/OpenGLVertexArray.hpp"
 #include <glad/glad.h>
 
 namespace NFSEngine {

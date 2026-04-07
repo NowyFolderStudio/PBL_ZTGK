@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <memory>
 
-#include "Core/Texture.hpp"
+#include "Renderer/Texture.hpp"
 
 namespace NFSEngine {
 

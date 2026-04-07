@@ -13,7 +13,6 @@
     }
     
     LayerExample::~LayerExample() {
-        if (myTexture) delete myTexture;
         if (myShader) delete myShader;
         if (myText) delete myText;
         if (textShader) delete textShader;
@@ -38,7 +37,7 @@
     
     void LayerExample::Init() {
         myShader = new NFSEngine::Shader("basic.vert", "basic.frag");
-        myTexture = new NFSEngine::Texture("cat.png");
+        myTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
         myText = new NFSEngine::Text("assets/fonts/Roboto-Regular.ttf");
         textShader = new NFSEngine::Shader("text.vert", "text.frag");  
         myCube = new NFSEngine::Cube();
