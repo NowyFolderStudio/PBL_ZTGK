@@ -18,6 +18,8 @@ namespace NFSEngine {
         m_Window = Window::Create(title, width, height);
         static WindowsInput windowsInput;
         Input::instance = &windowsInput;
+
+		m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
 	}
 
     Application::~Application() {
@@ -54,4 +56,14 @@ namespace NFSEngine {
         }
     }
 
+    void Application::OnEvent(Event& e) {
+		EventDispatcher dispatcher(e);
+
+        for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
+            if (e.Handled) {
+                break;
+            }
+            (*it)->OnEvent(e);
+		}
+    }
 }

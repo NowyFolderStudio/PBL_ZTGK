@@ -1,7 +1,7 @@
 #include "LayerExample.hpp"
 #include "Core/Application.hpp"
 #include "GLFW/glfw3.h"
-
+#include "Events/ApplicationEvent.hpp"
 
     LayerExample::LayerExample() {
         myShader = nullptr;
@@ -151,4 +151,16 @@
 
 
         float uiX = 950.0f;
+    }
+
+    void LayerExample::OnEvent(NFSEngine::Event& e) { // resize okna raczej nie powinien byc w warstwie
+        NFSEngine::EventDispatcher dispatcher(e);
+		std::cout << "Event: " << e << std::endl;    
+        dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([this](NFSEngine::WindowResizeEvent& event) {
+
+			glViewport(0, 0, event.GetWidth(), event.GetHeight());
+            NFSEngine::UIRenderer::SetProjection((float)event.GetWidth(), (float)event.GetHeight());
+
+            return false;
+            });
     }

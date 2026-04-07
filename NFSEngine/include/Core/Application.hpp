@@ -28,6 +28,8 @@ namespace NFSEngine {
 
         void Close();
 
+		void OnEvent(Event& e);
+
         static Application& Get() { return *s_Instance; };
         Window& GetWindow() { return *m_Window; };
         const ApplicationConfig& GetConfig() const { return m_Config; };
