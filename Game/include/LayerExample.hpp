@@ -18,7 +18,7 @@ public:
     
 private:
     NFSEngine::Shader* myShader = nullptr;
-    NFSEngine::Texture* myTexture = nullptr;
+    std::shared_ptr<NFSEngine::Texture> myTexture;
     NFSEngine::Text* myText = nullptr;
     NFSEngine::Shader* textShader = nullptr;
     NFSEngine::Cube* myCube = nullptr;

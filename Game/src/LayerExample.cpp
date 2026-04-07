@@ -5,7 +5,7 @@
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Shader.hpp"
-#include "Core/Texture.hpp"
+#include "Renderer/Texture.hpp"
 #include "GLFW/glfw3.h"
 #include <memory>
 #include "Components/CubeControl.hpp"
@@ -22,7 +22,6 @@
     }
     
     LayerExample::~LayerExample() {
-        if (myTexture) delete myTexture;
         if (myShader) delete myShader;
         if (myText) delete myText;
         if (textShader) delete textShader;
@@ -37,7 +36,7 @@
         movingCube = new NFSEngine::GameObject("Moving Cube");
         movingCube->AddComponent<NFSEngine::Transform>();
         std::shared_ptr<NFSEngine::Shader> shader = std::make_shared<NFSEngine::Shader>("basic.vert", "basic.frag");
-        movingCube->AddComponent<NFSEngine::CubeMesh>(shader, std::make_shared<NFSEngine::Texture>("cat.png"));
+        movingCube->AddComponent<NFSEngine::CubeMesh>(shader, NFSEngine::Texture::Create("assets/textures/cat.png"));
         movingCube->AddComponent<CubeControl>();
 
         myShader = shader.get();
@@ -56,7 +55,7 @@
     
     void LayerExample::Init() {
         myShader = new NFSEngine::Shader("basic.vert", "basic.frag");
-        myTexture = new NFSEngine::Texture("cat.png");
+        myTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
         myText = new NFSEngine::Text("assets/fonts/Roboto-Regular.ttf");
         textShader = new NFSEngine::Shader("text.vert", "text.frag");  
         myCube = new NFSEngine::Cube();

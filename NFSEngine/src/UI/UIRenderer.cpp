@@ -8,7 +8,7 @@ namespace NFSEngine {
 		std::unique_ptr<Shader> UIShader;
 		std::unique_ptr<Shader> UITextShader;
 		std::unique_ptr<Quad2D> UIQuad;
-		std::unique_ptr<Texture> DefaultWhiteTexture;
+		std::shared_ptr<Texture> DefaultWhiteTexture;
 		std::unique_ptr<Text> DefaultFont;
 
 		glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
@@ -25,7 +25,7 @@ namespace NFSEngine {
 
 		s_Data->DefaultFont = std::make_unique<Text>("assets/fonts/Roboto-Regular.ttf", 48.0f);
 
-		s_Data->DefaultWhiteTexture = std::make_unique<Texture>(1, 1);
+		s_Data->DefaultWhiteTexture = Texture::Create(1, 1);
 		uint32_t whitePixel = 0xFFFFFFFF;
 		s_Data->DefaultWhiteTexture->SetData(&whitePixel, sizeof(uint32_t));
 
