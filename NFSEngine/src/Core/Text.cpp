@@ -1,5 +1,5 @@
 #include "Core/Text.hpp"
-#include "Core/Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include <iostream>
 #include <fstream>
 

@@ -1,9 +1,10 @@
 #pragma once
 
 #include <memory>
-#include "Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "Renderer/VertexArray.hpp"
+#include <glad/glad.h>
 
 
 
@@ -14,7 +15,7 @@ namespace NFSEngine {
             Cube(); 
             ~Cube() = default;
 
-            void Draw(Shader& shader, Texture& texture);
+            void Draw(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& texture);
 
         private:
             std::shared_ptr<VertexArray> m_VertexArray;
