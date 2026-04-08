@@ -18,6 +18,8 @@ namespace NFSEngine {
         m_Window = Window::Create(title, width, height);
         static WindowsInput windowsInput;
         Input::instance = &windowsInput;
+
+		m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
 	}
 
     Application::~Application() {
@@ -46,12 +48,50 @@ namespace NFSEngine {
                 layer->OnUpdate();
             }
 
-            if (Input::IsKeyPressed(Key::Escape)) {
-                m_Running = false;
-            }
-
             m_Window->OnUpdate();
         }
     }
 
+    void Application::OnEvent(Event& e) {
+		EventDispatcher dispatcher(e);
+
+		dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) { return this->OnWindowResize(event); });
+		dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& event) { return this->OnWindowClose(event); });
+		dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event) { return this->OnKeyPressed(event); });
+
+        if (!e.Handled) {
+
+            for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
+
+                (*it)->OnEvent(e);
+                if (e.Handled) {
+                    break;
+                }
+            }
+        }
+    }
+
+    bool Application::OnWindowResize(WindowResizeEvent& e) {
+        if (e.GetWidth() == 0 || e.GetHeight() == 0) {
+            m_Minimalized = true;
+            return false;
+        }
+        m_Minimalized = false;
+
+        glViewport(0, 0, e.GetWidth(), e.GetHeight());
+		return false; // false poniewaz event bo uzyciu nie moze zniknac tylko musi zostacc wykorzystany wiele razy - tyle ile warstw go potrzebuje
+	}
+
+    bool Application::OnWindowClose(WindowCloseEvent& e) {
+        this->Close();
+        return true;
+	}
+
+    bool Application::OnKeyPressed(KeyPressedEvent& e) {
+        if (e.GetKeyCode() == Key::Escape) {
+			this->Close();
+            return true;
+        }
+        return false;
+	}
 }

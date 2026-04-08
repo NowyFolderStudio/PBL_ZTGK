@@ -15,6 +15,7 @@ public:
     void Init();
     void Update();
     void Render();
+	void OnEvent(NFSEngine::Event& e) override;
     
 private:
     NFSEngine::Shader* myShader = nullptr;

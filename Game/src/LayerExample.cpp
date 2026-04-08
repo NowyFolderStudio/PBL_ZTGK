@@ -11,6 +11,7 @@
 #include <memory>
 #include "Components/CubeControl.hpp"
 
+#include "Events/ApplicationEvent.hpp"
 
     LayerExample::LayerExample() {
         myShader = nullptr;
@@ -23,10 +24,10 @@
     }
     
     LayerExample::~LayerExample() {
-        if (myShader) delete myShader;
         if (myText) delete myText;
         if (textShader) delete textShader;
         if (myCube) delete myCube;
+        if (movingCube) delete movingCube;
 
 		delete canvas;
         NFSEngine::UIRenderer::Shutdown();
@@ -39,10 +40,10 @@
         std::shared_ptr<NFSEngine::Shader> shader = std::make_shared<NFSEngine::Shader>("basic.vert", "basic.frag");
         movingCube->AddComponent<NFSEngine::CubeMesh>(shader, NFSEngine::Texture::Create("assets/textures/cat.png"));
         movingCube->AddComponent<CubeControl>();
+        movingCube->Awake();
 
         myShader = shader.get();
-
-        movingCube->Awake();
+        
     }
 
     void LayerExample::OnDetach() {
@@ -171,4 +172,13 @@
 
 
         float uiX = 950.0f;
+    }
+
+    void LayerExample::OnEvent(NFSEngine::Event& e) { // resize okna raczej nie powinien byc w warstwie
+        NFSEngine::EventDispatcher dispatcher(e);
+
+        dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([this](NFSEngine::WindowResizeEvent& event) { // to zostanie przeniesione ale jeszcze nie teraz
+            NFSEngine::UIRenderer::SetProjection((float)event.GetWidth(), (float)event.GetHeight());
+            return false;
+            });
     }
