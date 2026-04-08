@@ -65,9 +65,11 @@ namespace NFSEngine {
         m_VertexArray->AddVertexBuffer(vbo);
     }
     
-    void Cube::Draw(Shader& shader, Texture& texture) {
-        shader.use();
-        texture.Bind();
+    void Cube::Draw(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& texture) {
+        if (!shader || !texture) return;
+
+        shader->Bind();
+        texture->Bind(0);
         m_VertexArray->Bind();
 
         glDrawArrays(GL_TRIANGLES, 0, 36);

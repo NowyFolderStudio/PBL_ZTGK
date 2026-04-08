@@ -1,6 +1,6 @@
 #pragma once
 #include <glad/glad.h>
-#include "Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 
 namespace NFSEngine {

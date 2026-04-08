@@ -3,6 +3,7 @@
 #include "Core/Components/Transform.hpp"
 #include "Core/GameObject.hpp"
 #include "Renderer/Buffer.hpp"
+#include <glad/glad.h>
 
 namespace NFSEngine {
 
@@ -76,13 +77,13 @@ namespace NFSEngine {
     }
     
     void CubeMesh::OnRender() {
-        p_Shader->use();
-        p_Texture->Bind();
+        if (!p_Shader || !p_Texture || p_Transform == nullptr) return;
+
+        p_Shader->Bind();
+        p_Texture->Bind(0);
         p_VertexArray->Bind();
 
-        if (p_Transform != nullptr) {
-            p_Shader->setMat4("model", p_Transform->GetGlobalMatrix());
-        }
+        p_Shader->SetMat4("model", p_Transform->GetGlobalMatrix());
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }
