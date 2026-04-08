@@ -3,9 +3,10 @@
 #include <NFSEngine.h>
 
 class CubeControl : public NFSEngine::Component {
-    public:
+    public:    
         CubeControl(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {};
-
+    
+    protected:
         virtual void OnAwake() override {
             p_Transform = p_Owner->GetComponent<NFSEngine::Transform>();
         }

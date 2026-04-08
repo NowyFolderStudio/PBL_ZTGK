@@ -4,25 +4,29 @@
 namespace NFSEngine {
     void GameObject::Awake() {
         for (const auto& component : m_Components) {
-            component->OnAwake();
+            component->Awake();
         }
     }
 
     void GameObject::Start() {
         for (const auto& component : m_Components) {
-            component->OnStart();
+            component->Start();
         }
     }
 
     void GameObject::Update(DeltaTime deltaTime) {
+        if (m_Active == false) return;
+
         for (const auto& component : m_Components) {
-            component->OnUpdate(deltaTime);
+            component->Update(deltaTime);
         }
     }
 
     void GameObject::Render() {
+        if (m_Active == false) return;
+        
         for (const auto& component : m_Components) {
-            component->OnRender();
+            component->Render();
         }
     }
 }

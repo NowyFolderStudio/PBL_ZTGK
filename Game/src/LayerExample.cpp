@@ -7,6 +7,7 @@
 #include "Core/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "GLFW/glfw3.h"
+#include <cstddef>
 #include <memory>
 #include "Components/CubeControl.hpp"
 

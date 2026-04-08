@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
 #include <vector>
 #include <memory>
@@ -9,16 +10,29 @@
 
 namespace NFSEngine {
 
+    class Scene;
+
     class GameObject {
         public:
             std::string Name;
 
-            GameObject(const std::string& name = "GameObject") : Name(name) {}
+            GameObject(Scene* scene, const std::string& name = "GameObject") : p_Scene(scene), Name(name) {}
+
+            GameObject(const std::string& name = "GameObject") : p_Scene(nullptr), Name(name) {}
 
             void Awake();
             void Start();
             void Update(DeltaTime deltaTime);
             void Render();
+
+            void Destroy() { m_Destroyed = true; }
+            bool IsDestroyed() { return m_Destroyed; }
+
+            bool IsActive() { return m_Active; }
+            
+            void SetActive(bool isActive) { m_Active = isActive; }
+
+            Scene* GetScene() { return p_Scene; }
 
             template<typename T, typename... Args>
             T& AddComponent(Args&&... args) {
@@ -40,6 +54,10 @@ namespace NFSEngine {
 
         private:
             std::vector<std::unique_ptr<Component>> m_Components;
+            Scene* p_Scene = nullptr;
+
+            bool m_Destroyed = false;
+            bool m_Active = true;
     };
 
 }

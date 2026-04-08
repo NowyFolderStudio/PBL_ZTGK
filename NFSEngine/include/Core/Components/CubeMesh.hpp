@@ -13,6 +13,7 @@ namespace NFSEngine {
         public:
             CubeMesh(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 
+        protected:
             virtual void OnAwake() override;
 
             virtual void OnRender() override;
