@@ -1,7 +1,9 @@
 #pragma once
 
+#include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "NFSEngine.h"
+#include <memory>
 
 class LayerExample : public NFSEngine::Layer {
 public:
@@ -10,7 +12,7 @@ public:
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;
-    void OnUpdate() override;
+    void OnUpdate(NFSEngine::DeltaTime deltaTime) override;
     
     void Init();
     void Update();
@@ -25,4 +27,5 @@ private:
 	NFSEngine::Canvas* canvas = nullptr;
 
     NFSEngine::GameObject* movingCube = nullptr;
+    std::unique_ptr<NFSEngine::Scene> scene = nullptr;
 };

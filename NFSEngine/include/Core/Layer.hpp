@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/DeltaTime.hpp"
 #include <string>
 
 namespace NFSEngine {
@@ -12,7 +13,7 @@ namespace NFSEngine {
         virtual void OnAttach() {}
         virtual void OnDetach() {}
         // TODO: Add Timestep/DeltaTime to function below
-        virtual void OnUpdate() {}
+        virtual void OnUpdate(DeltaTime deltaTime) {}
         // TOOD: Add virtual OnEvent(Event& event) method to handle events, after implementing Event class
         const std::string& GetName() const { return m_DebugName; }
     protected:

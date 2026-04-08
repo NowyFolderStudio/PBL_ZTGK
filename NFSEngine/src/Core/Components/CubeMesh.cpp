@@ -80,7 +80,9 @@ namespace NFSEngine {
         p_Texture->Bind();
         p_VertexArray->Bind();
 
-        p_Shader->setMat4("model", p_Transform->GetGlobalMatrix());
+        if (p_Transform != nullptr) {
+            p_Shader->setMat4("model", p_Transform->GetGlobalMatrix());
+        }
 
         glDrawArrays(GL_TRIANGLES, 0, 36);
     }

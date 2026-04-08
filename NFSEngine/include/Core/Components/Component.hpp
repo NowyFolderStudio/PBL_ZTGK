@@ -13,31 +13,42 @@ namespace NFSEngine {
 
             void Awake() {
                 if (m_Awakened) return;
+
                 OnAwake();
                 m_Awakened = true;
             }
 
             void Start() {
-                if (m_Started || m_Active == false) return;
+                if (m_Started || !m_Active) return;
+
                 OnStart();
                 m_Started = true;
             }
 
+            void FixedUpdate(DeltaTime fixedDeltaTime) {
+                if (!m_Active) return;
+                
+                if (!m_Started) {
+                    Start();
+                }
+                OnFixedUpdate(fixedDeltaTime);
+            }
+
             void Update(DeltaTime deltaTime) {
-                if (m_Active == false) return;
-                if (m_Started == false) {
+                if (!m_Active) return;
+                if (!m_Started) {
                     Start();
                 }
                 OnUpdate(deltaTime);
             }
 
             void Render() {
-                if (m_Active == false) return;
+                if (!m_Active) return;
                 OnRender();
             }
 
             bool IsActive() { return m_Active; }
-            
+
             void SetActive(bool isActive) { 
                 if (m_Active == isActive) return;
                 
@@ -63,6 +74,7 @@ namespace NFSEngine {
             virtual void OnAwake() {}
             // Use for initialization calls that may depend on other objects
             virtual void OnStart() {}
+            virtual void OnFixedUpdate(DeltaTime fixedDeltaTime) {}
             virtual void OnUpdate(DeltaTime deltaTime) {}
             virtual void OnRender() {}
 

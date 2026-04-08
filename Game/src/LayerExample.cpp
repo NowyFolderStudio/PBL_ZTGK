@@ -20,10 +20,10 @@
         myText = nullptr;
         textShader = nullptr;
         movingCube = nullptr;
+        scene = nullptr;
     }
     
     LayerExample::~LayerExample() {
-        if (myShader) delete myShader;
         if (myText) delete myText;
         if (textShader) delete textShader;
         if (myCube) delete myCube;
@@ -34,22 +34,22 @@
 
     void LayerExample::OnAttach() {
         Init();
-        movingCube = new NFSEngine::GameObject("Moving Cube");
+        scene = std::make_unique<NFSEngine::Scene>();
+        movingCube = scene->CreateGameObject("movingCube");
         movingCube->AddComponent<NFSEngine::Transform>();
         std::shared_ptr<NFSEngine::Shader> shader = std::make_shared<NFSEngine::Shader>("basic.vert", "basic.frag");
         movingCube->AddComponent<NFSEngine::CubeMesh>(shader, NFSEngine::Texture::Create("assets/textures/cat.png"));
         movingCube->AddComponent<CubeControl>();
 
         myShader = shader.get();
-
-        movingCube->Awake();
     }
 
     void LayerExample::OnDetach() {
 
     }
 
-    void LayerExample::OnUpdate() {
+    void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+        scene->OnUpdate(deltaTime);
         Update();
         Render();
     }
@@ -96,7 +96,6 @@
     
     void LayerExample::Update() {
 		canvas->Update();
-        movingCube->Update(NFSEngine::DeltaTime(0.1f));
     }
     
     void LayerExample::Render() {

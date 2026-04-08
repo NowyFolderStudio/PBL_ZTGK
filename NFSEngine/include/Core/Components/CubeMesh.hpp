@@ -23,7 +23,7 @@ namespace NFSEngine {
             std::shared_ptr<Texture> p_Texture;
             std::shared_ptr<VertexArray> p_VertexArray;
 
-            Transform* p_Transform;
+            Transform* p_Transform = nullptr;
     };
     
 }

@@ -22,6 +22,7 @@ namespace NFSEngine {
 
             void Awake();
             void Start();
+            void FixedUpdate(DeltaTime fixedDeltaTime);
             void Update(DeltaTime deltaTime);
             void Render();
 
@@ -40,6 +41,8 @@ namespace NFSEngine {
                 
                 m_Components.push_back(std::unique_ptr<Component>(newComponent));
                 return *newComponent;
+                m_Awakened = false;
+                m_Started = false;
             }
 
             template<typename T>
@@ -58,6 +61,9 @@ namespace NFSEngine {
 
             bool m_Destroyed = false;
             bool m_Active = true;
+
+            bool m_Awakened = false;
+            bool m_Started = false;
     };
 
 }

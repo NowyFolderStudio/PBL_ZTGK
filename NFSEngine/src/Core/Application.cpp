@@ -1,4 +1,5 @@
 #include "Core/Application.hpp"
+#include "Core/DeltaTime.hpp"
 #include "Platforms/WindowsInput.hpp"
 #include "Platforms/Window.hpp"
 #include <memory>
@@ -40,10 +41,15 @@ namespace NFSEngine {
 
     void Application::Run() {
         while (m_Running && !m_Window->ShouldClose()) {
+
+            float time = glfwGetTime();
+            DeltaTime deltaTime = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
             Input::UpdateStates();
 
             for (Layer* layer : m_LayerStack) {
-                layer->OnUpdate();
+                layer->OnUpdate(deltaTime);
             }
 
             if (Input::IsKeyPressed(Key::Escape)) {

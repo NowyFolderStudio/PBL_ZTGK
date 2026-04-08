@@ -13,6 +13,8 @@
 #include "Core/Shader.hpp"
 #include "Core/Text.hpp"
 #include "Core/GameObject.hpp"
+#include "Core/Scene.hpp"
+
 #include "Renderer/Texture.hpp"
 
 #include "Platforms/Window.hpp"
