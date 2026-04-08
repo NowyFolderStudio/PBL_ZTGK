@@ -4,7 +4,7 @@
 #include "Core/Components/Transform.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
-#include "Core/Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "GLFW/glfw3.h"
 #include <cstddef>
@@ -25,7 +25,6 @@
     
     LayerExample::~LayerExample() {
         if (myText) delete myText;
-        if (textShader) delete textShader;
         if (myCube) delete myCube;
         if (movingCube) delete movingCube;
 
@@ -37,13 +36,16 @@
         Init();
         movingCube = new NFSEngine::GameObject("Moving Cube");
         movingCube->AddComponent<NFSEngine::Transform>();
-        std::shared_ptr<NFSEngine::Shader> shader = std::make_shared<NFSEngine::Shader>("basic.vert", "basic.frag");
-        movingCube->AddComponent<NFSEngine::CubeMesh>(shader, NFSEngine::Texture::Create("assets/textures/cat.png"));
-        movingCube->AddComponent<CubeControl>();
-        movingCube->Awake();
-
-        myShader = shader.get();
         
+        auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
+        auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
+
+        movingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
+        movingCube->AddComponent<CubeControl>();
+
+        myShader = shader;
+
+        movingCube->Awake();
     }
 
     void LayerExample::OnDetach() {
@@ -56,10 +58,10 @@
     }
     
     void LayerExample::Init() {
-        myShader = new NFSEngine::Shader("basic.vert", "basic.frag");
+        myShader = NFSEngine::Shader::Create("MainShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
         myTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
         myText = new NFSEngine::Text("assets/fonts/Roboto-Regular.ttf");
-        textShader = new NFSEngine::Shader("text.vert", "text.frag");  
+        textShader = NFSEngine::Shader::Create("TextShader", "assets/shaders/text.vert", "assets/shaders/text.frag");
         myCube = new NFSEngine::Cube();
 
 		float windowWidth = (float)NFSEngine::Application::Get().GetConfig().WindowWidth;
@@ -125,17 +127,17 @@
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
 
-        myShader->use();
+        myShader->Bind();
 
         glm::mat4 model3D = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 view3D = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
         glm::mat4 projection3D = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
-        myShader->setMat4("model", model3D);
-        myShader->setMat4("view", view3D);
-        myShader->setMat4("projection", projection3D);
+        myShader->SetMat4("model", model3D);
+        myShader->SetMat4("view", view3D);
+        myShader->SetMat4("projection", projection3D);
 
-        myCube->Draw(*myShader, *myTexture);
+        myCube->Draw(myShader, myTexture);
         movingCube->Render();
 
         glDisable(GL_DEPTH_TEST);
@@ -145,9 +147,9 @@
         model2D = glm::translate(model2D, glm::vec3(-0.7f, 0.7f, 0.0f));
         model2D = glm::scale(model2D, glm::vec3(0.4f, 0.4f, 1.0f));
 
-        myShader->setMat4("model", model2D);
-        myShader->setMat4("view", glm::mat4(1.0f));
-        myShader->setMat4("projection", glm::mat4(1.0f));
+        myShader->SetMat4("model", model2D);
+        myShader->SetMat4("view", glm::mat4(1.0f));
+        myShader->SetMat4("projection", glm::mat4(1.0f));
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -155,8 +157,8 @@
 		canvas->Draw();
 
         glm::mat4 orthoProj = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f);
-        textShader->use();
-        textShader->setMat4("projection", orthoProj);
+        textShader->Bind();
+        textShader->SetMat4("projection", orthoProj);
 
         glm::vec3 currentTextColor = glm::vec3(1.0f, 1.0f, 0.0f);
         std::string currentText = "MEOW";

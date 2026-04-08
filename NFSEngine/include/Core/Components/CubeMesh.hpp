@@ -2,7 +2,7 @@
 
 #include <memory>
 #include "Core/Components/Transform.hpp"
-#include "Core/Shader.hpp"
+#include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "Renderer/VertexArray.hpp"
 #include "Core/Components/Component.hpp"

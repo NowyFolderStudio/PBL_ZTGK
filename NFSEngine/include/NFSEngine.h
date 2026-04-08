@@ -10,10 +10,11 @@
 #include "Core/Layer.hpp"
 #include "Core/LayerStack.hpp"
 #include "Core/Quad2D.hpp"
-#include "Core/Shader.hpp"
 #include "Core/Text.hpp"
 #include "Core/GameObject.hpp"
+
 #include "Renderer/Texture.hpp"
+#include "Renderer/Shader.hpp"
 
 #include "Platforms/Window.hpp"
 #include "Platforms/WindowsInput.hpp"

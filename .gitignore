@@ -4,6 +4,7 @@ out/
 bin/
 
 # IDE specific files (Visual Studio, CLion)
+.vscode/
 .vs/
 .idea/
 *.user

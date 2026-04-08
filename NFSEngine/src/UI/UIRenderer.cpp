@@ -5,8 +5,8 @@
 
 namespace NFSEngine {
 	struct UIRendererData {
-		std::unique_ptr<Shader> UIShader;
-		std::unique_ptr<Shader> UITextShader;
+		std::shared_ptr<Shader> UIShader;
+		std::shared_ptr<Shader> UITextShader;
 		std::unique_ptr<Quad2D> UIQuad;
 		std::shared_ptr<Texture> DefaultWhiteTexture;
 		std::unique_ptr<Text> DefaultFont;
@@ -18,8 +18,8 @@ namespace NFSEngine {
 
 	void UIRenderer::Init() {
 		s_Data = new UIRendererData();
-		s_Data->UIShader = std::make_unique<Shader>("ui.vert","ui.frag");
-		s_Data->UITextShader = std::make_unique<Shader>("text.vert", "text.frag");
+		s_Data->UIShader = Shader::Create("UIShader", "assets/shaders/ui.vert", "assets/shaders/ui.frag");
+		s_Data->UITextShader = Shader::Create("TextShader", "assets/shaders/text.vert", "assets/shaders/text.frag");
 
 		s_Data->UIQuad = std::make_unique<Quad2D>();
 
@@ -49,10 +49,10 @@ namespace NFSEngine {
 			return;
 		}
 
-		s_Data->UIShader->use();
-		s_Data->UIShader->setMat4("u_projection", s_Data->ProjectionMatrix);
-		s_Data->UIShader->setMat4("u_model", transform.GetTransform());
-		s_Data->UIShader->setVec4("u_color", image.Color);
+		s_Data->UIShader->Bind();
+		s_Data->UIShader->SetMat4("u_projection", s_Data->ProjectionMatrix);
+		s_Data->UIShader->SetMat4("u_model", transform.GetTransform());
+		s_Data->UIShader->SetVec4("u_color", image.Color);
 
 		if (image.TexturePtr) {
 			image.TexturePtr->Bind();
@@ -70,9 +70,9 @@ namespace NFSEngine {
 		Text* fontToUse = textComp.Font ? textComp.Font : s_Data->DefaultFont.get();
 		if (!fontToUse) return;
 
-		s_Data->UITextShader->use();
-		s_Data->UITextShader->setMat4("projection", s_Data->ProjectionMatrix);
-		s_Data->UITextShader->setVec3("textColor", glm::vec3(textComp.Color.r, textComp.Color.g, textComp.Color.b));
+		s_Data->UITextShader->Bind();
+		s_Data->UITextShader->SetMat4("projection", s_Data->ProjectionMatrix);
+		s_Data->UITextShader->SetVec3("textColor", glm::vec3(textComp.Color.r, textComp.Color.g, textComp.Color.b));
 
 		float textWidth = fontToUse->GetTextWidth(textComp.TextString, textComp.Scale);
 		float startX = transform.Position.x - textWidth * transform.Pivot.x;
