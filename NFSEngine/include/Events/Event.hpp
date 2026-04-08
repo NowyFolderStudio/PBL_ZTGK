@@ -4,6 +4,7 @@
 #include <functional>
 #include <iostream>
 #include <ostream>
+#include <sstream>
 
 namespace NFSEngine
 {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.hpp"
-#include <sstream>
 
 namespace NFSEngine {
 
@@ -25,5 +24,14 @@ namespace NFSEngine {
 
 	private:
 		unsigned int m_Width, m_Height;
+	};
+
+
+	class WindowCloseEvent : public Event {
+	public :
+		WindowCloseEvent() = default;
+
+		EVENT_CLASS_TYPE(WindowClose)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 }

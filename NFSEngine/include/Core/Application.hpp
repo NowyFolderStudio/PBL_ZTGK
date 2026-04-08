@@ -2,6 +2,8 @@
 
 #include "Core/LayerStack.hpp"
 #include "Platforms/Window.hpp"
+#include "Events/ApplicationEvent.hpp"
+#include "Events/KeyEvent.hpp"
 
 #include <string>
 #include <memory>
@@ -36,9 +38,9 @@ namespace NFSEngine {
 
     private:
         void Run();
-        // TODO: Add those two lines below after implementing Window events
-        // bool OnWindowClose(WindowCloseEvent& e);
-        // bool OnWindowResize(WindowResizeEvent& e);
+        bool OnWindowClose(WindowCloseEvent& e);
+        bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
 
     private:
         ApplicationConfig m_Config;

@@ -155,12 +155,9 @@
 
     void LayerExample::OnEvent(NFSEngine::Event& e) { // resize okna raczej nie powinien byc w warstwie
         NFSEngine::EventDispatcher dispatcher(e);
-		std::cout << "Event: " << e << std::endl;    
-        dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([this](NFSEngine::WindowResizeEvent& event) {
 
-			glViewport(0, 0, event.GetWidth(), event.GetHeight());
+        dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([this](NFSEngine::WindowResizeEvent& event) { // to zostanie przeniesione ale jeszcze nie teraz
             NFSEngine::UIRenderer::SetProjection((float)event.GetWidth(), (float)event.GetHeight());
-
             return false;
             });
     }
