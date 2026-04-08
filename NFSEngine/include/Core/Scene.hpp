@@ -19,12 +19,12 @@ namespace NFSEngine {
         void OnUpdate(DeltaTime deltaTime);
         void OnRender();
 
-        DeltaTime GetFixedDelta() { return m_fixedDeltaTime; }
-        void SetFixedStep(DeltaTime fixedDeltaTime) { m_fixedDeltaTime = fixedDeltaTime; }
+        DeltaTime GetFixedDeltaTime() { return m_FixedDeltaTime; }
+        void SetFixedDeltaTime(DeltaTime fixedDeltaTime) { m_FixedDeltaTime = fixedDeltaTime; }
 
     private:
         std::vector<std::unique_ptr<GameObject>> m_GameObjects;
-        DeltaTime m_fixedDeltaTime = 0.01666f;
+        DeltaTime m_FixedDeltaTime = 0.01666f;
         float m_Accumulator = 0.0f;
     };
 

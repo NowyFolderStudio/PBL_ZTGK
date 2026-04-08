@@ -21,12 +21,12 @@ namespace NFSEngine {
         if (deltaTime > 0.25f) deltaTime = 0.25f;
         m_Accumulator += deltaTime;
         
-        while (m_Accumulator >= m_fixedDeltaTime) {
+        while (m_Accumulator >= m_FixedDeltaTime) {
             for (size_t i = 0; i < m_GameObjects.size(); i++) {
                 auto& gameObject = m_GameObjects[i];
-                gameObject->FixedUpdate(m_fixedDeltaTime);
+                gameObject->FixedUpdate(m_FixedDeltaTime);
             }
-            m_Accumulator -= m_fixedDeltaTime;
+            m_Accumulator -= m_FixedDeltaTime;
         }
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {

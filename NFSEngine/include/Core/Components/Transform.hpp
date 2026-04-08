@@ -31,7 +31,7 @@ namespace NFSEngine {
             const glm::quat& GetRotation() const { return m_Rotation; }
             const glm::vec3& GetScale() const { return m_Scale; }
             const glm::mat4& GetGlobalMatrix() {
-                if (m_IsDirty) {
+                if (m_Dirty) {
                     RecalculateMatrix();
                 }
                 return m_GlobalMatrix;
@@ -48,7 +48,7 @@ namespace NFSEngine {
             
             glm::mat4 m_LocalMatrix = glm::mat4(1.0f);
             glm::mat4 m_GlobalMatrix = glm::mat4(1.0f);
-            bool m_IsDirty = true;
+            bool m_Dirty = true;
 
             // Scene graph
             Transform* m_Parent = nullptr;

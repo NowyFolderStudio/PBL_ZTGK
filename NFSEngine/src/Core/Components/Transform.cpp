@@ -29,8 +29,8 @@ namespace NFSEngine {
     }
 
     void Transform::SetDirty() {
-        if (!m_IsDirty) {
-            m_IsDirty = true;
+        if (!m_Dirty) {
+            m_Dirty = true;
             for (auto* child : m_Children) {
                 child->SetDirty(); 
             }
@@ -50,6 +50,6 @@ namespace NFSEngine {
             m_GlobalMatrix = m_LocalMatrix;
         }
         
-        m_IsDirty = false;
+        m_Dirty = false;
     }
 }
