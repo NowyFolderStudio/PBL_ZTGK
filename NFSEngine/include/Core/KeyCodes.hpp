@@ -16,8 +16,15 @@ namespace NFSEngine {
             D             = 68,
             S             = 83,
             W             = 87,
+            E             = 69,
+            Q             = 81,
             Escape        = 256,
-            LeftShift     = 340
+            LeftShift     = 340,
+            LeftAlt       = 342,
+            UP            = 265,
+            DOWN          = 264,
+            LEFT          = 263,
+            RIGHT         = 262
         };
     }
 
@@ -26,6 +33,7 @@ namespace NFSEngine {
         enum : MouseCode {
             ButtonLeft   = 0,
             ButtonRight  = 1,
+            ButtonMiddle = 2
         };
     }
 }

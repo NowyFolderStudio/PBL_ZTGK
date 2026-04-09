@@ -38,12 +38,17 @@
         scene = std::make_unique<NFSEngine::Scene>();
         movingCube = scene->CreateGameObject("movingCube");
         movingCube->AddComponent<NFSEngine::Transform>();
-        
+
         auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
         auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
 
         movingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
         movingCube->AddComponent<CubeControl>();
+
+    	float width = (float)NFSEngine::Application::Get().GetConfig().WindowWidth;
+    	float height = (float)NFSEngine::Application::Get().GetConfig().WindowHeight;
+    	m_EditorCamera = NFSEngine::EditorCamera(45.0f, width / height, 0.1f, 1000.0f);
+    	m_EditorCamera.SetDistance(5.0f);
     }
 
     void LayerExample::OnDetach() {
@@ -51,11 +56,12 @@
     }
 
     void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    	m_EditorCamera.OnUpdate(deltaTime);
         scene->OnUpdate(deltaTime);
         Update();
         Render();
     }
-    
+
     void LayerExample::Init() {
         myShader = NFSEngine::Shader::Create("MainShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
         myTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
@@ -95,30 +101,16 @@
 		NFSEngine::UI::Checkbox(*canvas, checkboxParams);
         // koniec ui
     }
-    
+
     void LayerExample::Update() {
 		canvas->Update();
     }
-    
+
     void LayerExample::Render() {
         glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (!myCube || !myShader || !myTexture || !myText || !textShader) return;
-
-        static int pressedCount = 0;
-        static int releasedCount = 0;
-
-        if (NFSEngine::Input::IsKeyDown(NFSEngine::Key::Space) || NFSEngine::Input::IsMouseButtonDown(NFSEngine::Mouse::ButtonLeft)) {
-            pressedCount++;
-        }
-
-        if (NFSEngine::Input::IsKeyUp(NFSEngine::Key::Space) || NFSEngine::Input::IsMouseButtonUp(NFSEngine::Mouse::ButtonLeft)) {
-            releasedCount++;
-        }
-
-        std::string counterText1 = "C: " + std::to_string(pressedCount);
-        std::string counterText2 = "R: " + std::to_string(releasedCount);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -128,12 +120,10 @@
         myShader->Bind();
 
         glm::mat4 model3D = glm::rotate(glm::mat4(1.0f), (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-        glm::mat4 view3D = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
-        glm::mat4 projection3D = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
         myShader->SetMat4("model", model3D);
-        myShader->SetMat4("view", view3D);
-        myShader->SetMat4("projection", projection3D);
+        myShader->SetMat4("view", m_EditorCamera.GetViewMatrix());
+        myShader->SetMat4("projection", m_EditorCamera.GetProjection());
 
         myCube->Draw(myShader, myTexture);
         movingCube->Render();
@@ -157,24 +147,11 @@
         glm::mat4 orthoProj = glm::ortho(0.0f, 1280.0f, 720.0f, 0.0f);
         textShader->Bind();
         textShader->SetMat4("projection", orthoProj);
-
-        glm::vec3 currentTextColor = glm::vec3(1.0f, 1.0f, 0.0f);
-        std::string currentText = "MEOW";
-
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space)) {
-            currentTextColor = glm::vec3(0.0f, 1.0f, 0.0f);
-        }
-
-        if (NFSEngine::Input::IsMouseButtonPressed(NFSEngine::Mouse::ButtonLeft)) {
-            currentText = "X: " + std::to_string((int)NFSEngine::Input::GetMouseX())
-            + " Y: " + std::to_string((int)NFSEngine::Input::GetMouseY());
-        }
-
-
-        float uiX = 950.0f;
     }
 
     void LayerExample::OnEvent(NFSEngine::Event& e) { // resize okna raczej nie powinien byc w warstwie
+    	m_EditorCamera.OnEvent(e);
+
         NFSEngine::EventDispatcher dispatcher(e);
 
         dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([this](NFSEngine::WindowResizeEvent& event) { // to zostanie przeniesione ale jeszcze nie teraz

@@ -12,16 +12,16 @@ class CubeControl : public NFSEngine::Component {
         }
 
         virtual void OnUpdate(NFSEngine::DeltaTime deltaTime) override{
-            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::A)) {
+            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::LEFT)) {
                 p_Transform->Move({-1 * deltaTime, 0, 0});
             }
-            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::D)) {
+            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::RIGHT)) {
                 p_Transform->Move({1 * deltaTime, 0, 0});
             }
-            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::W)) {
+            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::UP)) {
                 p_Transform->Move({0, 1 * deltaTime, 0});
             }
-            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::S)) {
+            if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::DOWN)) {
                 p_Transform->Move({0, -1 * deltaTime, 0});
             }
         }

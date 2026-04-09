@@ -23,6 +23,8 @@ add_library(${PROJECT_NAME} STATIC
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
         include/Core/KeyCodes.hpp
+        include/Renderer/EditorCamera.hpp
+        src/Renderer/EditorCamera.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC 

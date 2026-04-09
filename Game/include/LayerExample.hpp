@@ -2,6 +2,7 @@
 
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
+#include "Renderer/EditorCamera.hpp"
 #include "NFSEngine.h"
 #include <memory>
 
@@ -18,7 +19,8 @@ public:
     void Update();
     void Render();
 	void OnEvent(NFSEngine::Event& e) override;
-    
+
+    NFSEngine::EditorCamera m_EditorCamera;
 private:
     std::shared_ptr<NFSEngine::Shader> myShader = nullptr;
     std::shared_ptr<NFSEngine::Texture> myTexture;
