@@ -36,6 +36,17 @@ namespace NFSEngine {
 		s_Data = nullptr;
 	}
 
+	void UIRenderer::Begin() { // to tu nie powinno byc raczej 
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	void UIRenderer::End() {
+		glDisable(GL_BLEND);
+		glEnable(GL_DEPTH_TEST);
+	}
+
 	void UIRenderer::SetProjection(float windowWidth, float windowHeight) {
 		if (!s_Data) {
 			return;

@@ -9,6 +9,10 @@ namespace NFSEngine {
 
         static void Shutdown();
 
+        static void Begin();
+
+		static void End();
+
         static void SetProjection(float windowWidth, float windowHeight);
 
         static void DrawQuad(const RectTransform& transform, const ImageComponent& image);

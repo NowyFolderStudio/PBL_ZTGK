@@ -15,7 +15,8 @@ namespace NFSEngine {
 			obj.Transform.Width = params.width;
 			obj.Transform.Height = params.height;
 
-			obj.AddComponent<ImageComponent>(params.color);
+			auto& imgComp = obj.AddComponent<ImageComponent>(params.color);
+			imgComp.TexturePtr = params.texture;
 
 			return obj;
 		}
@@ -27,7 +28,8 @@ namespace NFSEngine {
 			obj.Transform.Width = params.width;
 			obj.Transform.Height = params.height;
 
-			obj.AddComponent<ImageComponent>(params.color);
+			auto& imgComp = obj.AddComponent<ImageComponent>(params.color);
+			imgComp.TexturePtr = params.texture;
 
 			auto& logic = obj.AddComponent<ButtonLogic>();
 			logic.OnClick = params.onClick;

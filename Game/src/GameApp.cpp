@@ -1,4 +1,5 @@
 #include "LayerExample.hpp"
+#include "UILayer.hpp"
 #include "NFSEngine.h"
 #include "Core/EntryPoint.hpp"
 
@@ -7,6 +8,7 @@ class GameApp : public NFSEngine::Application
 public:
     GameApp(const NFSEngine::ApplicationConfig& config) : NFSEngine::Application(config) {
 		PushLayer(new LayerExample());
+		PushOverlay(new UILayer());
     }
 
     ~GameApp() {

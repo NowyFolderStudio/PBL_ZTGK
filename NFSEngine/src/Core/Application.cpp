@@ -84,6 +84,9 @@ namespace NFSEngine {
         }
         m_Minimalized = false;
 
+		m_Config.WindowHeight = e.GetHeight();
+		m_Config.WindowWidth = e.GetWidth();
+
         glViewport(0, 0, e.GetWidth(), e.GetHeight());
 		return false; // false poniewaz event bo uzyciu nie moze zniknac tylko musi zostacc wykorzystany wiele razy - tyle ile warstw go potrzebuje
 	}

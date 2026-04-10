@@ -1,6 +1,7 @@
 #include "UI/ButtonLogic.hpp"
 #include "UI/UIObject.hpp"
 #include "Core/Input.hpp"
+#include "Core/Application.hpp"
 
 #include <GLFW/glfw3.h>
 
@@ -14,15 +15,24 @@ namespace NFSEngine {
 		auto* rectTransform = &Owner->Transform;
 		if (!rectTransform) return;
 
-		float mouseX = Input::GetMouseX();
-		float mouseY = Input::GetMouseY();
+		float physicalWidth = (float)NFSEngine::Application::Get().GetConfig().WindowWidth;
+		float physicalHeight = (float)NFSEngine::Application::Get().GetConfig().WindowHeight;
+
+		float virtualWidth = 1920.0f;
+		float virtualHeight = 1080.0f;
+
+		float rawMouseX = NFSEngine::Input::GetMouseX();
+		float rawMouseY = NFSEngine::Input::GetMouseY();
+
+		float uiMouseX = (rawMouseX / physicalWidth) * virtualWidth;
+		float uiMouseY = (rawMouseY / physicalHeight) * virtualHeight;
 
 		float left = rectTransform->Position.x - rectTransform->Pivot.x * rectTransform->Width;
 		float right = rectTransform->Position.x + (1.0f - rectTransform->Pivot.x) * rectTransform->Width;
 		float top = rectTransform->Position.y - rectTransform->Pivot.y * rectTransform->Height;
 		float bottom = rectTransform->Position.y + (1.0f - rectTransform->Pivot.y) * rectTransform->Height;
 
-		bool isHovered = mouseX >= left && mouseX <= right && mouseY >= top && mouseY <= bottom;
+		bool isHovered = uiMouseX >= left && uiMouseX <= right && uiMouseY >= top && uiMouseY <= bottom;
 
 		if (isHovered) {
 			if (Input::IsMouseButtonDown(Mouse::ButtonLeft)) {

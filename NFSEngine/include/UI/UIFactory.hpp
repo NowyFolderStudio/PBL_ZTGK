@@ -16,6 +16,7 @@ namespace NFSEngine
 			float width = 100.0f;
 			float height = 100.0f;
 			glm::vec4 color = glm::vec4(1.0f);
+			std::shared_ptr<Texture> texture = nullptr;
 		};
 
 		struct ButtonParameters {
@@ -23,6 +24,7 @@ namespace NFSEngine
 			float width = 200.0f;
 			float height = 100.0f;
 			glm::vec4 color = glm::vec4(1.0f);
+			std::shared_ptr<Texture> texture = nullptr;
 
 			std::string text = "";
 			Text* font = nullptr;
