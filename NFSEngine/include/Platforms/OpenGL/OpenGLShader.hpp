@@ -15,6 +15,8 @@ namespace NFSEngine {
 
         const std::string& GetName() const override { return m_Name; }
 
+        virtual uint32_t GetRendererID() const override { return m_RendererID; }
+
         void SetInt(const std::string& name, int value) override;
         void SetFloat(const std::string& name, float value) override;
         void SetMat4(const std::string& name, const glm::mat4& value) override;

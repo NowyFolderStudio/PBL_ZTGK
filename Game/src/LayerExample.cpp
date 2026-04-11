@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <memory>
 #include "Components/CubeControl.hpp"
+#include "Renderer/Renderer.hpp"
 
 #include "Events/ApplicationEvent.hpp"
 
@@ -58,7 +59,32 @@
     }
     
     void LayerExample::Render() {
-        glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
+
+        // 1. Czyszczenie ekranu za pomoc¹ naszego interfejsu (¿adnego glClear!)
+        NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
+        NFSEngine::Renderer::GetAPI().Clear();
+
+        // 2. Przygotowanie kamery
+        glm::mat4 view3D = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+        glm::mat4 projection3D = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+
+        // 3. Rozpoczêcie sceny (przekazujemy kamerê do Renderera)
+        NFSEngine::Renderer::BeginScene(view3D, projection3D);
+
+        // 4. Renderowanie sceny
+        // To wywo³a Scene -> GameObject -> CubeMesh, które dodadz¹ siê do kolejki Renderera!
+        if (scene) {
+            scene->OnRender();
+        }
+
+        // (Jeœli Twój stary obiekt 'myCube' u¿ywa jeszcze starych metod, 
+        // przerób go tak samo jak movingCube, ¿eby korzysta³ ze Sceny i ECS)
+
+        // 5. Zakoñczenie sceny (WYS£ANIE WSZYSTKIEGO DO KARTY GRAFICZNEJ)
+        NFSEngine::Renderer::EndScene();
+
+
+        /*glClearColor(0.2f, 0.1f, 0.1f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (!myCube || !myShader || !myTexture) return;
@@ -90,7 +116,7 @@
 
         myShader->SetMat4("model", model2D);
         myShader->SetMat4("view", glm::mat4(1.0f));
-        myShader->SetMat4("projection", glm::mat4(1.0f));
+        myShader->SetMat4("projection", glm::mat4(1.0f));*/
     }
 
     void LayerExample::OnEvent(NFSEngine::Event& e) {

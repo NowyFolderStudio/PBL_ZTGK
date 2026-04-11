@@ -4,6 +4,8 @@
 #include "Platforms/Window.hpp"
 #include <memory>
 #include <GLFW/glfw3.h>
+#include "Renderer/Renderer.hpp"
+
 
 namespace NFSEngine {
 
@@ -21,6 +23,8 @@ namespace NFSEngine {
         Input::instance = &windowsInput;
 
 		m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
+
+        Renderer::Init();
 	}
 
     Application::~Application() {
