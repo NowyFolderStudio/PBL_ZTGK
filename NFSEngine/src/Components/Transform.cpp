@@ -1,4 +1,4 @@
-#include "Core/Components/Transform.hpp"
+#include "Components/Transform.hpp"
 
 namespace NFSEngine
 {

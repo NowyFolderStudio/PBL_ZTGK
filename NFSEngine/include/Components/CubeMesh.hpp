@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
-#include "Core/Components/Transform.hpp"
+#include "Components/Transform.hpp"
+#include "Components/Component.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "Renderer/VertexArray.hpp"
-#include "Core/Components/Component.hpp"
 
 namespace NFSEngine
 {

@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-#include "Core/Components/Component.hpp"
+#include "Components/Component.hpp"
 
 namespace NFSEngine
 {

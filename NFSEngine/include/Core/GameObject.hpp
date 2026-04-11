@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 
-#include "Core/Components/Component.hpp"
+#include "Components/Component.hpp"
 #include "Core/DeltaTime.hpp"
 
 namespace NFSEngine

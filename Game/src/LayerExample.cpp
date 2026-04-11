@@ -1,7 +1,7 @@
 #include "LayerExample.hpp"
 #include "Core/Application.hpp"
-#include "Core/Components/CubeMesh.hpp"
-#include "Core/Components/Transform.hpp"
+#include "Components/CubeMesh.hpp"
+#include "Components/Transform.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Renderer/Shader.hpp"
@@ -63,7 +63,7 @@ void LayerExample::Update() { }
 void LayerExample::Render()
 {
 
-    // 1. Czyszczenie ekranu za pomoc¹ naszego interfejsu (¿adnego glClear!)
+    // 1. Czyszczenie ekranu za pomocï¿½ naszego interfejsu (ï¿½adnego glClear!)
     NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
     NFSEngine::Renderer::GetAPI().Clear();
 
@@ -71,20 +71,20 @@ void LayerExample::Render()
     glm::mat4 view3D = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
     glm::mat4 projection3D = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 
-    // 3. Rozpoczêcie sceny (przekazujemy kamerê do Renderera)
+    // 3. Rozpoczï¿½cie sceny (przekazujemy kamerï¿½ do Renderera)
     NFSEngine::Renderer::BeginScene(view3D, projection3D);
 
     // 4. Renderowanie sceny
-    // To wywo³a Scene -> GameObject -> CubeMesh, które dodadz¹ siê do kolejki Renderera!
+    // To wywoï¿½a Scene -> GameObject -> CubeMesh, ktï¿½re dodadzï¿½ siï¿½ do kolejki Renderera!
     if (scene)
     {
         scene->OnRender();
     }
 
-    // (Jeœli Twój stary obiekt 'myCube' u¿ywa jeszcze starych metod,
-    // przerób go tak samo jak movingCube, ¿eby korzysta³ ze Sceny i ECS)
+    // (Jeï¿½li Twï¿½j stary obiekt 'myCube' uï¿½ywa jeszcze starych metod,
+    // przerï¿½b go tak samo jak movingCube, ï¿½eby korzystaï¿½ ze Sceny i ECS)
 
-    // 5. Zakoñczenie sceny (WYS£ANIE WSZYSTKIEGO DO KARTY GRAFICZNEJ)
+    // 5. Zakoï¿½czenie sceny (WYSï¿½ANIE WSZYSTKIEGO DO KARTY GRAFICZNEJ)
     NFSEngine::Renderer::EndScene();
 
     /*glClearColor(0.2f, 0.1f, 0.1f, 1.0f);

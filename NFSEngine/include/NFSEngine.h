@@ -27,6 +27,6 @@
 #include "UI/UIObject.hpp"
 #include "UI/UIRenderer.hpp"
 
-#include "Core/Components/Component.hpp"
-#include "Core/Components/CubeMesh.hpp"
-#include "Core/Components/Transform.hpp"
+#include "Components/Component.hpp"
+#include "Components/CubeMesh.hpp"
+#include "Components/Transform.hpp"
