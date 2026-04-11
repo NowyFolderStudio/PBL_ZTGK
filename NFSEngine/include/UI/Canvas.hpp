@@ -8,22 +8,24 @@
 #include "UI/UIRenderer.hpp"
 #include "UI/UIObject.hpp"
 
-namespace NFSEngine {
-	class Canvas {
-	public:
-		Canvas();
-		~Canvas();
-		
-		UIObject& CreateUIObject();
-		void RemoveUIObject(class UIObject* uiObject);
-		void ClearUIObjects();
-		
-		std::vector<class UIObject*> GetUIObjects() const;
+namespace NFSEngine
+{
+class Canvas
+{
+public:
+    Canvas();
+    ~Canvas();
 
-		void Draw();
-		void Update();
-		
-	private:
-		std::vector<std::unique_ptr<UIObject>> m_UIObjects;
-	};
+    UIObject& CreateUIObject();
+    void RemoveUIObject(class UIObject* uiObject);
+    void ClearUIObjects();
+
+    std::vector<class UIObject*> GetUIObjects() const;
+
+    void Draw();
+    void Update();
+
+private:
+    std::vector<std::unique_ptr<UIObject>> m_UIObjects;
+};
 }

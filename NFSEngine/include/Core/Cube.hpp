@@ -6,19 +6,19 @@
 #include "Renderer/VertexArray.hpp"
 #include <glad/glad.h>
 
+namespace NFSEngine
+{
 
+class Cube
+{
+public:
+    Cube();
+    ~Cube() = default;
 
-namespace NFSEngine {
+    void Draw(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& texture);
 
-    class Cube {
-        public:
-            Cube(); 
-            ~Cube() = default;
+private:
+    std::shared_ptr<VertexArray> m_VertexArray;
+};
 
-            void Draw(const std::shared_ptr<Shader>& shader, const std::shared_ptr<Texture>& texture);
-
-        private:
-            std::shared_ptr<VertexArray> m_VertexArray;
-    };
-    
 }

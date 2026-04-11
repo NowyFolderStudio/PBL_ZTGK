@@ -4,33 +4,36 @@
 #include "Renderer/GraphicsContext.hpp"
 #include <GLFW/glfw3.h>
 
-namespace NFSEngine {
+namespace NFSEngine
+{
 
-	class WindowsWindow : public Window {
-	public:
-		WindowsWindow(const std::string& title, int width, int height);
-		virtual ~WindowsWindow();
-		
-		void OnUpdate() override;
-		bool ShouldClose() const override { return glfwWindowShouldClose(m_Window); }
-		void* GetNativeWindow() const override { return m_Window; }
+class WindowsWindow : public Window
+{
+public:
+    WindowsWindow(const std::string& title, int width, int height);
+    virtual ~WindowsWindow();
 
-		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+    void OnUpdate() override;
+    bool ShouldClose() const override { return glfwWindowShouldClose(m_Window); }
+    void* GetNativeWindow() const override { return m_Window; }
 
-	private:
-		void Init(const std::string& title, int width, int height);
-		void Shutdown();
-		
-		GLFWwindow* m_Window;
-		GraphicContext* m_Context;
+    inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 
-		struct WindowData {
-			std::string Title;
-			int Width, Height;
-			EventCallbackFn EventCallback;
-		};
+private:
+    void Init(const std::string& title, int width, int height);
+    void Shutdown();
 
-		WindowData m_Data;
-	};
+    GLFWwindow* m_Window;
+    GraphicContext* m_Context;
+
+    struct WindowData
+    {
+        std::string Title;
+        int Width, Height;
+        EventCallbackFn EventCallback;
+    };
+
+    WindowData m_Data;
+};
 
 }

@@ -6,59 +6,76 @@
 
 #include "Renderer/Texture.hpp"
 
-namespace NFSEngine {
+namespace NFSEngine
+{
 
-	class UIObject;
+class UIObject;
 
-	struct UIComponent {
-		UIObject* Owner = nullptr;
+struct UIComponent
+{
+    UIObject* Owner = nullptr;
 
-		virtual ~UIComponent() = default;
-	};
+    virtual ~UIComponent() = default;
+};
 
-	struct RectTransform : public UIComponent {
-		glm::vec3 Position = glm::vec3(0.0f);
+struct RectTransform : public UIComponent
+{
+    glm::vec3 Position = glm::vec3(0.0f);
 
-		glm::vec2 Pivot = glm::vec2(0.5f);
+    glm::vec2 Pivot = glm::vec2(0.5f);
 
-		float Width = 100.0f;
-		float Height = 100.0f;
-		float Rotation = 0.0f;
+    float Width = 100.0f;
+    float Height = 100.0f;
+    float Rotation = 0.0f;
 
-		glm::mat4 GetTransform() const {
-			glm::mat4 transform = glm::mat4(1.0f);
+    glm::mat4 GetTransform() const
+    {
+        glm::mat4 transform = glm::mat4(1.0f);
 
-			transform = glm::translate(transform, Position);
-			transform = glm::rotate(transform, glm::radians(Rotation), glm::vec3(0.0f, 0.0f, 1.0f));
-			transform = glm::scale(transform, glm::vec3(Width, Height, 1.0f));
+        transform = glm::translate(transform, Position);
+        transform = glm::rotate(transform, glm::radians(Rotation), glm::vec3(0.0f, 0.0f, 1.0f));
+        transform = glm::scale(transform, glm::vec3(Width, Height, 1.0f));
 
-			transform = glm::translate(transform, glm::vec3(-Pivot.x, -Pivot.y, 0.0f));
+        transform = glm::translate(transform, glm::vec3(-Pivot.x, -Pivot.y, 0.0f));
 
-			return transform;
-		}
-	};
+        return transform;
+    }
+};
 
-	struct ImageComponent : public UIComponent {
-		glm::vec4 Color = glm::vec4(1.0f);
+struct ImageComponent : public UIComponent
+{
+    glm::vec4 Color = glm::vec4(1.0f);
 
-		std::shared_ptr<Texture> TexturePtr = nullptr;
+    std::shared_ptr<Texture> TexturePtr = nullptr;
 
-		ImageComponent() = default;
-		ImageComponent(const glm::vec4& color) : Color(color) {}
-		ImageComponent(const std::shared_ptr<Texture>& texture, const glm::vec4& tintColor = glm::vec4(1.0f)) : TexturePtr(texture), Color(tintColor) {}
-	};
+    ImageComponent() = default;
+    ImageComponent(const glm::vec4& color)
+        : Color(color)
+    {
+    }
+    ImageComponent(const std::shared_ptr<Texture>& texture, const glm::vec4& tintColor = glm::vec4(1.0f))
+        : TexturePtr(texture)
+        , Color(tintColor)
+    {
+    }
+};
 
-	class Text;
+class Text;
 
-	struct TextComponent : public UIComponent {
-		std::string TextString = "";
-		Text* Font = nullptr;
-		glm::vec4 Color = glm::vec4(1.0f);
-		float Scale = 1.0f;
+struct TextComponent : public UIComponent
+{
+    std::string TextString = "";
+    Text* Font = nullptr;
+    glm::vec4 Color = glm::vec4(1.0f);
+    float Scale = 1.0f;
 
-		TextComponent() = default;
-		TextComponent(std::string text, Text* font, glm::vec4 color, float scale = 1.0f)
-			: TextString(text), Font(font), Color(color), Scale(scale) {
-		}
-	};
+    TextComponent() = default;
+    TextComponent(std::string text, Text* font, glm::vec4 color, float scale = 1.0f)
+        : TextString(text)
+        , Font(font)
+        , Color(color)
+        , Scale(scale)
+    {
+    }
+};
 }

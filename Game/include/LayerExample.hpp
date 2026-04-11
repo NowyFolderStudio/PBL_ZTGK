@@ -5,7 +5,8 @@
 #include "NFSEngine.h"
 #include <memory>
 
-class LayerExample : public NFSEngine::Layer {
+class LayerExample : public NFSEngine::Layer
+{
 public:
     LayerExample();
     virtual ~LayerExample() override;
@@ -13,12 +14,12 @@ public:
     virtual void OnAttach() override;
     virtual void OnDetach() override;
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override;
-    
+
     void Init();
     void Update();
     void Render();
-	void OnEvent(NFSEngine::Event& e) override;
-    
+    void OnEvent(NFSEngine::Event& e) override;
+
 private:
     std::shared_ptr<NFSEngine::Shader> myShader = nullptr;
     std::shared_ptr<NFSEngine::Texture> myTexture;

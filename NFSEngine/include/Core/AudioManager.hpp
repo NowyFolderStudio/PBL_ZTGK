@@ -4,20 +4,22 @@
 #include <string>
 #include <iostream>
 
-namespace NFSEngine {
+namespace NFSEngine
+{
 
-	class AudioManager {
-		public:
-		AudioManager();
-		~AudioManager();
-		
-		bool Init();
-		void Update();
-		void LoopSound(const std::string& soundFile, float volume);
-		void Cleanup();
-		
-		private:
-		FMOD::System* fmodSystem;
-	};
-	
+class AudioManager
+{
+public:
+    AudioManager();
+    ~AudioManager();
+
+    bool Init();
+    void Update();
+    void LoopSound(const std::string& soundFile, float volume);
+    void Cleanup();
+
+private:
+    FMOD::System* fmodSystem;
+};
+
 }

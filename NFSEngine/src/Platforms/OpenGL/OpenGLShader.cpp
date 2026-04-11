@@ -3,93 +3,106 @@
 #include <sstream>
 #include <iostream>
 
-namespace NFSEngine {
+namespace NFSEngine
+{
 
-	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
-		: m_Name(name) {
-		
-		std::string vertexCode = ReadFile(vertexPath);
-		std::string fragmentCode = ReadFile(fragmentPath);
+OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
+    : m_Name(name)
+{
 
-		const char* vShaderCode = vertexCode.c_str();
-		const char* fShaderCode = fragmentCode.c_str();
+    std::string vertexCode = ReadFile(vertexPath);
+    std::string fragmentCode = ReadFile(fragmentPath);
 
-		uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertex, 1, &vShaderCode, NULL);
-		glCompileShader(vertex);
-		CheckCompileErrors(vertex, "VERTEX");
-	
-		uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragment, 1, &fShaderCode, NULL);
-		glCompileShader(fragment);
-		CheckCompileErrors(fragment, "FRAGMENT");
+    const char* vShaderCode = vertexCode.c_str();
+    const char* fShaderCode = fragmentCode.c_str();
 
-		m_RendererID = glCreateProgram();
-		glAttachShader(m_RendererID, vertex);
-		glAttachShader(m_RendererID, fragment);
-		glLinkProgram(m_RendererID);
-		CheckCompileErrors(m_RendererID, "PROGRAM");
+    uint32_t vertex = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex, 1, &vShaderCode, NULL);
+    glCompileShader(vertex);
+    CheckCompileErrors(vertex, "VERTEX");
 
-		glDeleteShader(vertex);
-		glDeleteShader(fragment);
-	}
+    uint32_t fragment = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment, 1, &fShaderCode, NULL);
+    glCompileShader(fragment);
+    CheckCompileErrors(fragment, "FRAGMENT");
 
-	OpenGLShader::~OpenGLShader() {
-		glDeleteProgram(m_RendererID);
-	}
+    m_RendererID = glCreateProgram();
+    glAttachShader(m_RendererID, vertex);
+    glAttachShader(m_RendererID, fragment);
+    glLinkProgram(m_RendererID);
+    CheckCompileErrors(m_RendererID, "PROGRAM");
 
-	std::string OpenGLShader::ReadFile(const std::string& filepath) {
-		std::string result;
-		std::ifstream in(filepath, std::ios::in | std::ios::binary);
-		if (in) {
-			std::ostringstream contents;
-			contents << in.rdbuf();
-			result = contents.str();
-		}
-		else {
-			std::cout << "Could not open file: " << filepath << std::endl;
-		}
-		return result;
-	}
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
+}
 
-	void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
-	void OpenGLShader::Unbind() const { glUseProgram(0); }
+OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }
 
-	void OpenGLShader::SetInt(const std::string& name, int value) {
-		glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
-	}
-	void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
-		glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &value[0][0]);
-	}
+std::string OpenGLShader::ReadFile(const std::string& filepath)
+{
+    std::string result;
+    std::ifstream in(filepath, std::ios::in | std::ios::binary);
+    if (in)
+    {
+        std::ostringstream contents;
+        contents << in.rdbuf();
+        result = contents.str();
+    }
+    else
+    {
+        std::cout << "Could not open file: " << filepath << std::endl;
+    }
+    return result;
+}
 
-	void OpenGLShader::SetFloat(const std::string& name, float value) {
-		glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
-	}
+void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
+void OpenGLShader::Unbind() const { glUseProgram(0); }
 
-	void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value) {
-		glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
-	}
+void OpenGLShader::SetInt(const std::string& name, int value)
+{
+    glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+}
+void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &value[0][0]);
+}
 
-	void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value) {
-		glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
-	}
+void OpenGLShader::SetFloat(const std::string& name, float value)
+{
+    glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+}
 
-	void OpenGLShader::CheckCompileErrors(uint32_t shader, std::string type) {
-		int success;
-		char infoLog[1024];
-		if (type != "PROGRAM") {
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-			if (!success) {
-				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER::" << m_Name << "::COMPILATION_ERROR: " << infoLog << std::endl;
-			}
-		}
-		else {
-			glGetProgramiv(shader, GL_LINK_STATUS, &success);
-			if (!success) {
-				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::PROGRAM::" << m_Name << "::LINKING_ERROR: " << infoLog << std::endl;
-			}
-		}
-	}
+void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value)
+{
+    glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+}
+
+void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value)
+{
+    glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+}
+
+void OpenGLShader::CheckCompileErrors(uint32_t shader, std::string type)
+{
+    int success;
+    char infoLog[1024];
+    if (type != "PROGRAM")
+    {
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+            std::cout << "ERROR::SHADER::" << m_Name << "::COMPILATION_ERROR: " << infoLog << std::endl;
+        }
+    }
+    else
+    {
+        glGetProgramiv(shader, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+            std::cout << "ERROR::PROGRAM::" << m_Name << "::LINKING_ERROR: " << infoLog << std::endl;
+        }
+    }
+}
 }

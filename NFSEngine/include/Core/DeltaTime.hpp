@@ -2,26 +2,33 @@
 
 #include <cmath>
 
-namespace NFSEngine {
+namespace NFSEngine
+{
 
-    class DeltaTime {
-        public:
-            DeltaTime(float time = 0.0f) : m_Time(time) {}
-        
-            operator float() const { return m_Time; }
+class DeltaTime
+{
+public:
+    DeltaTime(float time = 0.0f)
+        : m_Time(time)
+    {
+    }
 
-            float GetSeconds() const { return m_Time; }
-            float GetMilliseconds() const {return m_Time * 1000.0f; }
+    operator float() const { return m_Time; }
 
-            int GetFPS() const { 
-                if (m_Time > 0.0f) {
-                    return static_cast<int>(std::round(1.0f / m_Time)); 
-                }
-                return 0;
-            }
+    float GetSeconds() const { return m_Time; }
+    float GetMilliseconds() const { return m_Time * 1000.0f; }
 
-        private:
-            float m_Time;
-    };
+    int GetFPS() const
+    {
+        if (m_Time > 0.0f)
+        {
+            return static_cast<int>(std::round(1.0f / m_Time));
+        }
+        return 0;
+    }
+
+private:
+    float m_Time;
+};
 
 }

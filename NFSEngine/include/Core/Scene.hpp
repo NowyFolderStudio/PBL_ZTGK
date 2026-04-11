@@ -7,25 +7,27 @@
 #include "Core/GameObject.hpp"
 #include "Core/DeltaTime.hpp"
 
-namespace NFSEngine {
+namespace NFSEngine
+{
 
-    class Scene {
-    public:
-        Scene() = default;
-        ~Scene() = default;
+class Scene
+{
+public:
+    Scene() = default;
+    ~Scene() = default;
 
-        GameObject* CreateGameObject(const std::string& name = "GameObject");
+    GameObject* CreateGameObject(const std::string& name = "GameObject");
 
-        void OnUpdate(DeltaTime deltaTime);
-        void OnRender();
+    void OnUpdate(DeltaTime deltaTime);
+    void OnRender();
 
-        DeltaTime GetFixedDeltaTime() { return m_FixedDeltaTime; }
-        void SetFixedDeltaTime(DeltaTime fixedDeltaTime) { m_FixedDeltaTime = fixedDeltaTime; }
+    DeltaTime GetFixedDeltaTime() { return m_FixedDeltaTime; }
+    void SetFixedDeltaTime(DeltaTime fixedDeltaTime) { m_FixedDeltaTime = fixedDeltaTime; }
 
-    private:
-        std::vector<std::unique_ptr<GameObject>> m_GameObjects;
-        DeltaTime m_FixedDeltaTime = 0.01666f;
-        float m_Accumulator = 0.0f;
-    };
+private:
+    std::vector<std::unique_ptr<GameObject>> m_GameObjects;
+    DeltaTime m_FixedDeltaTime = 0.01666f;
+    float m_Accumulator = 0.0f;
+};
 
 }

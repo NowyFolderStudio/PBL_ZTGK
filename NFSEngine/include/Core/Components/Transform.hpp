@@ -5,57 +5,67 @@
 
 #include "Core/Components/Component.hpp"
 
-namespace NFSEngine {
-    class Transform : public Component {
-        public:
-            Transform(GameObject* owner) : Component(owner) {}
+namespace NFSEngine
+{
+class Transform : public Component
+{
+public:
+    Transform(GameObject* owner)
+        : Component(owner)
+    {
+    }
 
-            void AddChild(Transform* child);
+    void AddChild(Transform* child);
 
-            void SetPosition(const glm::vec3& position) {
-                m_Position = position;
-                SetDirty();
-            }
+    void SetPosition(const glm::vec3& position)
+    {
+        m_Position = position;
+        SetDirty();
+    }
 
-            void SetRotation(const glm::vec3& eulerDegrees) {
-                m_Rotation = glm::quat(glm::radians(eulerDegrees));
-                SetDirty();
-            }
+    void SetRotation(const glm::vec3& eulerDegrees)
+    {
+        m_Rotation = glm::quat(glm::radians(eulerDegrees));
+        SetDirty();
+    }
 
-            void SetScale(const glm::vec3& scale) {
-                m_Scale = scale;
-                SetDirty();
-            }
+    void SetScale(const glm::vec3& scale)
+    {
+        m_Scale = scale;
+        SetDirty();
+    }
 
-            const glm::vec3& GetPosition() const { return m_Position; }
-            const glm::quat& GetRotation() const { return m_Rotation; }
-            const glm::vec3& GetScale() const { return m_Scale; }
-            const glm::mat4& GetGlobalMatrix() {
-                if (m_Dirty) {
-                    RecalculateMatrix();
-                }
-                return m_GlobalMatrix;
-            }
-            
-            void Move(const glm::vec3& moveVector);
-            void Rotate(const glm::vec3& rotationVector);
-            void Scale(const glm::vec3& scaleVector);
-        
-        private:
-            glm::vec3 m_Position    = {0.0f, 0.0f, 0.0f};
-            glm::quat m_Rotation    = glm::quat{1.0f, 0.0f, 0.0f, 0.0f};
-            glm::vec3 m_Scale       = {1.0f, 1.0f, 1.0f};
-            
-            glm::mat4 m_LocalMatrix = glm::mat4(1.0f);
-            glm::mat4 m_GlobalMatrix = glm::mat4(1.0f);
-            bool m_Dirty = true;
+    const glm::vec3& GetPosition() const { return m_Position; }
+    const glm::quat& GetRotation() const { return m_Rotation; }
+    const glm::vec3& GetScale() const { return m_Scale; }
+    const glm::mat4& GetGlobalMatrix()
+    {
+        if (m_Dirty)
+        {
+            RecalculateMatrix();
+        }
+        return m_GlobalMatrix;
+    }
 
-            // Scene graph
-            Transform* m_Parent = nullptr;
-            std::vector<Transform*> m_Children;
+    void Move(const glm::vec3& moveVector);
+    void Rotate(const glm::vec3& rotationVector);
+    void Scale(const glm::vec3& scaleVector);
 
-            void SetDirty();
+private:
+    glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };
+    glm::quat m_Rotation = glm::quat { 1.0f, 0.0f, 0.0f, 0.0f };
+    glm::vec3 m_Scale = { 1.0f, 1.0f, 1.0f };
 
-            void RecalculateMatrix();
-    };
+    glm::mat4 m_LocalMatrix = glm::mat4(1.0f);
+    glm::mat4 m_GlobalMatrix = glm::mat4(1.0f);
+    bool m_Dirty = true;
+
+    // Scene graph
+    Transform* m_Parent = nullptr;
+    std::vector<Transform*> m_Children;
+
+    void SetDirty();
+
+    void RecalculateMatrix();
+};
 }
