@@ -1,5 +1,6 @@
 #include "Core/Application.hpp"
 #include "Core/DeltaTime.hpp"
+#include "Debug/Profiler.hpp"
 #include "Platforms/WindowsInput.hpp"
 #include "Platforms/Window.hpp"
 #include "Core/Log.hpp"
@@ -15,6 +16,7 @@ Application* Application::s_Instance = nullptr;
 Application::Application(const ApplicationConfig& config)
     : m_Config(config)
 {
+    NFS_PROFILE_FUNCTION();
     s_Instance = this;
 
     std::string title = config.WindowTitle;
@@ -30,16 +32,18 @@ Application::Application(const ApplicationConfig& config)
     Renderer::Init();
 }
 
-Application::~Application() { }
+Application::~Application() { NFS_PROFILE_FUNCTION(); }
 
 void Application::PushLayer(Layer* layer)
 {
+    NFS_PROFILE_FUNCTION();
     m_LayerStack.PushLayer(layer);
     layer->OnAttach();
 }
 
 void Application::PushOverlay(Layer* layer)
 {
+    NFS_PROFILE_FUNCTION();
     m_LayerStack.PushOverlay(layer);
     layer->OnAttach();
 }
@@ -48,12 +52,12 @@ void Application::Close() { m_Running = false; }
 
 void Application::Run()
 {
-    Log::Init();
+    NFS_PROFILE_FUNCTION();
     NFS_CORE_INFO("Application started.");
 
     while (m_Running && !m_Window->ShouldClose())
     {
-        float time = glfwGetTime();
+        auto time = static_cast<float>(glfwGetTime());
         DeltaTime deltaTime = time - m_LastFrameTime;
         m_LastFrameTime = time;
 
@@ -93,6 +97,7 @@ void Application::OnEvent(Event& e)
 
 bool Application::OnWindowResize(WindowResizeEvent& e)
 {
+    NFS_PROFILE_FUNCTION();
     if (e.GetWidth() == 0 || e.GetHeight() == 0)
     {
         m_Minimalized = true;
