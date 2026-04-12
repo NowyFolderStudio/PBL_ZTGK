@@ -48,10 +48,11 @@ void Application::Close() { m_Running = false; }
 
 void Application::Run()
 {
+    Log::Init();
+    NFS_CORE_INFO("Application started.");
+
     while (m_Running && !m_Window->ShouldClose())
     {
-        Log::Init();
-
         float time = glfwGetTime();
         DeltaTime deltaTime = time - m_LastFrameTime;
         m_LastFrameTime = time;
