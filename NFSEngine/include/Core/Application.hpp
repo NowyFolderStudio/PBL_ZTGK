@@ -4,6 +4,7 @@
 #include "Platforms/Window.hpp"
 #include "Events/ApplicationEvent.hpp"
 #include "Events/KeyEvent.hpp"
+#include "ImGui/ImGuiLayer.hpp"
 
 #include <string>
 #include <memory>
@@ -45,15 +46,14 @@ private:
     bool OnWindowResize(WindowResizeEvent& e);
     bool OnKeyPressed(KeyPressedEvent& e);
 
-private:
     ApplicationConfig m_Config;
+    ImGuiLayer* m_ImGuiLayer;
     LayerStack m_LayerStack;
     bool m_Running = true;
     bool m_Minimalized = false;
     std::unique_ptr<Window> m_Window = nullptr;
     float m_LastFrameTime = 0.0f;
 
-private:
     static Application* s_Instance;
     friend int ::main(int argc, char** argv);
 };

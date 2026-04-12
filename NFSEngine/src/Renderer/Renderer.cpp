@@ -1,4 +1,6 @@
 #include "Renderer/Renderer.hpp"
+#include "Debug/Profiler.hpp"
+#include "Debug/GPUTimer.hpp"
 #include <algorithm>
 
 namespace NFSEngine
@@ -8,10 +10,14 @@ std::vector<RenderPacket> Renderer::s_RendererQueue;
 std::unique_ptr<RendererAPI> Renderer::s_RendererAPI = nullptr;
 Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData;
 
+RendererStats Renderer::s_Stats;
+std::unique_ptr<GPUTimer> Renderer::s_GPUTimer = nullptr;
+
 void Renderer::Init()
 {
     s_RendererAPI = RendererAPI::Create();
     s_RendererAPI->Init();
+    s_GPUTimer = std::make_unique<GPUTimer>();
 }
 
 void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix)
@@ -38,10 +44,18 @@ void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_p
 
 void Renderer::EndScene()
 {
+    NFS_PROFILE_FUNCTION();
+
+    s_Stats.drawCalls = 0;
+    s_Stats.triangleCount = 0;
+    s_Stats.stateChanges = 0;
+
     std::sort(s_RendererQueue.begin(), s_RendererQueue.end(),
               [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
 
     uint32_t lastShaderID = 0;
+
+    s_GPUTimer->Begin();
 
     for (const auto& packet : s_RendererQueue)
     {
@@ -68,6 +82,11 @@ void Renderer::EndScene()
         s_RendererAPI->DrawArrays(packet.vao, 36);
     }
 
+    s_GPUTimer->End();
+
     s_RendererQueue.clear();
 }
+
+float Renderer::GetGPUTime() { return s_GPUTimer ? s_GPUTimer->GetTimeMS() : 0.0f; }
+
 }

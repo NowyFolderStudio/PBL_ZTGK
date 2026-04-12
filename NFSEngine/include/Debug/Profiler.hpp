@@ -27,7 +27,8 @@ struct ProfileResult
 
 struct ProfilingSession
 {
-    std::string name;
+    std::string name = "ProfilingName";
+    std::string filePath = "profiling_result.json";
 };
 
 class Profiler
@@ -36,29 +37,30 @@ public:
     Profiler(const Profiler&) = delete;
     Profiler(Profiler&&) = delete;
 
-    void BeginSession(const std::string& name, const std::string& filePath = "profiling_result.json")
+    void BeginSession(const ProfilingSession& session)
     {
         std::lock_guard lock(m_Mutex);
         if (m_CurrentSession)
         {
             if (Log::GetCoreLogger())
             {
-                NFS_CORE_ERROR("Profiler::BeginSession'{0}' when session '{1}' already open.", name, m_CurrentSession->name);
+                NFS_CORE_ERROR("Profiler::BeginSession'{0}' when session '{1}' already open.", session.name,
+                               m_CurrentSession->name);
             }
             InternalEndSession();
         }
-        m_OutputStream.open(filePath);
+        m_OutputStream.open(session.filePath);
 
         if (m_OutputStream.is_open())
         {
-            m_CurrentSession = new ProfilingSession({ name });
+            m_CurrentSession = new ProfilingSession(session);
             WriteHeader();
         }
         else
         {
             if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
             {
-                NFS_CORE_ERROR("Profiler could not open results file '{0}'.", filePath);
+                NFS_CORE_ERROR("Profiler could not open results file '{0}'.", session.filePath);
             }
         }
     }
@@ -234,7 +236,7 @@ namespace ProfilerUtils
 #define NFS_PROFILE_SCOPE_LINE(name, line) NFS_PROFILE_SCOPE_LINE2(name, line)
 
 // MACROS TO USE
-#define NFS_PROFILE_BEGIN_SESSION(name, filepath) ::NFSEngine::Profiler::Get().BeginSession(name, filepath)
+#define NFS_PROFILE_BEGIN_SESSION(session) ::NFSEngine::Profiler::Get().BeginSession(session)
 #define NFS_PROFILE_END_SESSION() ::NFSEngine::Profiler::Get().EndSession()
 
 // ==============================================================

@@ -11,9 +11,11 @@ public:
     LayerExample();
     virtual ~LayerExample() override;
 
-    virtual void OnAttach() override;
-    virtual void OnDetach() override;
+    void OnAttach() override;
+    void OnDetach() override;
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override;
+    void OnRender() override;
+    void OnImGuiRender() override;
 
     void Init();
     void Update();
@@ -21,10 +23,10 @@ public:
     void OnEvent(NFSEngine::Event& e) override;
 
 private:
-    std::shared_ptr<NFSEngine::Shader> myShader = nullptr;
-    std::shared_ptr<NFSEngine::Texture> myTexture;
-    NFSEngine::Cube* myCube = nullptr;
+    std::shared_ptr<NFSEngine::Shader> m_MyShader = nullptr;
+    std::shared_ptr<NFSEngine::Texture> m_MyTexture;
+    NFSEngine::Cube* m_MyCube = nullptr;
 
-    NFSEngine::GameObject* movingCube = nullptr;
-    std::unique_ptr<NFSEngine::Scene> scene = nullptr;
+    NFSEngine::GameObject* m_MovingCube = nullptr;
+    std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
 };

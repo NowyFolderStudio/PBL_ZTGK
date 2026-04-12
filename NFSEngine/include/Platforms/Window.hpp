@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <functional>
+#include <cstdint>
 
 #include "Events/Event.hpp"
 
@@ -19,6 +20,9 @@ public:
     virtual void* GetNativeWindow() const = 0;
 
     virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+
+    virtual uint32_t GetWidth() const = 0;
+    virtual uint32_t GetHeight() const = 0;
 
     static std::unique_ptr<Window> Create(const std::string& title = "NFS Engine", int width = 1280, int height = 720);
 };

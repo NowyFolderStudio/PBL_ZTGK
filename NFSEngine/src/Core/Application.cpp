@@ -20,8 +20,8 @@ Application::Application(const ApplicationConfig& config)
     s_Instance = this;
 
     std::string title = config.WindowTitle;
-    int width = config.WindowWidth;
-    int height = config.WindowHeight;
+    int width = static_cast<int>(config.WindowWidth);
+    int height = static_cast<int>(config.WindowHeight);
 
     m_Window = Window::Create(title, width, height);
     static WindowsInput windowsInput;
@@ -30,6 +30,9 @@ Application::Application(const ApplicationConfig& config)
     m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
 
     Renderer::Init();
+
+    m_ImGuiLayer = new ImGuiLayer();
+    PushLayer(m_ImGuiLayer);
 }
 
 Application::~Application() { NFS_PROFILE_FUNCTION(); }
@@ -57,16 +60,39 @@ void Application::Run()
 
     while (m_Running && !m_Window->ShouldClose())
     {
+        NFS_PROFILE_SCOPE("RunLoop");
+
         auto time = static_cast<float>(glfwGetTime());
         DeltaTime deltaTime = time - m_LastFrameTime;
         m_LastFrameTime = time;
 
         Input::UpdateStates();
 
-        for (Layer* layer : m_LayerStack)
         {
-            layer->OnUpdate(deltaTime);
+            NFS_PROFILE_SCOPE("LayerStack Logic Update");
+
+            for (Layer* layer : m_LayerStack)
+            {
+                layer->OnUpdate(deltaTime);
+            }
         }
+
+        {
+            NFS_PROFILE_SCOPE("LayerStack Rendering Preparation");
+            for (Layer* layer : m_LayerStack)
+            {
+                layer->OnRender();
+            }
+        }
+
+        m_ImGuiLayer->Begin();
+        {
+            NFS_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+            for (Layer* layer : m_LayerStack)
+                layer->OnImGuiRender();
+        }
+        m_ImGuiLayer->End();
 
         m_Window->OnUpdate();
     }
@@ -109,8 +135,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
     m_Config.WindowWidth = e.GetWidth();
 
     glViewport(0, 0, e.GetWidth(), e.GetHeight());
-    return false; // false poniewaz event bo uzyciu nie moze zniknac tylko musi zostacc wykorzystany wiele razy - tyle
-                  // ile warstw go potrzebuje
+    return false;
 }
 
 bool Application::OnWindowClose(WindowCloseEvent& e)

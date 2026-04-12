@@ -23,14 +23,29 @@ add_subdirectory(thirdparty/spdlog)
 
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
 
+# ImGui docking
+set(IMGUI_DIR thirdparty/imgui)
+set(IMGUI_SOURCES
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_glfw.cpp
+    ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
+)
+
 add_library(${PROJECT_NAME} STATIC
-    ${SRC_FILES} 
+    ${SRC_FILES}
+    ${IMGUI_SOURCES}
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
         include/Core/KeyCodes.hpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
+    ${IMGUI_DIR}
+    ${IMGUI_DIR}/backends
     thirdparty/glad/include
     thirdparty/fmod/include
     thirdparty/assimp/include

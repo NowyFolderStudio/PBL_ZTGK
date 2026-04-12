@@ -24,15 +24,23 @@ int main(int argc, char** argv)
         NFS_CORE_ERROR("ENTRYPOINT::CURRENT WORKING DIRECTORY PATH IS NOT SET::{}", e.what());
     }
 
-    NFS_PROFILE_BEGIN_SESSION("Startup", "NFSEngine_Startup.json");
+    NFSEngine::ProfilingSession session;
+    session.name = "Startup";
+    session.filePath = "NFSEngine_Startup.json";
+
+    NFS_PROFILE_BEGIN_SESSION(session);
     auto app = NFSEngine::CreateApplication();
     NFS_PROFILE_END_SESSION();
 
-    NFS_PROFILE_BEGIN_SESSION("Runtime", "NFSEngine_Runtime.json");
+    session.name = "Runtime";
+    session.filePath = "NFSEngine_Runtime.json";
+    NFS_PROFILE_BEGIN_SESSION(session);
     app->Run();
     NFS_PROFILE_END_SESSION();
 
-    NFS_PROFILE_BEGIN_SESSION("Shutdown", "NFSEngine_Shutdown.json");
+    session.name = "Shutdown";
+    session.filePath = "NFSEngine_Shutdown.json";
+    NFS_PROFILE_BEGIN_SESSION(session);
     delete app;
     NFS_PROFILE_END_SESSION();
 }

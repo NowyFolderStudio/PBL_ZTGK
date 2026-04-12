@@ -24,8 +24,9 @@ void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime)
         m_AnimatedBar->Transform.Width = animatedWidth;
     }
     Update();
-    Render();
 }
+
+void UILayer::OnRender() { Render(); }
 
 void UILayer::Init()
 {

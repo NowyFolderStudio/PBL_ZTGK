@@ -12,50 +12,54 @@
 #include "Components/CubeControl.hpp"
 #include "Renderer/Renderer.hpp"
 
+#include <imgui.h>
+
 #include "Events/ApplicationEvent.hpp"
 
 LayerExample::LayerExample()
 {
-    myShader = nullptr;
-    myTexture = nullptr;
-    myCube = nullptr;
-    movingCube = nullptr;
-    scene = nullptr;
+    m_MyShader = nullptr;
+    m_MyTexture = nullptr;
+    m_MyCube = nullptr;
+    m_MovingCube = nullptr;
+    m_Scene = nullptr;
 }
 
 LayerExample::~LayerExample()
 {
-    if (myCube) delete myCube;
+    if (m_MyCube) delete m_MyCube;
 }
 
 void LayerExample::OnAttach()
 {
     Init();
-    scene = std::make_unique<NFSEngine::Scene>();
-    movingCube = scene->CreateGameObject("movingCube");
-    movingCube->AddComponent<NFSEngine::Transform>();
+    m_Scene = std::make_unique<NFSEngine::Scene>();
+    m_MovingCube = m_Scene->CreateGameObject("movingCube");
+    m_MovingCube->AddComponent<NFSEngine::Transform>();
 
     auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
 
-    movingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
-    movingCube->AddComponent<CubeControl>();
+    m_MovingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
+    m_MovingCube->AddComponent<CubeControl>();
 }
 
 void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime)
 {
-    scene->OnUpdate(deltaTime);
+    m_Scene->OnUpdate(deltaTime);
     Update();
     Render();
 }
 
+void LayerExample::OnRender() { Render(); }
+
 void LayerExample::Init()
 {
-    myShader = NFSEngine::Shader::Create("MainShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
-    myTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
-    myCube = new NFSEngine::Cube();
+    m_MyShader = NFSEngine::Shader::Create("MainShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
+    m_MyTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
+    m_MyCube = new NFSEngine::Cube();
 }
 
 void LayerExample::Update() { }
@@ -76,9 +80,9 @@ void LayerExample::Render()
 
     // 4. Renderowanie sceny
     // To wywo�a Scene -> GameObject -> CubeMesh, kt�re dodadz� si� do kolejki Renderera!
-    if (scene)
+    if (m_Scene)
     {
-        scene->OnRender();
+        m_Scene->OnRender();
     }
 
     // (Je�li Tw�j stary obiekt 'myCube' u�ywa jeszcze starych metod,
@@ -120,6 +124,41 @@ void LayerExample::Render()
     myShader->SetMat4("model", model2D);
     myShader->SetMat4("view", glm::mat4(1.0f));
     myShader->SetMat4("projection", glm::mat4(1.0f));*/
+}
+
+void LayerExample::OnImGuiRender()
+{
+    ImGui::Begin("Diagnostic window");
+
+    float fps = ImGui::GetIO().Framerate;
+    float frameTime = 1000.0f / fps;
+
+    ImGui::Text("FPS: %.1f", fps);
+    ImGui::Text("Frame Time: %.3f ms", frameTime);
+
+    ImGui::Separator();
+
+    ImGui::Text("Etapy Pipeline'u:");
+    ImGui::Text("GPU: %.3f ms", NFSEngine::Renderer::GetGPUTime());
+
+    // Możesz tu też dodać czas CPU z Profilera, jeśli go przechowujesz
+    // ImGui::Text("CPU (Przygotowanie): %.3f ms", m_LastCPURenderTime);
+
+    ImGui::Separator();
+
+    auto stats = NFSEngine::Renderer::GetStats();
+    ImGui::Text("Renderer Stats:");
+    ImGui::Text("Draw Calls: %u", stats.drawCalls);
+    ImGui::Text("Triangle count: %u", stats.triangleCount);
+    ImGui::Text("State changes: %u", stats.stateChanges);
+
+    static float values[90] = { 0 };
+    static int values_offset = 0;
+    values[values_offset] = frameTime;
+    values_offset = (values_offset + 1) % 90;
+    ImGui::PlotLines("History of frameTime (ms)", values, 90, values_offset, nullptr, 0.0f, 33.3f, ImVec2(0, 80));
+
+    ImGui::End();
 }
 
 void LayerExample::OnEvent(NFSEngine::Event& e) { }

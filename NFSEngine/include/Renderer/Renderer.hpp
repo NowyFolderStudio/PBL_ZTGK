@@ -19,6 +19,15 @@ struct RenderPacket
     glm::mat4 transform = glm::mat4(1.0f);
 };
 
+struct RendererStats
+{
+    uint32_t drawCalls = 0;
+    uint32_t triangleCount = 0;
+    uint32_t stateChanges = 0;
+};
+
+class GPUTimer;
+
 class Renderer
 {
 public:
@@ -32,6 +41,11 @@ public:
     static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
                        const std::shared_ptr<Texture>& texture, const glm::mat4& transform);
 
+    // TODO: Implement static Shutdown() method
+
+    static RendererStats GetStats() { return s_Stats; }
+    static float GetGPUTime();
+
 private:
     struct SceneData
     {
@@ -39,7 +53,9 @@ private:
         glm::mat4 ProjectionMatrix;
     };
     static SceneData* s_SceneData;
+    static RendererStats s_Stats;
 
+    static std::unique_ptr<GPUTimer> s_GPUTimer;
     static std::vector<RenderPacket> s_RendererQueue;
     static std::unique_ptr<RendererAPI> s_RendererAPI;
 };

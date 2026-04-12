@@ -14,6 +14,7 @@ public:
     virtual void OnAttach() override;
     virtual void OnDetach() override;
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override;
+    void OnRender() override;
 
     void Init();
     void Update();

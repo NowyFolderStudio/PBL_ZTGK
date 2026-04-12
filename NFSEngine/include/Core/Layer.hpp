@@ -16,6 +16,8 @@ public:
     virtual void OnAttach() { }
     virtual void OnDetach() { }
     virtual void OnUpdate(DeltaTime deltaTime) { }
+    virtual void OnRender() { }
+    virtual void OnImGuiRender() { }
     virtual void OnEvent(Event& e) { }
     const std::string& GetName() const { return m_DebugName; }
 

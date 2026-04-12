@@ -16,6 +16,8 @@ public:
     void OnUpdate() override;
     bool ShouldClose() const override { return glfwWindowShouldClose(m_Window); }
     void* GetNativeWindow() const override { return m_Window; }
+    uint32_t GetWidth() const override { return m_Data.Width; }
+    uint32_t GetHeight() const override { return m_Data.Height; }
 
     inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 
