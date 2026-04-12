@@ -79,7 +79,7 @@ void Renderer::EndScene()
         packet.vao->Bind();
 
         // s_RendererAPI->DrawIndexed(packet.VAO);
-        s_RendererAPI->DrawArrays(packet.vao, 36);
+        s_RendererAPI->DrawIndexed(packet.vao);
     }
 
     s_GPUTimer->End();
