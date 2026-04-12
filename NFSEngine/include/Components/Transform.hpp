@@ -2,7 +2,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <ostream>
 
 #include "Components/Component.hpp"
 
@@ -14,11 +13,18 @@ public:
     Transform(GameObject* owner)
         : Component(owner)
     {
-        m_Name = "Transform";
     }
 
-    void AddChild(Transform* child);
+    std::string GetName() const override { return "Transform"; }
 
+    // SCENE GRAPH
+    void SetParent(Transform* newParent, bool worldPositionStays = true);
+
+    Transform* GetParent() { return m_Parent; }
+    int GetChildCount() { return static_cast<int>(m_Children.size()); }
+    Transform* GetChild(int index) { return m_Children[index]; }
+
+    // TRANSFORMATION MATRIX
     void SetPosition(const glm::vec3& position)
     {
         m_Position = position;
@@ -52,6 +58,10 @@ public:
     void Move(const glm::vec3& moveVector);
     void Rotate(const glm::vec3& rotationVector);
     void Scale(const glm::vec3& scaleVector);
+
+    // ImGui
+
+    void OnImGuiRender() override;
 
 private:
     glm::vec3 m_Position = { 0.0f, 0.0f, 0.0f };

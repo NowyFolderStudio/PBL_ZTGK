@@ -1,20 +1,14 @@
 #include "LayerExample.hpp"
-#include "Core/Application.hpp"
 #include "Components/CubeMesh.hpp"
-#include "Components/Transform.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
-#include "GLFW/glfw3.h"
-#include <cstddef>
 #include <memory>
 #include "Components/CubeControl.hpp"
 #include "Renderer/Renderer.hpp"
 
 #include <imgui.h>
-
-#include "Events/ApplicationEvent.hpp"
 
 LayerExample::LayerExample()
 {
@@ -35,19 +29,24 @@ void LayerExample::OnAttach()
     Init();
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_MovingCube = m_Scene->CreateGameObject("movingCube");
-    m_MovingCube->AddComponent<NFSEngine::Transform>();
+    m_MovingCube2 = m_Scene->CreateGameObject("movingCube2");
+    m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
 
     m_MovingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
     m_MovingCube->AddComponent<CubeControl>();
+    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(shader, texture);
+    m_MovingCube2->AddComponent<CubeControl>();
+    m_MovingCube2->GetTransform()->SetParent(m_MovingCube->GetTransform(), true);
 }
 
 void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime)
 {
+    m_DeltaTime = deltaTime;
     m_Scene->OnUpdate(deltaTime);
     Update();
     Render();
@@ -87,19 +86,20 @@ void LayerExample::OnImGuiRender()
 {
     ImGui::Begin("Diagnostic window");
 
-    float fps = ImGui::GetIO().Framerate;
-    float frameTime = 1000.0f / fps;
+    float averageFps = ImGui::GetIO().Framerate;
+    float averageFrameTime = 1000.0f / averageFps;
+    float currentFps = m_DeltaTime.GetFPS();
+    float currentFrameTime = m_DeltaTime.GetMilliseconds();
 
-    ImGui::Text("FPS: %.1f", fps);
-    ImGui::Text("Frame Time: %.3f ms", frameTime);
+    ImGui::Text("(Average) FPS: %.1f", averageFps);
+    ImGui::Text("(Average) Frame Time: %.3f ms", averageFrameTime);
+
+    ImGui::Text("(Current) FPS: %.1f", currentFps);
+    ImGui::Text("(Current) Frame Time: %.3f ms", currentFrameTime);
 
     ImGui::Separator();
 
-    ImGui::Text("Etapy Pipeline'u:");
     ImGui::Text("GPU: %.3f ms", NFSEngine::Renderer::GetGPUTime());
-
-    // Możesz tu też dodać czas CPU z Profilera, jeśli go przechowujesz
-    // ImGui::Text("CPU (Przygotowanie): %.3f ms", m_LastCPURenderTime);
 
     ImGui::Separator();
 
@@ -111,11 +111,13 @@ void LayerExample::OnImGuiRender()
 
     static float values[90] = { 0 };
     static int values_offset = 0;
-    values[values_offset] = frameTime;
+    values[values_offset] = currentFrameTime;
     values_offset = (values_offset + 1) % 90;
     ImGui::PlotLines("History of frameTime (ms)", values, 90, values_offset, nullptr, 0.0f, 33.3f, ImVec2(0, 80));
 
     ImGui::End();
+
+    m_HierarchyPanel->OnImGuiRender();
 }
 
 void LayerExample::OnEvent(NFSEngine::Event& e) { }

@@ -63,5 +63,7 @@ void Component::SetActive(bool isActive)
     }
 }
 
-std::string Component::GetOwnerName() const { return m_Owner ? m_Owner->Name : "NONE"; }
+std::string Component::GetOwnerName() const { return m_Owner ? m_Owner->name : "NONE"; }
+
+GameObject* Component::GetOwner() const { return m_Owner; }
 };

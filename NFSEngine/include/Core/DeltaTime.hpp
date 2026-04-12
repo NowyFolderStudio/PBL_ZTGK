@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cmath>
-
 namespace NFSEngine
 {
 
@@ -18,11 +16,11 @@ public:
     float GetSeconds() const { return m_Time; }
     float GetMilliseconds() const { return m_Time * 1000.0f; }
 
-    int GetFPS() const
+    float GetFPS() const
     {
         if (m_Time > 0.0f)
         {
-            return static_cast<int>(std::round(1.0f / m_Time));
+            return 1.0f / m_Time;
         }
         return 0;
     }

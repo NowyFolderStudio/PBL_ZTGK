@@ -8,6 +8,8 @@ public:
     CubeControl(NFSEngine::GameObject* owner)
         : NFSEngine::Component(owner) { };
 
+    std::string GetName() const override { return "CubeControl"; };
+
 protected:
     virtual void OnAwake() override { p_Transform = m_Owner->GetComponent<NFSEngine::Transform>(); }
 

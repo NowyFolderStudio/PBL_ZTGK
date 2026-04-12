@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Core/DeltaTime.hpp"
-#include "Core/GameObject.hpp"
 #include "NFSEngine.h"
 #include <memory>
 
@@ -28,5 +26,8 @@ private:
     NFSEngine::Cube* m_MyCube = nullptr;
 
     NFSEngine::GameObject* m_MovingCube = nullptr;
+    NFSEngine::GameObject* m_MovingCube2 = nullptr;
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
+    NFSEngine::DeltaTime m_DeltaTime;
+    std::unique_ptr<NFSEngine::SceneHierarchyPanel> m_HierarchyPanel;
 };

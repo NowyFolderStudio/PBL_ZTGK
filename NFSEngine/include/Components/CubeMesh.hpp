@@ -14,6 +14,7 @@ class CubeMesh : public Component
 {
 public:
     CubeMesh(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
+    std::string GetName() const override { return "CubeMesh"; }
 
 protected:
     virtual void OnAwake() override;

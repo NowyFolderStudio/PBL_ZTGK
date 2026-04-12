@@ -30,3 +30,6 @@
 #include "Components/Component.hpp"
 #include "Components/CubeMesh.hpp"
 #include "Components/Transform.hpp"
+
+#include "ImGui/ImGuiLayer.hpp"
+#include "ImGui/SceneHierarchyPanel.hpp"

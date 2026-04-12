@@ -22,8 +22,11 @@ public:
     bool IsActive() const { return m_Active; }
     void SetActive(bool isActive);
 
-    std::string GetName() const { return m_Name; }
+    virtual void OnImGuiRender() { };
+
+    virtual std::string GetName() const = 0;
     std::string GetOwnerName() const;
+    GameObject* GetOwner() const;
 
     // This make class able to be logged
     friend std::ostream& operator<<(std::ostream& os, const Component& component)
@@ -37,7 +40,6 @@ protected:
     {
     }
     GameObject* m_Owner = nullptr;
-    std::string m_Name = "GameObject";
 
     bool m_Awakened = false;
     bool m_Started = false;
