@@ -9,7 +9,7 @@ public:
         : NFSEngine::Component(owner) { };
 
 protected:
-    virtual void OnAwake() override { p_Transform = p_Owner->GetComponent<NFSEngine::Transform>(); }
+    virtual void OnAwake() override { p_Transform = m_Owner->GetComponent<NFSEngine::Transform>(); }
 
     virtual void OnUpdate(NFSEngine::DeltaTime deltaTime) override
     {

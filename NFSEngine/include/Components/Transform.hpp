@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <ostream>
 
 #include "Components/Component.hpp"
 
@@ -13,6 +14,7 @@ public:
     Transform(GameObject* owner)
         : Component(owner)
     {
+        m_Name = "Transform";
     }
 
     void AddChild(Transform* child);
@@ -68,4 +70,5 @@ private:
 
     void RecalculateMatrix();
 };
+
 }

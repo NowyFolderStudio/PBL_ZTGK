@@ -1,10 +1,11 @@
 #pragma once
 
+#include <string>
+#include <ostream>
 #include "Core/DeltaTime.hpp"
 
 namespace NFSEngine
 {
-
 class GameObject;
 
 class Component
@@ -12,73 +13,31 @@ class Component
 public:
     virtual ~Component() = default;
 
-    void Awake()
+    void Awake();
+    void Start();
+    void FixedUpdate(DeltaTime fixedDeltaTime);
+    void Update(DeltaTime deltaTime);
+    void Render();
+
+    bool IsActive() const { return m_Active; }
+    void SetActive(bool isActive);
+
+    std::string GetName() const { return m_Name; }
+    std::string GetOwnerName() const;
+
+    // This make class able to be logged
+    friend std::ostream& operator<<(std::ostream& os, const Component& component)
     {
-        if (m_Awakened) return;
-
-        OnAwake();
-        m_Awakened = true;
-    }
-
-    void Start()
-    {
-        if (m_Started || !m_Active) return;
-
-        OnStart();
-        m_Started = true;
-    }
-
-    void FixedUpdate(DeltaTime fixedDeltaTime)
-    {
-        if (!m_Active) return;
-
-        if (!m_Started)
-        {
-            Start();
-        }
-        OnFixedUpdate(fixedDeltaTime);
-    }
-
-    void Update(DeltaTime deltaTime)
-    {
-        if (!m_Active) return;
-        if (!m_Started)
-        {
-            Start();
-        }
-        OnUpdate(deltaTime);
-    }
-
-    void Render()
-    {
-        if (!m_Active) return;
-        OnRender();
-    }
-
-    bool IsActive() { return m_Active; }
-
-    void SetActive(bool isActive)
-    {
-        if (m_Active == isActive) return;
-
-        m_Active = isActive;
-
-        if (m_Active)
-        {
-            OnEnable();
-        }
-        else
-        {
-            OnDisable();
-        }
+        return os << component.GetName() << " of " << component.GetOwnerName() << " GameObject";
     }
 
 protected:
     Component(GameObject* owner)
-        : p_Owner(owner)
+        : m_Owner(owner)
     {
     }
-    GameObject* p_Owner = nullptr;
+    GameObject* m_Owner = nullptr;
+    std::string m_Name = "GameObject";
 
     bool m_Awakened = false;
     bool m_Started = false;

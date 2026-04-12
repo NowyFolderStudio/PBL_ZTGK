@@ -2,6 +2,7 @@
 #include "Core/DeltaTime.hpp"
 #include "Platforms/WindowsInput.hpp"
 #include "Platforms/Window.hpp"
+#include "Core/Log.hpp"
 #include <memory>
 #include <GLFW/glfw3.h>
 #include "Renderer/Renderer.hpp"
@@ -49,6 +50,7 @@ void Application::Run()
 {
     while (m_Running && !m_Window->ShouldClose())
     {
+        Log::Init();
 
         float time = glfwGetTime();
         DeltaTime deltaTime = time - m_LastFrameTime;

@@ -47,7 +47,7 @@ CubeMesh::CubeMesh(GameObject* owner, std::shared_ptr<Shader> shader, std::share
     p_VertexArray->AddVertexBuffer(vbo);
 }
 
-void CubeMesh::OnAwake() { p_Transform = p_Owner->GetComponent<Transform>(); }
+void CubeMesh::OnAwake() { p_Transform = m_Owner->GetComponent<Transform>(); }
 
 void CubeMesh::OnRender()
 {

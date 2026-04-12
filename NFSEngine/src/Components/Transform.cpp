@@ -64,4 +64,5 @@ void Transform::RecalculateMatrix()
 
     m_Dirty = false;
 }
+
 }

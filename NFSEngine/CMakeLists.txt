@@ -16,6 +16,11 @@ set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(glfw)
 
+# Turning off tests and examples in spdlog project
+set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
+set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+add_subdirectory(thirdparty/spdlog)
+
 file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
 
 add_library(${PROJECT_NAME} STATIC
@@ -34,6 +39,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     include
     src
 )
+
+# Linking spdlog to the engine (spdlog v1.x)
+target_link_libraries(${PROJECT_NAME} PUBLIC spdlog::spdlog)
 
 if(WIN32)
     target_link_libraries(${PROJECT_NAME} PUBLIC
