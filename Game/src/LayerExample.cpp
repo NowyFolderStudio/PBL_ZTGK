@@ -14,8 +14,6 @@
 
 LayerExample::LayerExample()
 {
-    m_MyShader = nullptr;
-    m_MyTexture = nullptr;
     m_MyCube = nullptr;
     m_MovingCube = nullptr;
     m_Scene = nullptr;
@@ -43,13 +41,16 @@ void LayerExample::OnAttach()
     m_MovingCube2->AddComponent<CubeControl>();
     m_MovingCube2->GetTransform()->SetParent(m_MovingCube->GetTransform(), true);
 
-    auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Untitled.obj");
-    auto earthTexture = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.png");
+    // Adding GameObject with ModelComponent
+
+    auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
+    auto earthTexture = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.jpg");
 
     NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
 
     earthObj->AddComponent<NFSEngine::Transform>();
-    earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+    earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, -2.0f));
+    earthObj->GetComponent<NFSEngine::Transform>()->SetRotation(glm::vec3(0.0f, 240.0f, 0.0f));
 
     earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, shader, earthTexture);
 }
@@ -68,8 +69,6 @@ void LayerExample::OnRender() { Render(); }
 
 void LayerExample::Init()
 {
-    m_MyShader = NFSEngine::Shader::Create("MainShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
-    m_MyTexture = NFSEngine::Texture::Create("assets/textures/cat.png");
     m_MyCube = new NFSEngine::Cube();
 }
 

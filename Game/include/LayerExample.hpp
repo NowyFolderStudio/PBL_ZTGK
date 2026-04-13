@@ -21,8 +21,6 @@ public:
     void OnEvent(NFSEngine::Event& e) override;
 
 private:
-    std::shared_ptr<NFSEngine::Shader> m_MyShader = nullptr;
-    std::shared_ptr<NFSEngine::Texture> m_MyTexture;
     NFSEngine::Cube* m_MyCube = nullptr;
 
     NFSEngine::GameObject* m_MovingCube = nullptr;

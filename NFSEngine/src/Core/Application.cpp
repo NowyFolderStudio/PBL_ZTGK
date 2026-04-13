@@ -134,7 +134,7 @@ bool Application::OnWindowResize(WindowResizeEvent& e)
     m_Config.WindowHeight = e.GetHeight();
     m_Config.WindowWidth = e.GetWidth();
 
-    glViewport(0, 0, e.GetWidth(), e.GetHeight());
+    Renderer::GetAPI().SetViewport(0, 0, e.GetWidth(), e.GetHeight());
     return false;
 }
 
