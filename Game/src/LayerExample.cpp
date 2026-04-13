@@ -7,6 +7,8 @@
 #include <memory>
 #include "Components/CubeControl.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Renderer/Model.hpp"
+#include "Components/ModelComponent.hpp"
 
 #include <imgui.h>
 
@@ -40,6 +42,16 @@ void LayerExample::OnAttach()
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(shader, texture);
     m_MovingCube2->AddComponent<CubeControl>();
     m_MovingCube2->GetTransform()->SetParent(m_MovingCube->GetTransform(), true);
+
+    auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Untitled.obj");
+    auto earthTexture = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.png");
+
+    NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
+
+    earthObj->AddComponent<NFSEngine::Transform>();
+    earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, 0.0f));
+
+    earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, shader, earthTexture);
 }
 
 void LayerExample::OnDetach() { }

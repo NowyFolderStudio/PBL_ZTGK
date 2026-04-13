@@ -3,6 +3,8 @@ project(PBL_Game)
 file(GLOB_RECURSE GAME_SRC CONFIGURE_DEPENDS "src/*.cpp")
 file(GLOB_RECURSE ASSET_FILES CONFIGURE_DEPENDS "assets/*")
 
+set_source_files_properties(${ASSET_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
+
 add_executable(RythmGame ${GAME_SRC} ${ASSET_FILES})
 
 target_link_libraries(RythmGame PRIVATE NFSEngine)
