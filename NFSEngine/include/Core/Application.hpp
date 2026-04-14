@@ -14,10 +14,8 @@ int main(int argc, char** argv);
 
 namespace NFSEngine
 {
-
 struct ApplicationConfig
 {
-
     std::string WindowTitle = "NFS Engine Game";
     uint32_t WindowWidth = 1920;
     uint32_t WindowHeight = 1080;

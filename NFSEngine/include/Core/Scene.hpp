@@ -6,6 +6,7 @@
 
 #include "Core/GameObject.hpp"
 #include "Core/DeltaTime.hpp"
+#include "Core/PhysicsSystem.hpp"
 
 namespace NFSEngine
 {
@@ -30,6 +31,8 @@ private:
     std::vector<std::unique_ptr<GameObject>> m_GameObjects;
     DeltaTime m_FixedDeltaTime = 0.01666f;
     float m_Accumulator = 0.0f;
+
+    PhysicsSystem m_PhysicsSystem;
 };
 
 }

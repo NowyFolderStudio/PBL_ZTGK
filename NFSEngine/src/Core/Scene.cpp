@@ -32,6 +32,9 @@ void Scene::OnUpdate(DeltaTime deltaTime)
             auto& gameObject = m_GameObjects[i];
             gameObject->FixedUpdate(m_FixedDeltaTime);
         }
+
+        m_PhysicsSystem.Update(m_GameObjects, m_FixedDeltaTime);
+
         m_Accumulator -= m_FixedDeltaTime;
     }
 

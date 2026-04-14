@@ -12,6 +12,8 @@
 #include "Components/CameraController.hpp"
 #include "Components/Camera.hpp"
 
+#include "Components/PhysicsComponents.hpp"
+
 #include <imgui.h>
 
 LayerExample::LayerExample()
@@ -34,15 +36,31 @@ void LayerExample::OnAttach()
 
     auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
+    auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
 
     m_MovingCube = m_Scene->CreateGameObject("Player_Moving");
     m_MovingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
     m_MovingCube->AddComponent<CubeControl>();
 
+    // Physics tests on cube
+    m_MovingCube->AddComponent<NFSEngine::RigidBody3DComponent>();
+    m_MovingCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
+
+    // Sample floor object for physics test
+    m_Floor = m_Scene->CreateGameObject("Floor");
+    m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
+    
+    m_Floor->AddComponent<NFSEngine::CubeMesh>(shader, texture2);
+    m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
+
+    m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
+    m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
+
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(shader, texture);
     m_MovingCube2->AddComponent<CubeControl>();
-    m_MovingCube2->GetTransform()->SetPosition({ -5.0f, 0.0f, 0.0f });
+    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
+    m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
     auto earthTexture = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.jpg");
@@ -77,16 +95,11 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime)
     m_Scene->OnUpdate(deltaTime);
     Update();
     Render();
-
-
 }
 
 void LayerExample::OnRender() { Render(); }
 
-void LayerExample::Init()
-{
-    m_MyCube = new NFSEngine::Cube();
-}
+void LayerExample::Init() { m_MyCube = new NFSEngine::Cube(); }
 
 void LayerExample::Update() { }
 
@@ -109,8 +122,7 @@ void LayerExample::Render()
     {
         NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
 
-        if (m_Scene)
-            m_Scene->OnRender();
+        if (m_Scene) m_Scene->OnRender();
 
         NFSEngine::Renderer::EndScene();
     }
@@ -154,10 +166,11 @@ void LayerExample::OnImGuiRender()
     m_HierarchyPanel->OnImGuiRender();
 }
 
-void LayerExample::OnEvent(NFSEngine::Event& e) {
+void LayerExample::OnEvent(NFSEngine::Event& e)
+{
     auto& gameObjects = m_Scene->GetAllGameObjects();
     for (auto& go : gameObjects)
     {
-        if (auto* controller = go->GetComponent<NFSEngine::CameraController>())
-            controller->OnEvent(e);
-    }}
+        if (auto* controller = go->GetComponent<NFSEngine::CameraController>()) controller->OnEvent(e);
+    }
+}

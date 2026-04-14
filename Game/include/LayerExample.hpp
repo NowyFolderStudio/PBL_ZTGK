@@ -25,6 +25,7 @@ private:
 
     NFSEngine::GameObject* m_MovingCube = nullptr;
     NFSEngine::GameObject* m_MovingCube2 = nullptr;
+    NFSEngine::GameObject* m_Floor = nullptr;
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
     NFSEngine::DeltaTime m_DeltaTime;
     std::unique_ptr<NFSEngine::SceneHierarchyPanel> m_HierarchyPanel;
