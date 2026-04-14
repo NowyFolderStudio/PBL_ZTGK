@@ -27,6 +27,9 @@ private:
     NFSEngine::UIObject* m_AnimatedBar = nullptr;
     NFSEngine::UIObject* m_ScoreLabel = nullptr;
 
+    NFSEngine::UIObject* m_BgShape1 = nullptr;
+    NFSEngine::UIObject* m_BgShape2 = nullptr;
+
     int m_Score = 0;
     float m_AnimationTime = 0.0f;
 };
