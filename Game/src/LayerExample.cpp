@@ -48,7 +48,6 @@ void LayerExample::OnAttach()
     auto earthTexture = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.jpg");
 
     NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
-    earthObj->AddComponent<NFSEngine::Transform>();
     earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, -5.0f));
     earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, shader, earthTexture);
 
