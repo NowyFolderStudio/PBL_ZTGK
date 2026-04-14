@@ -9,6 +9,8 @@
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
 #include "Components/ModelComponent.hpp"
+#include "Components/CameraController.hpp"
+#include "Components/Camera.hpp"
 
 #include <imgui.h>
 
@@ -28,31 +30,44 @@ void LayerExample::OnAttach()
 {
     Init();
     m_Scene = std::make_unique<NFSEngine::Scene>();
-    m_MovingCube = m_Scene->CreateGameObject("movingCube");
-    m_MovingCube2 = m_Scene->CreateGameObject("movingCube2");
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
 
+    m_MovingCube = m_Scene->CreateGameObject("Player_Moving");
     m_MovingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
     m_MovingCube->AddComponent<CubeControl>();
+
+    m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(shader, texture);
     m_MovingCube2->AddComponent<CubeControl>();
-    m_MovingCube2->GetTransform()->SetParent(m_MovingCube->GetTransform(), true);
-
-    // Adding GameObject with ModelComponent
+    m_MovingCube2->GetTransform()->SetPosition({ -5.0f, 0.0f, 0.0f });
 
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
     auto earthTexture = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.jpg");
 
     NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
-
     earthObj->AddComponent<NFSEngine::Transform>();
-    earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, -2.0f));
-    earthObj->GetComponent<NFSEngine::Transform>()->SetRotation(glm::vec3(0.0f, 240.0f, 0.0f));
-
+    earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, -5.0f));
     earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, shader, earthTexture);
+
+    NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
+    cameraObj->AddComponent<NFSEngine::Camera>();
+    auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
+    controller.SetTarget(m_MovingCube->GetTransform());
+
+    const auto& gameObjects = m_Scene->GetAllGameObjects();
+    for (const auto& go : gameObjects)
+    {
+        if (go.get() != m_MovingCube)
+        {
+            if (auto* control = go->GetComponent<CubeControl>())
+            {
+                control->SetActive(false);
+            }
+        }
+    }
 }
 
 void LayerExample::OnDetach() { }
@@ -63,6 +78,8 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime)
     m_Scene->OnUpdate(deltaTime);
     Update();
     Render();
+
+
 }
 
 void LayerExample::OnRender() { Render(); }
@@ -76,21 +93,28 @@ void LayerExample::Update() { }
 
 void LayerExample::Render()
 {
-
     NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
     NFSEngine::Renderer::GetAPI().Clear();
 
-    glm::mat4 view3D = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
-    glm::mat4 projection3D = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
-
-    NFSEngine::Renderer::BeginScene(view3D, projection3D);
-
-    if (m_Scene)
+    NFSEngine::Camera* mainCamera = nullptr;
+    for (auto& go : m_Scene->GetAllGameObjects())
     {
-        m_Scene->OnRender();
+        if (auto* cam = go->GetComponent<NFSEngine::Camera>())
+        {
+            mainCamera = cam;
+            break;
+        }
     }
 
-    NFSEngine::Renderer::EndScene();
+    if (mainCamera)
+    {
+        NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
+
+        if (m_Scene)
+            m_Scene->OnRender();
+
+        NFSEngine::Renderer::EndScene();
+    }
 }
 
 void LayerExample::OnImGuiRender()
@@ -131,4 +155,10 @@ void LayerExample::OnImGuiRender()
     m_HierarchyPanel->OnImGuiRender();
 }
 
-void LayerExample::OnEvent(NFSEngine::Event& e) { }
+void LayerExample::OnEvent(NFSEngine::Event& e) {
+    auto& gameObjects = m_Scene->GetAllGameObjects();
+    for (auto& go : gameObjects)
+    {
+        if (auto* controller = go->GetComponent<NFSEngine::CameraController>())
+            controller->OnEvent(e);
+    }}

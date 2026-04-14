@@ -20,7 +20,8 @@ namespace Key
         S = 83,
         W = 87,
         Escape = 256,
-        LeftShift = 340
+        LeftShift = 340,
+        Tab = 258
     };
 }
 

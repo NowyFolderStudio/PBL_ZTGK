@@ -131,4 +131,24 @@ void WindowsWindow::OnUpdate()
     m_Context->SwapBuffers();
 }
 
+    void WindowsWindow::SetCursorMode(CursorMode mode)
+{
+    int glfwMode = GLFW_CURSOR_NORMAL;
+    switch (mode)
+    {
+        case CursorMode::Normal: glfwMode = GLFW_CURSOR_NORMAL; break;
+        case CursorMode::Hidden: glfwMode = GLFW_CURSOR_HIDDEN; break;
+        case CursorMode::Locked: glfwMode = GLFW_CURSOR_DISABLED; break;
+    }
+    glfwSetInputMode(m_Window, GLFW_CURSOR, glfwMode);
+}
+
+    CursorMode WindowsWindow::GetCursorMode() const
+{
+    int mode = glfwGetInputMode(m_Window, GLFW_CURSOR);
+    if (mode == GLFW_CURSOR_DISABLED) return CursorMode::Locked;
+    if (mode == GLFW_CURSOR_HIDDEN) return CursorMode::Hidden;
+    return CursorMode::Normal;
+}
+
 }
