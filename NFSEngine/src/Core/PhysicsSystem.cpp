@@ -31,54 +31,68 @@ bool PhysicsSystem::CheckCollision(GameObject* a, GameObject* b)
 void PhysicsSystem::Update(std::vector<std::unique_ptr<GameObject>>& gameObjects, DeltaTime deltaTime)
 {
     float dt = static_cast<float>(deltaTime);
-    for (auto& gameObject : gameObjects)
-    {
-        if (auto* rigidBody = gameObject->GetComponent<RigidBody3DComponent>())
-        {
-            auto* transform = gameObject->GetTransform();
-            rigidBody->PreviousPosition = transform->GetPosition();
-
-            if (rigidBody->UseGravity)
-            {
-                rigidBody->Acceleration += Gravity;
-            }
-
-            rigidBody->Velocity += rigidBody->Acceleration * dt;
-
-            transform->Move(rigidBody->Velocity * dt);
-
-            rigidBody->Acceleration = glm::vec3(0.0f);
-        }
-    }
 
     for (size_t i = 0; i < gameObjects.size(); i++)
     {
-        for (size_t j = i + 1; j < gameObjects.size(); j++)
+        GameObject* objA = gameObjects[i].get();
+        auto* rigidBody = objA->GetComponent<RigidBody3DComponent>();
+        auto* colA = objA->GetComponent<BoxCollider3DComponent>();
+
+        if (!rigidBody || !objA->IsActive()) continue;
+
+        auto* transform = objA->GetTransform();
+
+        if (rigidBody->UseGravity)
         {
-            GameObject* objA = gameObjects[i].get();
+            rigidBody->Acceleration += Gravity;
+        }
+        rigidBody->Velocity += rigidBody->Acceleration * dt;
+        rigidBody->Acceleration = glm::vec3(0.0f);
+
+        glm::vec3 moveDelta = rigidBody->Velocity * dt;
+
+        transform->Move(glm::vec3(moveDelta.x, 0.0f, 0.0f));
+        for (size_t j = 0; j < gameObjects.size(); j++)
+        {
+            if (i == j) continue;
             GameObject* objB = gameObjects[j].get();
+            auto* colB = objB->GetComponent<BoxCollider3DComponent>();
 
-            if (!objA->IsActive() || !objB->IsActive()) continue;
-
-            if (CheckCollision(objA, objB))
+            if (objB->IsActive() && colB && CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger)
             {
-                auto* rigidBodyA = objA->GetComponent<RigidBody3DComponent>();
-                auto* colliderA = objA->GetComponent<BoxCollider3DComponent>();
-                auto* colliderB = objB->GetComponent<BoxCollider3DComponent>();
+                transform->Move(glm::vec3(-moveDelta.x, 0.0f, 0.0f));
+                rigidBody->Velocity.x = 0.0f;
+                break;
+            }
+        }
 
-                if (rigidBodyA && !colliderA->IsTrigger && !colliderB->IsTrigger)
-                {
-                    objA->GetTransform()->SetPosition(rigidBodyA->PreviousPosition);
-                    rigidBodyA->Velocity = glm::vec3(0.0f);
-                }
+        transform->Move(glm::vec3(0.0f, moveDelta.y, 0.0f));
+        for (size_t j = 0; j < gameObjects.size(); j++)
+        {
+            if (i == j) continue;
+            GameObject* objB = gameObjects[j].get();
+            auto* colB = objB->GetComponent<BoxCollider3DComponent>();
 
-                auto* rigidBodyB = objB->GetComponent<RigidBody3DComponent>();
+            if (objB->IsActive() && colB && CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger)
+            {
+                transform->Move(glm::vec3(0.0f, -moveDelta.y, 0.0f));
+                rigidBody->Velocity.y = 0.0f;
+                break;
+            }
+        }
 
-                if (rigidBodyB && !colliderA->IsTrigger && !colliderB->IsTrigger)
-                {
-                    objB->GetTransform()->SetPosition(rigidBodyB->PreviousPosition);
-                    rigidBodyB->Velocity = glm::vec3(0.0f);
-                }
+        transform->Move(glm::vec3(0.0f, 0.0f, moveDelta.z));
+        for (size_t j = 0; j < gameObjects.size(); j++)
+        {
+            if (i == j) continue;
+            GameObject* objB = gameObjects[j].get();
+            auto* colB = objB->GetComponent<BoxCollider3DComponent>();
+
+            if (objB->IsActive() && colB && CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger)
+            {
+                transform->Move(glm::vec3(0.0f, 0.0f, -moveDelta.z));
+                rigidBody->Velocity.z = 0.0f;
+                break;
             }
         }
     }

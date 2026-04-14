@@ -58,7 +58,6 @@ void LayerExample::OnAttach()
 
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(shader, texture);
-    m_MovingCube2->AddComponent<CubeControl>();
     m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
