@@ -12,185 +12,159 @@
 #include <mutex>
 #include <sstream>
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
+    using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
 
-struct ProfileResult
-{
-    std::string name;
-    FloatingPointMicroseconds start;
-    std::chrono::microseconds elapsedTime;
-    std::thread::id threadID;
-};
-
-struct ProfilingSession
-{
-    std::string name = "ProfilingName";
-    std::string filePath = "profiling_result.json";
-};
-
-class Profiler
-{
-public:
-    Profiler(const Profiler&) = delete;
-    Profiler(Profiler&&) = delete;
-
-    void BeginSession(const ProfilingSession& session)
-    {
-        std::lock_guard lock(m_Mutex);
-        if (m_CurrentSession)
-        {
-            if (Log::GetCoreLogger())
-            {
-                NFS_CORE_ERROR("Profiler::BeginSession'{0}' when session '{1}' already open.", session.name,
-                               m_CurrentSession->name);
-            }
-            InternalEndSession();
-        }
-        m_OutputStream.open(session.filePath);
-
-        if (m_OutputStream.is_open())
-        {
-            m_CurrentSession = new ProfilingSession(session);
-            WriteHeader();
-        }
-        else
-        {
-            if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
-            {
-                NFS_CORE_ERROR("Profiler could not open results file '{0}'.", session.filePath);
-            }
-        }
-    }
-
-    void EndSession()
-    {
-        std::lock_guard lock(m_Mutex);
-        InternalEndSession();
-    }
-
-    void WriteProfile(const ProfileResult& result)
-    {
-        std::stringstream json;
-
-        json << std::setprecision(3) << std::fixed;
-        json << ",{";
-        json << "\"cat\":\"function\",";
-        json << "\"dur\":" << (result.elapsedTime.count()) << ',';
-        json << "\"name\":\"" << result.name << "\",";
-        json << "\"ph\":\"X\",";
-        json << "\"pid\":0,";
-        json << "\"tid\":" << result.threadID << ",";
-        json << "\"ts\":" << result.start.count();
-        json << "}";
-
-        std::lock_guard lock(m_Mutex);
-        if (m_CurrentSession)
-        {
-            m_OutputStream << json.str();
-            m_OutputStream.flush();
-        }
-    }
-
-    static Profiler& Get()
-    {
-        static Profiler instance;
-        return instance;
-    }
-
-private:
-    Profiler() { }
-
-    ~Profiler() { EndSession(); }
-
-    void WriteHeader()
-    {
-        m_OutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
-        m_OutputStream.flush();
-    }
-    void WriteFooter()
-    {
-        m_OutputStream << "]}";
-        m_OutputStream.flush();
-    }
-
-    void InternalEndSession()
-    {
-        if (m_CurrentSession)
-        {
-            WriteFooter();
-            m_OutputStream.close();
-            delete m_CurrentSession;
-            m_CurrentSession = nullptr;
-        }
-    }
-
-    std::mutex m_Mutex;
-    ProfilingSession* m_CurrentSession { };
-    std::ofstream m_OutputStream;
-};
-
-class ProfilerTimer
-{
-public:
-    ProfilerTimer(const char* name)
-        : m_Name(name)
-    {
-        m_StartTimepoint = std::chrono::steady_clock::now();
-    }
-
-    ~ProfilerTimer()
-    {
-        if (!m_Stopped) Stop();
-    }
-
-    void Stop()
-    {
-        auto endTimepoint = std::chrono::steady_clock::now();
-        auto highResStart = FloatingPointMicroseconds { m_StartTimepoint.time_since_epoch() };
-        auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch()
-            - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
-
-        Profiler::Get().WriteProfile({ m_Name, highResStart, elapsedTime, std::this_thread::get_id() });
-
-        m_Stopped = true;
-    }
-
-private:
-    const char* m_Name;
-    std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
-    bool m_Stopped = false;
-};
-
-namespace ProfilerUtils
-{
-    template <size_t N> struct ChangeResult
-    {
-        char data[N];
+    struct ProfileResult {
+        std::string name;
+        FloatingPointMicroseconds start;
+        std::chrono::microseconds elapsedTime;
+        std::thread::id threadID;
     };
 
-    template <size_t N, size_t K> constexpr auto CleanupOutputString(const char (&expr)[N], const char (&remove)[K])
-    {
-        ChangeResult<N> result = { };
+    struct ProfilingSession {
+        std::string name = "ProfilingName";
+        std::string filePath = "profiling_result.json";
+    };
 
-        size_t srcIndex = 0;
-        size_t dstIndex = 0;
-        while (srcIndex < N)
-        {
-            size_t matchIndex = 0;
-            while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
-                matchIndex++;
-            if (matchIndex == K - 1) srcIndex += matchIndex;
-            result.data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
-            srcIndex++;
+    class Profiler {
+    public:
+        Profiler(const Profiler&) = delete;
+        Profiler(Profiler&&) = delete;
+
+        void BeginSession(const ProfilingSession& session) {
+            std::lock_guard lock(m_Mutex);
+            if (m_CurrentSession) {
+                if (Log::GetCoreLogger()) {
+                    NFS_CORE_ERROR("Profiler::BeginSession'{0}' when session '{1}' already open.", session.name,
+                                   m_CurrentSession->name);
+                }
+                InternalEndSession();
+            }
+            m_OutputStream.open(session.filePath);
+
+            if (m_OutputStream.is_open()) {
+                m_CurrentSession = new ProfilingSession(session);
+                WriteHeader();
+            } else {
+                if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
+                {
+                    NFS_CORE_ERROR("Profiler could not open results file '{0}'.", session.filePath);
+                }
+            }
         }
-        return result;
-    }
-}
 
-}
+        void EndSession() {
+            std::lock_guard lock(m_Mutex);
+            InternalEndSession();
+        }
+
+        void WriteProfile(const ProfileResult& result) {
+            std::stringstream json;
+
+            json << std::setprecision(3) << std::fixed;
+            json << ",{";
+            json << "\"cat\":\"function\",";
+            json << "\"dur\":" << (result.elapsedTime.count()) << ',';
+            json << "\"name\":\"" << result.name << "\",";
+            json << "\"ph\":\"X\",";
+            json << "\"pid\":0,";
+            json << "\"tid\":" << result.threadID << ",";
+            json << "\"ts\":" << result.start.count();
+            json << "}";
+
+            std::lock_guard lock(m_Mutex);
+            if (m_CurrentSession) {
+                m_OutputStream << json.str();
+                m_OutputStream.flush();
+            }
+        }
+
+        static Profiler& Get() {
+            static Profiler instance;
+            return instance;
+        }
+
+    private:
+        Profiler() { }
+
+        ~Profiler() { EndSession(); }
+
+        void WriteHeader() {
+            m_OutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
+            m_OutputStream.flush();
+        }
+        void WriteFooter() {
+            m_OutputStream << "]}";
+            m_OutputStream.flush();
+        }
+
+        void InternalEndSession() {
+            if (m_CurrentSession) {
+                WriteFooter();
+                m_OutputStream.close();
+                delete m_CurrentSession;
+                m_CurrentSession = nullptr;
+            }
+        }
+
+        std::mutex m_Mutex;
+        ProfilingSession* m_CurrentSession { };
+        std::ofstream m_OutputStream;
+    };
+
+    class ProfilerTimer {
+    public:
+        ProfilerTimer(const char* name)
+            : m_Name(name) {
+            m_StartTimepoint = std::chrono::steady_clock::now();
+        }
+
+        ~ProfilerTimer() {
+            if (!m_Stopped) Stop();
+        }
+
+        void Stop() {
+            auto endTimepoint = std::chrono::steady_clock::now();
+            auto highResStart = FloatingPointMicroseconds { m_StartTimepoint.time_since_epoch() };
+            auto elapsedTime = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch()
+                - std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch();
+
+            Profiler::Get().WriteProfile({ m_Name, highResStart, elapsedTime, std::this_thread::get_id() });
+
+            m_Stopped = true;
+        }
+
+    private:
+        const char* m_Name;
+        std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
+        bool m_Stopped = false;
+    };
+
+    namespace ProfilerUtils {
+        template <size_t N> struct ChangeResult {
+            char data[N];
+        };
+
+        template <size_t N, size_t K> constexpr auto CleanupOutputString(const char (&expr)[N], const char (&remove)[K]) {
+            ChangeResult<N> result = { };
+
+            size_t srcIndex = 0;
+            size_t dstIndex = 0;
+            while (srcIndex < N) {
+                size_t matchIndex = 0;
+                while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 && expr[srcIndex + matchIndex] == remove[matchIndex])
+                    matchIndex++;
+                if (matchIndex == K - 1) srcIndex += matchIndex;
+                result.data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
+                srcIndex++;
+            }
+            return result;
+        }
+    } // namespace ProfilerUtils
+
+} // namespace NFSEngine
 
 // ========================================================================
 // PROFILER'S MACROS (USE THOSE INSTEAD OF CLASSES)

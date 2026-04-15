@@ -1,69 +1,57 @@
 #include "Components/Component.hpp"
 #include "Core/GameObject.hpp"
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-void Component::Awake()
-{
-    if (m_Awakened) return;
+    void Component::Awake() {
+        if (m_Awakened) return;
 
-    OnAwake();
-    m_Awakened = true;
-}
-
-void Component::Start()
-{
-    if (m_Started || !m_Active) return;
-
-    OnStart();
-    m_Started = true;
-}
-
-void Component::FixedUpdate(DeltaTime fixedDeltaTime)
-{
-    if (!m_Active) return;
-
-    if (!m_Started)
-    {
-        Start();
+        OnAwake();
+        m_Awakened = true;
     }
-    OnFixedUpdate(fixedDeltaTime);
-}
 
-void Component::Update(DeltaTime deltaTime)
-{
-    if (!m_Active) return;
-    if (!m_Started)
-    {
-        Start();
+    void Component::Start() {
+        if (m_Started || !m_Active) return;
+
+        OnStart();
+        m_Started = true;
     }
-    OnUpdate(deltaTime);
-}
 
-void Component::Render()
-{
-    if (!m_Active) return;
-    OnRender();
-}
+    void Component::FixedUpdate(DeltaTime fixedDeltaTime) {
+        if (!m_Active) return;
 
-void Component::SetActive(bool isActive)
-{
-    if (m_Active == isActive) return;
-
-    m_Active = isActive;
-
-    if (m_Active)
-    {
-        OnEnable();
+        if (!m_Started) {
+            Start();
+        }
+        OnFixedUpdate(fixedDeltaTime);
     }
-    else
-    {
-        OnDisable();
+
+    void Component::Update(DeltaTime deltaTime) {
+        if (!m_Active) return;
+        if (!m_Started) {
+            Start();
+        }
+        OnUpdate(deltaTime);
     }
-}
 
-std::string Component::GetOwnerName() const { return m_Owner ? m_Owner->name : "NONE"; }
+    void Component::Render() {
+        if (!m_Active) return;
+        OnRender();
+    }
 
-GameObject* Component::GetOwner() const { return m_Owner; }
-};
+    void Component::SetActive(bool isActive) {
+        if (m_Active == isActive) return;
+
+        m_Active = isActive;
+
+        if (m_Active) {
+            OnEnable();
+        } else {
+            OnDisable();
+        }
+    }
+
+    std::string Component::GetOwnerName() const { return m_Owner ? m_Owner->name : "NONE"; }
+
+    GameObject* Component::GetOwner() const { return m_Owner; }
+}; // namespace NFSEngine

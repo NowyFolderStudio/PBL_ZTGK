@@ -8,31 +8,29 @@
 #include "Core/DeltaTime.hpp"
 #include "Core/PhysicsSystem.hpp"
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-class Scene
-{
-public:
-    Scene() = default;
-    ~Scene() = default;
+    class Scene {
+    public:
+        Scene() = default;
+        ~Scene() = default;
 
-    GameObject* CreateGameObject(const std::string& name = "GameObject");
+        GameObject* CreateGameObject(const std::string& name = "GameObject");
 
-    void OnUpdate(DeltaTime deltaTime);
-    void OnRender();
+        void OnUpdate(DeltaTime deltaTime);
+        void OnRender();
 
-    DeltaTime GetFixedDeltaTime() { return m_FixedDeltaTime; }
-    void SetFixedDeltaTime(DeltaTime fixedDeltaTime) { m_FixedDeltaTime = fixedDeltaTime; }
+        DeltaTime GetFixedDeltaTime() { return m_FixedDeltaTime; }
+        void SetFixedDeltaTime(DeltaTime fixedDeltaTime) { m_FixedDeltaTime = fixedDeltaTime; }
 
-    const std::vector<std::unique_ptr<GameObject>>& GetAllGameObjects() const { return m_GameObjects; }
+        const std::vector<std::unique_ptr<GameObject>>& GetAllGameObjects() const { return m_GameObjects; }
 
-private:
-    std::vector<std::unique_ptr<GameObject>> m_GameObjects;
-    DeltaTime m_FixedDeltaTime = 0.01666f;
-    float m_Accumulator = 0.0f;
+    private:
+        std::vector<std::unique_ptr<GameObject>> m_GameObjects;
+        DeltaTime m_FixedDeltaTime = 0.01666f;
+        float m_Accumulator = 0.0f;
 
-    PhysicsSystem m_PhysicsSystem;
-};
+        PhysicsSystem m_PhysicsSystem;
+    };
 
-}
+} // namespace NFSEngine

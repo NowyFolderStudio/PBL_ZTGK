@@ -5,8 +5,7 @@
 #include "NFSEngine.h"
 #include <memory>
 
-class UILayer : public NFSEngine::Layer
-{
+class UILayer : public NFSEngine::Layer {
 public:
     UILayer();
     virtual ~UILayer() override;

@@ -4,10 +4,8 @@
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 
-namespace NFSEngine
-{
-    class WindowsWindow : public Window
-    {
+namespace NFSEngine {
+    class WindowsWindow : public Window {
     public:
         WindowsWindow(const std::string& title, int width, int height);
         virtual ~WindowsWindow();
@@ -30,8 +28,7 @@ namespace NFSEngine
         GLFWwindow* m_Window;
         GraphicContext* m_Context;
 
-        struct WindowData
-        {
+        struct WindowData {
             std::string Title;
             int Width, Height;
             EventCallbackFn EventCallback;
@@ -39,4 +36,4 @@ namespace NFSEngine
 
         WindowData m_Data;
     };
-}
+} // namespace NFSEngine

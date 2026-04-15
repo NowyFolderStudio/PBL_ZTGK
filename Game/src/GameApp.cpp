@@ -3,12 +3,10 @@
 #include "NFSEngine.h"
 #include "Core/EntryPoint.hpp"
 
-class GameApp : public NFSEngine::Application
-{
+class GameApp : public NFSEngine::Application {
 public:
     GameApp(const NFSEngine::ApplicationConfig& config)
-        : NFSEngine::Application(config)
-    {
+        : NFSEngine::Application(config) {
         PushLayer(new LayerExample());
         PushOverlay(new UILayer());
     }
@@ -16,8 +14,7 @@ public:
     ~GameApp() { }
 };
 
-NFSEngine::Application* NFSEngine::CreateApplication()
-{
+NFSEngine::Application* NFSEngine::CreateApplication() {
     ApplicationConfig config;
     config.WindowTitle = "NFS Game Window";
     config.WindowWidth = 1000;

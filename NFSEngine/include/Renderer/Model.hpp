@@ -11,24 +11,24 @@
 
 namespace NFSEngine {
 
-	struct Vertex {
-		glm::vec3 Position;
-		glm::vec3 Normal;
-		glm::vec2 TexCoords;
-	};
+    struct Vertex {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoords;
+    };
 
-	class Model {
-	public:
-		Model(const std::string& path);
+    class Model {
+    public:
+        Model(const std::string& path);
 
-		std::vector<std::shared_ptr<VertexArray>> GetMeshes() const { return m_Meshes; }
+        std::vector<std::shared_ptr<VertexArray>> GetMeshes() const { return m_Meshes; }
 
-	private:
-		std::vector<std::shared_ptr<VertexArray>> m_Meshes;
+    private:
+        std::vector<std::shared_ptr<VertexArray>> m_Meshes;
 
-		void LoadModel(const std::string& path);
-		void ProcessNode(aiNode* node, const aiScene* scene);
+        void LoadModel(const std::string& path);
+        void ProcessNode(aiNode* node, const aiScene* scene);
 
-		std::shared_ptr<VertexArray> ProcessMesh(aiMesh* mesh, const aiScene* scene);
-	};
-}
+        std::shared_ptr<VertexArray> ProcessMesh(aiMesh* mesh, const aiScene* scene);
+    };
+} // namespace NFSEngine

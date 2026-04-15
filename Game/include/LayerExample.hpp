@@ -3,8 +3,7 @@
 #include "NFSEngine.h"
 #include <memory>
 
-class LayerExample : public NFSEngine::Layer
-{
+class LayerExample : public NFSEngine::Layer {
 public:
     LayerExample();
     virtual ~LayerExample() override;

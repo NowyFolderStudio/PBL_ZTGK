@@ -3,8 +3,7 @@
 #include "Core/KeyCodes.hpp"
 #include <NFSEngine.h>
 
-class CubeControl : public NFSEngine::Component
-{
+class CubeControl : public NFSEngine::Component {
 public:
     CubeControl(NFSEngine::GameObject* owner)
         : NFSEngine::Component(owner) { };
@@ -12,17 +11,14 @@ public:
     std::string GetName() const override { return "CubeControl"; };
 
 protected:
-    virtual void OnAwake() override
-    {
+    virtual void OnAwake() override {
         p_RigidBody = GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
-        if (!p_RigidBody)
-        {
+        if (!p_RigidBody) {
             NFS_CORE_ERROR("CubeControl component requires RigidBody3DComponent on the same GameObject!");
         }
     }
     virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) {
-        if (!p_RigidBody)
-            return;
+        if (!p_RigidBody) return;
         float speed = 5.0f;
 
         glm::vec3 currentVelocity = p_RigidBody->Velocity;
@@ -37,8 +33,7 @@ protected:
         p_RigidBody->Velocity.x = inputMovement.x;
         p_RigidBody->Velocity.z = inputMovement.z;
 
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space))
-        {
+        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space)) {
             p_RigidBody->Velocity.y = 5.0f;
         }
     }

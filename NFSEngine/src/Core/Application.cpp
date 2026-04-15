@@ -8,149 +8,132 @@
 #include <GLFW/glfw3.h>
 #include "Renderer/Renderer.hpp"
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-Application* Application::s_Instance = nullptr;
+    Application* Application::s_Instance = nullptr;
 
-Application::Application(const ApplicationConfig& config)
-    : m_Config(config)
-{
-    NFS_PROFILE_FUNCTION();
-    s_Instance = this;
+    Application::Application(const ApplicationConfig& config)
+        : m_Config(config) {
+        NFS_PROFILE_FUNCTION();
+        s_Instance = this;
 
-    std::string title = config.WindowTitle;
-    int width = static_cast<int>(config.WindowWidth);
-    int height = static_cast<int>(config.WindowHeight);
+        std::string title = config.WindowTitle;
+        int width = static_cast<int>(config.WindowWidth);
+        int height = static_cast<int>(config.WindowHeight);
 
-    m_Window = Window::Create(title, width, height);
-    static WindowsInput windowsInput;
-    Input::instance = &windowsInput;
+        m_Window = Window::Create(title, width, height);
+        static WindowsInput windowsInput;
+        Input::instance = &windowsInput;
 
-    m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
+        m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
 
-    Renderer::Init();
+        Renderer::Init();
 
-    m_ImGuiLayer = new ImGuiLayer();
-    PushLayer(m_ImGuiLayer);
-}
-
-Application::~Application() { NFS_PROFILE_FUNCTION(); }
-
-void Application::PushLayer(Layer* layer)
-{
-    NFS_PROFILE_FUNCTION();
-    m_LayerStack.PushLayer(layer);
-    layer->OnAttach();
-}
-
-void Application::PushOverlay(Layer* layer)
-{
-    NFS_PROFILE_FUNCTION();
-    m_LayerStack.PushOverlay(layer);
-    layer->OnAttach();
-}
-
-void Application::Close() { m_Running = false; }
-
-void Application::Run()
-{
-    NFS_PROFILE_FUNCTION();
-    NFS_CORE_INFO("Application started.");
-
-    while (m_Running && !m_Window->ShouldClose())
-    {
-        NFS_PROFILE_SCOPE("RunLoop");
-
-        auto time = static_cast<float>(glfwGetTime());
-        DeltaTime deltaTime = time - m_LastFrameTime;
-        m_LastFrameTime = time;
-
-        Input::UpdateStates();
-
-        {
-            NFS_PROFILE_SCOPE("LayerStack Logic Update");
-
-            for (Layer* layer : m_LayerStack)
-            {
-                layer->OnUpdate(deltaTime);
-            }
-        }
-
-        {
-            NFS_PROFILE_SCOPE("LayerStack Rendering Preparation");
-            for (Layer* layer : m_LayerStack)
-            {
-                layer->OnRender();
-            }
-        }
-
-        m_ImGuiLayer->Begin();
-        {
-            NFS_PROFILE_SCOPE("LayerStack OnImGuiRender");
-
-            for (Layer* layer : m_LayerStack)
-                layer->OnImGuiRender();
-        }
-        m_ImGuiLayer->End();
-
-        m_Window->OnUpdate();
+        m_ImGuiLayer = new ImGuiLayer();
+        PushLayer(m_ImGuiLayer);
     }
-}
 
-void Application::OnEvent(Event& e)
-{
-    EventDispatcher dispatcher(e);
+    Application::~Application() { NFS_PROFILE_FUNCTION(); }
 
-    dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) { return this->OnWindowResize(event); });
-    dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& event) { return this->OnWindowClose(event); });
-    dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event) { return this->OnKeyPressed(event); });
+    void Application::PushLayer(Layer* layer) {
+        NFS_PROFILE_FUNCTION();
+        m_LayerStack.PushLayer(layer);
+        layer->OnAttach();
+    }
 
-    if (!e.Handled)
-    {
+    void Application::PushOverlay(Layer* layer) {
+        NFS_PROFILE_FUNCTION();
+        m_LayerStack.PushOverlay(layer);
+        layer->OnAttach();
+    }
 
-        for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
-        {
+    void Application::Close() { m_Running = false; }
 
-            (*it)->OnEvent(e);
-            if (e.Handled)
+    void Application::Run() {
+        NFS_PROFILE_FUNCTION();
+        NFS_CORE_INFO("Application started.");
+
+        while (m_Running && !m_Window->ShouldClose()) {
+            NFS_PROFILE_SCOPE("RunLoop");
+
+            auto time = static_cast<float>(glfwGetTime());
+            DeltaTime deltaTime = time - m_LastFrameTime;
+            m_LastFrameTime = time;
+
+            Input::UpdateStates();
+
             {
-                break;
+                NFS_PROFILE_SCOPE("LayerStack Logic Update");
+
+                for (Layer* layer : m_LayerStack) {
+                    layer->OnUpdate(deltaTime);
+                }
+            }
+
+            {
+                NFS_PROFILE_SCOPE("LayerStack Rendering Preparation");
+                for (Layer* layer : m_LayerStack) {
+                    layer->OnRender();
+                }
+            }
+
+            m_ImGuiLayer->Begin();
+            {
+                NFS_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+                for (Layer* layer : m_LayerStack)
+                    layer->OnImGuiRender();
+            }
+            m_ImGuiLayer->End();
+
+            m_Window->OnUpdate();
+        }
+    }
+
+    void Application::OnEvent(Event& e) {
+        EventDispatcher dispatcher(e);
+
+        dispatcher.Dispatch<WindowResizeEvent>([this](WindowResizeEvent& event) { return this->OnWindowResize(event); });
+        dispatcher.Dispatch<WindowCloseEvent>([this](WindowCloseEvent& event) { return this->OnWindowClose(event); });
+        dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event) { return this->OnKeyPressed(event); });
+
+        if (!e.Handled) {
+
+            for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
+
+                (*it)->OnEvent(e);
+                if (e.Handled) {
+                    break;
+                }
             }
         }
     }
-}
 
-bool Application::OnWindowResize(WindowResizeEvent& e)
-{
-    NFS_PROFILE_FUNCTION();
-    if (e.GetWidth() == 0 || e.GetHeight() == 0)
-    {
-        m_Minimalized = true;
+    bool Application::OnWindowResize(WindowResizeEvent& e) {
+        NFS_PROFILE_FUNCTION();
+        if (e.GetWidth() == 0 || e.GetHeight() == 0) {
+            m_Minimalized = true;
+            return false;
+        }
+        m_Minimalized = false;
+
+        m_Config.WindowHeight = e.GetHeight();
+        m_Config.WindowWidth = e.GetWidth();
+
+        Renderer::GetAPI().SetViewport(0, 0, e.GetWidth(), e.GetHeight());
         return false;
     }
-    m_Minimalized = false;
 
-    m_Config.WindowHeight = e.GetHeight();
-    m_Config.WindowWidth = e.GetWidth();
-
-    Renderer::GetAPI().SetViewport(0, 0, e.GetWidth(), e.GetHeight());
-    return false;
-}
-
-bool Application::OnWindowClose(WindowCloseEvent& e)
-{
-    this->Close();
-    return true;
-}
-
-bool Application::OnKeyPressed(KeyPressedEvent& e)
-{
-    if (e.GetKeyCode() == Key::Escape)
-    {
+    bool Application::OnWindowClose(WindowCloseEvent& e) {
         this->Close();
         return true;
     }
-    return false;
-}
-}
+
+    bool Application::OnKeyPressed(KeyPressedEvent& e) {
+        if (e.GetKeyCode() == Key::Escape) {
+            this->Close();
+            return true;
+        }
+        return false;
+    }
+} // namespace NFSEngine

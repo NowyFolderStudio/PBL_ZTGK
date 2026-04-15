@@ -7,20 +7,16 @@
 
 extern NFSEngine::Application* NFSEngine::CreateApplication();
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
     NFSEngine::Log::Init();
 
     // Setting current working directory to be the same as executable file
-    try
-    {
+    try {
         // argv[0] is a path to executable file
         std::filesystem::path executablePath = std::filesystem::absolute(argv[0]);
         std::filesystem::path executableDirectory = executablePath.parent_path();
         std::filesystem::current_path(executableDirectory);
-    }
-    catch (const std::exception& e)
-    {
+    } catch (const std::exception& e) {
         NFS_CORE_ERROR("ENTRYPOINT::CURRENT WORKING DIRECTORY PATH IS NOT SET::{}", e.what());
     }
 

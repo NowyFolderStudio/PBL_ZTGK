@@ -4,8 +4,7 @@
 
 UILayer::UILayer() { m_Canvas = nullptr; }
 
-UILayer::~UILayer()
-{
+UILayer::~UILayer() {
     if (m_Canvas) delete m_Canvas;
     NFSEngine::UIRenderer::Shutdown();
 }
@@ -14,8 +13,7 @@ void UILayer::OnAttach() { Init(); }
 
 void UILayer::OnDetach() { }
 
-void UILayer::Init()
-{
+void UILayer::Init() {
     float virtualWidth = 1920.0f;
     float virtualHeight = 1080.0f;
 
@@ -56,11 +54,9 @@ void UILayer::Init()
     buttonParams.width = 300;
     buttonParams.height = 70;
     buttonParams.text = "ADD SCORE";
-    buttonParams.onClick = [this]()
-    {
+    buttonParams.onClick = [this]() {
         m_Score += 100;
-        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>())
-        {
+        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
             m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString = "SCORE: " + std::to_string(m_Score);
         }
     };
@@ -82,18 +78,15 @@ void UILayer::Init()
     m_AnimatedBar->Transform.Pivot = glm::vec2(0.0f, 0.5f);
 }
 
-void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime)
-{
+void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_AnimationTime += deltaTime.GetSeconds();
-    if (m_AnimatedBar)
-    {
+    if (m_AnimatedBar) {
 
         float animatedWidth = 200.0f + std::sin(m_AnimationTime * 3.0f) * 150.0f;
         m_AnimatedBar->Transform.Width = animatedWidth;
     }
 
-    if (m_BgShape1 && m_BgShape2)
-    {
+    if (m_BgShape1 && m_BgShape2) {
         m_BgShape1->Transform.Position.x = 960.0f + std::sin(m_AnimationTime * 0.4f) * 400.0f;
         m_BgShape1->Transform.Position.y = 540.0f + std::cos(m_AnimationTime * 0.3f) * 200.0f;
 
@@ -108,14 +101,10 @@ void UILayer::OnRender() { Render(); }
 
 void UILayer::Update() { m_Canvas->Update(); }
 
-void UILayer::Render()
-{
+void UILayer::Render() {
     NFSEngine::UIRenderer::Begin();
     m_Canvas->Draw();
     NFSEngine::UIRenderer::End();
 }
 
-void UILayer::OnEvent(NFSEngine::Event& e)
-{
-
-}
+void UILayer::OnEvent(NFSEngine::Event& e) { }

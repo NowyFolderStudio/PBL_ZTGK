@@ -3,106 +3,92 @@
 #include "Core/Quad2D.hpp"
 #include "Core/Text.hpp"
 
-namespace NFSEngine
-{
-struct UIRendererData
-{
-    std::shared_ptr<Shader> UIShader;
-    std::shared_ptr<Shader> UITextShader;
-    std::unique_ptr<Quad2D> UIQuad;
-    std::shared_ptr<Texture> DefaultWhiteTexture;
-    std::unique_ptr<Text> DefaultFont;
+namespace NFSEngine {
+    struct UIRendererData {
+        std::shared_ptr<Shader> UIShader;
+        std::shared_ptr<Shader> UITextShader;
+        std::unique_ptr<Quad2D> UIQuad;
+        std::shared_ptr<Texture> DefaultWhiteTexture;
+        std::unique_ptr<Text> DefaultFont;
 
-    glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
-};
+        glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
+    };
 
-static UIRendererData* s_Data = nullptr;
+    static UIRendererData* s_Data = nullptr;
 
-void UIRenderer::Init()
-{
-    s_Data = new UIRendererData();
-    s_Data->UIShader = Shader::Create("UIShader", "assets/shaders/ui.vert", "assets/shaders/ui.frag");
-    s_Data->UITextShader = Shader::Create("TextShader", "assets/shaders/text.vert", "assets/shaders/text.frag");
+    void UIRenderer::Init() {
+        s_Data = new UIRendererData();
+        s_Data->UIShader = Shader::Create("UIShader", "assets/shaders/ui.vert", "assets/shaders/ui.frag");
+        s_Data->UITextShader = Shader::Create("TextShader", "assets/shaders/text.vert", "assets/shaders/text.frag");
 
-    s_Data->UIQuad = std::make_unique<Quad2D>();
+        s_Data->UIQuad = std::make_unique<Quad2D>();
 
-    s_Data->DefaultFont = std::make_unique<Text>("assets/fonts/Roboto-Regular.ttf", 48.0f);
+        s_Data->DefaultFont = std::make_unique<Text>("assets/fonts/Roboto-Regular.ttf", 48.0f);
 
-    s_Data->DefaultWhiteTexture = Texture::Create(1, 1);
-    uint32_t whitePixel = 0xFFFFFFFF;
-    s_Data->DefaultWhiteTexture->SetData(&whitePixel, sizeof(uint32_t));
-}
-
-void UIRenderer::Shutdown()
-{
-    delete s_Data;
-    s_Data = nullptr;
-}
-
-void UIRenderer::Begin()
-{ // to tu nie powinno byc raczej
-    glDisable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-}
-
-void UIRenderer::End()
-{
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-}
-
-void UIRenderer::SetProjection(float windowWidth, float windowHeight)
-{
-    if (!s_Data)
-    {
-        return;
+        s_Data->DefaultWhiteTexture = Texture::Create(1, 1);
+        uint32_t whitePixel = 0xFFFFFFFF;
+        s_Data->DefaultWhiteTexture->SetData(&whitePixel, sizeof(uint32_t));
     }
 
-    s_Data->ProjectionMatrix = glm::ortho(0.0f, windowWidth, windowHeight, 0.0f, -100.0f, 100.0f);
-}
-
-void UIRenderer::DrawQuad(const RectTransform& transform, const ImageComponent& image)
-{
-    if (!s_Data)
-    {
-        return;
+    void UIRenderer::Shutdown() {
+        delete s_Data;
+        s_Data = nullptr;
     }
 
-    s_Data->UIShader->Bind();
-    s_Data->UIShader->SetMat4("u_projection", s_Data->ProjectionMatrix);
-    s_Data->UIShader->SetMat4("u_model", transform.GetTransform());
-    s_Data->UIShader->SetVec4("u_color", image.Color);
-
-    if (image.TexturePtr)
-    {
-        image.TexturePtr->Bind();
-    }
-    else
-    {
-        s_Data->DefaultWhiteTexture->Bind();
+    void UIRenderer::Begin() { // to tu nie powinno byc raczej
+        glDisable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    s_Data->UIQuad->Draw();
-}
+    void UIRenderer::End() {
+        glDisable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+    }
 
-void UIRenderer::DrawText(const RectTransform& transform, const TextComponent& textComp)
-{
-    if (!s_Data) return;
+    void UIRenderer::SetProjection(float windowWidth, float windowHeight) {
+        if (!s_Data) {
+            return;
+        }
 
-    Text* fontToUse = textComp.Font ? textComp.Font : s_Data->DefaultFont.get();
-    if (!fontToUse) return;
+        s_Data->ProjectionMatrix = glm::ortho(0.0f, windowWidth, windowHeight, 0.0f, -100.0f, 100.0f);
+    }
 
-    s_Data->UITextShader->Bind();
-    s_Data->UITextShader->SetMat4("projection", s_Data->ProjectionMatrix);
-    s_Data->UITextShader->SetVec3("textColor", glm::vec3(textComp.Color.r, textComp.Color.g, textComp.Color.b));
+    void UIRenderer::DrawQuad(const RectTransform& transform, const ImageComponent& image) {
+        if (!s_Data) {
+            return;
+        }
 
-    float textWidth = fontToUse->GetTextWidth(textComp.TextString, textComp.Scale);
-    float startX = transform.Position.x - textWidth * transform.Pivot.x;
-    float startY = transform.Position.y
-        + (fontToUse->GetTextWidth("H", textComp.Scale)
-           * transform.Pivot.y); // potencjalnie do zmiany / nie w kazdym foncie H bedzie najwyzsze
+        s_Data->UIShader->Bind();
+        s_Data->UIShader->SetMat4("u_projection", s_Data->ProjectionMatrix);
+        s_Data->UIShader->SetMat4("u_model", transform.GetTransform());
+        s_Data->UIShader->SetVec4("u_color", image.Color);
 
-    fontToUse->Draw(textComp.TextString, startX, startY, textComp.Scale);
-}
-}
+        if (image.TexturePtr) {
+            image.TexturePtr->Bind();
+        } else {
+            s_Data->DefaultWhiteTexture->Bind();
+        }
+
+        s_Data->UIQuad->Draw();
+    }
+
+    void UIRenderer::DrawText(const RectTransform& transform, const TextComponent& textComp) {
+        if (!s_Data) return;
+
+        Text* fontToUse = textComp.Font ? textComp.Font : s_Data->DefaultFont.get();
+        if (!fontToUse) return;
+
+        s_Data->UITextShader->Bind();
+        s_Data->UITextShader->SetMat4("projection", s_Data->ProjectionMatrix);
+        s_Data->UITextShader->SetVec3("textColor", glm::vec3(textComp.Color.r, textComp.Color.g, textComp.Color.b));
+
+        float textWidth = fontToUse->GetTextWidth(textComp.TextString, textComp.Scale);
+        float startX = transform.Position.x - textWidth * transform.Pivot.x;
+        float startY = transform.Position.y
+            + (fontToUse->GetTextWidth("H", textComp.Scale)
+               * transform.Pivot.y); // potencjalnie do zmiany / nie w kazdym foncie H bedzie najwyzsze
+
+        fontToUse->Draw(textComp.TextString, startX, startY, textComp.Scale);
+    }
+} // namespace NFSEngine

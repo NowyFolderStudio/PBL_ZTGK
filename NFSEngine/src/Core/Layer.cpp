@@ -1,11 +1,8 @@
 #include "Core/Layer.hpp"
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-Layer::Layer(const std::string& debugName)
-    : m_DebugName(debugName)
-{
-}
+    Layer::Layer(const std::string& debugName)
+        : m_DebugName(debugName) { }
 
-}
+} // namespace NFSEngine

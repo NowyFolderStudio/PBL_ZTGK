@@ -3,20 +3,18 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-class Quad2D
-{
-public:
-    Quad2D();
-    ~Quad2D();
+    class Quad2D {
+    public:
+        Quad2D();
+        ~Quad2D();
 
-    void Draw();
+        void Draw();
 
-private:
-    unsigned int VAO, VBO, EBO;
-    void Setup();
-};
+    private:
+        unsigned int VAO, VBO, EBO;
+        void Setup();
+    };
 
-}
+} // namespace NFSEngine

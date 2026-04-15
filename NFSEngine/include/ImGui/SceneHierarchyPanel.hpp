@@ -5,24 +5,22 @@
 
 #include <memory>
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-class SceneHierarchyPanel
-{
-public:
-    SceneHierarchyPanel() = default;
-    SceneHierarchyPanel(Scene* context);
-    void SetContext(Scene* context);
-    void OnImGuiRender();
-    GameObject* GetSelectedGameObject() const { return m_SelectionContext; }
+    class SceneHierarchyPanel {
+    public:
+        SceneHierarchyPanel() = default;
+        SceneHierarchyPanel(Scene* context);
+        void SetContext(Scene* context);
+        void OnImGuiRender();
+        GameObject* GetSelectedGameObject() const { return m_SelectionContext; }
 
-private:
-    void DrawGameObjectNode(GameObject* obj);
-    void DrawComponents(GameObject* obj);
+    private:
+        void DrawGameObjectNode(GameObject* obj);
+        void DrawComponents(GameObject* obj);
 
-    Scene* m_Context = nullptr;
-    GameObject* m_SelectionContext = nullptr;
-};
+        Scene* m_Context = nullptr;
+        GameObject* m_SelectionContext = nullptr;
+    };
 
-}
+} // namespace NFSEngine

@@ -4,30 +4,28 @@
 
 #include "Core/Layer.hpp"
 
-namespace NFSEngine
-{
+namespace NFSEngine {
 
-class ImGuiLayer : public Layer
-{
-public:
-    ImGuiLayer();
-    ~ImGuiLayer() = default;
+    class ImGuiLayer : public Layer {
+    public:
+        ImGuiLayer();
+        ~ImGuiLayer() = default;
 
-    void OnAttach() override;
-    void OnDetach() override;
-    void OnEvent(Event& e) override;
+        void OnAttach() override;
+        void OnDetach() override;
+        void OnEvent(Event& e) override;
 
-    void Begin();
-    void End();
+        void Begin();
+        void End();
 
-    void BlockEvents(bool block) { m_BlockEvents = block; }
+        void BlockEvents(bool block) { m_BlockEvents = block; }
 
-    void SetDarkThemeColors();
+        void SetDarkThemeColors();
 
-    uint32_t GetActiveWidgetID() const;
+        uint32_t GetActiveWidgetID() const;
 
-private:
-    bool m_BlockEvents = true;
-};
+    private:
+        bool m_BlockEvents = true;
+    };
 
-}
+} // namespace NFSEngine

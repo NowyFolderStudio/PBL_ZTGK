@@ -9,18 +9,16 @@
 #include <algorithm>
 #include <imgui.h>
 
-namespace NFSEngine
-{
-    class CameraController : public Component
-    {
+namespace NFSEngine {
+    class CameraController : public Component {
     public:
-        CameraController(GameObject* owner) : Component(owner) {}
+        CameraController(GameObject* owner)
+            : Component(owner) { }
 
         std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
 
-        void OnEvent(Event& e)
-        {
+        void OnEvent(Event& e) {
             EventDispatcher dispatcher(e);
 
             dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent& ev) {
@@ -30,10 +28,8 @@ namespace NFSEngine
             });
 
             dispatcher.Dispatch<MouseButtonPressedEvent>([this](MouseButtonPressedEvent& ev) {
-                if (!ImGui::GetIO().WantCaptureMouse)
-                {
-                    if (ev.GetMouseButton() == Mouse::ButtonLeft || ev.GetMouseButton() == Mouse::ButtonRight)
-                    {
+                if (!ImGui::GetIO().WantCaptureMouse) {
+                    if (ev.GetMouseButton() == Mouse::ButtonLeft || ev.GetMouseButton() == Mouse::ButtonRight) {
                         Application::Get().GetWindow().SetCursorMode(CursorMode::Locked);
                     }
                 }
@@ -42,30 +38,25 @@ namespace NFSEngine
         }
 
     protected:
-        virtual void OnStart() override
-        {
-            Application::Get().GetWindow().SetCursorMode(CursorMode::Locked);
-        }
+        virtual void OnStart() override { Application::Get().GetWindow().SetCursorMode(CursorMode::Locked); }
 
-        virtual void OnUpdate(DeltaTime deltaTime) override
-        {
+        virtual void OnUpdate(DeltaTime deltaTime) override {
             Window& window = Application::Get().GetWindow();
 
-            if (Input::IsKeyDown(Key::Tab))
-            {
+            if (Input::IsKeyDown(Key::Tab)) {
                 if (window.GetCursorMode() == CursorMode::Locked)
                     window.SetCursorMode(CursorMode::Normal);
                 else
                     window.SetCursorMode(CursorMode::Locked);
             }
 
-            if (window.GetCursorMode() == CursorMode::Locked)
-            {
+            if (window.GetCursorMode() == CursorMode::Locked) {
                 float mouseX = Input::GetMouseX();
                 float mouseY = Input::GetMouseY();
 
                 if (m_FirstFrame) {
-                    m_LastMouseX = mouseX; m_LastMouseY = mouseY;
+                    m_LastMouseX = mouseX;
+                    m_LastMouseY = mouseY;
                     m_FirstFrame = false;
                 }
 
@@ -80,18 +71,14 @@ namespace NFSEngine
         }
 
     private:
-        void UpdateCameraTransform()
-        {
+        void UpdateCameraTransform() {
             if (!m_Target) return;
 
             float yawRad = glm::radians(m_Yaw);
             float pitchRad = glm::radians(m_Pitch);
 
-            glm::vec3 offset = {
-                m_Distance * cos(pitchRad) * cos(yawRad),
-                m_Distance * sin(pitchRad),
-                m_Distance * cos(pitchRad) * sin(yawRad)
-            };
+            glm::vec3 offset = { m_Distance * cos(pitchRad) * cos(yawRad), m_Distance * sin(pitchRad),
+                                 m_Distance * cos(pitchRad) * sin(yawRad) };
 
             auto* p_Transform = m_Owner->GetTransform();
             p_Transform->SetPosition(m_Target->GetPosition() + offset);
@@ -108,4 +95,4 @@ namespace NFSEngine
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
     };
-}
+} // namespace NFSEngine

@@ -6,12 +6,14 @@
 
 #include "Events/Event.hpp"
 
-namespace NFSEngine
-{
-    enum class CursorMode { Normal = 0, Hidden, Locked };
+namespace NFSEngine {
+    enum class CursorMode {
+        Normal = 0,
+        Hidden,
+        Locked
+    };
 
-    class Window
-    {
+    class Window {
     public:
         using EventCallbackFn = std::function<void(Event&)>;
 
@@ -30,4 +32,4 @@ namespace NFSEngine
 
         static std::unique_ptr<Window> Create(const std::string& title = "NFS Engine", int width = 1280, int height = 720);
     };
-}
+} // namespace NFSEngine
