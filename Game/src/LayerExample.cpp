@@ -16,20 +16,17 @@
 
 #include <imgui.h>
 
-LayerExample::LayerExample()
-{
+LayerExample::LayerExample() {
     m_MyCube = nullptr;
     m_MovingCube = nullptr;
     m_Scene = nullptr;
 }
 
-LayerExample::~LayerExample()
-{
+LayerExample::~LayerExample() {
     if (m_MyCube) delete m_MyCube;
 }
 
-void LayerExample::OnAttach()
-{
+void LayerExample::OnAttach() {
     Init();
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
@@ -49,7 +46,7 @@ void LayerExample::OnAttach()
     // Sample floor object for physics test
     m_Floor = m_Scene->CreateGameObject("Floor");
     m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
-    
+
     m_Floor->AddComponent<NFSEngine::CubeMesh>(shader, texture2);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
@@ -67,6 +64,7 @@ void LayerExample::OnAttach()
     NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
     earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, -5.0f));
     earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, shader, earthTexture);
+    earthObj->AddComponent<NFSEngine::SphereCollider3DComponent>();
 
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
     cameraObj->AddComponent<NFSEngine::Camera>();
@@ -74,12 +72,9 @@ void LayerExample::OnAttach()
     controller.SetTarget(m_MovingCube->GetTransform());
 
     const auto& gameObjects = m_Scene->GetAllGameObjects();
-    for (const auto& go : gameObjects)
-    {
-        if (go.get() != m_MovingCube)
-        {
-            if (auto* control = go->GetComponent<CubeControl>())
-            {
+    for (const auto& go : gameObjects) {
+        if (go.get() != m_MovingCube) {
+            if (auto* control = go->GetComponent<CubeControl>()) {
                 control->SetActive(false);
             }
         }
@@ -88,8 +83,7 @@ void LayerExample::OnAttach()
 
 void LayerExample::OnDetach() { }
 
-void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime)
-{
+void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_DeltaTime = deltaTime;
     m_Scene->OnUpdate(deltaTime);
     Update();
@@ -102,23 +96,19 @@ void LayerExample::Init() { m_MyCube = new NFSEngine::Cube(); }
 
 void LayerExample::Update() { }
 
-void LayerExample::Render()
-{
+void LayerExample::Render() {
     NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
     NFSEngine::Renderer::GetAPI().Clear();
 
     NFSEngine::Camera* mainCamera = nullptr;
-    for (auto& go : m_Scene->GetAllGameObjects())
-    {
-        if (auto* cam = go->GetComponent<NFSEngine::Camera>())
-        {
+    for (auto& go : m_Scene->GetAllGameObjects()) {
+        if (auto* cam = go->GetComponent<NFSEngine::Camera>()) {
             mainCamera = cam;
             break;
         }
     }
 
-    if (mainCamera)
-    {
+    if (mainCamera) {
         NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
 
         if (m_Scene) m_Scene->OnRender();
@@ -127,8 +117,7 @@ void LayerExample::Render()
     }
 }
 
-void LayerExample::OnImGuiRender()
-{
+void LayerExample::OnImGuiRender() {
     ImGui::Begin("Diagnostic window");
 
     float averageFps = ImGui::GetIO().Framerate;
@@ -165,11 +154,9 @@ void LayerExample::OnImGuiRender()
     m_HierarchyPanel->OnImGuiRender();
 }
 
-void LayerExample::OnEvent(NFSEngine::Event& e)
-{
+void LayerExample::OnEvent(NFSEngine::Event& e) {
     auto& gameObjects = m_Scene->GetAllGameObjects();
-    for (auto& go : gameObjects)
-    {
+    for (auto& go : gameObjects) {
         if (auto* controller = go->GetComponent<NFSEngine::CameraController>()) controller->OnEvent(e);
     }
 }
