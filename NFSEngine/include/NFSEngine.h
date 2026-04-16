@@ -16,6 +16,8 @@
 
 #include "Renderer/Texture.hpp"
 #include "Renderer/Shader.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/Model.hpp"
 
 #include "Platforms/Window.hpp"
 #include "Platforms/WindowsInput.hpp"
@@ -32,4 +34,3 @@
 #include "Components/Transform.hpp"
 
 #include "ImGui/ImGuiLayer.hpp"
-#include "ImGui/SceneHierarchyPanel.hpp"

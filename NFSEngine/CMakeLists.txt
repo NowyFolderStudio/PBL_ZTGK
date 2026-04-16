@@ -21,7 +21,13 @@ set(SPDLOG_BUILD_EXAMPLE OFF CACHE BOOL "" FORCE)
 set(SPDLOG_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 add_subdirectory(thirdparty/spdlog)
 
-file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
+file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS
+    "src/*.cpp"
+    "src/*.hpp"
+    "src/*.h"
+    "include/*.hpp"
+    "include/*.h"
+)
 
 # ImGui docking
 set(IMGUI_DIR thirdparty/imgui)
@@ -35,13 +41,24 @@ set(IMGUI_SOURCES
     ${IMGUI_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
+set_source_files_properties(
+    thirdparty/glad/src/glad.c
+    thirdparty/stb/stb_impl.cpp
+    PROPERTIES SKIP_PRECOMPILE_HEADERS ON
+    )
+
 add_library(${PROJECT_NAME} STATIC
     ${SRC_FILES}
     ${IMGUI_SOURCES}
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
-        include/Core/KeyCodes.hpp
 )
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NFS_DEBUG)
+else()
+    target_compile_definitions(${PROJECT_NAME} PUBLIC NFS_RELEASE)
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
     ${IMGUI_DIR}
@@ -98,3 +115,5 @@ else()
         m     
     )
 endif()
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE include/nfspch.h)
