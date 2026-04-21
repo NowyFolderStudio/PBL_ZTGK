@@ -1,4 +1,4 @@
-#include "ImGui/SceneHierarchyPanel.hpp"
+#include "Panels/SceneHierarchyPanel.hpp"
 
 #include <imgui.h>
 #include <glm/gtc/type_ptr.hpp>

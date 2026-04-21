@@ -1,18 +1,17 @@
 #pragma once
 
+#include "Panels/EditorPanel.hpp"
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
 
-#include <memory>
-
 namespace NFSEngine {
 
-    class SceneHierarchyPanel {
+    class SceneHierarchyPanel : public EditorPanel {
     public:
         SceneHierarchyPanel() = default;
         SceneHierarchyPanel(Scene* context);
         void SetContext(Scene* context);
-        void OnImGuiRender();
+        void OnImGuiRender() override;
         GameObject* GetSelectedGameObject() const { return m_SelectionContext; }
 
     private:

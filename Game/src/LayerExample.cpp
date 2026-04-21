@@ -29,7 +29,6 @@ LayerExample::~LayerExample() {
 void LayerExample::OnAttach() {
     Init();
     m_Scene = std::make_unique<NFSEngine::Scene>();
-    m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
@@ -150,8 +149,6 @@ void LayerExample::OnImGuiRender() {
     ImGui::PlotLines("History of frameTime (ms)", values, 90, values_offset, nullptr, 0.0f, 33.3f, ImVec2(0, 80));
 
     ImGui::End();
-
-    m_HierarchyPanel->OnImGuiRender();
 }
 
 void LayerExample::OnEvent(NFSEngine::Event& e) {

@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(ENGINE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/NFSEngine)
+set(EDITOR_DIR ${CMAKE_CURRENT_SOURCE_DIR}/NFSEditor)
 set(GAME_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Game)
 
 # --- CLANG-FORMAT CONFIG ---
@@ -16,8 +17,15 @@ if(CLANG_FORMAT_EXE)
     message(STATUS "Clang-format found: ${CLANG_FORMAT_EXE}")
 
     file(GLOB_RECURSE ALL_SOURCE_FILES 
-        "${ENGINE_DIR}/src/*.cpp" "${ENGINE_DIR}/include/*.h" "${ENGINE_DIR}/include/*.hpp"
-        "${GAME_DIR}/*.cpp" "${GAME_DIR}/*.h" "${GAME_DIR}/*.hpp"
+        "${ENGINE_DIR}/src/*.cpp"
+        "${ENGINE_DIR}/include/*.h"
+        "${ENGINE_DIR}/include/*.hpp"
+        "${EDITOR_DIR}/src/*.cpp"
+        "${EDITOR_DIR}/include/*.h"
+        "${EDITOR_DIR}/include/*.hpp"
+        "${GAME_DIR}/*.cpp"
+        "${GAME_DIR}/*.h"
+        "${GAME_DIR}/*.hpp"
     )
 
     add_custom_target(format
@@ -30,4 +38,5 @@ else()
 endif()
 
 add_subdirectory(NFSEngine)
-add_subdirectory(Game)
+add_subdirectory(NFSEditor)
+# add_subdirectory(Game)

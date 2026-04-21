@@ -1,6 +1,13 @@
 project(PBL_Game)
 
-file(GLOB_RECURSE GAME_SRC CONFIGURE_DEPENDS "src/*.cpp")
+file(GLOB_RECURSE GAME_SRC CONFIGURE_DEPENDS
+    "src/*.cpp"
+    "src/*.hpp"
+    "src/*.h"
+    "include/*.hpp"
+    "include/*.h"
+)
+
 file(GLOB_RECURSE ASSET_FILES CONFIGURE_DEPENDS "assets/*")
 
 set_source_files_properties(${ASSET_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -30,12 +37,11 @@ if(WIN32)
     )
 endif()
 
-# Kopiowanie Assetów
 add_custom_target(CopyAssets ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     "${CMAKE_CURRENT_SOURCE_DIR}/assets"
     "$<TARGET_FILE_DIR:RythmGame>/assets"
-    COMMENT "Kopiowanie najnowszych zasobow (Shaderow, Tekstur)..."
+    COMMENT "Copying project's assets..."
 )
 
 add_dependencies(RythmGame CopyAssets)

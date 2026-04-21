@@ -18,6 +18,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
+#include "Renderer/Framebuffer.hpp"
 
 #include "Platforms/Window.hpp"
 #include "Platforms/WindowsInput.hpp"
@@ -32,5 +33,6 @@
 #include "Components/Component.hpp"
 #include "Components/CubeMesh.hpp"
 #include "Components/Transform.hpp"
+#include "Components/Camera.hpp"
 
 #include "ImGui/ImGuiLayer.hpp"

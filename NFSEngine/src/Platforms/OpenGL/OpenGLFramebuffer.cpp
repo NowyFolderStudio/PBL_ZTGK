@@ -40,7 +40,7 @@ namespace NFSEngine {
             if (multisampled) {
                 glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
             } else {
-                glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+                glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -103,18 +103,17 @@ namespace NFSEngine {
             m_DepthAttachment = 0;
         }
 
-        glCreateFramebuffers(1, &m_RendererID);
+        glGenFramebuffers(1, &m_RendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
-        bool multisample = m_Specification.samples > 1;
-
-        // Attachments
         if (m_ColorAttachmentSpecifications.size()) {
             m_ColorAttachments.resize(m_ColorAttachmentSpecifications.size());
-            Utils::CreateTextures(multisample, m_ColorAttachments.data(), m_ColorAttachments.size());
+
+            glGenTextures(m_ColorAttachments.size(), m_ColorAttachments.data());
 
             for (size_t i = 0; i < m_ColorAttachments.size(); i++) {
-                Utils::BindTexture(multisample, m_ColorAttachments[i]);
+                glBindTexture(GL_TEXTURE_2D, m_ColorAttachments[i]);
+
                 switch (m_ColorAttachmentSpecifications[i].textureFormat) {
                 case FramebufferTextureFormat::RGBA8:
                     Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_RGBA8, GL_RGBA,
@@ -129,8 +128,9 @@ namespace NFSEngine {
         }
 
         if (m_DepthAttachmentSpecification.textureFormat != FramebufferTextureFormat::None) {
-            Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
-            Utils::BindTexture(multisample, m_DepthAttachment);
+            glGenTextures(1, &m_DepthAttachment);
+            glBindTexture(GL_TEXTURE_2D, m_DepthAttachment);
+
             switch (m_DepthAttachmentSpecification.textureFormat) {
             case FramebufferTextureFormat::DEPTH24STENCIL8:
                 Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.samples, GL_DEPTH24_STENCIL8,
@@ -140,15 +140,16 @@ namespace NFSEngine {
         }
 
         if (m_ColorAttachments.size() > 1) {
-            NFS_CORE_ASSERT(m_ColorAttachments.size() <= 4);
+            NFS_CORE_ASSERT(m_ColorAttachments.size() <= 4, "Obsługujemy maksymalnie 4 załączniki koloru!");
             GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
             glDrawBuffers(m_ColorAttachments.size(), buffers);
         } else if (m_ColorAttachments.empty()) {
-            // Only depth-pass
+            // Tylko Depth-Pass (np. do cieni)
             glDrawBuffer(GL_NONE);
         }
 
-        NFS_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "Framebuffer is incomplete!");
+        NFS_CORE_ASSERT(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE,
+                        "BŁĄD: Framebuffer jest niekompletny!");
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
