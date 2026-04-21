@@ -49,6 +49,7 @@ namespace NFSEngine {
                   [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
 
         uint32_t lastShaderID = 0;
+        uint32_t lastTextureID = 0;
 
         s_GPUTimer->Begin();
 
@@ -58,6 +59,8 @@ namespace NFSEngine {
                 packet.shader->Bind();
                 lastShaderID = packet.shader->GetRendererID();
 
+                s_Stats.stateChanges++;
+
                 packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
                 packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
             }
@@ -65,13 +68,24 @@ namespace NFSEngine {
             packet.shader->SetMat4("model", packet.transform);
 
             if (packet.texture) {
-                packet.texture->Bind(0);
+                if (packet.texture->GetRendererID() != lastTextureID) {
+                    packet.texture->Bind(0);
+                    lastTextureID = packet.texture->GetRendererID();
+
+                    s_Stats.stateChanges++;
+                }
             }
 
             packet.vao->Bind();
+            s_Stats.stateChanges++;
 
             // s_RendererAPI->DrawIndexed(packet.VAO);
             s_RendererAPI->DrawIndexed(packet.vao);
+            s_Stats.drawCalls++;
+
+            if (packet.vao->GetIndexBuffer()) {
+                s_Stats.triangleCount += packet.vao->GetIndexBuffer()->GetCount() / 3;
+            }
         }
 
         s_GPUTimer->End();

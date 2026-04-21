@@ -34,3 +34,4 @@
 #include "Components/Transform.hpp"
 
 #include "ImGui/ImGuiLayer.hpp"
+#include "ImGui/SceneHierarchyPanel.hpp"
