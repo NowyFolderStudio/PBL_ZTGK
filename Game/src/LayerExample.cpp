@@ -11,6 +11,8 @@
 #include "Components/ModelComponent.hpp"
 #include "Components/CameraController.hpp"
 #include "Components/Camera.hpp"
+#include "Core/AudioEngine.hpp"
+#include "Components/AudioComponent.hpp"
 
 #include "Components/PhysicsComponents.hpp"
 
@@ -24,6 +26,7 @@ LayerExample::LayerExample() {
 
 LayerExample::~LayerExample() {
     if (m_MyCube) delete m_MyCube;
+    NFSEngine::AudioEngine::Shutdown();
 }
 
 void LayerExample::OnAttach() {
@@ -79,6 +82,12 @@ void LayerExample::OnAttach() {
             }
         }
     }
+
+    NFSEngine::AudioEngine::Init();
+    NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoTest");
+    auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioComponent>();
+    audioComp.LoadSound("assets/audio/piano01.ogg");
+    audioComp.PlayScaleTest();
 }
 
 void LayerExample::OnDetach() { }
