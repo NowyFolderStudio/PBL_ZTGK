@@ -65,6 +65,9 @@ namespace NFSEngine {
                 break;
             }
         }
+        for (auto& panel : m_Panels) {
+            if (panel->IsEnabled()) panel->OnUpdate(deltaTime);
+        }
         m_Framebuffer->Bind();
         NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
         NFSEngine::Renderer::GetAPI().Clear();
@@ -76,15 +79,10 @@ namespace NFSEngine {
             NFSEngine::Renderer::EndScene();
         }
         m_Framebuffer->Unbind();
-
-        // 6. Aktualizacja logiki paneli
-        for (auto& panel : m_Panels) {
-            if (panel->IsEnabled()) panel->OnUpdate(deltaTime);
-        }
     }
 
     void EditorLayer::OnImGuiRender() {
-        uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0); // 0, bo to nasz pierwszy kolor (RGBA8)
+        uint32_t textureID = m_Framebuffer->GetColorAttachmentRendererID(0);
         m_ViewportPanel->SetTextureID(textureID);
 
         for (auto& panel : m_Panels) {

@@ -16,13 +16,20 @@ namespace NFSEngine {
         ImGui::Begin("Scene Hierarchy");
 
         if (m_Context) {
-            for (auto& gameObject : m_Context->GetAllGameObjects()) {
+            for (const auto& gameObject : m_Context->GetAllGameObjects()) {
                 if (gameObject->GetTransform()->GetParent() == nullptr) {
                     DrawGameObjectNode(gameObject.get());
                 }
             }
 
             if (ImGui::IsMouseDown(0) && ImGui::IsWindowHovered()) m_SelectionContext = nullptr;
+
+            if (ImGui::BeginPopupContextWindow(nullptr, ImGuiPopupFlags_MouseButtonRight | ImGuiPopupFlags_NoOpenOverItems)) {
+                if (ImGui::MenuItem("Create Empty GameObject")) {
+                    m_Context->CreateGameObject("Empty GameObject");
+                }
+                ImGui::EndPopup();
+            }
         }
 
         ImGui::End();
@@ -49,12 +56,27 @@ namespace NFSEngine {
             m_SelectionContext = obj;
         }
 
+        bool entityDeleted = false;
+        if (ImGui::BeginPopupContextItem()) {
+            if (ImGui::MenuItem("Delete GameObject")) {
+                entityDeleted = true;
+            }
+            ImGui::EndPopup();
+        }
+
         if (opened) {
             Transform* transform = obj->GetTransform();
             for (int i = 0; i < transform->GetChildCount(); i++) {
                 DrawGameObjectNode(transform->GetChild(i)->GetOwner());
             }
             ImGui::TreePop();
+        }
+
+        if (entityDeleted) {
+            obj->Destroy();
+            if (m_SelectionContext == obj) {
+                m_SelectionContext = nullptr;
+            }
         }
     }
 
@@ -72,8 +94,8 @@ namespace NFSEngine {
         for (auto& component : obj->GetComponents()) {
             if (ImGui::CollapsingHeader(component->GetName().c_str(), ImGuiTreeNodeFlags_DefaultOpen)) {
 
-                ImGui::PushID(component.get()); // Zapobiega konfliktom ID w ImGui
-                component->OnImGuiRender(); // Wywołanie wirtualnej metody!
+                ImGui::PushID(component.get());
+                component->OnImGuiRender();
                 ImGui::PopID();
             }
         }
