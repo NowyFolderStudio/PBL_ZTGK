@@ -13,6 +13,7 @@
 #include "Components/Camera.hpp"
 #include "Core/AudioEngine.hpp"
 #include "Components/AudioComponent.hpp"
+#include "Components/PointLight.hpp"
 
 #include "Components/PhysicsComponents.hpp"
 
@@ -34,12 +35,12 @@ void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
-    auto shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
 
     m_MovingCube = m_Scene->CreateGameObject("Player_Moving");
-    m_MovingCube->AddComponent<NFSEngine::CubeMesh>(shader, texture);
+    m_MovingCube->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
     m_MovingCube->AddComponent<CubeControl>();
 
     // Physics tests on cube
@@ -50,14 +51,20 @@ void LayerExample::OnAttach() {
     m_Floor = m_Scene->CreateGameObject("Floor");
     m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
 
-    m_Floor->AddComponent<NFSEngine::CubeMesh>(shader, texture2);
+    m_Floor->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
     m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
 
+    NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
+    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
+    auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
+    lightComp.Color = { 1.0f, 0.8f, 0.5f };
+    lightComp.Intensity = 3.f;
+
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
-    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(shader, texture);
+    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
     m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
@@ -66,7 +73,7 @@ void LayerExample::OnAttach() {
 
     NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
     earthObj->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 0.0f, -5.0f));
-    earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, shader, earthTexture);
+    earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, m_Shader, earthTexture);
     earthObj->AddComponent<NFSEngine::SphereCollider3DComponent>();
 
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
@@ -88,6 +95,8 @@ void LayerExample::OnAttach() {
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioComponent>();
     audioComp.LoadSound("assets/audio/piano01.ogg");
     audioComp.PlayScaleTest();
+
+
 }
 
 void LayerExample::OnDetach() { }
@@ -118,6 +127,26 @@ void LayerExample::Render() {
     }
 
     if (mainCamera) {
+        m_Shader->Bind();
+
+        int lightIndex = 0;
+        for (auto& go : m_Scene->GetAllGameObjects()) {
+            if (auto* light = go->GetComponent<NFSEngine::PointLight>()) {
+                std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+
+                m_Shader->SetVec3(base + "position", light->GetTransform()->GetPosition());
+                m_Shader->SetVec3(base + "color", light->Color);
+                m_Shader->SetFloat(base + "intensity", light->Intensity);
+                m_Shader->SetFloat(base + "constant", light->Constant);
+                m_Shader->SetFloat(base + "linear", light->Linear);
+                m_Shader->SetFloat(base + "quadratic", light->Quadratic);
+
+                lightIndex++;
+                if (lightIndex >= 4) break;
+            }
+        }
+        m_Shader->SetInt("activePointLights", lightIndex);
+
         NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
 
         if (m_Scene) m_Scene->OnRender();
