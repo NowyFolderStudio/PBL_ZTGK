@@ -14,6 +14,8 @@
 #include "Core/AudioEngine.hpp"
 #include "Components/AudioComponent.hpp"
 #include "Components/PointLight.hpp"
+#include "Components/DirectionalLight.hpp"
+#include "Components/SpotLight.hpp"
 
 #include "Components/PhysicsComponents.hpp"
 
@@ -35,7 +37,7 @@ void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
-    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
 
@@ -62,6 +64,20 @@ void LayerExample::OnAttach() {
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
     lightComp.Color = { 1.0f, 0.8f, 0.5f };
     lightComp.Intensity = 3.f;
+
+    NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
+    auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
+    sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
+    sunComp.Color = glm::vec3(1.0f, 0.9f, 0.8f);
+    sunComp.Intensity = 0.8f;
+
+    NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
+    spotObj->GetTransform()->SetPosition({ 0.0f, 1.5f, 0.0f });
+
+    auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
+    spotComp.Color = { 1.0f, 1.0f, 1.0f };
+    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
+    spotComp.Intensity = 5.0f;
 
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
@@ -127,6 +143,17 @@ void LayerExample::Render() {
     if (mainCamera) {
         m_Shader->Bind();
 
+        m_Shader->SetVec3("viewPos", mainCamera->GetOwner()->GetTransform()->GetPosition());
+
+        for (auto& go : m_Scene->GetAllGameObjects()) {
+            if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) {
+                m_Shader->SetVec3("dirLight.direction", dirLight->Direction);
+                m_Shader->SetVec3("dirLight.color", dirLight->Color);
+                m_Shader->SetFloat("dirLight.intensity", dirLight->Intensity);
+                break;
+            }
+        }
+
         int lightIndex = 0;
         for (auto& go : m_Scene->GetAllGameObjects()) {
             if (auto* light = go->GetComponent<NFSEngine::PointLight>()) {
@@ -141,6 +168,21 @@ void LayerExample::Render() {
 
                 lightIndex++;
                 if (lightIndex >= 4) break;
+            }
+        }
+
+        for (auto& go : m_Scene->GetAllGameObjects()) {
+            if (auto* spot = go->GetComponent<NFSEngine::SpotLight>()) {
+                m_Shader->SetVec3("spotLight.position", spot->GetTransform()->GetPosition());
+                m_Shader->SetVec3("spotLight.direction", spot->Direction);
+                m_Shader->SetVec3("spotLight.color", spot->Color);
+                m_Shader->SetFloat("spotLight.intensity", spot->Intensity);
+                m_Shader->SetFloat("spotLight.cutOff", spot->CutOff);
+                m_Shader->SetFloat("spotLight.outerCutOff", spot->OuterCutOff);
+                m_Shader->SetFloat("spotLight.constant", spot->Constant);
+                m_Shader->SetFloat("spotLight.linear", spot->Linear);
+                m_Shader->SetFloat("spotLight.quadratic", spot->Quadratic);
+                break;
             }
         }
         m_Shader->SetInt("activePointLights", lightIndex);
