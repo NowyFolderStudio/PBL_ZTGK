@@ -46,6 +46,7 @@ void main()
         finalLight += CalcPointLight(pointLights[i], norm, FragPos);
     }
     
+
     vec4 texColor = texture(texture1, TexCoord);
     FragColor = vec4(finalLight, 1.0) * texColor;
 }

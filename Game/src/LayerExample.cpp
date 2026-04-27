@@ -35,7 +35,7 @@ void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
-    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
 
@@ -95,8 +95,6 @@ void LayerExample::OnAttach() {
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioComponent>();
     audioComp.LoadSound("assets/audio/piano01.ogg");
     audioComp.PlayScaleTest();
-
-
 }
 
 void LayerExample::OnDetach() { }
