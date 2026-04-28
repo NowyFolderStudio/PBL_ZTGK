@@ -4,46 +4,165 @@
 
 namespace NFSEngine {
 
+    glm::vec3 PhysicsSystem::ClosestPointOnSegment(const glm::vec3& a, const glm::vec3& b, const glm::vec3& point) {
+        glm::vec3 ab = b - a;
+        float lengthSquared = glm::dot(ab, ab);
+
+        if (lengthSquared == 0.0f) return a;
+        float t = glm::dot(point - a, ab) / lengthSquared;
+
+        return a + glm::clamp(t, 0.0f, 1.0f) * ab;
+    }
+
+    glm::vec3 PhysicsSystem::ClampPointToAABB(const glm::vec3& point, const AABB& box) {
+        return glm::vec3(std::max(box.Min.x, std::min(point.x, box.Max.x)), std::max(box.Min.y, std::min(point.y, box.Max.y)),
+                         std::max(box.Min.z, std::min(point.z, box.Max.z)));
+    }
+
+    glm::vec3 PhysicsSystem::ClampPointToCylinder(const glm::vec3& point, const Cylinder& cyl) {
+        glm::vec3 result = point;
+
+        float minY = std::min(cyl.PointA.y, cyl.PointB.y);
+        float maxY = std::max(cyl.PointA.y, cyl.PointB.y);
+        result.y = std::clamp(point.y, minY, maxY);
+
+        glm::vec2 p2D(point.x, point.z);
+        glm::vec2 c2D(cyl.PointA.x, cyl.PointA.z);
+
+        glm::vec2 diff2D = p2D - c2D;
+        float distSq2D = glm::dot(diff2D, diff2D);
+
+        if (distSq2D > cyl.Radius * cyl.Radius) {
+            float dist2D = std::sqrt(distSq2D);
+            glm::vec2 clamped2D = c2D + (diff2D / dist2D) * cyl.Radius;
+
+            result.x = clamped2D.x;
+            result.z = clamped2D.y;
+        }
+
+        return result;
+    }
+
+    float PhysicsSystem::SqDistSegToSeg(const glm::vec3& p1, const glm::vec3& q1, const glm::vec3& p2, const glm::vec3& q2) {
+        glm::vec3 d1 = q1 - p1;
+        glm::vec3 d2 = q2 - p2;
+        glm::vec3 r = p1 - p2;
+
+        float a = glm::dot(d1, d1);
+        float e = glm::dot(d2, d2);
+        float f = glm::dot(d2, r);
+
+        float s, t;
+        float c = glm::dot(d1, r);
+        float b = glm::dot(d1, d2);
+        float denom = a * e - b * b;
+
+        if (denom != 0.0f) {
+            s = glm::clamp((b * f - c * e) / denom, 0.0f, 1.0f);
+        } else {
+            s = 0.0f;
+        }
+
+        t = (b * s + f) / e;
+
+        if (t < 0.0f) {
+            t = 0.0f;
+            s = glm::clamp(-c / a, 0.0f, 1.0f);
+        } else if (t > 1.0f) {
+            t = 1.0f;
+            s = glm::clamp((b - c) / a, 0.0f, 1.0f);
+        }
+
+        glm::vec3 c1 = p1 + d1 * s;
+        glm::vec3 c2 = p2 + d2 * t;
+        glm::vec3 distVec = c1 - c2;
+
+        return glm::dot(distVec, distVec);
+    }
+
     bool PhysicsSystem::MathCheckAABB(const AABB& a, const AABB& b) {
         return (a.Min.x <= b.Max.x && a.Max.x >= b.Min.x) && (a.Min.y <= b.Max.y && a.Max.y >= b.Min.y)
             && (a.Min.z <= b.Max.z && a.Max.z >= b.Min.z);
     };
 
     bool PhysicsSystem::MathCheckSphere(const Sphere& a, const Sphere& b) {
-        float distance = glm::distance(a.Center, b.Center);
+        glm::vec3 diff = a.Center - b.Center;
+
+        float distanceSquared = glm::dot(diff, diff);
         float radiusSum = a.Radius + b.Radius;
 
-        return distance < radiusSum;
+        return distanceSquared < (radiusSum * radiusSum);
     }
 
     bool PhysicsSystem::MathCheckAABBSphere(const AABB& box, const Sphere& sphere) {
-        float closestX = std::max(box.Min.x, std::min(sphere.Center.x, box.Max.x));
-        float closestY = std::max(box.Min.y, std::min(sphere.Center.y, box.Max.y));
-        float closestZ = std::max(box.Min.z, std::min(sphere.Center.z, box.Max.z));
+        glm::vec3 closestPoint = ClampPointToAABB(sphere.Center, box);
+        glm::vec3 diff = closestPoint - sphere.Center;
 
-        float distanceSquared = (closestX - sphere.Center.x) * (closestX - sphere.Center.x)
-            + (closestY - sphere.Center.y) * (closestY - sphere.Center.y)
-            + (closestZ - sphere.Center.z) * (closestZ - sphere.Center.z);
+        float distanceSquared = glm::dot(diff, diff);
 
         return distanceSquared < (sphere.Radius * sphere.Radius);
     }
 
     bool PhysicsSystem::MathCheckCapsule(const Capsule& a, const Capsule& b) {
-        // For simplicity, we will not implement capsule collision check in this example
-        // Later we will add capsule collider, so we will need to implement this function
-        return false;
+        float distanceSquared = SqDistSegToSeg(a.PointA, a.PointB, b.PointA, b.PointB);
+        float radiusSum = a.Radius + b.Radius;
+
+        return distanceSquared < (radiusSum * radiusSum);
     }
 
     bool PhysicsSystem::MathCheckCapsuleAABB(const Capsule& capsule, const AABB& box) {
-        // For simplicity, we will not implement capsule-AABB collision check in this example
-        // Later we will add capsule collider, so we will need to implement this function
-        return false;
+        glm::vec3 aabbCenter = (box.Min + box.Max) * 0.5f;
+        glm::vec3 closestOnSegment = ClosestPointOnSegment(capsule.PointA, capsule.PointB, aabbCenter);
+        glm::vec3 closestOnAABB = ClampPointToAABB(closestOnSegment, box);
+        glm::vec3 finalClosestPoint = ClosestPointOnSegment(capsule.PointA, capsule.PointB, closestOnAABB);
+        glm::vec3 diff = finalClosestPoint - closestOnAABB;
+
+        float distanceSquared = glm::dot(diff, diff);
+
+        return distanceSquared < (capsule.Radius * capsule.Radius);
+    }
+
+    bool PhysicsSystem::MathCheckCapsuleCylinder(const Capsule& capsule, const Cylinder& cylinder) {
+        glm::vec3 cylCenter = (cylinder.PointA + cylinder.PointB) * 0.5f;
+
+        glm::vec3 closestOnSegment = ClosestPointOnSegment(capsule.PointA, capsule.PointB, cylCenter);
+        glm::vec3 closestOnCylinder = ClampPointToCylinder(closestOnSegment, cylinder);
+        glm::vec3 finalClosestPoint = ClosestPointOnSegment(capsule.PointA, capsule.PointB, closestOnCylinder);
+        glm::vec3 diff = finalClosestPoint - closestOnCylinder;
+
+        float distanceSquared = glm::dot(diff, diff);
+
+        return distanceSquared < (capsule.Radius * capsule.Radius);
     }
 
     bool PhysicsSystem::MathCheckCapsuleSphere(const Capsule& capsule, const Sphere& sphere) {
-        // For simplicity, we will not implement capsule-sphere collision check in this example
-        // Later we will add capsule collider, so we will need to implement this function
-        return false;
+        glm::vec3 closestOnSegment = ClosestPointOnSegment(capsule.PointA, capsule.PointB, sphere.Center);
+        glm::vec3 diff = sphere.Center - closestOnSegment;
+
+        float distanceSquared = glm::dot(diff, diff);
+        float radiusSum = capsule.Radius + sphere.Radius;
+
+        return distanceSquared < (radiusSum * radiusSum);
+    }
+
+    bool PhysicsSystem::MathCheckCylinder(const Cylinder& a, const Cylinder& b) { // TODO: Check if this needs to be refactored
+        float aMinY = std::min(a.PointA.y, a.PointB.y);
+        float aMaxY = std::max(a.PointA.y, a.PointB.y);
+        float bMinY = std::min(b.PointA.y, b.PointB.y);
+        float bMaxY = std::max(b.PointA.y, b.PointB.y);
+
+        if (aMaxY <= bMinY || aMinY >= bMaxY) {
+            return false;
+        }
+
+        glm::vec2 aPos2D = glm::vec2(a.PointA.x, a.PointA.z);
+        glm::vec2 bPos2D = glm::vec2(b.PointA.x, b.PointA.z);
+        glm::vec2 diff = aPos2D - bPos2D;
+
+        float distanceSquared = glm::dot(diff, diff);
+        float radiusSum = a.Radius + b.Radius;
+
+        return distanceSquared < (radiusSum * radiusSum);
     }
 
     bool PhysicsSystem::CheckCollision(GameObject* a, GameObject* b) {
@@ -113,6 +232,27 @@ namespace NFSEngine {
             auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
 
             return MathCheckCapsuleAABB(GetCapsule(b->GetTransform(), capsuleB), GetAABB(a->GetTransform(), boxA));
+        }
+
+        if (colliderA->Type == ColliderType::Cylinder && colliderB->Type == ColliderType::Cylinder) {
+            auto* cylinderA = static_cast<CylinderCollider3DComponent*>(colliderA);
+            auto* cylinderB = static_cast<CylinderCollider3DComponent*>(colliderB);
+
+            return MathCheckCylinder(GetCylinder(a->GetTransform(), cylinderA), GetCylinder(b->GetTransform(), cylinderB));
+        }
+
+        if (colliderA->Type == ColliderType::Capsule && colliderB->Type == ColliderType::Cylinder) {
+            auto* capsuleA = static_cast<CapsuleCollider3DComponent*>(colliderA);
+            auto* cylinderB = static_cast<CylinderCollider3DComponent*>(colliderB);
+
+            return MathCheckCapsuleCylinder(GetCapsule(a->GetTransform(), capsuleA), GetCylinder(b->GetTransform(), cylinderB));
+        }
+
+        if (colliderA->Type == ColliderType::Cylinder && colliderB->Type == ColliderType::Capsule) {
+            auto* cylinderA = static_cast<CylinderCollider3DComponent*>(colliderA);
+            auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
+
+            return MathCheckCapsuleCylinder(GetCapsule(b->GetTransform(), capsuleB), GetCylinder(a->GetTransform(), cylinderA));
         }
 
         return false;
@@ -198,7 +338,23 @@ namespace NFSEngine {
     PhysicsSystem::Capsule PhysicsSystem::GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider) {
         PhysicsSystem::Capsule capsule;
 
+        capsule.PointA = transform->GetPosition() + collider->Offset + glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+        capsule.PointB = transform->GetPosition() + collider->Offset - glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+
+        capsule.Radius = collider->Radius;
+
         return capsule;
+    };
+
+    PhysicsSystem::Cylinder PhysicsSystem::GetCylinder(Transform* transform, CylinderCollider3DComponent* collider) {
+        PhysicsSystem::Cylinder cylinder;
+
+        cylinder.PointA = transform->GetPosition() + collider->Offset + glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+        cylinder.PointB = transform->GetPosition() + collider->Offset - glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+
+        cylinder.Radius = collider->Radius;
+
+        return cylinder;
     };
 
 } // namespace NFSEngine

@@ -28,17 +28,31 @@ namespace NFSEngine {
             float Radius;
         };
 
+        struct Cylinder {
+            glm::vec3 PointA;
+            glm::vec3 PointB;
+            float Radius;
+        };
+
+        static glm::vec3 ClosestPointOnSegment(const glm::vec3& a, const glm::vec3& b, const glm::vec3& point);
+        static glm::vec3 ClampPointToAABB(const glm::vec3& point, const AABB& box);
+        static glm::vec3 ClampPointToCylinder(const glm::vec3& point, const Cylinder& cylinder);
+        static float SqDistSegToSeg(const glm::vec3& p1, const glm::vec3& q1, const glm::vec3& p2, const glm::vec3& q2);
+
         static bool MathCheckAABB(const AABB& a, const AABB& b);
         static bool MathCheckSphere(const Sphere& a, const Sphere& b);
         static bool MathCheckCapsule(const Capsule& a, const Capsule& b);
+        static bool MathCheckCylinder(const Cylinder& a, const Cylinder& b);
 
         static bool MathCheckAABBSphere(const AABB& box, const Sphere& sphere);
         static bool MathCheckCapsuleAABB(const Capsule& capsule, const AABB& box);
         static bool MathCheckCapsuleSphere(const Capsule& capsule, const Sphere& sphere);
+        static bool MathCheckCapsuleCylinder(const Capsule& capsule, const Cylinder& cylinder);
 
         static PhysicsSystem::AABB GetAABB(Transform* transform, BoxCollider3DComponent* collider);
         static PhysicsSystem::Sphere GetSphere(Transform* transform, SphereCollider3DComponent* collider);
         static PhysicsSystem::Capsule GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider);
+        static PhysicsSystem::Cylinder GetCylinder(Transform* transform, CylinderCollider3DComponent* collider);
 
         static bool CheckCollision(GameObject* a, GameObject* b);
     };

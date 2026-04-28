@@ -9,7 +9,8 @@ namespace NFSEngine {
     enum class ColliderType {
         Box,
         Sphere,
-        Capsule
+        Capsule,
+        Cylinder
     };
 
     struct ColliderComponent : public Component {
@@ -58,6 +59,17 @@ namespace NFSEngine {
         CapsuleCollider3DComponent(GameObject* owner)
             : ColliderComponent(owner, ColliderType::Capsule) { }
         std::string GetName() const override { return "CapsuleCollider3D"; }
+
+        float Radius = 1.0f;
+        float Height = 1.0f;
+
+        glm::vec3 Offset = glm::vec3(0.0f);
+    };
+
+    struct CylinderCollider3DComponent : public ColliderComponent {
+        CylinderCollider3DComponent(GameObject* owner)
+            : ColliderComponent(owner, ColliderType::Cylinder) { }
+        std::string GetName() const override { return "CylinderCollider3D"; }
 
         float Radius = 1.0f;
         float Height = 2.0f;

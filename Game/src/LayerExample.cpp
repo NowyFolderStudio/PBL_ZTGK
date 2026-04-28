@@ -22,6 +22,7 @@
 #include <imgui.h>
 
 LayerExample::LayerExample() {
+    m_Player = nullptr;
     m_MyCube = nullptr;
     m_MovingCube = nullptr;
     m_Scene = nullptr;
@@ -43,11 +44,26 @@ void LayerExample::OnAttach() {
 
     m_MovingCube = m_Scene->CreateGameObject("Player_Moving");
     m_MovingCube->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
-    m_MovingCube->AddComponent<CubeControl>();
 
     // Physics tests on cube
-    m_MovingCube->AddComponent<NFSEngine::RigidBody3DComponent>();
+
     m_MovingCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
+
+    auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Capsule/capsule.obj");
+
+    m_Player = m_Scene->CreateGameObject("Player");
+    m_Player->GetComponent<NFSEngine::Transform>()->SetPosition(glm::vec3(2.0f, 3.0f, 5.0f));
+    m_Player->AddComponent<NFSEngine::ModelComponent>(capsuleModel, m_Shader, texture);
+    m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
+    m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
+    m_Player->AddComponent<CubeControl>();
+
+    auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
+
+    NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
+    cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
+    cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_Shader, texture2);
+    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
 
     // Sample floor object for physics test
     m_Floor = m_Scene->CreateGameObject("Floor");
@@ -95,11 +111,11 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
     cameraObj->AddComponent<NFSEngine::Camera>();
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
-    controller.SetTarget(m_MovingCube->GetTransform());
+    controller.SetTarget(m_Player->GetTransform());
 
     const auto& gameObjects = m_Scene->GetAllGameObjects();
     for (const auto& go : gameObjects) {
-        if (go.get() != m_MovingCube) {
+        if (go.get() != m_Player) {
             if (auto* control = go->GetComponent<CubeControl>()) {
                 control->SetActive(false);
             }
@@ -234,6 +250,7 @@ void LayerExample::OnImGuiRender() {
 
 void LayerExample::OnEvent(NFSEngine::Event& e) {
     auto& gameObjects = m_Scene->GetAllGameObjects();
+
     for (auto& go : gameObjects) {
         if (auto* controller = go->GetComponent<NFSEngine::CameraController>()) controller->OnEvent(e);
     }

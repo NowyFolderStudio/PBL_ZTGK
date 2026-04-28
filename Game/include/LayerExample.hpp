@@ -22,6 +22,8 @@ public:
 private:
     NFSEngine::Cube* m_MyCube = nullptr;
 
+    NFSEngine::GameObject* m_Player = nullptr;
+
     NFSEngine::GameObject* m_MovingCube = nullptr;
     NFSEngine::GameObject* m_MovingCube2 = nullptr;
     NFSEngine::GameObject* m_Floor = nullptr;
