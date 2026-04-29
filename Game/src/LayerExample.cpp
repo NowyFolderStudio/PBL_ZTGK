@@ -63,22 +63,22 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
     cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_Shader, texture2);
-    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
+    cylinderObj->GetTransform()->SetPosition({4.0f, 0.0f, 1.0f});
 
     // Sample floor object for physics test
     m_Floor = m_Scene->CreateGameObject("Floor");
-    m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
+    m_Floor->GetTransform()->SetPosition({0.0f, -2.0f, 0.0f});
 
     m_Floor->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
-    m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
+    m_Floor->GetTransform()->SetScale({20.0f, 1.0f, 20.0f});
 
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
+    lightObj->GetTransform()->SetPosition({0.0f, 2.0f, 2.0f});
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = { 1.0f, 0.8f, 0.5f };
+    lightComp.Color = {1.0f, 0.8f, 0.5f};
     lightComp.Intensity = 3.f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
@@ -88,16 +88,16 @@ void LayerExample::OnAttach() {
     sunComp.Intensity = 0.8f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
-    spotObj->GetTransform()->SetPosition({ 0.0f, 1.5f, 0.0f });
+    spotObj->GetTransform()->SetPosition({0.0f, 1.5f, 0.0f});
 
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
-    spotComp.Color = { 1.0f, 1.0f, 1.0f };
-    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
+    spotComp.Color = {1.0f, 1.0f, 1.0f};
+    spotComp.Direction = {0.0f, -1.0f, -0.5f};
     spotComp.Intensity = 5.0f;
 
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
-    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
+    m_MovingCube2->GetTransform()->SetPosition({-4.0f, -1.0f, 0.0f});
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
@@ -112,6 +112,19 @@ void LayerExample::OnAttach() {
     cameraObj->AddComponent<NFSEngine::Camera>();
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
     controller.SetTarget(m_Player->GetTransform());
+
+    std::vector<std::string> faces = {
+        "assets/textures/skybox/testSkybox/px.png", // 1. Right (+X)
+        "assets/textures/skybox/testSkybox/nx.png", // 2. Left (-X)
+        "assets/textures/skybox/testSkybox/py.png", // 3. Top (+Y)
+        "assets/textures/skybox/testSkybox/ny.png", // 4. Bottom (-Y)
+        "assets/textures/skybox/testSkybox/pz.png", // 5. Front (+Z)
+        "assets/textures/skybox/testSkybox/nz.png" // 6. Back (-Z)
+    };
+    m_Skybox = NFSEngine::Skybox::Create(faces);
+    m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
+
+    NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
 
     const auto& gameObjects = m_Scene->GetAllGameObjects();
     for (const auto& go : gameObjects) {
@@ -129,7 +142,7 @@ void LayerExample::OnAttach() {
     audioComp.PlayScaleTest();
 }
 
-void LayerExample::OnDetach() { }
+void LayerExample::OnDetach() {}
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_DeltaTime = deltaTime;
@@ -142,10 +155,10 @@ void LayerExample::OnRender() { Render(); }
 
 void LayerExample::Init() { m_MyCube = new NFSEngine::Cube(); }
 
-void LayerExample::Update() { }
+void LayerExample::Update() {}
 
 void LayerExample::Render() {
-    NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
+    NFSEngine::Renderer::GetAPI().SetClearColor({0.2f, 0.1f, 0.1f, 1.0f});
     NFSEngine::Renderer::GetAPI().Clear();
 
     NFSEngine::Camera* mainCamera = nullptr;
@@ -205,6 +218,8 @@ void LayerExample::Render() {
 
         NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
 
+        NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
+
         if (m_Scene) m_Scene->OnRender();
 
         NFSEngine::Renderer::EndScene();
@@ -237,7 +252,7 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("Triangle count: %u", stats.triangleCount);
     ImGui::Text("State changes: %u", stats.stateChanges);
 
-    static float values[90] = { 0 };
+    static float values[90] = {0};
     static int values_offset = 0;
     values[values_offset] = currentFrameTime;
     values_offset = (values_offset + 1) % 90;

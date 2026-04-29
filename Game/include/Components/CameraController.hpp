@@ -28,7 +28,7 @@ namespace NFSEngine {
                 m_Distance = std::clamp(m_Distance, m_MinDistance, m_MaxDistance);
                 return true;
             });
- dispatcher.Dispatch<MouseButtonPressedEvent>([](const MouseButtonPressedEvent& ev) {
+            dispatcher.Dispatch<MouseButtonPressedEvent>([](const MouseButtonPressedEvent& ev) {
                 if (!ImGui::GetIO().WantCaptureMouse) {
                     if (ev.GetMouseButton() == Mouse::ButtonLeft || ev.GetMouseButton() == Mouse::ButtonRight) {
                         Application::Get().GetWindow().SetCursorMode(CursorMode::Locked);

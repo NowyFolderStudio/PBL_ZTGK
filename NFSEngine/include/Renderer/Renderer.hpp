@@ -6,6 +6,7 @@
 #include <Renderer/Texture.hpp>
 #include <Renderer/VertexArray.hpp>
 #include "Renderer/RendererAPI.hpp"
+#include "Renderer/Skybox.hpp"
 
 namespace NFSEngine {
     struct RenderPacket {
@@ -42,16 +43,21 @@ namespace NFSEngine {
         static RendererStats GetStats() { return s_Stats; }
         static float GetGPUTime();
 
+        static void DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader);
+
     private:
         struct SceneData {
             glm::mat4 ViewMatrix;
             glm::mat4 ProjectionMatrix;
         };
+
         static SceneData* s_SceneData;
         static RendererStats s_Stats;
 
         static std::unique_ptr<GPUTimer> s_GPUTimer;
         static std::vector<RenderPacket> s_RendererQueue;
         static std::unique_ptr<RendererAPI> s_RendererAPI;
+
+        static std::shared_ptr<VertexArray> s_SkyboxVAO;
     };
 } // namespace NFSEngine

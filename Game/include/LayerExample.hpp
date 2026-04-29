@@ -2,11 +2,12 @@
 
 #include "NFSEngine.h"
 #include <memory>
+#include "Renderer/Skybox.hpp"
 
 class LayerExample : public NFSEngine::Layer {
 public:
     LayerExample();
-    virtual ~LayerExample() override;
+    ~LayerExample() override;
 
     void OnAttach() override;
     void OnDetach() override;
@@ -31,4 +32,6 @@ private:
     NFSEngine::DeltaTime m_DeltaTime;
     std::unique_ptr<NFSEngine::SceneHierarchyPanel> m_HierarchyPanel;
     std::shared_ptr<NFSEngine::Shader> m_Shader;
+    std::shared_ptr<NFSEngine::Skybox> m_Skybox;
+    std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
 };
