@@ -11,7 +11,6 @@ namespace NFSEngine {
         void Update(std::vector<std::unique_ptr<GameObject>>& gameObjects, DeltaTime deltaTime);
         glm::vec3 Gravity = glm::vec3(0.0f, -9.81f, 0.0f);
 
-    private:
         struct AABB {
             glm::vec3 Min;
             glm::vec3 Max;
