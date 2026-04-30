@@ -43,6 +43,6 @@ namespace NFSEngine {
 
 				std::cout << "plum" << std::endl;
 			}
-			}).detach();
+		}).detach();
 	}
 }

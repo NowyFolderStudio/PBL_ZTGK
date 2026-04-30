@@ -3,6 +3,7 @@
 #include "NFSEngine.h"
 #include <memory>
 #include "Renderer/Skybox.hpp"
+#include "Core/Audio/RhythmSequencer.hpp"
 
 class LayerExample : public NFSEngine::Layer {
 public:
@@ -34,4 +35,6 @@ private:
     std::shared_ptr<NFSEngine::Shader> m_Shader;
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
+
+    NFSEngine::RhythmSequencer m_Sequencer;
 };

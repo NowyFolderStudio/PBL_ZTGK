@@ -11,7 +11,7 @@
 #include "Components/ModelComponent.hpp"
 #include "Components/CameraController.hpp"
 #include "Components/Camera.hpp"
-#include "Core/AudioEngine.hpp"
+#include "Core/Audio/AudioEngine.hpp"
 #include "Components/AudioComponent.hpp"
 #include "Components/PointLight.hpp"
 #include "Components/DirectionalLight.hpp"
@@ -139,12 +139,15 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoTest");
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioComponent>();
     audioComp.LoadSound("assets/audio/piano01.ogg");
-    audioComp.PlayScaleTest();
+    //audioComp.PlayScaleTest();
+
+    m_Sequencer.Start(120.0f);
 }
 
 void LayerExample::OnDetach() {}
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    m_Sequencer.Update();
     m_DeltaTime = deltaTime;
     m_Scene->OnUpdate(deltaTime);
     Update();

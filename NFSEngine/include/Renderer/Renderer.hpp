@@ -11,7 +11,7 @@
 namespace NFSEngine {
     struct RenderPacket {
         uint64_t sortKey = 0;
-        ;
+
         std::shared_ptr<VertexArray> vao;
         std::shared_ptr<Shader> shader;
         std::shared_ptr<Texture> texture;

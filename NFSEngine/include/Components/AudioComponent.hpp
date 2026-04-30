@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Components/Component.hpp"
-#include "Core/AudioEngine.hpp"
+#include "Core/Audio/AudioEngine.hpp"
 #include <miniaudio/miniaudio.h>
 #include <string>
 
