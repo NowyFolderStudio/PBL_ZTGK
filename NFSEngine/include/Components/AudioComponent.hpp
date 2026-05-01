@@ -2,6 +2,8 @@
 
 #include "Components/Component.hpp"
 #include "Core/Audio/AudioEngine.hpp"
+#include "Core/Audio/RhythmSequencer.hpp"
+#include "Core/Audio/PatternParser.hpp"
 #include <miniaudio/miniaudio.h>
 #include <string>
 
@@ -11,13 +13,22 @@ namespace NFSEngine {
 		AudioComponent(GameObject* owner) : Component(owner) {};
 		~AudioComponent() override;
 
-		void LoadSound(const std::string& filepath);
-		void PlayScaleTest();
+		void LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer);
+
+		void OnUpdate(DeltaTime deltaTime) override;
 
 		std::string GetName() const override { return "AudioComponent"; }
 
 	private:
+		void LoadSound(const std::string& filepath);
+		void PlayNote(float pitchOffset);
+
 		ma_sound m_Sound;
 		bool m_IsLoaded = false;
+
+		Pattern m_CurrentPattern;
+		RhythmSequencer* m_Sequencer = nullptr;
+
+		int m_LastPlayed16thTotal = -1;
 	};
 }

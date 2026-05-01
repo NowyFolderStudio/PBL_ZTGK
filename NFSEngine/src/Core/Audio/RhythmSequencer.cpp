@@ -12,7 +12,7 @@ namespace NFSEngine {
 
 		m_SecondsPer16th = m_SecondsPerBeat / 4.0;
 
-		m_StartTime = AudioEngine::GetGlobalTimeInSeconds();
+		m_SongTime = 0.0;
 
 		m_Current16thTotal = 0;
 		m_Last16thTotal = -1;
@@ -21,12 +21,10 @@ namespace NFSEngine {
 		m_16thInBeat = 1;
 	}
 
-	void RhythmSequencer::Update() {
-		double songTime = AudioEngine::GetGlobalTimeInSeconds() - m_StartTime;
+	void RhythmSequencer::Update(float deltaTimeInSeconds) {
+		m_SongTime += deltaTimeInSeconds;
 
-		if (songTime < 0) return;
-
-		m_Current16thTotal = static_cast<int>(songTime / m_SecondsPer16th);
+		m_Current16thTotal = static_cast<int>(m_SongTime / m_SecondsPer16th);
 
 		if (m_Current16thTotal > m_Last16thTotal) {
 

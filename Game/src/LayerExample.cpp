@@ -136,20 +136,26 @@ void LayerExample::OnAttach() {
     }
 
     NFSEngine::AudioEngine::Init();
+    m_Sequencer.Start(120.0f);
+
     NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoTest");
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioComponent>();
-    audioComp.LoadSound("assets/audio/piano01.ogg");
-    //audioComp.PlayScaleTest();
+    audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
 
-    m_Sequencer.Start(120.0f);
+    m_TestAudioComp = &audioComp;
 }
 
 void LayerExample::OnDetach() {}
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
-    m_Sequencer.Update();
+    m_Sequencer.Update((float)deltaTime);
     m_DeltaTime = deltaTime;
     m_Scene->OnUpdate(deltaTime);
+
+    if (m_TestAudioComp) {
+        m_TestAudioComp->OnUpdate(deltaTime);
+    }
+
     Update();
     Render();
 }

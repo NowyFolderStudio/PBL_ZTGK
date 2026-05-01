@@ -1,0 +1,56 @@
+{
+  "patternName": "PianoPattern1",
+  "audioFile": "assets/audio/sounds/piano01.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 4,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 1,
+      "note": "E4"
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "E4"
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 1,
+      "note": "F4"
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "G4"
+    },
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 1,
+      "note": "G4"
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "F4"
+    },
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 1,
+      "note": "E4"
+    },
+    {
+      "bar": 3,
+      "beat": 1,
+      "16th": 1,
+      "note": "D4"
+    }
+  ]
+}

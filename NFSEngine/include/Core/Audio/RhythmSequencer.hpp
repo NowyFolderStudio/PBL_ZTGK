@@ -7,11 +7,12 @@ namespace NFSEngine {
 
 		void Start(float bpm, int beatsPerBar = 4);
 
-		void Update();
+		void Update(float deltaTimeInSeconds);
 
 		int GetCurrentBar() const { return m_CurrentBar; }
 		int GetBeatInBar() const { return m_BeatInBar; }
 		int Get16thInBeat() const { return m_16thInBeat;  }
+		int GetCurrent16thTotal() const { return m_Current16thTotal; }
 
 	private:
 		float m_BPM = 120.0f;
@@ -19,7 +20,8 @@ namespace NFSEngine {
 
 		double m_SecondsPerBeat = 0.5;
 		double m_SecondsPer16th = 0.125;
-		double m_StartTime = 0.0;
+
+		double m_SongTime = 0.0;
 
 		int m_Current16thTotal = 0;
 		int m_Last16thTotal = -1;
