@@ -12,7 +12,6 @@
 #include "Components/CameraController.hpp"
 #include "Components/Camera.hpp"
 #include "Core/Audio/AudioEngine.hpp"
-#include "Components/AudioComponent.hpp"
 #include "Components/PointLight.hpp"
 #include "Components/DirectionalLight.hpp"
 #include "Components/SpotLight.hpp"
@@ -139,7 +138,7 @@ void LayerExample::OnAttach() {
     m_Sequencer.Start(120.0f);
 
     NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoTest");
-    auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioComponent>();
+    auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
     audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
 
     m_TestAudioComp = &audioComp;

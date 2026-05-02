@@ -1,16 +1,16 @@
-#include "Components/AudioComponent.hpp"
+#include "Components/AudioPatternComponent.hpp"
 #include <iostream>
 #include <cmath>
 
 namespace NFSEngine {
 
-	AudioComponent::~AudioComponent() {
+	AudioPatternComponent::~AudioPatternComponent() {
 		if (m_IsLoaded) {
 			ma_sound_uninit(&m_Sound);
 		}
 	}
 
-	void AudioComponent::LoadSound(const std::string& filepath) {
+	void AudioPatternComponent::LoadSound(const std::string& filepath) {
 
 		std::cout << filepath << std::endl;
 
@@ -29,7 +29,7 @@ namespace NFSEngine {
 		
 	}
 
-	void AudioComponent::LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer) {
+	void AudioPatternComponent::LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer) {
 		m_Sequencer = sequencer;
 
 		m_CurrentPattern = PatternParser::LoadFromFile(patternFile);
@@ -40,7 +40,7 @@ namespace NFSEngine {
 		}
 	}
 
-	void AudioComponent::PlayNote(float pitchOffset) {
+	void AudioPatternComponent::PlayNote(float pitchOffset) {
 		if (!m_IsLoaded) return;
 
 		float pitchMultiplier = std::pow(2.0f, pitchOffset / 12.0f);
@@ -49,22 +49,24 @@ namespace NFSEngine {
 		ma_sound_start(&m_Sound);
 	}
 
-	void AudioComponent::OnUpdate(DeltaTime deltaTime) {
-		if (!m_Sequencer || !m_IsLoaded) return;
+	void AudioPatternComponent::OnUpdate(DeltaTime deltaTime) {
+		if (!m_Sequencer || !m_IsLoaded || m_CurrentPattern.totalBars <= 0) return;
 
 		int current16thTotal = m_Sequencer->GetCurrent16thTotal();
 
 		if (current16thTotal > m_LastPlayed16thTotal) {
 
-			int currentBar = m_Sequencer->GetCurrentBar();
+			int absoluteBar = m_Sequencer->GetCurrentBar();
 			int currentBeat = m_Sequencer->GetBeatInBar();
 			int current16th = m_Sequencer->Get16thInBeat();
 
+			int localBar = ((absoluteBar - 1) % m_CurrentPattern.totalBars) + 1;
+
 			for (const auto& note : m_CurrentPattern.notes) {
-				if (note.bar == currentBar && note.beat == currentBeat && note.sixteenth == current16th) {
+				if (note.bar == localBar && note.beat == currentBeat && note.sixteenth == current16th) {
 
 					PlayNote(note.pitchOffset);
-					std::cout << "[AUDIO] Gram nute na takcie " << currentBar << " bicie " << currentBeat << std::endl;
+					std::cout << "[AUDIO] Gram nute na takcie zloopowanym " << localBar << " (absolutny: " << absoluteBar << "), bicie " << currentBeat << std::endl;
 				}
 			}
 

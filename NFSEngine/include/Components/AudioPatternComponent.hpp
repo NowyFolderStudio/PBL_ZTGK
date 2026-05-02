@@ -8,10 +8,10 @@
 #include <string>
 
 namespace NFSEngine {
-	class AudioComponent : public Component {
+	class AudioPatternComponent : public Component {
 	public:
-		AudioComponent(GameObject* owner) : Component(owner) {};
-		~AudioComponent() override;
+		AudioPatternComponent(GameObject* owner) : Component(owner) {};
+		~AudioPatternComponent() override;
 
 		void LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer);
 
