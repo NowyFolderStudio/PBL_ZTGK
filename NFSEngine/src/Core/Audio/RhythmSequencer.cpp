@@ -4,6 +4,11 @@
 
 namespace NFSEngine {
 
+	float RhythmSequencer::GetContinuousBeatTime() const {
+		if (m_SecondsPerBeat <= 0.0) return 0.0f;
+		return static_cast<float>(m_SongTime / m_SecondsPerBeat);
+	}
+
 	void RhythmSequencer::Start(float bpm, int beatsPerBar) {
 		m_BPM = bpm;
 		m_BeatsPerBar = beatsPerBar;

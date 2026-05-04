@@ -41,6 +41,8 @@ void LayerExample::OnAttach() {
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
 
@@ -90,7 +92,7 @@ void LayerExample::OnAttach() {
 
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
-    cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_Shader, texture2);
+    cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_AudioShader, texture2);
     cylinderObj->GetTransform()->SetPosition({4.0f, 0.0f, 1.0f});
 
     // Central Platform
@@ -248,51 +250,66 @@ void LayerExample::Render() {
     }
 
     if (mainCamera) {
-        m_Shader->Bind();
+        auto bindLightsAndCamera = [&](std::shared_ptr<NFSEngine::Shader> currentShader) {
+            currentShader->Bind();
 
-        m_Shader->SetVec3("viewPos", mainCamera->GetOwner()->GetTransform()->GetPosition());
+            currentShader->SetVec3("viewPos", mainCamera->GetOwner()->GetTransform()->GetPosition());
 
-        for (auto& go : m_Scene->GetAllGameObjects()) {
-            if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) {
-                m_Shader->SetVec3("dirLight.direction", dirLight->Direction);
-                m_Shader->SetVec3("dirLight.color", dirLight->Color);
-                m_Shader->SetFloat("dirLight.intensity", dirLight->Intensity);
-                break;
+            for (auto& go : m_Scene->GetAllGameObjects()) {
+                if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) {
+                    currentShader->SetVec3("dirLight.direction", dirLight->Direction);
+                    currentShader->SetVec3("dirLight.color", dirLight->Color);
+                    currentShader->SetFloat("dirLight.intensity", dirLight->Intensity);
+                    break;
+                }
             }
-        }
 
-        int lightIndex = 0;
-        for (auto& go : m_Scene->GetAllGameObjects()) {
-            if (auto* light = go->GetComponent<NFSEngine::PointLight>()) {
-                std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+            int lightIndex = 0;
+            for (auto& go : m_Scene->GetAllGameObjects()) {
+                if (auto* light = go->GetComponent<NFSEngine::PointLight>()) {
+                    std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
 
-                m_Shader->SetVec3(base + "position", light->GetTransform()->GetPosition());
-                m_Shader->SetVec3(base + "color", light->Color);
-                m_Shader->SetFloat(base + "intensity", light->Intensity);
-                m_Shader->SetFloat(base + "constant", light->Constant);
-                m_Shader->SetFloat(base + "linear", light->Linear);
-                m_Shader->SetFloat(base + "quadratic", light->Quadratic);
+                    currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
+                    currentShader->SetVec3(base + "color", light->Color);
+                    currentShader->SetFloat(base + "intensity", light->Intensity);
+                    currentShader->SetFloat(base + "constant", light->Constant);
+                    currentShader->SetFloat(base + "linear", light->Linear);
+                    currentShader->SetFloat(base + "quadratic", light->Quadratic);
 
-                lightIndex++;
-                if (lightIndex >= 4) break;
+                    lightIndex++;
+                    if (lightIndex >= 4) break;
+                }
             }
-        }
 
-        for (auto& go : m_Scene->GetAllGameObjects()) {
-            if (auto* spot = go->GetComponent<NFSEngine::SpotLight>()) {
-                m_Shader->SetVec3("spotLight.position", spot->GetTransform()->GetPosition());
-                m_Shader->SetVec3("spotLight.direction", spot->Direction);
-                m_Shader->SetVec3("spotLight.color", spot->Color);
-                m_Shader->SetFloat("spotLight.intensity", spot->Intensity);
-                m_Shader->SetFloat("spotLight.cutOff", spot->CutOff);
-                m_Shader->SetFloat("spotLight.outerCutOff", spot->OuterCutOff);
-                m_Shader->SetFloat("spotLight.constant", spot->Constant);
-                m_Shader->SetFloat("spotLight.linear", spot->Linear);
-                m_Shader->SetFloat("spotLight.quadratic", spot->Quadratic);
-                break;
+            for (auto& go : m_Scene->GetAllGameObjects()) {
+                if (auto* spot = go->GetComponent<NFSEngine::SpotLight>()) {
+                    currentShader->SetVec3("spotLight.position", spot->GetTransform()->GetPosition());
+                    currentShader->SetVec3("spotLight.direction", spot->Direction);
+                    currentShader->SetVec3("spotLight.color", spot->Color);
+                    currentShader->SetFloat("spotLight.intensity", spot->Intensity);
+                    currentShader->SetFloat("spotLight.cutOff", spot->CutOff);
+                    currentShader->SetFloat("spotLight.outerCutOff", spot->OuterCutOff);
+                    currentShader->SetFloat("spotLight.constant", spot->Constant);
+                    currentShader->SetFloat("spotLight.linear", spot->Linear);
+                    currentShader->SetFloat("spotLight.quadratic", spot->Quadratic);
+                    break;
+                }
             }
-        }
-        m_Shader->SetInt("activePointLights", lightIndex);
+            currentShader->SetInt("activePointLights", lightIndex);
+        };
+
+        bindLightsAndCamera(m_Shader);
+
+        bindLightsAndCamera(m_AudioShader);
+
+        float songPos = m_Sequencer.GetContinuousBeatTime();
+
+        m_AudioShader->SetFloat("u_MusicTime", songPos);
+
+        m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
+        m_AudioShader->SetFloat("u_ScaleStrengthXZ", 0.0f);
+        m_AudioShader->SetFloat("u_BendStrength", 0.0f);
+        m_AudioShader->SetFloat("u_TwistStrength", 0.4f);
 
         NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
 

@@ -13,6 +13,7 @@ namespace NFSEngine {
 		int GetBeatInBar() const { return m_BeatInBar; }
 		int Get16thInBeat() const { return m_16thInBeat;  }
 		int GetCurrent16thTotal() const { return m_Current16thTotal; }
+		float GetContinuousBeatTime() const;
 
 	private:
 		float m_BPM = 120.0f;

@@ -35,7 +35,9 @@ private:
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
     NFSEngine::DeltaTime m_DeltaTime;
     std::unique_ptr<NFSEngine::SceneHierarchyPanel> m_HierarchyPanel;
+
     std::shared_ptr<NFSEngine::Shader> m_Shader;
+    std::shared_ptr<NFSEngine::Shader> m_AudioShader;
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
 
