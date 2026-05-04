@@ -6,7 +6,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include <memory>
-#include "Components/CubeControl.hpp"
+#include "Components/CharacterController.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
 #include "Components/ModelComponent.hpp"
@@ -58,29 +58,29 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::ModelComponent>(capsuleModel, m_Shader, texture);
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
-    m_Player->AddComponent<CubeControl>();
+    m_Player->AddComponent<CharacterController>();
 
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
     cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_Shader, texture2);
-    cylinderObj->GetTransform()->SetPosition({4.0f, 0.0f, 1.0f});
+    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
 
     // Sample floor object for physics test
     m_Floor = m_Scene->CreateGameObject("Floor");
-    m_Floor->GetTransform()->SetPosition({0.0f, -2.0f, 0.0f});
+    m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
 
     m_Floor->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
-    m_Floor->GetTransform()->SetScale({20.0f, 1.0f, 20.0f});
+    m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
 
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({0.0f, 2.0f, 2.0f});
+    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = {1.0f, 0.8f, 0.5f};
+    lightComp.Color = { 1.0f, 0.8f, 0.5f };
     lightComp.Intensity = 3.f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
@@ -90,16 +90,16 @@ void LayerExample::OnAttach() {
     sunComp.Intensity = 0.8f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
-    spotObj->GetTransform()->SetPosition({0.0f, 1.5f, 0.0f});
+    spotObj->GetTransform()->SetPosition({ 0.0f, 1.5f, 0.0f });
 
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
-    spotComp.Color = {1.0f, 1.0f, 1.0f};
-    spotComp.Direction = {0.0f, -1.0f, -0.5f};
+    spotComp.Color = { 1.0f, 1.0f, 1.0f };
+    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
     spotComp.Intensity = 5.0f;
 
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
-    m_MovingCube2->GetTransform()->SetPosition({-4.0f, -1.0f, 0.0f});
+    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
@@ -112,12 +112,16 @@ void LayerExample::OnAttach() {
 
     auto& earthMover = earthObj->AddComponent<RhythmMover>();
     earthMover.TargetPattern = "PianoPattern1";
-    earthMover.SetBasePosition(earthObj->GetTransform()->GetPosition());    
+    earthMover.SetBasePosition(earthObj->GetTransform()->GetPosition());
 
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
     cameraObj->AddComponent<NFSEngine::Camera>();
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
     controller.SetTarget(m_Player->GetTransform());
+
+    if (auto* characterController = m_Player->GetComponent<CharacterController>()) {
+        characterController->SetCameraTransform(cameraObj->GetTransform());
+    }
 
     std::vector<std::string> faces = {
         "assets/textures/skybox/testSkybox/px.png", // 1. Right (+X)
@@ -135,7 +139,7 @@ void LayerExample::OnAttach() {
     const auto& gameObjects = m_Scene->GetAllGameObjects();
     for (const auto& go : gameObjects) {
         if (go.get() != m_Player) {
-            if (auto* control = go->GetComponent<CubeControl>()) {
+            if (auto* control = go->GetComponent<CharacterController>()) {
                 control->SetActive(false);
             }
         }
@@ -146,7 +150,7 @@ void LayerExample::OnAttach() {
 
     // Coin Object
     m_Coin = m_Scene->CreateGameObject("Coin");
-    m_Coin->GetTransform()->SetPosition({2.0f, 1.0f, 0.0f});
+    m_Coin->GetTransform()->SetPosition({ 2.0f, 1.0f, 0.0f });
     m_Coin->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
 
     auto& coinCollider = m_Coin->AddComponent<NFSEngine::BoxCollider3DComponent>();
@@ -165,7 +169,7 @@ void LayerExample::OnAttach() {
     m_TestAudioComp = &audioComp;
 }
 
-void LayerExample::OnDetach() {}
+void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_Sequencer.Update((float)deltaTime);
@@ -190,10 +194,10 @@ void LayerExample::OnRender() { Render(); }
 
 void LayerExample::Init() { m_MyCube = new NFSEngine::Cube(); }
 
-void LayerExample::Update() {}
+void LayerExample::Update() { }
 
 void LayerExample::Render() {
-    NFSEngine::Renderer::GetAPI().SetClearColor({0.2f, 0.1f, 0.1f, 1.0f});
+    NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
     NFSEngine::Renderer::GetAPI().Clear();
 
     NFSEngine::Camera* mainCamera = nullptr;
@@ -287,7 +291,7 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("Triangle count: %u", stats.triangleCount);
     ImGui::Text("State changes: %u", stats.stateChanges);
 
-    static float values[90] = {0};
+    static float values[90] = { 0 };
     static int values_offset = 0;
     values[values_offset] = currentFrameTime;
     values_offset = (values_offset + 1) % 90;
