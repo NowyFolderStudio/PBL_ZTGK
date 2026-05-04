@@ -20,6 +20,14 @@ public:
     void Render();
     void OnEvent(NFSEngine::Event& e) override;
 
+    void AddScore(int points) {
+        m_Score += points;
+        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
+            m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
+                "SCORE: " + std::to_string(m_Score);
+        }
+    }
+
 private:
     NFSEngine::Canvas* m_Canvas = nullptr;
 

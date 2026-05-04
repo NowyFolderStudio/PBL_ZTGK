@@ -7,8 +7,9 @@ class GameApp : public NFSEngine::Application {
 public:
     GameApp(const NFSEngine::ApplicationConfig& config)
         : NFSEngine::Application(config) {
-        PushLayer(new LayerExample());
-        PushOverlay(new UILayer());
+        auto* uiLayer = new UILayer();
+        PushLayer(new LayerExample(uiLayer));
+        PushOverlay(uiLayer);
     }
 
     ~GameApp() { }

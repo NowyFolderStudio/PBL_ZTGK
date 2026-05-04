@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NFSEngine.h"
+#include "UILayer.hpp"
 #include <memory>
 #include "Renderer/Skybox.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
@@ -8,7 +9,7 @@
 
 class LayerExample : public NFSEngine::Layer {
 public:
-    LayerExample();
+    LayerExample(UILayer* uiLayer);
     ~LayerExample() override;
 
     void OnAttach() override;
@@ -30,6 +31,8 @@ private:
     NFSEngine::GameObject* m_MovingCube = nullptr;
     NFSEngine::GameObject* m_MovingCube2 = nullptr;
     NFSEngine::GameObject* m_Floor = nullptr;
+    NFSEngine::GameObject* m_Coin = nullptr;
+
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
     NFSEngine::DeltaTime m_DeltaTime;
     std::unique_ptr<NFSEngine::SceneHierarchyPanel> m_HierarchyPanel;
@@ -39,4 +42,6 @@ private:
 
     NFSEngine::RhythmSequencer m_Sequencer;
     NFSEngine::AudioPatternComponent* m_TestAudioComp = nullptr;
+
+    UILayer* m_UILayer = nullptr;
 };

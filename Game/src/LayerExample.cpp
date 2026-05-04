@@ -1,5 +1,6 @@
 #include "LayerExample.hpp"
 #include "Components/CubeMesh.hpp"
+#include "Components/CoinComponent.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Renderer/Shader.hpp"
@@ -15,12 +16,12 @@
 #include "Components/PointLight.hpp"
 #include "Components/DirectionalLight.hpp"
 #include "Components/SpotLight.hpp"
-
 #include "Components/PhysicsComponents.hpp"
 
 #include <imgui.h>
 
-LayerExample::LayerExample() {
+LayerExample::LayerExample(UILayer* uiLayer)
+    : m_UILayer(uiLayer) {
     m_Player = nullptr;
     m_MyCube = nullptr;
     m_MovingCube = nullptr;
@@ -136,6 +137,20 @@ void LayerExample::OnAttach() {
 
     NFSEngine::AudioEngine::Init();
     m_Sequencer.Start(120.0f);
+
+    // Coin Object
+    m_Coin = m_Scene->CreateGameObject("Coin");
+    m_Coin->GetTransform()->SetPosition({2.0f, 1.0f, 0.0f});
+    m_Coin->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
+
+    auto& coinCollider = m_Coin->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    coinCollider.IsTrigger = true;
+
+    auto& coinComp = m_Coin->AddComponent<NFSEngine::CoinComponent>();
+    coinComp.SetTarget(m_Player);
+    coinComp.OnCollected = [this]() {
+        if (m_UILayer) m_UILayer->AddScore(1000);
+    };
 
     NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoTest");
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
