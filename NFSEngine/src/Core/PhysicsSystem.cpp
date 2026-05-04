@@ -338,9 +338,16 @@ namespace NFSEngine {
     PhysicsSystem::Capsule PhysicsSystem::GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider) {
         PhysicsSystem::Capsule capsule;
 
-        capsule.PointA = transform->GetPosition() + collider->Offset + glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
-        capsule.PointB = transform->GetPosition() + collider->Offset - glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+        glm::vec3 halfHeightVec = glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
 
+        glm::quat rotationQuat = transform->GetRotation();
+
+        glm::vec3 rotatedHalfHeightVec = rotationQuat * halfHeightVec;
+
+        glm::vec3 position = transform->GetPosition() + collider->Offset;
+
+        capsule.PointA = position + rotatedHalfHeightVec;
+        capsule.PointB = position - rotatedHalfHeightVec;
         capsule.Radius = collider->Radius;
 
         return capsule;
