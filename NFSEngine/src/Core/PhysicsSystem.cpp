@@ -122,6 +122,18 @@ namespace NFSEngine {
         return distanceSquared < (capsule.Radius * capsule.Radius);
     }
 
+    bool PhysicsSystem::MathCheckCapsuleOBB(const Capsule& capsule, const OBB& obb) {
+        glm::quat inverseRotation = glm::inverse(obb.Rotation);
+
+        glm::vec3 localPointA = inverseRotation * (capsule.PointA - obb.Center);
+        glm::vec3 localPointB = inverseRotation * (capsule.PointB - obb.Center);
+
+        Capsule localCapsule { localPointA, localPointB, capsule.Radius };
+        AABB localAABB { -obb.HalfSize, obb.HalfSize };
+
+        return MathCheckCapsuleAABB(localCapsule, localAABB);
+    }
+
     bool PhysicsSystem::MathCheckCapsuleCylinder(const Capsule& capsule, const Cylinder& cylinder) {
         glm::vec3 cylCenter = (cylinder.PointA + cylinder.PointB) * 0.5f;
 
@@ -224,14 +236,14 @@ namespace NFSEngine {
             auto* capsuleA = static_cast<CapsuleCollider3DComponent*>(colliderA);
             auto* boxB = static_cast<BoxCollider3DComponent*>(colliderB);
 
-            return MathCheckCapsuleAABB(GetCapsule(a->GetTransform(), capsuleA), GetAABB(b->GetTransform(), boxB));
+            return MathCheckCapsuleOBB(GetCapsule(a->GetTransform(), capsuleA), GetOBB(b->GetTransform(), boxB));
         }
 
         if (colliderA->Type == ColliderType::Box && colliderB->Type == ColliderType::Capsule) {
             auto* boxA = static_cast<BoxCollider3DComponent*>(colliderA);
             auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
 
-            return MathCheckCapsuleAABB(GetCapsule(b->GetTransform(), capsuleB), GetAABB(a->GetTransform(), boxA));
+            return MathCheckCapsuleOBB(GetCapsule(b->GetTransform(), capsuleB), GetOBB(a->GetTransform(), boxA));
         }
 
         if (colliderA->Type == ColliderType::Cylinder && colliderB->Type == ColliderType::Cylinder) {
@@ -325,6 +337,16 @@ namespace NFSEngine {
         box.Max = transform->GetPosition() + collider->Offset + collider->Size * 0.5f;
 
         return box;
+    };
+
+    PhysicsSystem::OBB PhysicsSystem::GetOBB(Transform* transform, BoxCollider3DComponent* collider) {
+        PhysicsSystem::OBB obb;
+
+        obb.Center = transform->GetPosition() + collider->Offset;
+        obb.HalfSize = collider->Size * 0.5f;
+        obb.Rotation = transform->GetRotation();
+
+        return obb;
     };
 
     PhysicsSystem::Sphere PhysicsSystem::GetSphere(Transform* transform, SphereCollider3DComponent* collider) {

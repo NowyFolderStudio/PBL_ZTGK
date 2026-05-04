@@ -44,8 +44,9 @@ void LayerExample::OnAttach() {
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
 
-    m_MovingCube = m_Scene->CreateGameObject("Player_Moving");
+    m_MovingCube = m_Scene->CreateGameObject("Rotated_Cube");
     m_MovingCube->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
+    m_MovingCube->GetTransform()->SetRotation(glm::vec3(0.0f, 30.0f, 0.0f));
 
     // Physics tests on cube
 
