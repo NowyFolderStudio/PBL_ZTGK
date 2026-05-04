@@ -25,7 +25,8 @@ namespace NFSEngine {
         MouseButtonPressed,
         MouseButtonReleased,
         MouseMoved,
-        MouseScrolled
+        MouseScrolled,
+        NotePlayed
     };
 
     enum EventCategory {
@@ -34,7 +35,8 @@ namespace NFSEngine {
         EventCategoryInput = BIT(1),
         EventCategoryKeyboard = BIT(2),
         EventCategoryMouse = BIT(3),
-        EventCategoryMouseButton = BIT(4)
+        EventCategoryMouseButton = BIT(4),
+        EventCategoryAudio = BIT(5)
     };
 
 #define EVENT_CLASS_TYPE(type)                                                                                                   \

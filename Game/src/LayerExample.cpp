@@ -16,6 +16,8 @@
 #include "Components/PointLight.hpp"
 #include "Components/DirectionalLight.hpp"
 #include "Components/SpotLight.hpp"
+#include "Components/RhythmMover.hpp"
+
 #include "Components/PhysicsComponents.hpp"
 
 #include <imgui.h>
@@ -108,6 +110,10 @@ void LayerExample::OnAttach() {
     earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, m_Shader, earthTexture);
     earthObj->AddComponent<NFSEngine::SphereCollider3DComponent>();
 
+    auto& earthMover = earthObj->AddComponent<RhythmMover>();
+    earthMover.TargetPattern = "PianoPattern1";
+    earthMover.SetBasePosition(earthObj->GetTransform()->GetPosition());    
+
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
     cameraObj->AddComponent<NFSEngine::Camera>();
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
@@ -168,6 +174,12 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
     if (m_TestAudioComp) {
         m_TestAudioComp->OnUpdate(deltaTime);
+    }
+
+    for (auto& go : m_Scene->GetAllGameObjects()) {
+        if (auto* mover = go->GetComponent<RhythmMover>()) {
+            mover->OnUpdate(deltaTime);
+        }
     }
 
     Update();
@@ -291,5 +303,9 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     for (auto& go : gameObjects) {
         if (auto* controller = go->GetComponent<NFSEngine::CameraController>()) controller->OnEvent(e);
+
+        if (auto* mover = go->GetComponent<RhythmMover>()) {
+            mover->OnEvent(e);
+        }
     }
 }

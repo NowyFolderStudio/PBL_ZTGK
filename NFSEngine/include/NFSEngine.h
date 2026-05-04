@@ -2,7 +2,6 @@
 
 // For use by NFSEngine applications
 
-#include "Core/AudioManager.hpp"
 #include "Core/Application.hpp"
 #include "Core/Cube.hpp"
 #include "Core/Input.hpp"
@@ -13,6 +12,9 @@
 #include "Core/Text.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Scene.hpp"
+
+#include "Core/Audio/AudioEngine.hpp"
+#include "Core/Audio/RhythmSequencer.hpp"
 
 #include "Renderer/Texture.hpp"
 #include "Renderer/Shader.hpp"
@@ -32,6 +34,7 @@
 #include "Components/Component.hpp"
 #include "Components/CubeMesh.hpp"
 #include "Components/Transform.hpp"
+#include "Components/AudioPatternComponent.hpp"
 
 #include "ImGui/ImGuiLayer.hpp"
 #include "ImGui/SceneHierarchyPanel.hpp"

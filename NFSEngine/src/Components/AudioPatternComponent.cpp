@@ -1,4 +1,7 @@
 #include "Components/AudioPatternComponent.hpp"
+#include "Events/NotePlayedEvent.hpp"
+#include "Core/Application.hpp"
+
 #include <iostream>
 #include <cmath>
 
@@ -66,7 +69,10 @@ namespace NFSEngine {
 				if (note.bar == localBar && note.beat == currentBeat && note.sixteenth == current16th) {
 
 					PlayNote(note.pitchOffset);
-					std::cout << "[AUDIO] Gram nute na takcie zloopowanym " << localBar << " (absolutny: " << absoluteBar << "), bicie " << currentBeat << std::endl;
+					
+					NotePlayedEvent noteEvent(m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat, current16th);
+
+					Application::Get().OnEvent(noteEvent);
 				}
 			}
 
