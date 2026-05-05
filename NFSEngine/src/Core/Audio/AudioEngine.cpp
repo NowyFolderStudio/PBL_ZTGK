@@ -18,9 +18,6 @@ namespace NFSEngine {
 		if (result != MA_SUCCESS) {
 			std::cout << "Blad MiniAudio : " << result << std::endl;
 		}
-		else {
-			std::cout << "MiniAudio dziala poprawnie" << std::endl;
-		}
 	}
 
 	void AudioEngine::Shutdown() {

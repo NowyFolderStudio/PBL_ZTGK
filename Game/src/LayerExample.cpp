@@ -17,6 +17,8 @@
 #include "Components/DirectionalLight.hpp"
 #include "Components/SpotLight.hpp"
 #include "Components/RhythmMover.hpp"
+#include "Components/InteractivePiano.hpp"
+#include "Components/PianoKeyTrigger.hpp"
 
 #include "Components/PhysicsComponents.hpp"
 
@@ -45,6 +47,8 @@ void LayerExample::OnAttach() {
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
+    auto textureWhite = NFSEngine::Texture::Create("assets/textures/white.png");
+    auto textureBlack = NFSEngine::Texture::Create("assets/textures/black.png");
 
     auto makePlatform = [&](const std::string& name, float x, float y, float z,
                             float sizeX, float sizeZ, float thickness = 1.0f) -> NFSEngine::GameObject* {
@@ -208,6 +212,38 @@ void LayerExample::OnAttach() {
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
     audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
     m_TestAudioComp = &audioComp;
+
+    // PianoObject 
+
+    NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
+    auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
+    pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
+
+    NFSEngine::GameObject* pianoBase = m_Scene->CreateGameObject("PianoBase");
+    pianoBase->AddComponent<NFSEngine::CubeMesh>(m_Shader, textureBlack);
+    pianoBase->GetTransform()->SetPosition(glm::vec3(44.f, -2.f, 0.f));
+    pianoBase->GetTransform()->SetScale(glm::vec3(12.f, 1.f, 5.f));
+    auto& pianoCol = pianoBase->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    pianoCol.Size = glm::vec3(12.f, 1.f, 5.f);
+
+    for (int i = 0; i < 7; i++) {
+        std::string keyName = "PianoKey" + std::to_string(i);
+        NFSEngine::GameObject* keyObj = m_Scene->CreateGameObject(keyName);
+
+        keyObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, textureWhite);
+        keyObj->GetTransform()->SetPosition(glm::vec3(i * 1.7f + 39.f, -1.4f, 0.0f));
+        keyObj->GetTransform()->SetScale(glm::vec3(1.6f, 0.2f, 4.0f));
+
+        auto& col = keyObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+        col.IsTrigger = true;
+
+        auto& keyTrigger = keyObj->AddComponent<PianoKeyTrigger>();
+        keyTrigger.KeyIndex = i;
+        keyTrigger.MainPiano = &pianoLogic;
+
+        keyTrigger.TargetPlayer = m_Player;
+        keyTrigger.SetBasePosition(keyObj->GetTransform()->GetPosition());
+    }
 }
 
 void LayerExample::OnDetach() {}
@@ -224,6 +260,10 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     for (auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* mover = go->GetComponent<RhythmMover>()) {
             mover->OnUpdate(deltaTime);
+        }
+
+        if (auto* keyTrigger = go->GetComponent<PianoKeyTrigger>()) {
+            keyTrigger->OnUpdate(deltaTime);
         }
     }
 

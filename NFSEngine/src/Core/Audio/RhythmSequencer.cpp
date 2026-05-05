@@ -38,13 +38,6 @@ namespace NFSEngine {
 			m_BeatInBar = (currentBeatTotal % m_BeatsPerBar) + 1;
 			m_CurrentBar = (currentBeatTotal / m_BeatsPerBar) + 1;
 
-			if (m_16thInBeat == 1) {
-				std::cout << "[SEKWENCER] Takt: " << m_CurrentBar << " | Bit: " << m_BeatInBar << std::endl;
-			}
-			else {
-				std::cout << "[SEKWENCER]    ... szesnastka " << m_16thInBeat << std::endl;
-			}
-
 			m_Last16thTotal = m_Current16thTotal;
 		}
 	}

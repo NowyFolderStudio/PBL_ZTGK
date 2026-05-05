@@ -23,13 +23,9 @@ namespace NFSEngine {
 			0, NULL, NULL, &m_Sound
 		);
 		m_IsLoaded = (result == MA_SUCCESS);
-		if (m_IsLoaded) {
-			std::cout << "git" << std::endl;
-		}
-		else {
+		if (!m_IsLoaded) {
 			std::cout << "REsult wczytywania:   " << result << std::endl;
-		}
-		
+		}		
 	}
 
 	void AudioPatternComponent::LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer) {
