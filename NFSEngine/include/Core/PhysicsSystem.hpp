@@ -39,6 +39,12 @@ namespace NFSEngine {
             float Radius;
         };
 
+        struct CollisionInfo {
+            bool IsColliding;
+            glm::vec3 ContactNormal;
+            float PenetrationDepth;
+        };
+
         static glm::vec3 ClosestPointOnSegment(const glm::vec3& a, const glm::vec3& b, const glm::vec3& point);
         static glm::vec3 ClampPointToAABB(const glm::vec3& point, const AABB& aabb);
         static glm::vec3 ClampPointToCylinder(const glm::vec3& point, const Cylinder& cylinder);

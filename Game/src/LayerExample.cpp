@@ -1,60 +1,58 @@
 #include "LayerExample.hpp"
+
+// Komponenty
 #include "Components/CubeMesh.hpp"
 #include "Components/CoinComponent.hpp"
-#include "Core/DeltaTime.hpp"
-#include "Core/GameObject.hpp"
-#include "Renderer/Shader.hpp"
-#include "Renderer/Texture.hpp"
-#include <memory>
 #include "Components/CharacterController.hpp"
-#include "Renderer/Renderer.hpp"
-#include "Renderer/Model.hpp"
 #include "Components/ModelComponent.hpp"
-#include "Components/CameraController.hpp"
-#include "Components/Camera.hpp"
-#include "Core/Audio/AudioEngine.hpp"
-#include "Components/PointLight.hpp"
-#include "Components/DirectionalLight.hpp"
-#include "Components/SpotLight.hpp"
 #include "Components/RhythmMover.hpp"
 #include "Components/InteractivePiano.hpp"
 #include "Components/PianoKeyTrigger.hpp"
-
 #include "Components/PhysicsComponents.hpp"
+#include "Components/Camera.hpp"
+#include "Components/CameraController.hpp"
+#include "Components/PointLight.hpp"
+#include "Components/DirectionalLight.hpp"
+#include "Components/SpotLight.hpp"
+
+// Core & Renderer
+#include "Core/DeltaTime.hpp"
+#include "Core/GameObject.hpp"
+#include "Core/Audio/AudioEngine.hpp"
+#include "Renderer/Shader.hpp"
+#include "Renderer/Texture.hpp"
+#include "Renderer/Renderer.hpp"
+#include "Renderer/Model.hpp"
 
 #include <imgui.h>
 
 LayerExample::LayerExample(UILayer* uiLayer)
     : m_UILayer(uiLayer) {
     m_Player = nullptr;
-    m_MyCube = nullptr;
     m_MovingCube = nullptr;
     m_Scene = nullptr;
 }
 
-LayerExample::~LayerExample() {
-    if (m_MyCube) delete m_MyCube;
-    NFSEngine::AudioEngine::Shutdown();
-}
+LayerExample::~LayerExample() { NFSEngine::AudioEngine::Shutdown(); }
 
 void LayerExample::OnAttach() {
-    Init();
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
-    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+    m_AudioShader
+        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
     auto textureWhite = NFSEngine::Texture::Create("assets/textures/white.png");
     auto textureBlack = NFSEngine::Texture::Create("assets/textures/black.png");
 
-    auto makePlatform = [&](const std::string& name, float x, float y, float z,
-                            float sizeX, float sizeZ, float thickness = 1.0f) -> NFSEngine::GameObject* {
+    auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
+                            float thickness = 1.0f) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
-        obj->GetTransform()->SetPosition({x, y, z});
-        obj->GetTransform()->SetScale({sizeX, thickness, sizeZ});
+        obj->GetTransform()->SetPosition({ x, y, z });
+        obj->GetTransform()->SetScale({ sizeX, thickness, sizeZ });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
         auto& col = obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
         col.Size = glm::vec3(sizeX, thickness, sizeZ);
@@ -63,7 +61,7 @@ void LayerExample::OnAttach() {
 
     auto makeCoin = [&](const std::string& name, float x, float y, float z) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
-        obj->GetTransform()->SetPosition({x, y, z});
+        obj->GetTransform()->SetPosition({ x, y, z });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
         auto& col = obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
         col.IsTrigger = true;
@@ -97,21 +95,21 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
     cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_AudioShader, texture2);
-    cylinderObj->GetTransform()->SetPosition({4.0f, 0.0f, 1.0f});
+    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
 
     // Central Platform
     m_Floor = m_Scene->CreateGameObject("Floor");
-    m_Floor->GetTransform()->SetPosition({0.0f, -2.0f, 0.0f});
+    m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
     m_Floor->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
     m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
-    m_Floor->GetTransform()->SetScale({20.0f, 1.0f, 20.0f});
+    m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
 
     // Lighting
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({0.0f, 2.0f, 2.0f});
+    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = {1.0f, 0.8f, 0.5f};
+    lightComp.Color = { 1.0f, 0.8f, 0.5f };
     lightComp.Intensity = 3.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
@@ -121,16 +119,16 @@ void LayerExample::OnAttach() {
     sunComp.Intensity = 0.8f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
-    spotObj->GetTransform()->SetPosition({0.0f, 1.5f, 0.0f});
+    spotObj->GetTransform()->SetPosition({ 0.0f, 1.5f, 0.0f });
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
-    spotComp.Color = {1.0f, 1.0f, 1.0f};
-    spotComp.Direction = {0.0f, -1.0f, -0.5f};
+    spotComp.Color = { 1.0f, 1.0f, 1.0f };
+    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
     spotComp.Intensity = 5.0f;
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
-    m_MovingCube2->GetTransform()->SetPosition({-4.0f, -1.0f, 0.0f});
+    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
@@ -156,17 +154,11 @@ void LayerExample::OnAttach() {
     }
 
     // Skybox
-    std::vector<std::string> faces = {
-        "assets/textures/skybox/testSkybox/px.png",
-        "assets/textures/skybox/testSkybox/nx.png",
-        "assets/textures/skybox/testSkybox/py.png",
-        "assets/textures/skybox/testSkybox/ny.png",
-        "assets/textures/skybox/testSkybox/pz.png",
-        "assets/textures/skybox/testSkybox/nz.png"
-    };
+    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox/px.png", "assets/textures/skybox/testSkybox/nx.png",
+                                       "assets/textures/skybox/testSkybox/py.png", "assets/textures/skybox/testSkybox/ny.png",
+                                       "assets/textures/skybox/testSkybox/pz.png", "assets/textures/skybox/testSkybox/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
-    NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
 
     const auto& gameObjects = m_Scene->GetAllGameObjects();
     for (const auto& go : gameObjects) {
@@ -213,8 +205,7 @@ void LayerExample::OnAttach() {
     audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
     m_TestAudioComp = &audioComp;
 
-    // PianoObject 
-
+    // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
     auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
     pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
@@ -240,13 +231,23 @@ void LayerExample::OnAttach() {
         auto& keyTrigger = keyObj->AddComponent<PianoKeyTrigger>();
         keyTrigger.KeyIndex = i;
         keyTrigger.MainPiano = &pianoLogic;
-
         keyTrigger.TargetPlayer = m_Player;
         keyTrigger.SetBasePosition(keyObj->GetTransform()->GetPosition());
     }
+
+    // WYPEŁNIENIE CACHE'U
+    for (const auto& go : m_Scene->GetAllGameObjects()) {
+        if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
+        if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
+        if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) m_CachedDirLight = dirLight;
+        if (auto* spotLight = go->GetComponent<NFSEngine::SpotLight>()) m_CachedSpotLight = spotLight;
+        if (auto* pointLight = go->GetComponent<NFSEngine::PointLight>()) m_CachedPointLights.push_back(pointLight);
+        if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
+        if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
+    }
 }
 
-void LayerExample::OnDetach() {}
+void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_Sequencer.Update((float)deltaTime);
@@ -257,106 +258,71 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         m_TestAudioComp->OnUpdate(deltaTime);
     }
 
-    for (auto& go : m_Scene->GetAllGameObjects()) {
-        if (auto* mover = go->GetComponent<RhythmMover>()) {
-            mover->OnUpdate(deltaTime);
-        }
-
-        if (auto* keyTrigger = go->GetComponent<PianoKeyTrigger>()) {
-            keyTrigger->OnUpdate(deltaTime);
-        }
+    for (auto* mover : m_CachedRhythmMovers) {
+        mover->OnUpdate(deltaTime);
     }
 
-    Update();
-    Render();
+    for (auto* keyTrigger : m_CachedPianoKeys) {
+        keyTrigger->OnUpdate(deltaTime);
+    }
 }
 
-void LayerExample::OnRender() { Render(); }
-
-void LayerExample::Init() { m_MyCube = new NFSEngine::Cube(); }
-
-void LayerExample::Update() {}
-
-void LayerExample::Render() {
-    NFSEngine::Renderer::GetAPI().SetClearColor({0.2f, 0.1f, 0.1f, 1.0f});
+void LayerExample::OnRender() {
+    NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
     NFSEngine::Renderer::GetAPI().Clear();
 
-    NFSEngine::Camera* mainCamera = nullptr;
-    for (auto& go : m_Scene->GetAllGameObjects()) {
-        if (auto* cam = go->GetComponent<NFSEngine::Camera>()) {
-            mainCamera = cam;
-            break;
-        }
-    }
-
-    if (mainCamera) {
+    if (m_CachedCamera) {
         auto bindLightsAndCamera = [&](std::shared_ptr<NFSEngine::Shader> currentShader) {
             currentShader->Bind();
+            currentShader->SetVec3("viewPos", m_CachedCamera->GetOwner()->GetTransform()->GetPosition());
 
-            currentShader->SetVec3("viewPos", mainCamera->GetOwner()->GetTransform()->GetPosition());
-
-            for (auto& go : m_Scene->GetAllGameObjects()) {
-                if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) {
-                    currentShader->SetVec3("dirLight.direction", dirLight->Direction);
-                    currentShader->SetVec3("dirLight.color", dirLight->Color);
-                    currentShader->SetFloat("dirLight.intensity", dirLight->Intensity);
-                    break;
-                }
+            if (m_CachedDirLight) {
+                currentShader->SetVec3("dirLight.direction", m_CachedDirLight->Direction);
+                currentShader->SetVec3("dirLight.color", m_CachedDirLight->Color);
+                currentShader->SetFloat("dirLight.intensity", m_CachedDirLight->Intensity);
             }
 
             int lightIndex = 0;
-            for (auto& go : m_Scene->GetAllGameObjects()) {
-                if (auto* light = go->GetComponent<NFSEngine::PointLight>()) {
-                    std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+            for (auto* light : m_CachedPointLights) {
+                std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+                currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
+                currentShader->SetVec3(base + "color", light->Color);
+                currentShader->SetFloat(base + "intensity", light->Intensity);
+                currentShader->SetFloat(base + "constant", light->Constant);
+                currentShader->SetFloat(base + "linear", light->Linear);
+                currentShader->SetFloat(base + "quadratic", light->Quadratic);
 
-                    currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
-                    currentShader->SetVec3(base + "color", light->Color);
-                    currentShader->SetFloat(base + "intensity", light->Intensity);
-                    currentShader->SetFloat(base + "constant", light->Constant);
-                    currentShader->SetFloat(base + "linear", light->Linear);
-                    currentShader->SetFloat(base + "quadratic", light->Quadratic);
-
-                    lightIndex++;
-                    if (lightIndex >= 4) break;
-                }
-            }
-
-            for (auto& go : m_Scene->GetAllGameObjects()) {
-                if (auto* spot = go->GetComponent<NFSEngine::SpotLight>()) {
-                    currentShader->SetVec3("spotLight.position", spot->GetTransform()->GetPosition());
-                    currentShader->SetVec3("spotLight.direction", spot->Direction);
-                    currentShader->SetVec3("spotLight.color", spot->Color);
-                    currentShader->SetFloat("spotLight.intensity", spot->Intensity);
-                    currentShader->SetFloat("spotLight.cutOff", spot->CutOff);
-                    currentShader->SetFloat("spotLight.outerCutOff", spot->OuterCutOff);
-                    currentShader->SetFloat("spotLight.constant", spot->Constant);
-                    currentShader->SetFloat("spotLight.linear", spot->Linear);
-                    currentShader->SetFloat("spotLight.quadratic", spot->Quadratic);
-                    break;
-                }
+                lightIndex++;
+                if (lightIndex >= 4) break;
             }
             currentShader->SetInt("activePointLights", lightIndex);
+
+            if (m_CachedSpotLight) {
+                currentShader->SetVec3("spotLight.position", m_CachedSpotLight->GetTransform()->GetPosition());
+                currentShader->SetVec3("spotLight.direction", m_CachedSpotLight->Direction);
+                currentShader->SetVec3("spotLight.color", m_CachedSpotLight->Color);
+                currentShader->SetFloat("spotLight.intensity", m_CachedSpotLight->Intensity);
+                currentShader->SetFloat("spotLight.cutOff", m_CachedSpotLight->CutOff);
+                currentShader->SetFloat("spotLight.outerCutOff", m_CachedSpotLight->OuterCutOff);
+                currentShader->SetFloat("spotLight.constant", m_CachedSpotLight->Constant);
+                currentShader->SetFloat("spotLight.linear", m_CachedSpotLight->Linear);
+                currentShader->SetFloat("spotLight.quadratic", m_CachedSpotLight->Quadratic);
+            }
         };
 
         bindLightsAndCamera(m_Shader);
-
         bindLightsAndCamera(m_AudioShader);
 
         float songPos = m_Sequencer.GetContinuousBeatTime();
-
         m_AudioShader->SetFloat("u_MusicTime", songPos);
-
         m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
         m_AudioShader->SetFloat("u_ScaleStrengthXZ", 0.0f);
         m_AudioShader->SetFloat("u_BendStrength", 0.0f);
         m_AudioShader->SetFloat("u_TwistStrength", 0.4f);
 
-        NFSEngine::Renderer::BeginScene(mainCamera->GetViewMatrix(), mainCamera->GetProjectionMatrix());
-
+        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix());
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
-
         if (m_Scene) m_Scene->OnRender();
-
         NFSEngine::Renderer::EndScene();
     }
 }
@@ -371,14 +337,11 @@ void LayerExample::OnImGuiRender() {
 
     ImGui::Text("(Average) FPS: %.1f", averageFps);
     ImGui::Text("(Average) Frame Time: %.3f ms", averageFrameTime);
-
     ImGui::Text("(Current) FPS: %.1f", currentFps);
     ImGui::Text("(Current) Frame Time: %.3f ms", currentFrameTime);
 
     ImGui::Separator();
-
     ImGui::Text("GPU: %.3f ms", NFSEngine::Renderer::GetGPUTime());
-
     ImGui::Separator();
 
     auto stats = NFSEngine::Renderer::GetStats();
@@ -387,25 +350,22 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("Triangle count: %u", stats.triangleCount);
     ImGui::Text("State changes: %u", stats.stateChanges);
 
-    static float values[90] = {0};
+    static float values[90] = { 0 };
     static int values_offset = 0;
     values[values_offset] = currentFrameTime;
     values_offset = (values_offset + 1) % 90;
     ImGui::PlotLines("History of frameTime (ms)", values, 90, values_offset, nullptr, 0.0f, 33.3f, ImVec2(0, 80));
 
     ImGui::End();
-
     m_HierarchyPanel->OnImGuiRender();
 }
 
 void LayerExample::OnEvent(NFSEngine::Event& e) {
-    auto& gameObjects = m_Scene->GetAllGameObjects();
+    if (m_CachedCameraController) {
+        m_CachedCameraController->OnEvent(e);
+    }
 
-    for (auto& go : gameObjects) {
-        if (auto* controller = go->GetComponent<NFSEngine::CameraController>()) controller->OnEvent(e);
-
-        if (auto* mover = go->GetComponent<RhythmMover>()) {
-            mover->OnEvent(e);
-        }
+    for (auto* mover : m_CachedRhythmMovers) {
+        mover->OnEvent(e);
     }
 }
