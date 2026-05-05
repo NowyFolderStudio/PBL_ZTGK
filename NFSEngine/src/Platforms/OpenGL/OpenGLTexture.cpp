@@ -24,6 +24,7 @@ namespace NFSEngine {
             } else if (channels == 3) {
                 internalFormat = GL_RGB8;
                 dataFormat = GL_RGB;
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
             }
 
             m_InternalFormat = internalFormat;
@@ -39,6 +40,7 @@ namespace NFSEngine {
 
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
             stbi_image_free(data);
         } else {

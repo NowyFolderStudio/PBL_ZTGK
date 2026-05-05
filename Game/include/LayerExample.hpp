@@ -38,6 +38,7 @@ private:
     NFSEngine::GameObject* m_MovingCube2 = nullptr;
     NFSEngine::GameObject* m_Floor = nullptr;
     NFSEngine::GameObject* m_Coin = nullptr;
+    NFSEngine::GameObject* m_PlayerModel = nullptr;
 
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
     NFSEngine::DeltaTime m_DeltaTime;

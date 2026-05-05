@@ -89,6 +89,13 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
 
+    // PlayerModel
+    auto playerModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player.obj");
+    m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
+    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
+    auto playerModelTexture = NFSEngine::Texture::Create("assets/models/Player/playerModelTexture.JPEG");
+    m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(playerModel, m_Shader, playerModelTexture);
+
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 
