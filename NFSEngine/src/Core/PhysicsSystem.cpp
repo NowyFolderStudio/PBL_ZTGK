@@ -270,18 +270,21 @@ namespace NFSEngine {
         return false;
     };
 
-    void PhysicsSystem::Update(std::vector<std::unique_ptr<GameObject>>& gameObjects, DeltaTime deltaTime) {
+    void PhysicsSystem::Update(const std::vector<RigidBody3DComponent*>& rigidBodies,
+                               const std::vector<ColliderComponent*> allColliders, DeltaTime deltaTime) {
         float dt = static_cast<float>(deltaTime);
 
-        for (size_t i = 0; i < gameObjects.size(); i++) {
-            GameObject* objA = gameObjects[i].get();
-            auto* rigidBody = objA->GetComponent<RigidBody3DComponent>();
-            auto* colA = objA->GetComponent<ColliderComponent>();
+        for (auto* rigidBody : rigidBodies) {
+            GameObject* objA = rigidBody->GetOwner();
 
-            if (!rigidBody || !objA->IsActive()) continue;
+            if (!objA->IsActive()) continue;
+
+            auto* colA = objA->GetComponent<ColliderComponent>();
+            if (!colA) continue;
 
             auto* transform = objA->GetTransform();
 
+            // 1. Aplikowanie sił
             if (rigidBody->UseGravity) {
                 rigidBody->Acceleration += Gravity;
             }
@@ -291,38 +294,37 @@ namespace NFSEngine {
             glm::vec3 moveDelta = rigidBody->Velocity * dt;
 
             transform->Move(glm::vec3(moveDelta.x, 0.0f, 0.0f));
-            for (size_t j = 0; j < gameObjects.size(); j++) {
-                if (i == j) continue;
-                GameObject* objB = gameObjects[j].get();
-                auto* colB = objB->GetComponent<ColliderComponent>();
+            for (auto* colB : allColliders) {
+                GameObject* objB = colB->GetOwner();
+                if (objA == objB || !objB->IsActive()) continue;
 
-                if (objB->IsActive() && colB && CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger) {
+                if (CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger) {
                     transform->Move(glm::vec3(-moveDelta.x, 0.0f, 0.0f));
                     rigidBody->Velocity.x = 0.0f;
                     break;
                 }
             }
 
+            // 3. Oś Y
             transform->Move(glm::vec3(0.0f, moveDelta.y, 0.0f));
-            for (size_t j = 0; j < gameObjects.size(); j++) {
-                if (i == j) continue;
-                GameObject* objB = gameObjects[j].get();
-                auto* colB = objB->GetComponent<ColliderComponent>();
+            for (auto* colB : allColliders) {
+                GameObject* objB = colB->GetOwner();
+                if (objA == objB || !objB->IsActive()) continue;
 
-                if (objB->IsActive() && colB && CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger) {
+                if (CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger) {
                     transform->Move(glm::vec3(0.0f, -moveDelta.y, 0.0f));
                     rigidBody->Velocity.y = 0.0f;
-                    break;
+                    break; // Uderzyliśmy w ziemię/sufit
                 }
             }
 
+            // 4. Oś Z
             transform->Move(glm::vec3(0.0f, 0.0f, moveDelta.z));
-            for (size_t j = 0; j < gameObjects.size(); j++) {
-                if (i == j) continue;
-                GameObject* objB = gameObjects[j].get();
-                auto* colB = objB->GetComponent<ColliderComponent>();
+            for (auto* colB : allColliders) {
+                GameObject* objB = colB->GetOwner();
+                if (objA == objB || !objB->IsActive()) continue;
 
-                if (objB->IsActive() && colB && CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger) {
+                if (CheckCollision(objA, objB) && !colA->IsTrigger && !colB->IsTrigger) {
                     transform->Move(glm::vec3(0.0f, 0.0f, -moveDelta.z));
                     rigidBody->Velocity.z = 0.0f;
                     break;

@@ -8,7 +8,8 @@
 namespace NFSEngine {
     class PhysicsSystem {
     public:
-        void Update(std::vector<std::unique_ptr<GameObject>>& gameObjects, DeltaTime deltaTime);
+        void Update(const std::vector<RigidBody3DComponent*>& rigidBodies, const std::vector<ColliderComponent*> allColliders,
+                    DeltaTime deltaTime);
         glm::vec3 Gravity = glm::vec3(0.0f, -9.81f, 0.0f);
 
         struct AABB {

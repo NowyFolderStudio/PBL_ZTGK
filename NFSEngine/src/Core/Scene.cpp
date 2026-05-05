@@ -18,6 +18,20 @@ namespace NFSEngine {
             gameObject->Start();
         }
 
+        m_PhysicsBodies.clear();
+        m_Colliders.clear();
+
+        for (const auto& gameObject : m_GameObjects) {
+            if (!gameObject->IsActive()) continue;
+
+            if (auto* rb = gameObject->GetComponent<RigidBody3DComponent>()) {
+                m_PhysicsBodies.push_back(rb);
+            }
+            if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
+                m_Colliders.push_back(col);
+            }
+        }
+
         if (deltaTime > 0.25f) deltaTime = 0.25f;
         m_Accumulator += deltaTime;
 
@@ -27,7 +41,7 @@ namespace NFSEngine {
                 gameObject->FixedUpdate(m_FixedDeltaTime);
             }
 
-            m_PhysicsSystem.Update(m_GameObjects, m_FixedDeltaTime);
+            m_PhysicsSystem.Update(m_PhysicsBodies, m_Colliders, m_FixedDeltaTime);
 
             m_Accumulator -= m_FixedDeltaTime;
         }

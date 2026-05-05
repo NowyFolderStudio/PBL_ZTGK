@@ -30,6 +30,8 @@ namespace NFSEngine {
         DeltaTime m_FixedDeltaTime = 0.01666f;
         float m_Accumulator = 0.0f;
 
+        std::vector<RigidBody3DComponent*> m_PhysicsBodies;
+        std::vector<ColliderComponent*> m_Colliders;
         PhysicsSystem m_PhysicsSystem;
     };
 
