@@ -2,7 +2,7 @@
 
 #include "Components/Component.hpp"
 #include "Core/GameObject.hpp"
-#include "Core/PhysicsSystem.hpp"
+#include "Core/Physics/PhysicsSystem.hpp"
 
 #include <functional>
 
@@ -11,7 +11,7 @@ namespace NFSEngine {
     class HazardComponent : public Component {
     public:
         explicit HazardComponent(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         std::string GetName() const override { return "HazardComponent"; }
 
@@ -29,7 +29,7 @@ namespace NFSEngine {
                 return;
             }
 
-            if (PhysicsSystem::CheckCollision(m_Owner, m_Target)) {
+            if (PhysicsSystem::CheckCollision(m_Owner, m_Target).IsColliding) {
                 m_CooldownTimer = HitCooldown;
                 if (OnPlayerHit) OnPlayerHit();
             }
@@ -40,4 +40,4 @@ namespace NFSEngine {
         float m_CooldownTimer = 0.0f;
     };
 
-}
+} // namespace NFSEngine

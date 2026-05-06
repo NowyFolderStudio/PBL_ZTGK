@@ -2,7 +2,7 @@
 
 #include "Components/Component.hpp"
 #include "Core/GameObject.hpp"
-#include "Core/PhysicsSystem.hpp"
+#include "Core/Physics/PhysicsSystem.hpp"
 
 #include <functional>
 
@@ -11,7 +11,7 @@ namespace NFSEngine {
     class CoinComponent : public Component {
     public:
         explicit CoinComponent(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         std::string GetName() const override { return "CoinComponent"; }
 
@@ -22,7 +22,7 @@ namespace NFSEngine {
         void OnUpdate(DeltaTime) override {
             if (!m_Target || m_Collected) return;
 
-            if (PhysicsSystem::CheckCollision(m_Owner, m_Target)) {
+            if (PhysicsSystem::CheckCollision(m_Owner, m_Target).IsColliding) {
                 m_Collected = true;
 
                 if (OnCollected) OnCollected();
@@ -36,4 +36,4 @@ namespace NFSEngine {
         bool m_Collected = false;
     };
 
-}
+} // namespace NFSEngine

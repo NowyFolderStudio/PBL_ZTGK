@@ -6,7 +6,7 @@
 #include "Core/Input.hpp"
 #include "Core/Application.hpp"
 #include "Events/MouseEvent.hpp"
-#include "Core/PhysicsSystem.hpp"
+#include "Core/Physics/PhysicsSystem.hpp"
 #include "Core/Scene.hpp"
 #include <algorithm>
 #include <imgui.h>
@@ -15,7 +15,7 @@ namespace NFSEngine {
     class CameraController : public Component {
     public:
         explicit CameraController(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
@@ -81,7 +81,7 @@ namespace NFSEngine {
             float yawRad = glm::radians(m_Yaw);
             float pitchRad = glm::radians(m_Pitch);
 
-            glm::vec3 direction = {cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad)};
+            glm::vec3 direction = { cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad) };
 
             float collisionDistance = CheckCameraCollision(m_Target->GetPosition(), direction);
             m_CurrentDistance = glm::mix(m_CurrentDistance, collisionDistance, 15.0f * static_cast<float>(dt));
@@ -89,7 +89,7 @@ namespace NFSEngine {
             auto* pTransform = m_Owner->GetTransform();
             pTransform->SetPosition(m_Target->GetPosition() + direction * m_CurrentDistance);
 
-            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), {0, 1, 0});
+            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), { 0, 1, 0 });
             pTransform->SetRotation(glm::degrees(glm::eulerAngles(glm::quat_cast(glm::inverse(lookAt)))));
         }
 
@@ -112,7 +112,7 @@ namespace NFSEngine {
                     glm::vec3 testPoint = targetPos + direction * testDist;
 
                     float sphereRadius = 0.4f;
-                    PhysicsSystem::Sphere cameraSphere;
+                    NFSEngine::Sphere cameraSphere;
                     cameraSphere.Center = testPoint;
                     cameraSphere.Radius = sphereRadius;
 
@@ -121,14 +121,17 @@ namespace NFSEngine {
 
                     if (collider->Type == ColliderType::Box) {
                         auto* box = static_cast<BoxCollider3DComponent*>(collider);
-                        hit = PhysicsSystem::MathCheckAABBSphere(PhysicsSystem::GetAABB(otherTransform, box), cameraSphere);
+                        hit = CollisionDetector::CheckAABBSphere(PhysicsSystem::GetAABB(otherTransform, box), cameraSphere)
+                                  .IsColliding;
                     } else if (collider->Type == ColliderType::Sphere) {
                         auto* sphere = static_cast<SphereCollider3DComponent*>(collider);
-                        hit = PhysicsSystem::MathCheckSphere(PhysicsSystem::GetSphere(otherTransform, sphere), cameraSphere);
+                        hit = CollisionDetector::CheckSphere(PhysicsSystem::GetSphere(otherTransform, sphere), cameraSphere)
+                                  .IsColliding;
                     } else if (collider->Type == ColliderType::Capsule) {
                         auto* capsule = static_cast<CapsuleCollider3DComponent*>(collider);
-                        hit = PhysicsSystem::MathCheckCapsuleSphere(PhysicsSystem::GetCapsule(otherTransform, capsule),
-                                                                    cameraSphere);
+                        hit = CollisionDetector::CheckCapsuleSphere(PhysicsSystem::GetCapsule(otherTransform, capsule),
+                                                                    cameraSphere)
+                                  .IsColliding;
                     }
 
                     if (hit) {
@@ -153,4 +156,4 @@ namespace NFSEngine {
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
     };
-}
+} // namespace NFSEngine
