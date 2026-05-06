@@ -46,6 +46,7 @@ private:
 
     std::shared_ptr<NFSEngine::Shader> m_Shader;
     std::shared_ptr<NFSEngine::Shader> m_AudioShader;
+    std::shared_ptr<NFSEngine::Shader> m_ToonShader;
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
 

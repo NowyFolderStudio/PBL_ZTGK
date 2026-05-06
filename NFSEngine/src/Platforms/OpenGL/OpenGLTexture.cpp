@@ -2,11 +2,12 @@
 
 #include "stb/stb_image.h"
 #include <glad/glad.h>
+#include "nfspch.h"
 
 namespace NFSEngine {
-
-    OpenGLTexture::OpenGLTexture(const std::string& path)
-        : m_Path(path) {
+    OpenGLTexture::OpenGLTexture(const std::string& path, GLTextureParameters parameters)
+        : m_Path(path)
+        , m_Parameters(parameters) {
 
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
@@ -33,19 +34,19 @@ namespace NFSEngine {
             glGenTextures(1, &m_RendererID);
             glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameters.WrapS);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameters.WrapT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, parameters.MinFilter);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameters.MagFilter);
 
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            if (parameters.GenerateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
             glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
             stbi_image_free(data);
         } else {
-            std::cout << "ERROR::TEXTURE::FAILED_TO_LOAD: " << path << std::endl;
-            std::cout << "STB REASON: " << stbi_failure_reason() << std::endl;
+            NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD: ", path);
+            NFS_CORE_ERROR("STB REASON:  ", stbi_failure_reason());
         }
     }
 
@@ -71,7 +72,7 @@ namespace NFSEngine {
     void OpenGLTexture::SetData(void* data, uint32_t size) {
         uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
         if (size != m_Width * m_Height * bpp) {
-            std::cout << "ERROR::TEXTURE::SET_DATA: Data size mismatch!" << std::endl;
+            NFS_CORE_ERROR("ERROR::TEXTURE::SET_DATA: Data size mismatch!");
             return;
         }
 

@@ -23,6 +23,7 @@
 #include "Renderer/Texture.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
+#include "Platforms/OpenGL/OpenGLTexture.hpp"
 
 #include <imgui.h>
 
@@ -90,11 +91,20 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<CharacterController>();
 
     // PlayerModel
+    NFSEngine::GLTextureParameters rampParams;
+    rampParams.WrapS = GL_CLAMP_TO_EDGE;
+    rampParams.WrapT = GL_CLAMP_TO_EDGE;
+    rampParams.MinFilter = GL_NEAREST;
+    rampParams.MagFilter = GL_NEAREST;
+    rampParams.GenerateMipmaps = false;
+
+    auto rampTexture = std::make_shared<NFSEngine::OpenGLTexture>("textures/ramp/.png", rampParams);
     auto playerModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player.obj");
+    m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
     m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
     m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
     auto playerModelTexture = NFSEngine::Texture::Create("assets/models/Player/playerModelTexture.JPEG");
-    m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(playerModel, m_Shader, playerModelTexture);
+    m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(playerModel, m_ToonShader, playerModelTexture);
 
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
@@ -319,6 +329,7 @@ void LayerExample::OnRender() {
 
         bindLightsAndCamera(m_Shader);
         bindLightsAndCamera(m_AudioShader);
+        bindLightsAndCamera(m_ToonShader);
 
         float songPos = m_Sequencer.GetContinuousBeatTime();
         m_AudioShader->SetFloat("u_MusicTime", songPos);

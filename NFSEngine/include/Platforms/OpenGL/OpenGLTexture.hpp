@@ -3,9 +3,17 @@
 #include <glad/glad.h>
 
 namespace NFSEngine {
+    struct GLTextureParameters {
+        GLenum WrapS = GL_REPEAT;
+        GLenum WrapT = GL_REPEAT;
+        GLenum MinFilter = GL_LINEAR_MIPMAP_LINEAR;
+        GLenum MagFilter = GL_LINEAR;
+        bool GenerateMipmaps = true;
+    };
+
     class OpenGLTexture : public Texture {
     public:
-        OpenGLTexture(const std::string& textureName);
+        OpenGLTexture(const std::string& path, GLTextureParameters parameters = GLTextureParameters());
         OpenGLTexture(uint32_t width, uint32_t height);
         virtual ~OpenGLTexture();
 
@@ -18,6 +26,7 @@ namespace NFSEngine {
 
     private:
         std::string m_Path;
+        GLTextureParameters m_Parameters;
         uint32_t m_Width, m_Height;
         uint32_t m_RendererID;
         GLenum m_InternalFormat, m_DataFormat;
