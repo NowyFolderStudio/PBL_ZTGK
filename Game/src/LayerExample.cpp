@@ -357,14 +357,16 @@ void LayerExample::OnRender() {
         m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
         m_AudioShader->Bind();
         m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-        m_HazardShader->Bind();
-        m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
+
         float songPos = m_Sequencer.GetContinuousBeatTime();
         m_AudioShader->SetFloat("u_MusicTime", songPos);
         m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
         m_AudioShader->SetFloat("u_ScaleStrengthXZ", 0.0f);
         m_AudioShader->SetFloat("u_BendStrength", 0.0f);
         m_AudioShader->SetFloat("u_TwistStrength", 0.4f);
+
+        m_HazardShader->Bind();
+        m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
         NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix());
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
