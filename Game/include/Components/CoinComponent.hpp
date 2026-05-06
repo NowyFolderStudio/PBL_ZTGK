@@ -36,4 +36,4 @@ namespace NFSEngine {
         bool m_Collected = false;
     };
 
-} // namespace NFSEngine
+}
