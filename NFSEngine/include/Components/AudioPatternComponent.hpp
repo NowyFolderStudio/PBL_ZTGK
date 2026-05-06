@@ -16,8 +16,12 @@ namespace NFSEngine {
 		void LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer);
 
 		void OnUpdate(DeltaTime deltaTime) override;
+		void OnImGuiRender() override;
 
 		std::string GetName() const override { return "AudioComponent"; }
+
+		void SetVolume(float volume);
+		float GetVolume() const { return m_Volume; }
 
 	private:
 		void LoadSound(const std::string& filepath);
@@ -30,5 +34,7 @@ namespace NFSEngine {
 		RhythmSequencer* m_Sequencer = nullptr;
 
 		int m_LastPlayed16thTotal = -1;
+
+		float m_Volume = 1.0f;
 	};
 }

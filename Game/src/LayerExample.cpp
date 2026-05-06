@@ -243,6 +243,7 @@ void LayerExample::OnAttach() {
     auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
     audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
     m_TestAudioComp = &audioComp;
+    audioComp.SetVolume(0.0);
 
     // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");

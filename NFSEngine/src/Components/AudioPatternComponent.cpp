@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <imgui.h>
 
 namespace NFSEngine {
 
@@ -25,7 +26,9 @@ namespace NFSEngine {
 		m_IsLoaded = (result == MA_SUCCESS);
 		if (!m_IsLoaded) {
 			std::cout << "REsult wczytywania:   " << result << std::endl;
-		}		
+		} else {
+			ma_sound_set_volume(&m_Sound, m_Volume);
+		}
 	}
 
 	void AudioPatternComponent::LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer) {
@@ -73,6 +76,29 @@ namespace NFSEngine {
 			}
 
 			m_LastPlayed16thTotal = current16thTotal;
+		}
+	}
+
+	void AudioPatternComponent::OnImGuiRender() {
+		ImGui::Text("Zaladowany pattern: %s", m_CurrentPattern.name.c_str());
+
+		if (ImGui::SliderFloat("Glosnosc", &m_Volume, 0.0f, 2.0f)) {
+
+			if (m_IsLoaded) {
+				ma_sound_set_volume(&m_Sound, m_Volume);
+			}
+		}
+	}
+
+	void AudioPatternComponent::SetVolume(float volume) {
+		m_Volume = volume;
+
+		if (m_Volume < 0.0f) {
+			m_Volume = 0.0f;
+		}
+
+		if (m_IsLoaded) {
+			ma_sound_set_volume(&m_Sound, m_Volume);
 		}
 	}
 }
