@@ -6,7 +6,7 @@
 
 #include "Core/GameObject.hpp"
 #include "Core/DeltaTime.hpp"
-#include "Core/PhysicsSystem.hpp"
+#include "Core/Physics/PhysicsSystem.hpp"
 
 namespace NFSEngine {
 
