@@ -3,6 +3,7 @@
 // Komponenty
 #include "Components/CubeMesh.hpp"
 #include "Components/CoinComponent.hpp"
+#include "Components/HazardComponent.hpp"
 #include "Components/CharacterController.hpp"
 #include "Components/ModelComponent.hpp"
 #include "Components/RhythmMover.hpp"
@@ -43,6 +44,10 @@ void LayerExample::OnAttach() {
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
     m_AudioShader
         = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+    m_HazardShader
+        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_HazardShader->Bind();
+    m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
@@ -207,11 +212,28 @@ void LayerExample::OnAttach() {
     makePlatform("Platform_Step_Right", 15.0f, platformY, 0.0f, stepSize, stepSize);
     makePlatform("Platform_Right", 23.0f, platformY, 0.0f, outerSize, outerSize);
 
-    // Coins (one per outer platform, floating above surface)
+    // Coins
     makeCoin("Coin_Top", 0.0f, coinY, -23.0f);
     makeCoin("Coin_Bot", 0.0f, coinY, 23.0f);
     makeCoin("Coin_Left", -23.0f, coinY, 0.0f);
     makeCoin("Coin_Right", 23.0f, coinY, 0.0f);
+
+    // Trap
+    auto textureWhite2 = NFSEngine::Texture::Create("assets/textures/white.png");
+    m_HazardCube = m_Scene->CreateGameObject("Hazard_Cube");
+    m_HazardCube->GetTransform()->SetPosition(glm::vec3(5.0f, -1.0f, 5.0f));
+    m_HazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& hazardMesh = m_HazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, textureWhite2);
+    (void)hazardMesh;
+    auto& hazardCol = m_HazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    hazardCol.Size = glm::vec3(1.5f, 1.5f, 1.5f);
+    hazardCol.IsTrigger = true;
+    auto& hazard = m_HazardCube->AddComponent<NFSEngine::HazardComponent>();
+    hazard.SetTarget(m_Player);
+    hazard.HitCooldown = 1.5f;
+    hazard.OnPlayerHit = [this]() {
+        if (m_UILayer) m_UILayer->LoseHeart();
+    };
 
     // Audio
     NFSEngine::AudioEngine::Init();
@@ -252,7 +274,6 @@ void LayerExample::OnAttach() {
         keyTrigger.SetBasePosition(keyObj->GetTransform()->GetPosition());
     }
 
-    // WYPEŁNIENIE CACHE'U
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
         if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
@@ -331,6 +352,13 @@ void LayerExample::OnRender() {
         bindLightsAndCamera(m_AudioShader);
         bindLightsAndCamera(m_ToonShader);
 
+        bindLightsAndCamera(m_HazardShader);
+        m_Shader->Bind();
+        m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
+        m_AudioShader->Bind();
+        m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
+        m_HazardShader->Bind();
+        m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
         float songPos = m_Sequencer.GetContinuousBeatTime();
         m_AudioShader->SetFloat("u_MusicTime", songPos);
         m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);

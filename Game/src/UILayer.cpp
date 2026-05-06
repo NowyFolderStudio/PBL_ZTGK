@@ -1,5 +1,4 @@
 #include "UILayer.hpp"
-#include "Core/Application.hpp"
 #include "Core/DeltaTime.hpp"
 
 UILayer::UILayer() { m_Canvas = nullptr; }
@@ -11,7 +10,7 @@ UILayer::~UILayer() {
 
 void UILayer::OnAttach() { Init(); }
 
-void UILayer::OnDetach() { }
+void UILayer::OnDetach() {}
 
 void UILayer::Init() {
     float virtualWidth = 1920.0f;
@@ -76,6 +75,28 @@ void UILayer::Init() {
     barParams.color = glm::vec4(0.0f, 0.5f, 0.0f, 1.0f);
     m_AnimatedBar = &NFSEngine::UI::Image(*m_Canvas, barParams);
     m_AnimatedBar->Transform.Pivot = glm::vec2(0.0f, 0.5f);
+
+    // Hearths
+    NFSEngine::UI::ImageParameters heartBgParams;
+    heartBgParams.position = glm::vec3(175, 50, 0.8f);
+    heartBgParams.width = 310;
+    heartBgParams.height = 70;
+    heartBgParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.45f);
+    NFSEngine::UI::Image(*m_Canvas, heartBgParams);
+
+    const float heartSize = 60.0f;
+    const float heartSpacing = 90.0f;
+    const float heartStartX = 50.0f;
+    const float heartY = 50.0f;
+
+    for (int i = 0; i < k_MaxLives; ++i) {
+        NFSEngine::UI::ImageParameters heartParams;
+        heartParams.position = glm::vec3(heartStartX + i * heartSpacing, heartY, 1.0f);
+        heartParams.width = heartSize;
+        heartParams.height = heartSize;
+        heartParams.color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
+        m_Hearts[i] = &NFSEngine::UI::Image(*m_Canvas, heartParams);
+    }
 }
 
 void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
@@ -107,4 +128,19 @@ void UILayer::Render() {
     NFSEngine::UIRenderer::End();
 }
 
-void UILayer::OnEvent(NFSEngine::Event& e) { }
+void UILayer::OnEvent(NFSEngine::Event& e) {}
+
+void UILayer::UpdateHeartVisuals() {
+    for (int i = 0; i < k_MaxLives; ++i) {
+        if (!m_Hearts[i]) continue;
+
+        auto* img = m_Hearts[i]->GetComponent<NFSEngine::ImageComponent>();
+        if (!img) continue;
+
+        if (i < m_Lives) {
+            img->Color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
+        } else {
+            img->Color = glm::vec4(0.3f, 0.3f, 0.3f, 0.4f);
+        }
+    }
+}

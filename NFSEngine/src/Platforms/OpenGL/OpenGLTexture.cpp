@@ -45,8 +45,8 @@ namespace NFSEngine {
 
             stbi_image_free(data);
         } else {
-            NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD: ", path);
-            NFS_CORE_ERROR("STB REASON:  ", stbi_failure_reason());
+            NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD: {}", path);
+            NFS_CORE_ERROR("STB REASON: {}", stbi_failure_reason());
         }
     }
 

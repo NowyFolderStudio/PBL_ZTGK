@@ -15,7 +15,7 @@ namespace NFSEngine {
     class CameraController : public Component {
     public:
         explicit CameraController(GameObject* owner)
-            : Component(owner) { }
+            : Component(owner) {}
 
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
@@ -81,7 +81,7 @@ namespace NFSEngine {
             float yawRad = glm::radians(m_Yaw);
             float pitchRad = glm::radians(m_Pitch);
 
-            glm::vec3 direction = { cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad) };
+            glm::vec3 direction = {cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad)};
 
             float collisionDistance = CheckCameraCollision(m_Target->GetPosition(), direction);
             m_CurrentDistance = glm::mix(m_CurrentDistance, collisionDistance, 15.0f * static_cast<float>(dt));
@@ -89,7 +89,7 @@ namespace NFSEngine {
             auto* pTransform = m_Owner->GetTransform();
             pTransform->SetPosition(m_Target->GetPosition() + direction * m_CurrentDistance);
 
-            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), { 0, 1, 0 });
+            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), {0, 1, 0});
             pTransform->SetRotation(glm::degrees(glm::eulerAngles(glm::quat_cast(glm::inverse(lookAt)))));
         }
 
@@ -153,4 +153,4 @@ namespace NFSEngine {
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
     };
-} // namespace NFSEngine
+}

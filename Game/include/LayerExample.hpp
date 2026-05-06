@@ -39,6 +39,7 @@ private:
     NFSEngine::GameObject* m_Floor = nullptr;
     NFSEngine::GameObject* m_Coin = nullptr;
     NFSEngine::GameObject* m_PlayerModel = nullptr;
+    NFSEngine::GameObject* m_HazardCube = nullptr;
 
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
     NFSEngine::DeltaTime m_DeltaTime;
@@ -47,13 +48,13 @@ private:
     std::shared_ptr<NFSEngine::Shader> m_Shader;
     std::shared_ptr<NFSEngine::Shader> m_AudioShader;
     std::shared_ptr<NFSEngine::Shader> m_ToonShader;
+    std::shared_ptr<NFSEngine::Shader> m_HazardShader;
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
 
     NFSEngine::RhythmSequencer m_Sequencer;
     NFSEngine::AudioPatternComponent* m_TestAudioComp = nullptr;
 
-    // Cache wskaźników
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;
     NFSEngine::DirectionalLight* m_CachedDirLight = nullptr;

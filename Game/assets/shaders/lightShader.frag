@@ -9,6 +9,7 @@ out vec4 FragColor;
 uniform sampler2D texture1;
 
 uniform vec3 viewPos;
+uniform vec4 u_ColorTint;
 
 struct DirLight {
     vec3 direction;
@@ -121,5 +122,5 @@ void main()
     finalLight += CalcSpotLight(spotLight, norm, FragPos, viewDir);
     
     vec4 texColor = texture(texture1, TexCoord);
-    FragColor = vec4(finalLight, 1.0) * texColor;
+    FragColor = vec4(finalLight, 1.0) * texColor * u_ColorTint;
 }
