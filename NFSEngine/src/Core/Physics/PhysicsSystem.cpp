@@ -105,6 +105,8 @@ namespace NFSEngine {
                                const std::vector<ColliderComponent*>& allColliders, DeltaTime deltaTime) {
         float dt = static_cast<float>(deltaTime);
 
+        std::set<std::pair<ColliderComponent*, ColliderComponent*>> currentFrameTriggers;
+
         for (auto* rigidBody : rigidBodies) {
             GameObject* objA = rigidBody->GetOwner();
 
@@ -131,16 +133,60 @@ namespace NFSEngine {
 
                 CollisionInfo info = CheckCollision(objA, objB);
 
-                if (info.IsColliding && !colA->IsTrigger && !colB->IsTrigger) {
+                if (info.IsColliding) {
 
-                    transform->Move(info.ContactNormal * info.PenetrationDepth);
+                    if (colA->IsTrigger || colB->IsTrigger) {
 
-                    float pushback = glm::dot(rigidBody->Velocity, info.ContactNormal);
+                        auto pair = (colA < colB) ? std::make_pair(colA, colB) : std::make_pair(colB, colA);
+                        currentFrameTriggers.insert(pair);
 
-                    if (pushback < 0.0f) {
-                        rigidBody->Velocity -= info.ContactNormal * pushback;
+                        bool isNewCollision = m_TriggerPairs.find(pair) == m_TriggerPairs.end();
+
+                        if (isNewCollision) {
+                            if (colA->OnTriggerEnter) colA->OnTriggerEnter(objB);
+                            if (colB->OnTriggerEnter) colB->OnTriggerEnter(objA);
+                        } else {
+                            if (colA->OnTriggerStay) colA->OnTriggerStay(objB);
+                            if (colB->OnTriggerStay) colB->OnTriggerStay(objA);
+                        }
+                    } else {
+                        transform->Move(info.ContactNormal * info.PenetrationDepth);
+                        float pushback = glm::dot(rigidBody->Velocity, info.ContactNormal);
+                        if (pushback < 0.0f) {
+                            rigidBody->Velocity -= info.ContactNormal * pushback;
+                        }
                     }
                 }
+            }
+        }
+
+        for (const auto& pair : m_TriggerPairs) {
+            if (currentFrameTriggers.find(pair) == currentFrameTriggers.end()) {
+                if (pair.first && pair.second) {
+                    if (pair.first->OnTriggerExit) pair.first->OnTriggerExit(pair.second->GetOwner());
+                    if (pair.second->OnTriggerExit) pair.second->OnTriggerExit(pair.first->GetOwner());
+                }
+            }
+        }
+
+        m_TriggerPairs = std::move(currentFrameTriggers);
+    };
+
+    void PhysicsSystem::RemoveCollider(ColliderComponent* collider) {
+        if (!collider) return;
+
+        for (auto it = m_TriggerPairs.begin(); it != m_TriggerPairs.end();) {
+            if (it->first == collider || it->second == collider) {
+
+                if (it->first == collider && it->second->OnTriggerExit) {
+                    it->second->OnTriggerExit(it->first->GetOwner());
+                } else if (it->second == collider && it->first->OnTriggerExit) {
+                    it->first->OnTriggerExit(it->second->GetOwner());
+                }
+
+                it = m_TriggerPairs.erase(it);
+            } else {
+                ++it;
             }
         }
     };

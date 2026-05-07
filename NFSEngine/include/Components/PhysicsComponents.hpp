@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <functional>
 
 #include "Components/Component.hpp"
 
@@ -16,6 +17,10 @@ namespace NFSEngine {
     struct ColliderComponent : public Component {
         ColliderType Type;
         bool IsTrigger = false;
+
+        std::function<void(GameObject* other)> OnTriggerEnter = nullptr;
+        std::function<void(GameObject* other)> OnTriggerStay = nullptr;
+        std::function<void(GameObject* other)> OnTriggerExit = nullptr;
 
         ColliderComponent(GameObject* owner, ColliderType type)
             : Component(owner)

@@ -6,14 +6,18 @@
 #include "Core/Physics/CollisionDetector.hpp"
 #include "Core/DeltaTime.hpp"
 #include <vector>
+#include <set>
+#include <utility>
 
 namespace NFSEngine {
     class PhysicsSystem {
     public:
         static inline glm::vec3 Gravity = glm::vec3(0.0f, -9.81f, 0.0f);
 
-        static void Update(const std::vector<RigidBody3DComponent*>& rigidBodies,
-                           const std::vector<ColliderComponent*>& allColliders, DeltaTime deltaTime);
+        void Update(const std::vector<RigidBody3DComponent*>& rigidBodies, const std::vector<ColliderComponent*>& allColliders,
+                    DeltaTime deltaTime);
+
+        void RemoveCollider(ColliderComponent* collider);
 
         static CollisionInfo CheckCollision(GameObject* a, GameObject* b);
 
@@ -22,5 +26,8 @@ namespace NFSEngine {
         static Sphere GetSphere(Transform* transform, SphereCollider3DComponent* collider);
         static Capsule GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider);
         static Cylinder GetCylinder(Transform* transform, CylinderCollider3DComponent* collider);
+
+    private:
+        std::set<std::pair<ColliderComponent*, ColliderComponent*>> m_TriggerPairs;
     };
 } // namespace NFSEngine

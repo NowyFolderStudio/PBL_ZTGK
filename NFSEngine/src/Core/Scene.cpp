@@ -51,10 +51,19 @@ namespace NFSEngine {
             gameObject->Update(deltaTime);
         }
 
-        m_GameObjects.erase(
-            std::remove_if(m_GameObjects.begin(), m_GameObjects.end(),
-                           [](const std::unique_ptr<GameObject>& gameObject) { return gameObject->IsDestroyed(); }),
-            m_GameObjects.end());
+        m_GameObjects.erase(std::remove_if(m_GameObjects.begin(), m_GameObjects.end(),
+                                           [this](const std::unique_ptr<GameObject>& gameObject) {
+                                               if (gameObject->IsDestroyed()) {
+
+                                                   if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
+                                                       m_PhysicsSystem.RemoveCollider(col);
+                                                   }
+
+                                                   return true;
+                                               }
+                                               return false;
+                                           }),
+                            m_GameObjects.end());
     }
 
     void Scene::OnRender() {
