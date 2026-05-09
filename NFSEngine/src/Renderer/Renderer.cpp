@@ -44,10 +44,11 @@ namespace NFSEngine {
         s_SkyboxVAO->AddVertexBuffer(vbo);
     }
 
-    void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix) {
+    void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition) {
         // TODO �adnie tu kamer� implementowa�
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
+        s_SceneData->CameraPosition = cameraPosition;
     }
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,

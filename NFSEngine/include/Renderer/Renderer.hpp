@@ -32,7 +32,7 @@ namespace NFSEngine {
 
         inline static RendererAPI& GetAPI() { return *s_RendererAPI; }
 
-        static void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix);
+        static void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition);
         static void EndScene();
 
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
@@ -45,10 +45,13 @@ namespace NFSEngine {
 
         static void DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader);
 
+        static glm::vec3 GetCameraPosition() { return s_SceneData->CameraPosition; }
+
     private:
         struct SceneData {
             glm::mat4 ViewMatrix;
             glm::mat4 ProjectionMatrix;
+            glm::vec3 CameraPosition;
         };
 
         static SceneData* s_SceneData;

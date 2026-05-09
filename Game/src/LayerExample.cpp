@@ -90,7 +90,8 @@ void LayerExample::OnAttach() {
 
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->GetTransform()->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
-    m_Player->AddComponent<NFSEngine::ModelComponent>(capsuleModel, m_Shader, texture);
+    auto& playerComp = m_Player->AddComponent<NFSEngine::ModelComponent>(m_Shader, texture);
+    playerComp.AddLOD(capsuleModel, 10000.0f);
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
@@ -109,15 +110,31 @@ void LayerExample::OnAttach() {
     m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
     m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
     auto playerModelTexture = NFSEngine::Texture::Create("assets/models/Player/playerModelTexture.JPEG");
-    m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(playerModel, m_ToonShader, playerModelTexture);
+    auto& toonComp = m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(m_ToonShader, playerModelTexture);
+    toonComp.AddLOD(playerModel, 10000.0f);
 
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
-    cylinderObj->AddComponent<NFSEngine::ModelComponent>(cylinderModel, m_AudioShader, texture2);
+    auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, texture2);
+    cylComp.AddLOD(cylinderModel, 10000.0f);
     cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
+
+    // Gramophone
+    auto gramophoneModel0 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneHIGH.obj");
+    auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneMedium.obj");
+    auto gramophoneModel2 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneLOW.obj");
+
+    NFSEngine::GameObject* gramophoneObj = m_Scene->CreateGameObject("Gramophone");
+    auto& gramophoneComp = gramophoneObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, textureWhite);
+    gramophoneComp.AddLOD(gramophoneModel0, 30.0f);
+    gramophoneComp.AddLOD(gramophoneModel1, 45.0f);
+    gramophoneComp.AddLOD(gramophoneModel2, 9999.9f);
+    gramophoneObj->GetTransform()->SetPosition({ 23.0f, 2.0f, 0.0f });
+    gramophoneObj->GetTransform()->SetScale({ 3.0f, 3.0f, 3.0f });
+    gramophoneObj->GetTransform()->SetRotation({ 0.0f, 90.0f, 0.f });
 
     // Central Platform
     m_Floor = m_Scene->CreateGameObject("Floor");
@@ -167,7 +184,8 @@ void LayerExample::OnAttach() {
 
     NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
     earthObj->GetTransform()->SetPosition(glm::vec3(2.0f, 0.0f, -5.0f));
-    earthObj->AddComponent<NFSEngine::ModelComponent>(earthModel, m_Shader, earthTexture);
+    auto& earthComp = earthObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, earthTexture);
+    earthComp.AddLOD(earthModel, 10000.0f);
     earthObj->AddComponent<NFSEngine::SphereCollider3DComponent>();
 
     auto& earthMover = earthObj->AddComponent<RhythmMover>();
@@ -378,7 +396,8 @@ void LayerExample::OnRender() {
         m_HazardShader->Bind();
         m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
-        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix());
+        glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
+        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(), camPos);
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
