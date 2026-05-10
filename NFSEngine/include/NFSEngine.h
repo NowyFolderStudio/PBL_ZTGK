@@ -20,6 +20,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
+#include "Renderer/Frustum.hpp"
 
 #include "Platforms/Window.hpp"
 #include "Platforms/WindowsInput.hpp"

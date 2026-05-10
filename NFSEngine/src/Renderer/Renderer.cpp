@@ -14,6 +14,8 @@ namespace NFSEngine {
 
     std::shared_ptr<VertexArray> Renderer::s_SkyboxVAO = nullptr;
 
+    float Renderer::s_CullingRange = 0.0f;
+
     void Renderer::Init() {
         s_RendererAPI = RendererAPI::Create();
         s_RendererAPI->Init();
@@ -45,10 +47,11 @@ namespace NFSEngine {
     }
 
     void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition) {
-        // TODO �adnie tu kamer� implementowa�
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
         s_SceneData->CameraPosition = cameraPosition;
+
+        s_SceneData->Frustum.ExtractFromMatrix(projectionMatrix * viewMatrix);
     }
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,

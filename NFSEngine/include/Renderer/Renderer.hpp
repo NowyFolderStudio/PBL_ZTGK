@@ -7,6 +7,7 @@
 #include <Renderer/VertexArray.hpp>
 #include "Renderer/RendererAPI.hpp"
 #include "Renderer/Skybox.hpp"
+#include "Renderer/Frustum.hpp"
 
 namespace NFSEngine {
     struct RenderPacket {
@@ -47,11 +48,17 @@ namespace NFSEngine {
 
         static glm::vec3 GetCameraPosition() { return s_SceneData->CameraPosition; }
 
+        static const Frustum& GetFrustum() { return s_SceneData->Frustum; }
+
+        static void SetCullingRange(float range) { s_CullingRange = range; }
+        static float GetCullingRange() { return s_CullingRange; }
+
     private:
         struct SceneData {
             glm::mat4 ViewMatrix;
             glm::mat4 ProjectionMatrix;
             glm::vec3 CameraPosition;
+            Frustum Frustum;
         };
 
         static SceneData* s_SceneData;
@@ -62,5 +69,6 @@ namespace NFSEngine {
         static std::unique_ptr<RendererAPI> s_RendererAPI;
 
         static std::shared_ptr<VertexArray> s_SkyboxVAO;
+        static float s_CullingRange;
     };
 } // namespace NFSEngine
