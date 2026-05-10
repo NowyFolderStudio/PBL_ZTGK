@@ -74,7 +74,7 @@ void LayerExample::OnAttach() {
         auto& coin = obj->AddComponent<NFSEngine::CoinComponent>();
         coin.SetTarget(m_Player);
         coin.OnCollected = [this]() {
-            if (m_UILayer) m_UILayer->AddScore(1000);
+            if (m_UILayer) m_UILayer->GetScoreManager().AddScore(1000);
         };
         return obj;
     };
@@ -259,7 +259,7 @@ void LayerExample::OnAttach() {
     hazard.SetTarget(m_Player);
     hazard.HitCooldown = 1.5f;
     hazard.OnPlayerHit = [this]() {
-        if (m_UILayer) m_UILayer->LoseHeart();
+        if (m_UILayer) m_UILayer->GetLivesManager().LoseHeart();
     };
 
     // Audio

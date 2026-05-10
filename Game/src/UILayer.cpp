@@ -20,28 +20,16 @@ void UILayer::Init() {
     NFSEngine::UIRenderer::SetProjection(virtualWidth, virtualHeight);
     m_Canvas = new NFSEngine::Canvas();
 
-    /* create fast bg
-    NFSEngine::UI::ImageParameters baseBgParams;
-    baseBgParams.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.0f);
-    baseBgParams.width = virtualWidth;
-    baseBgParams.height = virtualHeight;
-    baseBgParams.color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
-    NFSEngine::UI::Image(*m_Canvas, baseBgParams);
+    m_ScoreManager.m_OnScoreChanged = [this](int score) {
+        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
+            m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
+                "SCORE: " + std::to_string(score);
+        }
+    };
 
-    NFSEngine::UI::ImageParameters shape1Params;
-    shape1Params.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.1f);
-    shape1Params.width = 1200;
-    shape1Params.height = 800;
-    shape1Params.color = glm::vec4(0.4f, 0.1f, 0.5f, 0.3f);
-    m_BgShape1 = &NFSEngine::UI::Image(*m_Canvas, shape1Params);
-
-    NFSEngine::UI::ImageParameters shape2Params;
-    shape2Params.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.1f);
-    shape2Params.width = 1000;
-    shape2Params.height = 1000;
-    shape2Params.color = glm::vec4(0.1f, 0.4f, 0.5f, 0.3f);
-    m_BgShape2 = &NFSEngine::UI::Image(*m_Canvas, shape2Params);
-    */
+    m_LivesManager.m_OnLivesChanged = [this](int) {
+        UpdateHeartVisuals();
+    };
 
     NFSEngine::UI::LabelParameters labelParams;
     labelParams.position = glm::vec3(1500, 100, 2.0f);
@@ -54,10 +42,7 @@ void UILayer::Init() {
     buttonParams.height = 70;
     buttonParams.text = "ADD SCORE";
     buttonParams.onClick = [this]() {
-        m_Score += 100;
-        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
-            m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString = "SCORE: " + std::to_string(m_Score);
-        }
+        m_ScoreManager.AddScore(100);
     };
     NFSEngine::UI::Button(*m_Canvas, buttonParams);
 
@@ -89,7 +74,7 @@ void UILayer::Init() {
     const float heartStartX = 50.0f;
     const float heartY = 50.0f;
 
-    for (int i = 0; i < k_MaxLives; ++i) {
+    for (int i = 0; i < LivesManager::k_MaxLives; ++i) {
         NFSEngine::UI::ImageParameters heartParams;
         heartParams.position = glm::vec3(heartStartX + i * heartSpacing, heartY, 1.0f);
         heartParams.width = heartSize;
@@ -131,13 +116,14 @@ void UILayer::Render() {
 void UILayer::OnEvent(NFSEngine::Event& e) {}
 
 void UILayer::UpdateHeartVisuals() {
-    for (int i = 0; i < k_MaxLives; ++i) {
+    int lives = m_LivesManager.GetLives();
+    for (int i = 0; i < LivesManager::k_MaxLives; ++i) {
         if (!m_Hearts[i]) continue;
 
         auto* img = m_Hearts[i]->GetComponent<NFSEngine::ImageComponent>();
         if (!img) continue;
 
-        if (i < m_Lives) {
+        if (i < lives) {
             img->Color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
         } else {
             img->Color = glm::vec4(0.3f, 0.3f, 0.3f, 0.4f);

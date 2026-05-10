@@ -2,6 +2,8 @@
 
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
+#include "Components/ScoreManager.hpp"
+#include "Components/LivesManager.hpp"
 #include "NFSEngine.h"
 #include <memory>
 
@@ -20,22 +22,8 @@ public:
     void Render();
     void OnEvent(NFSEngine::Event& e) override;
 
-    void AddScore(int points) {
-        m_Score += points;
-        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
-            m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
-                "SCORE: " + std::to_string(m_Score);
-        }
-    }
-
-    int LoseHeart() {
-        if (m_Lives <= 0) return 0;
-        m_Lives--;
-        UpdateHeartVisuals();
-        return m_Lives;
-    }
-
-    int GetLives() const { return m_Lives; }
+    ScoreManager& GetScoreManager() { return m_ScoreManager; }
+    LivesManager& GetLivesManager() { return m_LivesManager; }
 
 private:
     void UpdateHeartVisuals();
@@ -48,10 +36,10 @@ private:
     NFSEngine::UIObject* m_BgShape1 = nullptr;
     NFSEngine::UIObject* m_BgShape2 = nullptr;
 
-    static constexpr int k_MaxLives = 3;
-    NFSEngine::UIObject* m_Hearts[k_MaxLives] = {nullptr, nullptr, nullptr};
-    int m_Lives = k_MaxLives;
+    NFSEngine::UIObject* m_Hearts[LivesManager::k_MaxLives] = {nullptr, nullptr, nullptr};
 
-    int m_Score = 0;
+    ScoreManager m_ScoreManager;
+    LivesManager m_LivesManager;
+
     float m_AnimationTime = 0.0f;
 };
