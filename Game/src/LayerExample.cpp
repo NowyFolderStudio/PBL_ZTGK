@@ -69,10 +69,8 @@ void LayerExample::OnAttach() {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
         obj->GetTransform()->SetPosition({ x, y, z });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
-        auto& col = obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-        col.IsTrigger = true;
+        obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
         auto& coin = obj->AddComponent<NFSEngine::CoinComponent>();
-        coin.SetTarget(m_Player);
         coin.OnCollected = [this]() {
             if (m_UILayer) m_UILayer->GetScoreManager().AddScore(1000);
         };
@@ -254,9 +252,7 @@ void LayerExample::OnAttach() {
     (void)hazardMesh;
     auto& hazardCol = m_HazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
     hazardCol.Size = glm::vec3(1.5f, 1.5f, 1.5f);
-    hazardCol.IsTrigger = true;
     auto& hazard = m_HazardCube->AddComponent<NFSEngine::HazardComponent>();
-    hazard.SetTarget(m_Player);
     hazard.HitCooldown = 1.5f;
     hazard.OnPlayerHit = [this]() {
         if (m_UILayer) m_UILayer->GetLivesManager().LoseHeart();

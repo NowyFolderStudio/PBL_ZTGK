@@ -20,6 +20,29 @@ void UILayer::Init() {
     NFSEngine::UIRenderer::SetProjection(virtualWidth, virtualHeight);
     m_Canvas = new NFSEngine::Canvas();
 
+    /* create fast bg
+   NFSEngine::UI::ImageParameters baseBgParams;
+   baseBgParams.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.0f);
+   baseBgParams.width = virtualWidth;
+   baseBgParams.height = virtualHeight;
+   baseBgParams.color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
+   NFSEngine::UI::Image(*m_Canvas, baseBgParams);
+
+   NFSEngine::UI::ImageParameters shape1Params;
+   shape1Params.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.1f);
+   shape1Params.width = 1200;
+   shape1Params.height = 800;
+   shape1Params.color = glm::vec4(0.4f, 0.1f, 0.5f, 0.3f);
+   m_BgShape1 = &NFSEngine::UI::Image(*m_Canvas, shape1Params);
+
+   NFSEngine::UI::ImageParameters shape2Params;
+   shape2Params.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.1f);
+   shape2Params.width = 1000;
+   shape2Params.height = 1000;
+   shape2Params.color = glm::vec4(0.1f, 0.4f, 0.5f, 0.3f);
+   m_BgShape2 = &NFSEngine::UI::Image(*m_Canvas, shape2Params);
+   */
+
     m_ScoreManager.m_OnScoreChanged = [this](int score) {
         if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
             m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
