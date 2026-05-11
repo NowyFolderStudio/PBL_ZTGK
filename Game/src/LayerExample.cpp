@@ -42,12 +42,12 @@ void LayerExample::OnAttach() {
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
-    m_AudioShader
-        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
-    m_HazardShader
-        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_PostProcessShader = NFSEngine::Shader::Create("PostProcess", "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag");
     m_HazardShader->Bind();
     m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
+
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
@@ -76,6 +76,14 @@ void LayerExample::OnAttach() {
         };
         return obj;
     };
+
+    // FrameBuffer
+    NFSEngine::FramebufferSpecification fbSpec;
+    fbSpec.width = NFSEngine::Application::Get().GetConfig().WindowWidth;
+    fbSpec.height = NFSEngine::Application::Get().GetConfig().WindowHeight;
+    fbSpec.attachments = { NFSEngine::FramebufferTextureFormat::RGBA16F, NFSEngine::FramebufferTextureFormat::DEPTH24STENCIL8 };
+
+    m_HDRFramebuffer = NFSEngine::Framebuffer::Create(fbSpec);
 
     // Rotated Cube
     m_MovingCube = m_Scene->CreateGameObject("Rotated_Cube");
@@ -330,6 +338,10 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 }
 
 void LayerExample::OnRender() {
+    if (m_HDRFramebuffer->GetSpecification().width == 0 || m_HDRFramebuffer->GetSpecification().height == 0) return;
+
+    m_HDRFramebuffer->Bind();
+
     NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
     NFSEngine::Renderer::GetAPI().Clear();
 
@@ -375,13 +387,13 @@ void LayerExample::OnRender() {
         bindLightsAndCamera(m_Shader);
         bindLightsAndCamera(m_AudioShader);
         bindLightsAndCamera(m_ToonShader);
-
         bindLightsAndCamera(m_HazardShader);
+
         m_Shader->Bind();
         m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
+
         m_AudioShader->Bind();
         m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
         float songPos = m_Sequencer.GetContinuousBeatTime();
         m_AudioShader->SetFloat("u_MusicTime", songPos);
         m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
@@ -398,6 +410,29 @@ void LayerExample::OnRender() {
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
     }
+
+    m_HDRFramebuffer->Unbind();
+
+    NFSEngine::Renderer::GetAPI().SetClearColor({ 0.0f, 0.0f, 0.0f, 1.0f });
+    NFSEngine::Renderer::GetAPI().Clear();
+
+    glDisable(GL_DEPTH_TEST);
+
+    m_PostProcessShader->Bind();
+    m_PostProcessShader->SetFloat("exposure", m_Exposure);
+
+    m_PostProcessShader->SetInt("screenTexture", 0);
+
+    uint32_t colorTextureID = m_HDRFramebuffer->GetColorAttachmentRendererID(0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, colorTextureID);
+
+    static uint32_t emptyVAO = 0;
+    if (emptyVAO == 0) glGenVertexArrays(1, &emptyVAO);
+    glBindVertexArray(emptyVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void LayerExample::OnImGuiRender() {
