@@ -50,4 +50,15 @@ namespace NFSEngine {
         glBindVertexArray(emptyVAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
+
+    void OpenGLRendererAPI::SetDepthFunction(DepthFunction func) {
+        switch (func) {
+        case DepthFunction::Less:
+            glDepthFunc(GL_LESS);
+            break;
+        case DepthFunction::LEqual:
+            glDepthFunc(GL_LEQUAL);
+            break;
+        }
+    }
 }

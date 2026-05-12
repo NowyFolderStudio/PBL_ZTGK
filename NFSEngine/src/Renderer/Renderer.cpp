@@ -166,7 +166,7 @@ namespace NFSEngine {
     void Renderer::DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader) {
         if (!skybox || !shader) return;
 
-        glDepthFunc(GL_LEQUAL);
+        s_RendererAPI->SetDepthFunction(DepthFunction::LEqual);
 
         shader->Bind();
         shader->SetMat4("view", glm::mat4(glm::mat3(s_SceneData->ViewMatrix)));
@@ -176,9 +176,9 @@ namespace NFSEngine {
         shader->SetInt("skybox", 0);
 
         s_SkyboxVAO->Bind();
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        s_RendererAPI->DrawArrays(s_SkyboxVAO, 36);
 
-        glDepthFunc(GL_LESS);
+        s_RendererAPI->SetDepthFunction(DepthFunction::Less);
     }
 
 } // namespace NFSEngine

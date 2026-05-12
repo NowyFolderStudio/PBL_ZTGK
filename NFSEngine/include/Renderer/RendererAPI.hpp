@@ -4,6 +4,11 @@
 #include "Renderer/VertexArray.hpp"
 
 namespace NFSEngine {
+    enum class DepthFunction {
+        Less,
+        LEqual
+    };
+
     class RendererAPI {
     public:
         virtual ~RendererAPI() = default;
@@ -17,6 +22,7 @@ namespace NFSEngine {
         virtual void SetDepthTest(bool enabled) = 0;
         virtual void BindTexture(uint32_t textureID, uint32_t slot) = 0;
         virtual void DrawFullscreenTriangle() = 0;
+        virtual void SetDepthFunction(DepthFunction func) = 0;
 
         static std::unique_ptr<RendererAPI> Create();
     };

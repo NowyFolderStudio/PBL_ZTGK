@@ -13,5 +13,6 @@ namespace NFSEngine {
         virtual void SetDepthTest(bool enabled) override;
         virtual void BindTexture(uint32_t textureID, uint32_t slot) override;
         virtual void DrawFullscreenTriangle() override;
+        virtual void SetDepthFunction(DepthFunction func) override;
     };
 } // namespace NFSEngine

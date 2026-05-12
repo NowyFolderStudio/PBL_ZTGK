@@ -155,7 +155,7 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
     lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = { 1.0f, 0.8f, 0.5f };
+    lightComp.Color = { 1.0f, 0.3f, 0.3f };
     lightComp.Intensity = 3.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
