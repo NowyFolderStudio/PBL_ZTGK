@@ -7,6 +7,7 @@
 #include "Renderer/Skybox.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
 #include "Components/AudioPatternComponent.hpp"
+#include "Renderer/Framebuffer.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -53,6 +54,7 @@ private:
     std::shared_ptr<NFSEngine::Shader> m_HazardShader;
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
+    std::shared_ptr<NFSEngine::Shader> m_GoochShader;
 
     NFSEngine::RhythmSequencer m_Sequencer;
     NFSEngine::AudioPatternComponent* m_TestAudioComp = nullptr;

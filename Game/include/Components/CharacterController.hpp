@@ -1,7 +1,8 @@
 #pragma once
-
 #include "Core/KeyCodes.hpp"
 #include <NFSEngine.h>
+#include "Components/Camera.hpp"
+#include "Core/MathUtils.hpp"
 
 class CharacterController : public NFSEngine::Component {
 public:
@@ -10,59 +11,258 @@ public:
 
     std::string GetName() const override { return "CharacterController"; };
 
-    void SetCameraTransform(NFSEngine::Transform* cameraTransform) { m_CameraTransform = cameraTransform; }
+    // Run settings
+    float MaxSpeed = 8.0f;
+    float Acceleration = 80.0f;
+    float Deceleration = 80.0f;
+    float AirControl = 0.5f;
 
-protected:
-    virtual void OnAwake() override {
-        p_RigidBody = GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
-        if (!p_RigidBody) {
-            NFS_CORE_ERROR("CharacterController component requires RigidBody3DComponent on the same GameObject!");
-        }
-    }
-    virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) {
-        if (!p_RigidBody) return;
-        float speed = 5.0f;
+    // Rotation settings
+    float TurnSmoothTime = 0.1f;
 
-        float inputX = 0.0f;
-        float inputZ = 0.0f;
+    // Jump settings
+    float JumpHeight = 5.0f;
+    float FallMultiplier = 2.0f;
+    float LowJumpMultiplier = 3.0f;
+    int MaxJumps = 2;
 
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::W)) inputZ += 1.0f;
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::S)) inputZ -= 1.0f;
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::A)) inputX -= 1.0f;
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::D)) inputX += 1.0f;
+    // Dash settings
+    float DashSpeed = 15.0f;
+    float DashUpwardForce = 5.0f;
+    float DashDuration = 0.4f;
+    float DashGravityScale = 0.2f;
+    float DashAirControl = 0.8f;
 
-        glm::vec3 moveDirection(0.0f);
-
-        if ((inputX != 0.0f || inputZ != 0.0f) && m_CameraTransform) {
-            glm::vec3 camPos = m_CameraTransform->GetPosition();
-            glm::vec3 playerPos = GetOwner()->GetTransform()->GetPosition();
-
-            glm::vec3 forward = playerPos - camPos;
-            forward.y = 0.0f;
-            forward = glm::normalize(forward);
-
-            glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
-
-            moveDirection = (forward * inputZ) + (right * inputX);
-
-            if (glm::length(moveDirection) > 0.001f) {
-                moveDirection = glm::normalize(moveDirection);
-            }
-
-            float targetAngle = glm::degrees(atan2(moveDirection.x, moveDirection.z));
-
-            GetOwner()->GetTransform()->SetRotation(glm::vec3(0.0f, targetAngle, 0.0f));
-        }
-
-        p_RigidBody->Velocity.x = moveDirection.x * speed;
-        p_RigidBody->Velocity.z = moveDirection.z * speed;
-
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space)) {
-            p_RigidBody->Velocity.y = 5.0f; // Jump velocity
-        }
-    }
+    // Coyote time and jump buffer settings
+    float CoyoteTime = 0.15f;
+    float JumpBufferTime = 0.15f;
 
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
     NFSEngine::Transform* m_CameraTransform = nullptr;
+
+    glm::vec3 m_InputDirection = glm::vec3(0.0f);
+
+    bool m_IsJumpPressed = false;
+    bool m_IsDashPressed = false;
+
+    bool m_IsJumping = false;
+    bool m_IsDashing = false;
+    bool m_CanDash = true;
+
+    int m_JumpsRemaining = 0;
+    float m_CoyoteTimeCounter = 0.0f;
+    float m_JumpBufferCounter = 0.0f;
+    float m_DashTimeCounter = 0.0f;
+
+    float m_CurrentYaw = 0.0f;
+    float m_TurnSmoothVelocity = 0.0f;
+
+protected:
+    virtual void OnStart() override {
+        p_RigidBody = m_Owner->GetComponent<NFSEngine::RigidBody3DComponent>();
+        if (!p_RigidBody) {
+            NFS_CORE_ERROR("CharacterController: Brak RigidBody3D!");
+        }
+
+        const auto& sceneObjects = m_Owner->GetScene()->GetAllGameObjects();
+        for (const auto& go : sceneObjects) {
+            if (go->GetComponent<NFSEngine::Camera>()) {
+                m_CameraTransform = go->GetTransform();
+                break;
+            }
+        }
+    }
+
+    virtual void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        m_InputDirection = glm::vec3(0.0f);
+        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::W)) m_InputDirection.z += 1.0f;
+        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::S)) m_InputDirection.z -= 1.0f;
+        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::A)) m_InputDirection.x -= 1.0f;
+        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::D)) m_InputDirection.x += 1.0f;
+
+        m_IsJumpPressed = NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space);
+        m_IsDashPressed = NFSEngine::Input::IsKeyPressed(NFSEngine::Key::LeftShift);
+
+        if (NFSEngine::Input::IsKeyDown(NFSEngine::Key::Space)) {
+            Jump();
+        }
+
+        if (NFSEngine::Input::IsKeyDown(NFSEngine::Key::LeftShift)) {
+            Dash();
+        }
+    }
+
+    virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (!p_RigidBody || !m_CameraTransform) return;
+        float dt = static_cast<float>(deltaTime);
+
+        UpdateStates();
+        HandleCounters(dt);
+
+        if (m_IsDashing) {
+            HandleDash(dt);
+        } else {
+            HandleGravity(dt);
+            HandleJump();
+        }
+
+        HandleRotation(dt);
+        ApplyMovement(dt);
+    }
+
+private:
+    void UpdateStates() {
+        if (p_RigidBody->IsGrounded) {
+
+            if (!m_IsDashing) {
+                m_CanDash = true;
+            }
+
+            if (p_RigidBody->Velocity.y <= 0.0f) {
+                m_JumpsRemaining = MaxJumps;
+                m_IsJumping = false;
+            }
+        }
+
+        if (m_DashTimeCounter <= 0.0f || (p_RigidBody->IsGrounded && p_RigidBody->Velocity.y <= 0.0f)) {
+            m_IsDashing = false;
+        }
+    }
+
+    void HandleCounters(float dt) {
+        if (p_RigidBody->IsGrounded) {
+            m_CoyoteTimeCounter = CoyoteTime;
+        } else {
+            m_CoyoteTimeCounter -= dt;
+
+            if (m_CoyoteTimeCounter <= 0.0f && m_JumpsRemaining == MaxJumps) {
+                m_JumpsRemaining--;
+            }
+        }
+
+        if (m_JumpBufferCounter > 0.0f) {
+            m_JumpBufferCounter -= dt;
+        }
+
+        if (m_DashTimeCounter > 0.0f) {
+            m_DashTimeCounter -= dt;
+        }
+    }
+
+    glm::vec3 GetMovementDirection() {
+        if (m_InputDirection.x == 0.0f && m_InputDirection.z == 0.0f) {
+            return glm::vec3(0.0f);
+        }
+
+        glm::vec3 camPos = m_CameraTransform->GetPosition();
+        glm::vec3 playerPos = m_Owner->GetTransform()->GetPosition();
+
+        glm::vec3 forward = playerPos - camPos;
+        forward.y = 0.0f;
+        forward = glm::normalize(forward);
+        glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+
+        glm::vec3 targetDir = (forward * m_InputDirection.z) + (right * m_InputDirection.x);
+
+        if (glm::length(targetDir) > 0.001f) {
+            targetDir = glm::normalize(targetDir);
+        }
+        return targetDir;
+    }
+
+    void HandleRotation(float dt) {
+        glm::vec3 moveDir = GetMovementDirection();
+        if (glm::length(moveDir) > 0.1f) {
+            float targetAngle = glm::degrees(atan2(moveDir.x, moveDir.z));
+            m_CurrentYaw = NFSEngine::Math::SmoothDampAngle(m_CurrentYaw, targetAngle, m_TurnSmoothVelocity, TurnSmoothTime, dt);
+            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, m_CurrentYaw, 0.0f));
+        }
+    }
+
+    void Jump() { m_JumpBufferCounter = JumpBufferTime; }
+
+    void HandleJump() {
+        if (m_JumpBufferCounter > 0.0f) {
+            if (m_CoyoteTimeCounter > 0.0f || m_JumpsRemaining > 0) {
+
+                if (m_IsDashing) {
+                    m_IsDashing = false;
+                }
+
+                ExecuteJump();
+            }
+        }
+    }
+
+    void ExecuteJump() {
+        p_RigidBody->Velocity.y = sqrt(2.0f * JumpHeight * -NFSEngine::PhysicsSystem::Gravity.y);
+        m_IsJumping = true;
+        m_JumpsRemaining--;
+
+        m_JumpBufferCounter = 0.0f;
+        m_CoyoteTimeCounter = 0.0f;
+    }
+
+    void Dash() {
+        if (m_IsDashPressed && m_CanDash && !m_IsDashing) {
+
+            m_IsDashing = true;
+            m_CanDash = false;
+            m_DashTimeCounter = DashDuration;
+
+            glm::vec3 dashDirection = GetMovementDirection();
+
+            if (glm::length(dashDirection) < 0.1f) {
+                dashDirection = glm::vec3(
+                    0.0f, 0.0f, 1.0f); // TODO: Refactor this when camera transform will have method to get forward direction
+            }
+
+            p_RigidBody->Velocity.x = dashDirection.x * DashSpeed;
+            p_RigidBody->Velocity.z = dashDirection.z * DashSpeed;
+            p_RigidBody->Velocity.y = DashUpwardForce;
+
+            m_IsJumping = true;
+        }
+    }
+
+    void HandleDash(float dt) {
+        float dashGravity = NFSEngine::PhysicsSystem::Gravity.y * DashGravityScale;
+        p_RigidBody->Velocity.y += dashGravity * dt;
+    }
+
+    void ApplyMovement(float dt) {
+        glm::vec3 targetDir = GetMovementDirection();
+
+        float currentMaxSpeed = m_IsDashing ? DashSpeed : MaxSpeed;
+        float currentAcc;
+        float currentDec;
+
+        if (p_RigidBody->IsGrounded) {
+            currentAcc = Acceleration;
+            currentDec = Deceleration;
+        } else {
+            currentAcc = m_IsDashing ? DashAirControl * Acceleration : AirControl * Acceleration;
+            currentDec = m_IsDashing ? 0 : AirControl * Deceleration;
+        }
+
+        if (glm::length(m_InputDirection) > 0.1f) {
+            glm::vec3 targetVel = targetDir * currentMaxSpeed;
+            p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, targetVel.x, currentAcc * dt);
+            p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, targetVel.z, currentAcc * dt);
+
+        } else {
+            p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, 0.0f, currentDec * dt);
+            p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, 0.0f, currentDec * dt);
+        }
+    }
+
+    void HandleGravity(float dt) {
+        if (p_RigidBody->Velocity.y < 0.0f) {
+            p_RigidBody->Velocity.y += NFSEngine::PhysicsSystem::Gravity.y * (FallMultiplier - 1.0f) * dt;
+
+        } else if (p_RigidBody->Velocity.y > 0.0f && !m_IsJumpPressed) {
+            p_RigidBody->Velocity.y += NFSEngine::PhysicsSystem::Gravity.y * (LowJumpMultiplier - 1.0f) * dt;
+        }
+    }
 };

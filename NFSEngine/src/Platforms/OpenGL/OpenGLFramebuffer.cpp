@@ -11,18 +11,18 @@ namespace NFSEngine {
         static GLenum TextureTarget(bool multisampled) { return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D; }
 
         static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count) {
-            glCreateTextures(TextureTarget(multisampled), count, outID);
+            glGenTextures(count, outID);
         }
 
         static void BindTexture(bool multisampled, uint32_t id) { glBindTexture(TextureTarget(multisampled), id); }
 
-        static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width,
+        static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, GLenum dataType, uint32_t width,
                                        uint32_t height, int index) {
             bool multisampled = samples > 1;
             if (multisampled) {
                 glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
             } else {
-                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, GL_UNSIGNED_BYTE, nullptr);
+                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, width, height, 0, format, dataType, nullptr);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -40,7 +40,7 @@ namespace NFSEngine {
             if (multisampled) {
                 glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, format, width, height, GL_FALSE);
             } else {
-                glTexStorage2D(GL_TEXTURE_2D, 1, format, width, height);
+                glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -65,6 +65,8 @@ namespace NFSEngine {
             switch (format) {
             case FramebufferTextureFormat::RGBA8:
                 return GL_RGBA8;
+            case FramebufferTextureFormat::RGBA16F:
+                return GL_RGBA16F;
             case FramebufferTextureFormat::RED_INTEGER:
                 return GL_RED_INTEGER;
             }
@@ -103,7 +105,7 @@ namespace NFSEngine {
             m_DepthAttachment = 0;
         }
 
-        glCreateFramebuffers(1, &m_RendererID);
+        glGenFramebuffers(1, &m_RendererID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 
         bool multisample = m_Specification.samples > 1;
@@ -117,11 +119,15 @@ namespace NFSEngine {
                 Utils::BindTexture(multisample, m_ColorAttachments[i]);
                 switch (m_ColorAttachmentSpecifications[i].textureFormat) {
                 case FramebufferTextureFormat::RGBA8:
-                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_RGBA8, GL_RGBA,
+                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_RGBA8, GL_RGBA, GL_UNSIGNED_BYTE,
+                                              m_Specification.width, m_Specification.height, i);
+                    break;
+                case FramebufferTextureFormat::RGBA16F:
+                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_RGBA16F, GL_RGBA, GL_FLOAT,
                                               m_Specification.width, m_Specification.height, i);
                     break;
                 case FramebufferTextureFormat::RED_INTEGER:
-                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_R32I, GL_RED_INTEGER,
+                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_R32I, GL_RED_INTEGER, GL_UNSIGNED_BYTE,
                                               m_Specification.width, m_Specification.height, i);
                     break;
                 }

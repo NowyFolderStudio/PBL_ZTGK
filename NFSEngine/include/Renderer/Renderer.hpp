@@ -7,6 +7,8 @@
 #include <Renderer/VertexArray.hpp>
 #include "Renderer/RendererAPI.hpp"
 #include "Renderer/Skybox.hpp"
+#include "Renderer/Frustum.hpp"
+#include "Renderer/Framebuffer.hpp"
 
 namespace NFSEngine {
     struct RenderPacket {
@@ -46,12 +48,21 @@ namespace NFSEngine {
         static void DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader);
 
         static glm::vec3 GetCameraPosition() { return s_SceneData->CameraPosition; }
+        static const Frustum& GetFrustum() { return s_SceneData->Frustum; }
+
+        static void SetCullingRange(float range) { s_CullingRange = range; }
+        static float GetCullingRange() { return s_CullingRange; }
+
+        static void SetExposure(float exposure) { s_Exposure = exposure; }
+        static float GetExposure() { return s_Exposure; }
+        static void OnWindowResize(uint32_t width, uint32_t height);
 
     private:
         struct SceneData {
-            glm::mat4 ViewMatrix;
-            glm::mat4 ProjectionMatrix;
-            glm::vec3 CameraPosition;
+            glm::mat4 ViewMatrix = glm::mat4(1.0f);
+            glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
+            glm::vec3 CameraPosition = glm::vec3(0.0f);
+            Frustum Frustum;
         };
 
         static SceneData* s_SceneData;
@@ -62,5 +73,10 @@ namespace NFSEngine {
         static std::unique_ptr<RendererAPI> s_RendererAPI;
 
         static std::shared_ptr<VertexArray> s_SkyboxVAO;
+        static float s_CullingRange;
+
+        static std::shared_ptr<Framebuffer> s_HDRFramebuffer;
+        static std::shared_ptr<Shader> s_PostProcessShader;
+        static float s_Exposure;
     };
 } // namespace NFSEngine

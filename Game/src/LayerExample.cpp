@@ -42,12 +42,12 @@ void LayerExample::OnAttach() {
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
-    m_AudioShader
-        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
-    m_HazardShader
-        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
     m_HazardShader->Bind();
     m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
+
+    m_GoochShader = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
@@ -155,7 +155,7 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
     lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = { 1.0f, 0.8f, 0.5f };
+    lightComp.Color = { 1.0f, 0.3f, 0.3f };
     lightComp.Intensity = 3.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
@@ -173,7 +173,7 @@ void LayerExample::OnAttach() {
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
-    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
+    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_GoochShader, textureWhite);
     m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
@@ -196,25 +196,12 @@ void LayerExample::OnAttach() {
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
     controller.SetTarget(m_Player->GetTransform());
 
-    if (auto* characterController = m_Player->GetComponent<CharacterController>()) {
-        characterController->SetCameraTransform(cameraObj->GetTransform());
-    }
-
     // Skybox
     std::vector<std::string> faces = { "assets/textures/skybox/testSkybox/px.png", "assets/textures/skybox/testSkybox/nx.png",
                                        "assets/textures/skybox/testSkybox/py.png", "assets/textures/skybox/testSkybox/ny.png",
                                        "assets/textures/skybox/testSkybox/pz.png", "assets/textures/skybox/testSkybox/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
-
-    const auto& gameObjects = m_Scene->GetAllGameObjects();
-    for (const auto& go : gameObjects) {
-        if (go.get() != m_Player) {
-            if (auto* control = go->GetComponent<CharacterController>()) {
-                control->SetActive(false);
-            }
-        }
-    }
 
     const float platformY = -2.0f;
     const float stepSize = 4.0f;
@@ -330,9 +317,6 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 }
 
 void LayerExample::OnRender() {
-    NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
-    NFSEngine::Renderer::GetAPI().Clear();
-
     if (m_CachedCamera) {
         auto bindLightsAndCamera = [&](std::shared_ptr<NFSEngine::Shader> currentShader) {
             currentShader->Bind();
@@ -376,12 +360,17 @@ void LayerExample::OnRender() {
         bindLightsAndCamera(m_AudioShader);
         bindLightsAndCamera(m_ToonShader);
 
+        bindLightsAndCamera(m_GoochShader);
+        m_GoochShader->Bind();
+        m_GoochShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
+
         bindLightsAndCamera(m_HazardShader);
+
         m_Shader->Bind();
         m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
+
         m_AudioShader->Bind();
         m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
         float songPos = m_Sequencer.GetContinuousBeatTime();
         m_AudioShader->SetFloat("u_MusicTime", songPos);
         m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
@@ -446,4 +435,10 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
     for (auto* mover : m_CachedRhythmMovers) {
         mover->OnEvent(e);
     }
+
+    NFSEngine::EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([](NFSEngine::WindowResizeEvent& ev) {
+        NFSEngine::Renderer::OnWindowResize(ev.GetWidth(), ev.GetHeight());
+        return false;
+        });
 }
