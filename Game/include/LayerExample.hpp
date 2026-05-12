@@ -66,8 +66,4 @@ private:
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
 
     UILayer* m_UILayer = nullptr;
-
-    std::shared_ptr<NFSEngine::Framebuffer> m_HDRFramebuffer;
-    std::shared_ptr<NFSEngine::Shader> m_PostProcessShader;
-    float m_Exposure = 1.0f;
 };
