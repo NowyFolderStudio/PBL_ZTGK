@@ -49,6 +49,9 @@ void LayerExample::OnAttach() {
     m_HazardShader->Bind();
     m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
+    m_GoochShader
+        = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
+
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
     auto textureWhite = NFSEngine::Texture::Create("assets/textures/white.png");
@@ -173,7 +176,7 @@ void LayerExample::OnAttach() {
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
-    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
+    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_GoochShader, textureWhite);
     m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
@@ -362,6 +365,10 @@ void LayerExample::OnRender() {
         bindLightsAndCamera(m_Shader);
         bindLightsAndCamera(m_AudioShader);
         bindLightsAndCamera(m_ToonShader);
+
+        bindLightsAndCamera(m_GoochShader);
+        m_GoochShader->Bind();
+        m_GoochShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
 
         bindLightsAndCamera(m_HazardShader);
         m_Shader->Bind();
