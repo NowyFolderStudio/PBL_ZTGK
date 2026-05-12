@@ -7,6 +7,7 @@
 #include "Renderer/Skybox.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
 #include "Components/AudioPatternComponent.hpp"
+#include "Renderer/Framebuffer.hpp"
 
 // Forward declarations
 class RhythmMover;

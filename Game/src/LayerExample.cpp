@@ -42,15 +42,12 @@ void LayerExample::OnAttach() {
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
-    m_AudioShader
-        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
-    m_HazardShader
-        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
     m_HazardShader->Bind();
     m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
-    m_GoochShader
-        = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
+    m_GoochShader = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
@@ -320,9 +317,6 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 }
 
 void LayerExample::OnRender() {
-    NFSEngine::Renderer::GetAPI().SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
-    NFSEngine::Renderer::GetAPI().Clear();
-
     if (m_CachedCamera) {
         auto bindLightsAndCamera = [&](std::shared_ptr<NFSEngine::Shader> currentShader) {
             currentShader->Bind();
@@ -371,11 +365,12 @@ void LayerExample::OnRender() {
         m_GoochShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
 
         bindLightsAndCamera(m_HazardShader);
+
         m_Shader->Bind();
         m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
+
         m_AudioShader->Bind();
         m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
         float songPos = m_Sequencer.GetContinuousBeatTime();
         m_AudioShader->SetFloat("u_MusicTime", songPos);
         m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
@@ -435,4 +430,10 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
     for (auto* mover : m_CachedRhythmMovers) {
         mover->OnEvent(e);
     }
+
+    NFSEngine::EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([](NFSEngine::WindowResizeEvent& ev) {
+        NFSEngine::Renderer::OnWindowResize(ev.GetWidth(), ev.GetHeight());
+        return false;
+        });
 }
