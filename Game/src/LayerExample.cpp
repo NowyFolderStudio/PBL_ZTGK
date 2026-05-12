@@ -102,7 +102,7 @@ void LayerExample::OnAttach() {
     rampParams.MagFilter = GL_NEAREST;
     rampParams.GenerateMipmaps = false;
 
-    auto rampTexture = std::make_shared<NFSEngine::OpenGLTexture>("textures/ramp/.png", rampParams);
+    m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
     auto playerModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player.obj");
     m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
     m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
@@ -391,6 +391,11 @@ void LayerExample::OnRender() {
 
         m_HazardShader->Bind();
         m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
+
+        m_ToonShader->Bind();
+        m_ToonShader->SetInt("texture1", 0);
+        m_ToonShader->SetInt("rampTexture", 1);
+        m_RampTexture->Bind(1);
 
         glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
         NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(), camPos);

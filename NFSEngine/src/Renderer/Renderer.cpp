@@ -19,7 +19,7 @@ namespace NFSEngine {
         s_RendererAPI->Init();
         s_GPUTimer = std::make_unique<GPUTimer>();
 
-        // Definicja wierzchołków sześcianu (zakres -1 do 1)
+        // Definicja wierzcho艂k贸w sze艣cianu (zakres -1 do 1)
         float skyboxVertices[] = { -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
 
@@ -45,7 +45,7 @@ namespace NFSEngine {
     }
 
     void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition) {
-        // TODO �adnie tu kamer� implementowa�
+        // TODO 锟絘dnie tu kamer锟� implementowa锟�
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
         s_SceneData->CameraPosition = cameraPosition;
@@ -60,7 +60,7 @@ namespace NFSEngine {
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
 
-        // TODO doda� optymalizacje renderowanie obiekt�w tworzenie id na podsawie tekstur, shadr�w
+        // TODO doda锟� optymalizacje renderowanie obiekt锟絯 tworzenie id na podsawie tekstur, shadr锟絯
 
         s_RendererQueue.push_back(packet);
     }

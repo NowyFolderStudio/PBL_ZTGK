@@ -70,6 +70,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     thirdparty
     include
     src
+    thirdparty/nlohmann
+    thirdparty/tinygltf
+    thirdparty/stb
 )
 
 # Linking spdlog to the engine (spdlog v1.x)
@@ -98,6 +101,7 @@ else()
     set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
     set(ASSIMP_BUILD_ZLIB ON CACHE BOOL "" FORCE) 
+    set(ASSIMP_WARNINGS_AS_ERRORS OFF CACHE BOOL "" FORCE)
 
     FetchContent_MakeAvailable(assimp)
     
