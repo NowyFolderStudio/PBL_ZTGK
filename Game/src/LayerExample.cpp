@@ -196,25 +196,12 @@ void LayerExample::OnAttach() {
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
     controller.SetTarget(m_Player->GetTransform());
 
-    if (auto* characterController = m_Player->GetComponent<CharacterController>()) {
-        characterController->SetCameraTransform(cameraObj->GetTransform());
-    }
-
     // Skybox
     std::vector<std::string> faces = { "assets/textures/skybox/testSkybox/px.png", "assets/textures/skybox/testSkybox/nx.png",
                                        "assets/textures/skybox/testSkybox/py.png", "assets/textures/skybox/testSkybox/ny.png",
                                        "assets/textures/skybox/testSkybox/pz.png", "assets/textures/skybox/testSkybox/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
-
-    const auto& gameObjects = m_Scene->GetAllGameObjects();
-    for (const auto& go : gameObjects) {
-        if (go.get() != m_Player) {
-            if (auto* control = go->GetComponent<CharacterController>()) {
-                control->SetActive(false);
-            }
-        }
-    }
 
     const float platformY = -2.0f;
     const float stepSize = 4.0f;

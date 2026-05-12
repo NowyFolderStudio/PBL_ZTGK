@@ -12,7 +12,7 @@
 namespace NFSEngine {
     class PhysicsSystem {
     public:
-        static inline glm::vec3 Gravity = glm::vec3(0.0f, -9.81f, 0.0f);
+        static inline glm::vec3 Gravity = glm::vec3(0.0f, -25.0f, 0.0f);
 
         void Update(const std::vector<RigidBody3DComponent*>& rigidBodies, const std::vector<ColliderComponent*>& allColliders,
                     DeltaTime deltaTime);

@@ -117,6 +117,8 @@ namespace NFSEngine {
 
             auto* transform = objA->GetTransform();
 
+            rigidBody->IsGrounded = false;
+
             if (rigidBody->UseGravity) {
                 rigidBody->Acceleration += Gravity;
             }
@@ -152,8 +154,13 @@ namespace NFSEngine {
                     } else {
                         transform->Move(info.ContactNormal * info.PenetrationDepth);
                         float pushback = glm::dot(rigidBody->Velocity, info.ContactNormal);
+
                         if (pushback < 0.0f) {
                             rigidBody->Velocity -= info.ContactNormal * pushback;
+                        }
+
+                        if (info.ContactNormal.y > 0.7f) {
+                            rigidBody->IsGrounded = true;
                         }
                     }
                 }

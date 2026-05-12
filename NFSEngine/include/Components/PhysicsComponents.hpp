@@ -39,6 +39,7 @@ namespace NFSEngine {
 
         float Mass = 1.0f;
         bool UseGravity = true;
+        bool IsGrounded = false;
     };
 
     struct BoxCollider3DComponent : public ColliderComponent {
