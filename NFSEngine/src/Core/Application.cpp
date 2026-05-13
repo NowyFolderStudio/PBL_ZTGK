@@ -48,6 +48,18 @@ namespace NFSEngine {
         layer->OnAttach();
     }
 
+    void Application::PopLayer(Layer* layer) {
+        NFS_PROFILE_FUNCTION();
+        m_LayerStack.PopLayer(layer);
+        layer->OnDetach();
+    }
+
+    void Application::PopOverlay(Layer* layer) {
+        NFS_PROFILE_FUNCTION();
+        m_LayerStack.PopOverlay(layer);
+        layer->OnDetach();
+    }
+
     void Application::Close() { m_Running = false; }
 
     void Application::Run() {

@@ -17,9 +17,6 @@ public:
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override;
     void OnRender() override;
 
-    void Init();
-    void Update();
-    void Render();
     void OnEvent(NFSEngine::Event& e) override;
 
     void SetGameState(std::shared_ptr<GameStateView> view);
