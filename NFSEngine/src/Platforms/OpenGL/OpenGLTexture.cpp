@@ -19,6 +19,10 @@ namespace NFSEngine {
             m_Height = height;
 
             GLenum internalFormat = 0, dataFormat = 0;
+            if (channels == 1) {
+                internalFormat = GL_RGBA8;
+                dataFormat = GL_RED;
+            }
             if (channels == 4) {
                 internalFormat = GL_RGBA8;
                 dataFormat = GL_RGBA;

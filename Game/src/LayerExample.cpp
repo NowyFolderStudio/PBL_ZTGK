@@ -129,25 +129,32 @@ void LayerExample::OnAttach() {
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
 
-    auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/rustediron2_basecolor.png");
-    auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/rustediron2_normal.png");
-    auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/rustediron2_metalic.png");
-    auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/rustediron2_roughness.png");
-    //auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/rustediron2_basecolor.png");
+    /*auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
+    auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
+    auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
+    auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
+    auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");*/
+
+    auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
+    auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
+    auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
+    auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Roughness.jpg");
+    auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Displacement.jpg");
+
 
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
     matSpherePBR->NormalMap = texSphereNormal;
     matSpherePBR->MetallicMap = texSphereMetallic;
     matSpherePBR->RoughnessMap = texSphereRoughness;
-    //matSpherePBR->AOMap = texSphereAO;
+    matSpherePBR->AOMap = texSphereAO;
 
     NFSEngine::GameObject* sphereObj = m_Scene->CreateGameObject("Center_PBR_Sphere");
     sphereObj->GetTransform()->SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
     sphereObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
-    auto& sphereComp = sphereObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSpherePBR);
-    //sphereComp.AddLOD(sphereModel, 10000.0f);
+    auto& sphereComp = sphereObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matSpherePBR);
+    sphereComp.AddLOD(sphereModel, 10000.0f);
 
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
@@ -194,7 +201,7 @@ void LayerExample::OnAttach() {
     lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
     lightComp.Color = { 1.0f, 0.3f, 0.3f };
-    lightComp.Intensity = 300.0f;
+    lightComp.Intensity = 0.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
@@ -207,7 +214,7 @@ void LayerExample::OnAttach() {
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
     spotComp.Color = { 0.1f, 0.2f, 0.93f };
     spotComp.Direction = { 0.0f, -1.0f, -0.5f };
-    spotComp.Intensity = 1000.0f;
+    spotComp.Intensity = 0.0f;
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
