@@ -1,5 +1,6 @@
 #include "Core/Application.hpp"
 #include "Core/DeltaTime.hpp"
+#include "Core/InputAction.hpp"
 #include "Debug/Profiler.hpp"
 #include "Platforms/WindowsInput.hpp"
 #include "Platforms/Window.hpp"
@@ -61,6 +62,7 @@ namespace NFSEngine {
             m_LastFrameTime = time;
 
             Input::UpdateStates();
+            InputActionManager::Get().UpdateAll();
 
             {
                 NFS_PROFILE_SCOPE("LayerStack Logic Update");

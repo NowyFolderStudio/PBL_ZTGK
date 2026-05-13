@@ -1,5 +1,6 @@
 #include "LayerExample.hpp"
 #include "UILayer.hpp"
+#include "InputActions.hpp"
 #include "NFSEngine.h"
 #include "Core/EntryPoint.hpp"
 
@@ -7,6 +8,8 @@ class GameApp : public NFSEngine::Application {
 public:
     GameApp(const NFSEngine::ApplicationConfig& config)
         : NFSEngine::Application(config) {
+        NFSEngine::RegisterInputActions();
+
         auto* uiLayer = new UILayer();
         PushLayer(new LayerExample(uiLayer));
         PushOverlay(uiLayer);

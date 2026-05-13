@@ -19,6 +19,12 @@ namespace NFSEngine {
         static float GetMouseX() { return instance->GetMouseXImpl(); }
         static float GetMouseY() { return instance->GetMouseYImpl(); }
 
+        static bool IsControllerPresent(int controllerId) { return instance->IsControllerPresentImpl(controllerId); }
+        static bool IsControllerButtonPressed(int controllerId, ControllerButton button) { return instance->IsControllerButtonPressedImpl(controllerId, button); }
+        static bool IsControllerButtonDown(int controllerId, ControllerButton button) { return instance->IsControllerButtonDownImpl(controllerId, button); }
+        static bool IsControllerButtonUp(int controllerId, ControllerButton button) { return instance->IsControllerButtonUpImpl(controllerId, button); }
+        static float GetControllerAxis(int controllerId, ControllerAxis axis) { return instance->GetControllerAxisImpl(controllerId, axis); }
+
         static void UpdateStates() { instance->UpdateStatesImpl(); }
 
         virtual ~Input() = default;
@@ -35,6 +41,12 @@ namespace NFSEngine {
         virtual std::pair<float, float> GetMousePosImpl() = 0;
         virtual float GetMouseXImpl() = 0;
         virtual float GetMouseYImpl() = 0;
+
+        virtual bool IsControllerPresentImpl(int controllerId) = 0;
+        virtual bool IsControllerButtonPressedImpl(int controllerId, ControllerButton button) = 0;
+        virtual bool IsControllerButtonDownImpl(int controllerId, ControllerButton button) = 0;
+        virtual bool IsControllerButtonUpImpl(int controllerId, ControllerButton button) = 0;
+        virtual float GetControllerAxisImpl(int controllerId, ControllerAxis axis) = 0;
 
         virtual void UpdateStatesImpl() = 0;
 

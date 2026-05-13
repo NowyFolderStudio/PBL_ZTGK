@@ -6,6 +6,7 @@
 #include "Core/Cube.hpp"
 #include "Core/Input.hpp"
 #include "Core/KeyCodes.hpp"
+#include "Core/InputAction.hpp"
 #include "Core/Layer.hpp"
 #include "Core/LayerStack.hpp"
 #include "Core/Quad2D.hpp"
