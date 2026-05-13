@@ -80,11 +80,11 @@ namespace NFSEngine {
     }
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
-                          const std::shared_ptr<Texture>& texture, const glm::mat4& transform) {
+                          const std::shared_ptr<Material>& material, const glm::mat4& transform) {
         RenderPacket packet;
         packet.vao = vao;
         packet.shader = shader;
-        packet.texture = texture;
+        packet.material = material;
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
 
@@ -122,13 +122,10 @@ namespace NFSEngine {
 
             packet.shader->SetMat4("model", packet.transform);
 
-            if (packet.texture) {
-                if (packet.texture->GetRendererID() != lastTextureID) {
-                    packet.texture->Bind(0);
-                    lastTextureID = packet.texture->GetRendererID();
+            if (packet.material) {
+                packet.material->Bind(packet.shader);
 
-                    s_Stats.stateChanges++;
-                }
+                s_Stats.stateChanges++;
             }
 
             packet.vao->Bind();

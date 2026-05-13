@@ -7,10 +7,10 @@
 
 namespace NFSEngine {
 
-    CubeMesh::CubeMesh(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture)
+    CubeMesh::CubeMesh(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material)
         : Component(owner)
         , p_Shader(std::move(shader))
-        , p_Texture(std::move(texture)) {
+        , p_Material(std::move(material)) {
         p_VertexArray = std::shared_ptr<VertexArray>(VertexArray::Create());
 
         float vertices[]
@@ -55,9 +55,9 @@ namespace NFSEngine {
     void CubeMesh::OnAwake() { p_Transform = m_Owner->GetComponent<Transform>(); }
 
     void CubeMesh::OnRender() {
-        if (!p_Shader || !p_Texture || p_Transform == nullptr) return;
+        if (!p_Shader || !p_Material || p_Transform == nullptr) return;
 
-        Renderer::Submit(p_Shader, p_VertexArray, p_Texture, p_Transform->GetGlobalMatrix());
+        Renderer::Submit(p_Shader, p_VertexArray, p_Material, p_Transform->GetGlobalMatrix());
     }
 
 } // namespace NFSEngine

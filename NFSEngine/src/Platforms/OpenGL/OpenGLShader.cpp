@@ -71,6 +71,10 @@ namespace NFSEngine {
         glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
     }
 
+    void OpenGLShader::SetBool(const std::string& name, const bool value) {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), (int)value);
+    }
+
     void OpenGLShader::CheckCompileErrors(uint32_t shader, std::string type) {
         int success;
         char infoLog[1024];

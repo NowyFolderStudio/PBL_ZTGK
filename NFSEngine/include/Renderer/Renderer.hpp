@@ -9,6 +9,7 @@
 #include "Renderer/Skybox.hpp"
 #include "Renderer/Frustum.hpp"
 #include "Renderer/Framebuffer.hpp"
+#include "Renderer/Material.hpp"
 
 namespace NFSEngine {
     struct RenderPacket {
@@ -16,7 +17,7 @@ namespace NFSEngine {
 
         std::shared_ptr<VertexArray> vao;
         std::shared_ptr<Shader> shader;
-        std::shared_ptr<Texture> texture;
+        std::shared_ptr<Material> material;
         glm::mat4 transform = glm::mat4(1.0f);
     };
 
@@ -38,7 +39,7 @@ namespace NFSEngine {
         static void EndScene();
 
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
-                           const std::shared_ptr<Texture>& texture, const glm::mat4& transform);
+                           const std::shared_ptr<Material>& material, const glm::mat4& transform);
 
         // TODO: Implement static Shutdown() method
 
@@ -46,6 +47,7 @@ namespace NFSEngine {
         static float GetGPUTime();
 
         static void DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader);
+        static std::shared_ptr<VertexArray> GetSkyboxVAO() { return s_SkyboxVAO; }
 
         static glm::vec3 GetCameraPosition() { return s_SceneData->CameraPosition; }
         static const Frustum& GetFrustum() { return s_SceneData->Frustum; }
