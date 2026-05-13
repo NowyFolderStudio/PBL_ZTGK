@@ -65,9 +65,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
     float diffUV = NdotL * 0.5 + 0.5;
     vec3 rampDiffuse = texture(rampTexture, vec2(diffUV, 0.5)).rgb;
 
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float NdotH = max(dot(normal, halfwayDir), 0.0);
-    float specIntensity = pow(NdotH, shininess);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float RdotV = max(dot(viewDir, reflectDir), 0.0);
+    float specIntensity = pow(RdotV, shininess);
     float toonSpec = smoothstep(0.5, 0.5, specIntensity);
     
     float rimDot = 1.0 - dot(viewDir, normal);
@@ -88,9 +88,9 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     float diffUV = NdotL * 0.5 + 0.5;
     vec3 rampDiffuse = texture(rampTexture, vec2(diffUV, 0.5)).rgb;
     
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float NdotH = max(dot(normal, halfwayDir), 0.0);
-    float specIntensity = pow(NdotH, shininess);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float RdotV = max(dot(viewDir, reflectDir), 0.0);
+    float specIntensity = pow(RdotV, shininess);
     float toonSpec = smoothstep(0.5, 0.5, specIntensity);
     
     float distance = length(light.position - fragPos);
@@ -113,9 +113,9 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     float diffUV = NdotL * 0.5 + 0.5;
     vec3 rampDiffuse = texture(rampTexture, vec2(diffUV, 0.5)).rgb;
     
-    vec3 halfwayDir = normalize(lightDir + viewDir);  
-    float NdotH = max(dot(normal, halfwayDir), 0.0);
-    float specIntensity = pow(NdotH, shininess);
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float RdotV = max(dot(viewDir, reflectDir), 0.0);
+    float specIntensity = pow(RdotV, shininess);
     float toonSpec = smoothstep(0.5, 0.5, specIntensity);
     
     float distance = length(light.position - fragPos);
