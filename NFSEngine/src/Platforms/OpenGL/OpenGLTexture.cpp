@@ -12,45 +12,89 @@ namespace NFSEngine {
         int width, height, channels;
         stbi_set_flip_vertically_on_load(true);
 
-        stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+        if (stbi_is_hdr(path.c_str())) {
+            float* data = stbi_loadf(path.c_str(), &width, &height, &channels, 0);
 
-        if (data) {
-            m_Width = width;
-            m_Height = height;
+            if (data) {
+                m_Width = width;
+                m_Height = height;
 
-            GLenum internalFormat = 0, dataFormat = 0;
-            if (channels == 1) {
-                internalFormat = GL_RGBA8;
-                dataFormat = GL_RED;
+                GLenum internalFormat = 0, dataFormat = 0;
+                if (channels == 3) {
+                    internalFormat = GL_RGB16F;
+                    dataFormat = GL_RGB;
+                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                }
+                else if (channels == 4) {
+                    internalFormat = GL_RGBA16F;
+                    dataFormat = GL_RGBA;
+                }
+
+                m_InternalFormat = internalFormat;
+                m_DataFormat = dataFormat;
+
+                glGenTextures(1, &m_RendererID);
+                glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameters.WrapS);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameters.WrapT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, parameters.MinFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameters.MagFilter);
+
+                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_FLOAT, data);
+                if (parameters.GenerateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+                stbi_image_free(data);
             }
-            if (channels == 4) {
-                internalFormat = GL_RGBA8;
-                dataFormat = GL_RGBA;
-            } else if (channels == 3) {
-                internalFormat = GL_RGB8;
-                dataFormat = GL_RGB;
-                glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            else {
+                NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD_HDR: {}", path);
+                NFS_CORE_ERROR("STB REASON: {}", stbi_failure_reason());
             }
+        }
+        else {
+            stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
-            m_InternalFormat = internalFormat;
-            m_DataFormat = dataFormat;
+            if (data) {
+                m_Width = width;
+                m_Height = height;
 
-            glGenTextures(1, &m_RendererID);
-            glBindTexture(GL_TEXTURE_2D, m_RendererID);
+                GLenum internalFormat = 0, dataFormat = 0;
+                if (channels == 1) {
+                    internalFormat = GL_RGBA8;
+                    dataFormat = GL_RED;
+                }
+                if (channels == 4) {
+                    internalFormat = GL_RGBA8;
+                    dataFormat = GL_RGBA;
+                }
+                else if (channels == 3) {
+                    internalFormat = GL_RGB8;
+                    dataFormat = GL_RGB;
+                    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                }
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameters.WrapS);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameters.WrapT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, parameters.MinFilter);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameters.MagFilter);
+                m_InternalFormat = internalFormat;
+                m_DataFormat = dataFormat;
 
-            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
-            if (parameters.GenerateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+                glGenTextures(1, &m_RendererID);
+                glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-            stbi_image_free(data);
-        } else {
-            NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD: {}", path);
-            NFS_CORE_ERROR("STB REASON: {}", stbi_failure_reason());
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameters.WrapS);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameters.WrapT);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, parameters.MinFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameters.MagFilter);
+
+                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
+                if (parameters.GenerateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
+                glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+
+                stbi_image_free(data);
+            }
+            else {
+                NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD: {}", path);
+                NFS_CORE_ERROR("STB REASON: {}", stbi_failure_reason());
+            }
         }
     }
 

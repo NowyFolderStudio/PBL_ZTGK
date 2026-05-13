@@ -128,19 +128,19 @@ void LayerExample::OnAttach() {
     // Sphere
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
-
+    /*
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");
-        /*
+        */
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Displacement.jpg");
-    */
+    
 
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
@@ -207,7 +207,7 @@ void LayerExample::OnAttach() {
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
     sunComp.Color = glm::vec3(0.2f, 0.3f, 0.92f);
-    sunComp.Intensity = 1.0f;
+    sunComp.Intensity = 0.0f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
     spotObj->GetTransform()->SetPosition({ 0.0f, 3.5f, -3.0f });
@@ -246,14 +246,24 @@ void LayerExample::OnAttach() {
     controller.SetTarget(m_Player->GetTransform());
 
     // Skybox
-    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
-                                       "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
-                                       "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
+    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox3/px.png", "assets/textures/skybox/testSkybox3/nx.png",
+                                       "assets/textures/skybox/testSkybox3/py.png", "assets/textures/skybox/testSkybox3/ny.png",
+                                       "assets/textures/skybox/testSkybox3/pz.png", "assets/textures/skybox/testSkybox3/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
     m_EnvironmentMap = std::make_unique<NFSEngine::EnvironmentMap>();
-    m_EnvironmentMap->GenerateIrradiance(m_Skybox);
+
+    m_EnvironmentMap->LoadHDR("assets/textures/skybox/testSkybox3/rogland_clear_night_4k.hdr");
+
+    if (m_UseHDRI) {
+        m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
+    }
+    else {
+        m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
+    }
+
+    // Platforms
 
     const float platformY = -2.0f;
     const float stepSize = 4.0f;
@@ -379,14 +389,14 @@ void LayerExample::OnRender() {
                 currentShader->SetInt("irradianceMap", 5);
             }
 
-            if (m_Skybox) {
+            if (m_UseHDRI) {
                 glActiveTexture(GL_TEXTURE6);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox->GetRendererID());
+                glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvironmentMap->GetEnvironmentMapID());
                 currentShader->SetInt("environmentMap", 6);
             }
-
-            if (m_Skybox) {
-                m_Skybox->Bind(6);
+            else if (m_Skybox) {
+                glActiveTexture(GL_TEXTURE6);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox->GetRendererID());
                 currentShader->SetInt("environmentMap", 6);
             }
 
@@ -457,7 +467,9 @@ void LayerExample::OnRender() {
 
         glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
         NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(), camPos);
-        NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
+        if (!m_UseHDRI) {
+            NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
+        }
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
     }
@@ -465,6 +477,17 @@ void LayerExample::OnRender() {
 
 void LayerExample::OnImGuiRender() {
     ImGui::Begin("Diagnostic window");
+
+    ImGui::Separator();
+    if (ImGui::Checkbox("U¿yj Prawdziwego HDR (Fotorealizm)", &m_UseHDRI)) {
+        if (m_UseHDRI) {
+            m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
+        }
+        else {
+            m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
+        }
+    }
+    ImGui::Separator();
 
     float averageFps = ImGui::GetIO().Framerate;
     float averageFrameTime = 1000.0f / averageFps;

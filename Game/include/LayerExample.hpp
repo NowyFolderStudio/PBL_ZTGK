@@ -71,4 +71,7 @@ private:
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
 
     UILayer* m_UILayer = nullptr;
+
+    bool m_UseHDRI = true;
+    std::shared_ptr<NFSEngine::Texture> m_HDRTexture;
 };

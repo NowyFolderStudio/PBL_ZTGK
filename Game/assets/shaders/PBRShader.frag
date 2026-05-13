@@ -208,8 +208,10 @@ void main() {
     }
 
     vec3 irradiance = pow(texture(irradianceMap, N).rgb, vec3(2.2));
+    //vec3 irradiance = texture(irradianceMap, N).rgb;
     
-    vec3 F_ambient = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    //vec3 F_ambient = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    vec3 F_ambient = fresnelSchlick(max(dot(N, V), 0.0), F0);
     
     vec3 kS_ambient = F_ambient;
     vec3 kD_ambient = 1.0 - kS_ambient;
@@ -219,11 +221,15 @@ void main() {
     
     vec3 R = reflect(-V, N);
     
-    vec3 reflectionColor = texture(environmentMap, R).rgb;
+    //vec3 reflectionColor = texture(environmentMap, R).rgb;
+    vec3 reflectionColor = pow(texture(environmentMap, R).rgb, vec3(2.2));
     
     vec3 specularAmbient = reflectionColor * F_ambient * (1.0 - roughness);
 
-    vec3 ambient = (kD_ambient * diffuseAmbient + specularAmbient) * ao;
+    float iblIntensity = 0.8;
+    vec3 ambient = (kD_ambient * diffuseAmbient + specularAmbient) * ao * iblIntensity;
+
+    //vec3 ambient = (kD_ambient * diffuseAmbient + specularAmbient) * ao;
     
     vec3 color = ambient + Lo;
 
