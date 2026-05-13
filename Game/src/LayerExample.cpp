@@ -129,18 +129,18 @@ void LayerExample::OnAttach() {
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
 
-    /*auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
+    auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
-    auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");*/
-
+    auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");
+        /*
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Displacement.jpg");
-
+    */
 
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
@@ -201,20 +201,20 @@ void LayerExample::OnAttach() {
     lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
     lightComp.Color = { 1.0f, 0.3f, 0.3f };
-    lightComp.Intensity = 0.0f;
+    lightComp.Intensity = 120.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
-    sunComp.Color = glm::vec3(0.8f, 0.7f, 0.92f);
-    sunComp.Intensity = 2.0f;
+    sunComp.Color = glm::vec3(0.2f, 0.3f, 0.92f);
+    sunComp.Intensity = 1.0f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
     spotObj->GetTransform()->SetPosition({ 0.0f, 3.5f, -3.0f });
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
     spotComp.Color = { 0.1f, 0.2f, 0.93f };
     spotComp.Direction = { 0.0f, -1.0f, -0.5f };
-    spotComp.Intensity = 0.0f;
+    spotComp.Intensity = 130.0f;
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
@@ -246,9 +246,9 @@ void LayerExample::OnAttach() {
     controller.SetTarget(m_Player->GetTransform());
 
     // Skybox
-    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox/px.png", "assets/textures/skybox/testSkybox/nx.png",
-                                       "assets/textures/skybox/testSkybox/py.png", "assets/textures/skybox/testSkybox/ny.png",
-                                       "assets/textures/skybox/testSkybox/pz.png", "assets/textures/skybox/testSkybox/nz.png" };
+    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
+                                       "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
+                                       "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
@@ -377,6 +377,12 @@ void LayerExample::OnRender() {
                 glActiveTexture(GL_TEXTURE5);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvironmentMap->GetIrradianceMapID());
                 currentShader->SetInt("irradianceMap", 5);
+            }
+
+            if (m_Skybox) {
+                glActiveTexture(GL_TEXTURE6);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox->GetRendererID());
+                currentShader->SetInt("environmentMap", 6);
             }
 
             if (m_Skybox) {

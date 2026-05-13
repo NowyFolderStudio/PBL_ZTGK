@@ -19,7 +19,7 @@ namespace NFSEngine {
 
 		glm::vec3 AlbedoColor = glm::vec3(1.0f);
 		float Metallic = 0.0f;
-		float Roughness = 0.5f;
+		float Roughness = 0.8f;
 
 		void Bind(const std::shared_ptr<Shader>& shader) const;
 	};
