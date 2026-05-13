@@ -3,8 +3,8 @@
 #include "Components/Component.hpp"
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
-
-#include <functional>
+#include "Components/LivesManagerComponent.hpp"
+#include "Components/CharacterController.hpp"
 
 namespace NFSEngine {
 
@@ -15,31 +15,27 @@ namespace NFSEngine {
 
         std::string GetName() const override { return "HazardComponent"; }
 
-        std::function<void()> OnPlayerHit;
         float HitCooldown = 1.5f;
 
     protected:
         void OnStart() override {
             auto* collider = m_Owner->GetComponent<ColliderComponent>();
-            if (collider) {
-                collider->IsTrigger = true;
-                collider->OnTriggerEnter = [this](GameObject* other) {
-                    if (other->name != "Player") return;
-                    if (m_CooldownTimer > 0.0f) return;
+            if (!collider) return;
+            collider->IsTrigger = true;
 
-                    m_CooldownTimer = HitCooldown;
+            auto* scene = m_Owner->GetScene();
+            auto* gm = scene ? scene->FindGameObject("GameManager") : nullptr;
+            auto* livesComp = gm ? gm->GetComponent<LivesManagerComponent>() : nullptr;
 
-                    if (OnPlayerHit)
-                        OnPlayerHit();
-                };
-                collider->OnTriggerStay = [this](GameObject* other) {
-                    if (other->name != "Player") return;
-                    if (m_CooldownTimer > 0.0f) return;
+            auto hitAction = [this, livesComp](GameObject* other) {
+                if (!other->GetComponent<CharacterController>()) return;
+                if (m_CooldownTimer > 0.0f) return;
+                m_CooldownTimer = HitCooldown;
+                if (livesComp) livesComp->LoseHeart();
+            };
 
-                    m_CooldownTimer = HitCooldown;
-                    if (OnPlayerHit) OnPlayerHit();
-                };
-            }
+            collider->OnTriggerEnter = hitAction;
+            collider->OnTriggerStay = hitAction;
         }
 
         void OnFixedUpdate(DeltaTime fixedDeltaTime) override {

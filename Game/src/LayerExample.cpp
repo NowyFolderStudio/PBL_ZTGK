@@ -4,7 +4,10 @@
 #include "Components/CubeMesh.hpp"
 #include "Components/CoinComponent.hpp"
 #include "Components/HazardComponent.hpp"
+#include "Components/ScoreManagerComponent.hpp"
+#include "Components/LivesManagerComponent.hpp"
 #include "Components/CharacterController.hpp"
+#include "GameStateView.hpp"
 #include "Components/ModelComponent.hpp"
 #include "Components/RhythmMover.hpp"
 #include "Components/InteractivePiano.hpp"
@@ -42,12 +45,15 @@ void LayerExample::OnAttach() {
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
-    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
-    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
+                                              "assets/shaders/lightShader.frag");
+    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert",
+                                               "assets/shaders/lightShader.frag");
     m_HazardShader->Bind();
     m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
-    m_GoochShader = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
+    m_GoochShader = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert",
+                                              "assets/shaders/goochShader.frag");
 
     auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto texture2 = NFSEngine::Texture::Create("assets/textures/sample.png");
@@ -57,8 +63,8 @@ void LayerExample::OnAttach() {
     auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
                             float thickness = 1.0f) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
-        obj->GetTransform()->SetPosition({ x, y, z });
-        obj->GetTransform()->SetScale({ sizeX, thickness, sizeZ });
+        obj->GetTransform()->SetPosition({x, y, z});
+        obj->GetTransform()->SetScale({sizeX, thickness, sizeZ});
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
         auto& col = obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
         col.Size = glm::vec3(sizeX, thickness, sizeZ);
@@ -67,13 +73,10 @@ void LayerExample::OnAttach() {
 
     auto makeCoin = [&](const std::string& name, float x, float y, float z) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
-        obj->GetTransform()->SetPosition({ x, y, z });
+        obj->GetTransform()->SetPosition({x, y, z});
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture);
         obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-        auto& coin = obj->AddComponent<NFSEngine::CoinComponent>();
-        coin.OnCollected = [this]() {
-            if (m_UILayer) m_UILayer->GetScoreManager().AddScore(1000);
-        };
+        obj->AddComponent<NFSEngine::CoinComponent>();
         return obj;
     };
 
@@ -118,7 +121,7 @@ void LayerExample::OnAttach() {
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
     auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, texture2);
     cylComp.AddLOD(cylinderModel, 10000.0f);
-    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
+    cylinderObj->GetTransform()->SetPosition({4.0f, 0.0f, 1.0f});
 
     // Gramophone
     auto gramophoneModel0 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneHIGH.obj");
@@ -130,32 +133,32 @@ void LayerExample::OnAttach() {
     gramophoneComp.AddLOD(gramophoneModel0, 30.0f);
     gramophoneComp.AddLOD(gramophoneModel1, 45.0f);
     gramophoneComp.AddLOD(gramophoneModel2, 9999.9f);
-    gramophoneObj->GetTransform()->SetPosition({ 23.0f, 2.0f, 0.0f });
-    gramophoneObj->GetTransform()->SetScale({ 3.0f, 3.0f, 3.0f });
-    gramophoneObj->GetTransform()->SetRotation({ 0.0f, 90.0f, 0.f });
+    gramophoneObj->GetTransform()->SetPosition({23.0f, 2.0f, 0.0f});
+    gramophoneObj->GetTransform()->SetScale({3.0f, 3.0f, 3.0f});
+    gramophoneObj->GetTransform()->SetRotation({0.0f, 90.0f, 0.f});
 
     // Central Platform
     m_Floor = m_Scene->CreateGameObject("Floor");
-    m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
+    m_Floor->GetTransform()->SetPosition({0.0f, -2.0f, 0.0f});
     m_Floor->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
     m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
-    m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
+    m_Floor->GetTransform()->SetScale({20.0f, 1.0f, 20.0f});
 
     // Platform Ramp
     NFSEngine::GameObject* rampObj = m_Scene->CreateGameObject("Ramp");
-    rampObj->GetTransform()->SetPosition({ -10.0f, -1.5f, 0.0f });
-    rampObj->GetTransform()->SetRotation({ 0.0f, 0.0f, -30.0f });
-    rampObj->GetTransform()->SetScale({ 12.0f, 1.0f, 4.0f });
+    rampObj->GetTransform()->SetPosition({-10.0f, -1.5f, 0.0f});
+    rampObj->GetTransform()->SetRotation({0.0f, 0.0f, -30.0f});
+    rampObj->GetTransform()->SetScale({12.0f, 1.0f, 4.0f});
     rampObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, texture2);
     rampObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
     rampObj->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(12.0f, 1.0f, 4.0f);
 
     // Lighting
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
+    lightObj->GetTransform()->SetPosition({0.0f, 2.0f, 2.0f});
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = { 1.0f, 0.3f, 0.3f };
+    lightComp.Color = {1.0f, 0.3f, 0.3f};
     lightComp.Intensity = 3.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
@@ -165,16 +168,16 @@ void LayerExample::OnAttach() {
     sunComp.Intensity = 0.8f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
-    spotObj->GetTransform()->SetPosition({ 0.0f, 1.5f, 0.0f });
+    spotObj->GetTransform()->SetPosition({0.0f, 1.5f, 0.0f});
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
-    spotComp.Color = { 1.0f, 1.0f, 1.0f };
-    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
+    spotComp.Color = {1.0f, 1.0f, 1.0f};
+    spotComp.Direction = {0.0f, -1.0f, -0.5f};
     spotComp.Intensity = 5.0f;
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_GoochShader, textureWhite);
-    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
+    m_MovingCube2->GetTransform()->SetPosition({-4.0f, -1.0f, 0.0f});
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
@@ -197,9 +200,11 @@ void LayerExample::OnAttach() {
     controller.SetTarget(m_Player->GetTransform());
 
     // Skybox
-    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox/px.png", "assets/textures/skybox/testSkybox/nx.png",
-                                       "assets/textures/skybox/testSkybox/py.png", "assets/textures/skybox/testSkybox/ny.png",
-                                       "assets/textures/skybox/testSkybox/pz.png", "assets/textures/skybox/testSkybox/nz.png" };
+    std::vector<std::string> faces = {
+        "assets/textures/skybox/testSkybox/px.png", "assets/textures/skybox/testSkybox/nx.png",
+        "assets/textures/skybox/testSkybox/py.png", "assets/textures/skybox/testSkybox/ny.png",
+        "assets/textures/skybox/testSkybox/pz.png", "assets/textures/skybox/testSkybox/nz.png"
+    };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
@@ -232,18 +237,29 @@ void LayerExample::OnAttach() {
 
     // Trap
     auto textureWhite2 = NFSEngine::Texture::Create("assets/textures/white.png");
-    m_HazardCube = m_Scene->CreateGameObject("Hazard_Cube");
-    m_HazardCube->GetTransform()->SetPosition(glm::vec3(5.0f, -1.0f, 5.0f));
-    m_HazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
-    auto& hazardMesh = m_HazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, textureWhite2);
-    (void)hazardMesh;
-    auto& hazardCol = m_HazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    NFSEngine::GameObject* hazardCube = m_Scene->CreateGameObject("Hazard_Cube");
+    hazardCube->GetTransform()->SetPosition(glm::vec3(5.0f, -1.0f, 5.0f));
+    hazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& hazardMesh = hazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, textureWhite2);
+    auto& hazardCol = hazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
     hazardCol.Size = glm::vec3(1.5f, 1.5f, 1.5f);
-    auto& hazard = m_HazardCube->AddComponent<NFSEngine::HazardComponent>();
-    hazard.HitCooldown = 1.5f;
-    hazard.OnPlayerHit = [this]() {
-        if (m_UILayer) m_UILayer->GetLivesManager().LoseHeart();
+    auto& hazard = hazardCube->AddComponent<NFSEngine::HazardComponent>();
+
+    // GameManager
+    NFSEngine::GameObject* gameManager = m_Scene->CreateGameObject("GameManager");
+    auto& scoreComp = gameManager->AddComponent<NFSEngine::ScoreManagerComponent>();
+    auto& livesComp = gameManager->AddComponent<NFSEngine::LivesManagerComponent>();
+
+    auto gameState = std::make_shared<GameStateView>();
+    gameState->data.score = scoreComp.GetScore();
+    gameState->data.lives = livesComp.GetLives();
+    scoreComp.m_OnScoreChanged = [gameState](int s) {
+        gameState->data.score = s;
     };
+    livesComp.m_OnLivesChanged = [gameState](int l) {
+        gameState->data.lives = l;
+    };
+    if (m_UILayer) m_UILayer->SetGameState(gameState);
 
     // Audio
     NFSEngine::AudioEngine::Init();
@@ -296,7 +312,7 @@ void LayerExample::OnAttach() {
     }
 }
 
-void LayerExample::OnDetach() { }
+void LayerExample::OnDetach() {}
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_Sequencer.Update((float)deltaTime);
@@ -417,7 +433,7 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("Triangle count: %u", stats.triangleCount);
     ImGui::Text("State changes: %u", stats.stateChanges);
 
-    static float values[90] = { 0 };
+    static float values[90] = {0};
     static int values_offset = 0;
     values[values_offset] = currentFrameTime;
     values_offset = (values_offset + 1) % 90;
@@ -440,5 +456,5 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
     dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([](NFSEngine::WindowResizeEvent& ev) {
         NFSEngine::Renderer::OnWindowResize(ev.GetWidth(), ev.GetHeight());
         return false;
-        });
+    });
 }

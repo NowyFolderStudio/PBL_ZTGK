@@ -3,8 +3,8 @@
 #include "Components/Component.hpp"
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
-
-#include <functional>
+#include "Components/ScoreManagerComponent.hpp"
+#include "Components/CharacterController.hpp"
 
 namespace NFSEngine {
 
@@ -15,22 +15,25 @@ namespace NFSEngine {
 
         std::string GetName() const override { return "CoinComponent"; }
 
-        std::function<void()> OnCollected;
+        int ScoreValue = 1000;
 
     protected:
         void OnStart() override {
             auto* collider = m_Owner->GetComponent<ColliderComponent>();
-            if (collider) {
-                collider->IsTrigger = true;
-                collider->OnTriggerEnter = [this](GameObject* other) {
-                    if (m_Collected) return;
-                    if (other->name == "Player") {
-                        m_Collected = true;
-                        if (OnCollected) OnCollected();
-                        m_Owner->SetActive(false);
-                    }
-                };
-            }
+            if (!collider) return;
+            collider->IsTrigger = true;
+
+            auto* scene = m_Owner->GetScene();
+            auto* gm = scene ? scene->FindGameObject("GameManager") : nullptr;
+            auto* scoreComp = gm ? gm->GetComponent<ScoreManagerComponent>() : nullptr;
+
+            collider->OnTriggerEnter = [this, scoreComp](GameObject* other) {
+                if (m_Collected) return;
+                if (!other->GetComponent<CharacterController>()) return;
+                m_Collected = true;
+                if (scoreComp) scoreComp->AddScore(ScoreValue);
+                m_Owner->SetActive(false);
+            };
         }
 
     private:

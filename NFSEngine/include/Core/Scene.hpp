@@ -25,6 +25,8 @@ namespace NFSEngine {
 
         const std::vector<std::unique_ptr<GameObject>>& GetAllGameObjects() const { return m_GameObjects; }
 
+        GameObject* FindGameObject(const std::string& name);
+
     private:
         std::vector<std::unique_ptr<GameObject>> m_GameObjects;
         DeltaTime m_FixedDeltaTime = 0.01666f;

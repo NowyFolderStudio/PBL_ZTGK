@@ -38,9 +38,7 @@ private:
     NFSEngine::GameObject* m_MovingCube = nullptr;
     NFSEngine::GameObject* m_MovingCube2 = nullptr;
     NFSEngine::GameObject* m_Floor = nullptr;
-    NFSEngine::GameObject* m_Coin = nullptr;
     NFSEngine::GameObject* m_PlayerModel = nullptr;
-    NFSEngine::GameObject* m_HazardCube = nullptr;
 
     std::shared_ptr<NFSEngine::Texture> m_RampTexture = nullptr;
 

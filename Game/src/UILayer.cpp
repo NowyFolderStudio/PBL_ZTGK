@@ -1,5 +1,6 @@
 #include "UILayer.hpp"
 #include "Core/DeltaTime.hpp"
+#include "GameStateView.hpp"
 
 UILayer::UILayer() { m_Canvas = nullptr; }
 
@@ -13,6 +14,7 @@ void UILayer::OnAttach() { Init(); }
 void UILayer::OnDetach() {}
 
 void UILayer::Init() {
+    constexpr int k_MaxLives = 3;
     float virtualWidth = 1920.0f;
     float virtualHeight = 1080.0f;
 
@@ -20,54 +22,10 @@ void UILayer::Init() {
     NFSEngine::UIRenderer::SetProjection(virtualWidth, virtualHeight);
     m_Canvas = new NFSEngine::Canvas();
 
-    /* create fast bg
-   NFSEngine::UI::ImageParameters baseBgParams;
-   baseBgParams.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.0f);
-   baseBgParams.width = virtualWidth;
-   baseBgParams.height = virtualHeight;
-   baseBgParams.color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
-   NFSEngine::UI::Image(*m_Canvas, baseBgParams);
-
-   NFSEngine::UI::ImageParameters shape1Params;
-   shape1Params.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.1f);
-   shape1Params.width = 1200;
-   shape1Params.height = 800;
-   shape1Params.color = glm::vec4(0.4f, 0.1f, 0.5f, 0.3f);
-   m_BgShape1 = &NFSEngine::UI::Image(*m_Canvas, shape1Params);
-
-   NFSEngine::UI::ImageParameters shape2Params;
-   shape2Params.position = glm::vec3(virtualWidth / 2.0f, virtualHeight / 2.0f, 0.1f);
-   shape2Params.width = 1000;
-   shape2Params.height = 1000;
-   shape2Params.color = glm::vec4(0.1f, 0.4f, 0.5f, 0.3f);
-   m_BgShape2 = &NFSEngine::UI::Image(*m_Canvas, shape2Params);
-   */
-
-    m_ScoreManager.m_OnScoreChanged = [this](int score) {
-        if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
-            m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
-                "SCORE: " + std::to_string(score);
-        }
-    };
-
-    m_LivesManager.m_OnLivesChanged = [this](int) {
-        UpdateHeartVisuals();
-    };
-
     NFSEngine::UI::LabelParameters labelParams;
     labelParams.position = glm::vec3(1500, 100, 2.0f);
     labelParams.text = "SCORE: 0";
     m_ScoreLabel = &NFSEngine::UI::Label(*m_Canvas, labelParams);
-
-    NFSEngine::UI::ButtonParameters buttonParams;
-    buttonParams.position = glm::vec3(1500, 200, 2.0f);
-    buttonParams.width = 300;
-    buttonParams.height = 70;
-    buttonParams.text = "ADD SCORE";
-    buttonParams.onClick = [this]() {
-        m_ScoreManager.AddScore(100);
-    };
-    NFSEngine::UI::Button(*m_Canvas, buttonParams);
 
     NFSEngine::UI::ImageParameters bgParams;
     bgParams.position = glm::vec3(455, 110, 0.5f);
@@ -97,14 +55,30 @@ void UILayer::Init() {
     const float heartStartX = 50.0f;
     const float heartY = 50.0f;
 
-    for (int i = 0; i < LivesManager::k_MaxLives; ++i) {
+    m_Hearts.reserve(k_MaxLives);
+    for (int i = 0; i < k_MaxLives; ++i) {
         NFSEngine::UI::ImageParameters heartParams;
         heartParams.position = glm::vec3(heartStartX + i * heartSpacing, heartY, 1.0f);
         heartParams.width = heartSize;
         heartParams.height = heartSize;
         heartParams.color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
-        m_Hearts[i] = &NFSEngine::UI::Image(*m_Canvas, heartParams);
+        m_Hearts.push_back(&NFSEngine::UI::Image(*m_Canvas, heartParams));
     }
+}
+
+void UILayer::SetGameState(std::shared_ptr<GameStateView> view) {
+    m_GameState = std::move(view);
+}
+
+void UILayer::SyncFromGameState() {
+    if (!m_GameState) return;
+
+    if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
+        m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
+            "SCORE: " + std::to_string(m_GameState->data.score);
+    }
+
+    UpdateHeartVisuals();
 }
 
 void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
@@ -123,6 +97,7 @@ void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         m_BgShape2->Transform.Position.y = 540.0f + std::sin(m_AnimationTime * 0.6f) * 300.0f;
     }
 
+    SyncFromGameState();
     Update();
 }
 
@@ -139,14 +114,15 @@ void UILayer::Render() {
 void UILayer::OnEvent(NFSEngine::Event& e) {}
 
 void UILayer::UpdateHeartVisuals() {
-    int lives = m_LivesManager.GetLives();
-    for (int i = 0; i < LivesManager::k_MaxLives; ++i) {
+    if (!m_GameState) return;
+    int lives = m_GameState->data.lives;
+    for (size_t i = 0; i < m_Hearts.size(); ++i) {
         if (!m_Hearts[i]) continue;
 
         auto* img = m_Hearts[i]->GetComponent<NFSEngine::ImageComponent>();
         if (!img) continue;
 
-        if (i < lives) {
+        if (static_cast<int>(i) < lives) {
             img->Color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
         } else {
             img->Color = glm::vec4(0.3f, 0.3f, 0.3f, 0.4f);

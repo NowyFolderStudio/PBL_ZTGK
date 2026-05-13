@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Core/DeltaTime.hpp"
-#include "Core/GameObject.hpp"
-#include "Components/ScoreManager.hpp"
-#include "Components/LivesManager.hpp"
 #include "NFSEngine.h"
 #include <memory>
+#include <vector>
+
+struct GameStateView;
 
 class UILayer : public NFSEngine::Layer {
 public:
@@ -22,10 +22,10 @@ public:
     void Render();
     void OnEvent(NFSEngine::Event& e) override;
 
-    ScoreManager& GetScoreManager() { return m_ScoreManager; }
-    LivesManager& GetLivesManager() { return m_LivesManager; }
+    void SetGameState(std::shared_ptr<GameStateView> view);
 
 private:
+    void SyncFromGameState();
     void UpdateHeartVisuals();
 
     NFSEngine::Canvas* m_Canvas = nullptr;
@@ -36,10 +36,9 @@ private:
     NFSEngine::UIObject* m_BgShape1 = nullptr;
     NFSEngine::UIObject* m_BgShape2 = nullptr;
 
-    NFSEngine::UIObject* m_Hearts[LivesManager::k_MaxLives] = {nullptr, nullptr, nullptr};
+    std::vector<NFSEngine::UIObject*> m_Hearts;
 
-    ScoreManager m_ScoreManager;
-    LivesManager m_LivesManager;
+    std::shared_ptr<GameStateView> m_GameState;
 
     float m_AnimationTime = 0.0f;
 };

@@ -11,6 +11,15 @@ namespace NFSEngine {
         return rawPtr;
     }
 
+    GameObject* Scene::FindGameObject(const std::string& name) {
+        for (auto& go : m_GameObjects) {
+            if (go->name == name) {
+                return go.get();
+            }
+        }
+        return nullptr;
+    }
+
     void Scene::OnUpdate(DeltaTime deltaTime) {
 
         for (size_t i = 0; i < m_GameObjects.size(); i++) {

@@ -26,9 +26,6 @@ namespace NFSEngine {
         s_RendererAPI->Init();
         s_GPUTimer = std::make_unique<GPUTimer>();
 
-<<<<<<< HEAD
-        // Definicja wierzcho艂k贸w sze艣cianu (zakres -1 do 1)
-=======
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetConfig().WindowWidth;
         fbSpec.height = Application::Get().GetConfig().WindowHeight;
@@ -38,7 +35,6 @@ namespace NFSEngine {
 
         s_PostProcessShader = Shader::Create("PostProcess", "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag");
 
->>>>>>> refs/remotes/origin/main
         float skyboxVertices[] = { -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
 
@@ -70,10 +66,6 @@ namespace NFSEngine {
     }
 
     void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition) {
-<<<<<<< HEAD
-        // TODO 锟絘dnie tu kamer锟� implementowa锟�
-=======
->>>>>>> refs/remotes/origin/main
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
         s_SceneData->CameraPosition = cameraPosition;
