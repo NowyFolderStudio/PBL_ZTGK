@@ -70,7 +70,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     thirdparty
     include
     src
-    thirdparty/nlohmann
     thirdparty/tinygltf
     thirdparty/stb
 )

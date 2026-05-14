@@ -48,7 +48,7 @@ namespace NFSEngine {
         static void DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader);
 
         static glm::vec3 GetCameraPosition() { return s_SceneData->CameraPosition; }
-        static const Frustum& GetFrustum() { return s_SceneData->Frustum; }
+        static const Frustum& GetFrustum() { return s_SceneData->frustum; }
 
         static void SetCullingRange(float range) { s_CullingRange = range; }
         static float GetCullingRange() { return s_CullingRange; }
@@ -62,7 +62,7 @@ namespace NFSEngine {
             glm::mat4 ViewMatrix = glm::mat4(1.0f);
             glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
             glm::vec3 CameraPosition = glm::vec3(0.0f);
-            Frustum Frustum;
+            Frustum frustum;
         };
 
         static SceneData* s_SceneData;

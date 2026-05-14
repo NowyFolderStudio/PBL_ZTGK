@@ -84,19 +84,19 @@ namespace NFSEngine {
             if (!gameObject->IsActive()) continue;
 
             Transform* transform = gameObject->GetTransform();
-            if (transform) {
-                BoundingSphere sphere = transform->GetBoundingSphere();
-                if (!frustum.TestSphere(sphere)) {
-                    continue;
-                }
+            // if (transform) {
+            //     BoundingSphere sphere = transform->GetBoundingSphere();
+            //     if (!frustum.TestSphere(sphere)) {
+            //         continue;
+            //     }
 
-                if (cullingRange > 0.0f) {
-                    float dist = glm::distance(sphere.Center, Renderer::GetCameraPosition());
-                    if (dist - sphere.Radius > cullingRange) {
-                        continue;
-                    }
-                }
-            }
+            //     if (cullingRange > 0.0f) {
+            //         float dist = glm::distance(sphere.Center, Renderer::GetCameraPosition());
+            //         if (dist - sphere.Radius > cullingRange) {
+            //             continue;
+            //         }
+            //     }
+            // }
 
             gameObject->Render();
         }

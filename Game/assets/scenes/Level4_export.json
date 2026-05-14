@@ -1,0 +1,1904 @@
+{
+    "scene_name": "Level4",
+    "game_objects": [
+        {
+            "id": -30620,
+            "name": "Track",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    3.0,
+                    143.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    0.20000000298023225
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30626,
+            "name": "Cube (2)",
+            "parent_id": -30620,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_Cube.obj",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 59512,
+            "name": "Cube (16)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    -1.0,
+                    397.0810546875
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(16)_pb_Mesh59522.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        30.0,
+                        3.0,
+                        30.0
+                    ],
+                    "offset": [
+                        3.383301258087158,
+                        -0.49999988079071047,
+                        -3.081047534942627
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60578,
+            "name": "Cube (15)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.061006546020508,
+                    1.03125,
+                    360.0224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(15)_pb_Mesh60588.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30658,
+            "name": "Track (1)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    3.0,
+                    394.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    0.20000000298023225
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30664,
+            "name": "Cube (2)",
+            "parent_id": -30658,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_Cube.obj",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 59476,
+            "name": "Directional Light",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.25,
+                    22.25,
+                    72.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 60314,
+            "name": "GameManager",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    72.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 59544,
+            "name": "RythmDirector",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -4.144509792327881,
+                    0.0,
+                    70.31239318847656
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 59986,
+            "name": "UIManager",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -199.55307006835938,
+                    386.5855712890625,
+                    72.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 60704,
+            "name": "Global Volume",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    72.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 60120,
+            "name": "CompositionManager",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    24.083620071411134,
+                    0.0,
+                    70.02745056152344
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 59594,
+            "name": "CheckpointManager",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    4.878940105438232,
+                    0.0,
+                    101.08795928955078
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 59182,
+            "name": "Cube (12)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -1.4389934539794922,
+                    1.03125,
+                    68.52246856689453
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(12)_pb_Mesh59194.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        4.438993453979492,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59484,
+            "name": "Cube (14)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.061006546020508,
+                    1.03125,
+                    88.52246856689453
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(14)_pb_Mesh59496.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59386,
+            "name": "Cube (15)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.061006546020508,
+                    1.03125,
+                    108.52246856689453
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(15)_pb_Mesh59398.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59800,
+            "name": "Cube (3)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    -1.0,
+                    276.0810546875
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(3)_pb_Mesh59812.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        30.0,
+                        3.0,
+                        30.0
+                    ],
+                    "offset": [
+                        3.383301258087158,
+                        -0.49999988079071047,
+                        -3.081047534942627
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59838,
+            "name": "DrumsPlatforms",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    0.6658412218093872,
+                    71.70604705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 60168,
+            "name": "Cube (17)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    4.061006546020508,
+                    -0.9687498807907105,
+                    148.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh60180.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1826.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60186,
+            "name": "Cube (19)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    4.061006546020508,
+                    -0.9687498807907105,
+                    168.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh60198.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1732.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59710,
+            "name": "Cube (21)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    4.061006546020508,
+                    -0.9687498807907105,
+                    188.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh59722.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1826.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59214,
+            "name": "Cube (23)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    4.061006546020508,
+                    -0.9687498807907105,
+                    208.52247619628907
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(23)_pb_Mesh59226.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1732.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59678,
+            "name": "DrumsPlatforms (1)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    0.6658412218093872,
+                    192.7060546875
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 60722,
+            "name": "Cube (17)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    14.561006546020508,
+                    -0.9687498807907105,
+                    269.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh60736.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1826.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59274,
+            "name": "Cube (19)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -6.438994407653809,
+                    -0.9687498807907105,
+                    289.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh59288.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1732.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60022,
+            "name": "Cube (21)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    14.561005592346192,
+                    -0.9687498807907105,
+                    309.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh60036.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1826.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60296,
+            "name": "Cube (23)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -5.938993453979492,
+                    -0.9687498807907105,
+                    329.5224609375
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(23)_pb_Mesh60310.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g1732.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        10.0,
+                        2.0,
+                        10.0
+                    ],
+                    "offset": [
+                        -0.06100654602050781,
+                        -0.03125,
+                        34.47753143310547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59730,
+            "name": "Spikes",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -14.883299827575684,
+                    0.7499998807907105,
+                    276.0810546875
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": []
+        },
+        {
+            "id": 60320,
+            "name": "Cube (2)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    -7.0,
+                    156.0810546875
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_pb_Mesh60332.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        30.0,
+                        2.0,
+                        30.0
+                    ],
+                    "offset": [
+                        3.383301258087158,
+                        6.0,
+                        -3.0810470581054689
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60250,
+            "name": "Cube (1)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    -22.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(1)_pb_Mesh60262.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        50.0,
+                        30.0,
+                        50.0
+                    ],
+                    "offset": [
+                        3.38330078125,
+                        -21.5,
+                        -13.081047058105469
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60220,
+            "name": "Cube (3)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    8.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(3)_pb_Mesh60230.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        50.0,
+                        30.0,
+                        10.0
+                    ],
+                    "offset": [
+                        3.38330078125,
+                        -21.5,
+                        6.918951988220215
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60386,
+            "name": "Cube (13)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    8.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(13)_pb_Mesh60396.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        50.0,
+                        30.0,
+                        10.0
+                    ],
+                    "offset": [
+                        3.38330078125,
+                        -21.5,
+                        6.918951988220215
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59662,
+            "name": "Cube (14)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    8.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(14)_pb_Mesh59672.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        32.0,
+                        2.0,
+                        30.0
+                    ],
+                    "offset": [
+                        3.383301258087158,
+                        -7.5,
+                        -13.081047058105469
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59600,
+            "name": "Cube (6)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    8.0,
+                    36.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(6)_pb_Mesh59610.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        50.0,
+                        30.0,
+                        10.0
+                    ],
+                    "offset": [
+                        3.38330078125,
+                        -21.5,
+                        6.918951988220215
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59368,
+            "name": "Cube (4)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    8.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(4)_pb_Mesh59378.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        9.0,
+                        30.0,
+                        19.0
+                    ],
+                    "offset": [
+                        -17.11669921875,
+                        -21.5,
+                        -18.58104705810547
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60264,
+            "name": "Cube (11)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    0.6166982650756836,
+                    8.0,
+                    87.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(11)_pb_Mesh60274.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        2.0,
+                        30.0,
+                        11.0
+                    ],
+                    "offset": [
+                        -20.61669921875,
+                        -21.5,
+                        -14.581047058105469
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59344,
+            "name": "Cube (12)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    7.616698265075684,
+                    8.0,
+                    87.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(12)_pb_Mesh59354.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        9.5,
+                        11.0
+                    ],
+                    "offset": [
+                        -23.11669921875,
+                        -31.75,
+                        -14.581047058105469
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59898,
+            "name": "Cube (10)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    9.616698265075684,
+                    8.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(10)_pb_Mesh59908.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        9.0,
+                        9.5,
+                        30.0
+                    ],
+                    "offset": [
+                        -17.11669921875,
+                        -31.75,
+                        -13.081047058105469
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59168,
+            "name": "Cube (5)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    41.61669921875,
+                    8.0,
+                    76.08104705810547
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(5)_pb_Mesh59178.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        9.0,
+                        30.0,
+                        50.0
+                    ],
+                    "offset": [
+                        -17.11669921875,
+                        -21.5,
+                        -13.081047058105469
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30646,
+            "name": "Coin (14)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    5.0,
+                    112.5
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Coin_(14)_Cylinder.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0000001192092896,
+                        2.000000476837158,
+                        1.0000004768371583
+                    ],
+                    "offset": [
+                        -5.960464477539063e-8,
+                        0.0,
+                        -8.940698847936801e-8
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30672,
+            "name": "Coin (4)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    2.5,
+                    103.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Coin_(4)_Cylinder.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0000001192092896,
+                        2.000000476837158,
+                        1.0000004768371583
+                    ],
+                    "offset": [
+                        -5.960464477539063e-8,
+                        0.0,
+                        -8.940698847936801e-8
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30634,
+            "name": "Coin (11)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    2.5,
+                    107.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Coin_(11)_Cylinder.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0000001192092896,
+                        2.000000476837158,
+                        1.0000004768371583
+                    ],
+                    "offset": [
+                        -5.960464477539063e-8,
+                        0.0,
+                        -8.940698847936801e-8
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30710,
+            "name": "Coin (12)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    2.5,
+                    123.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Coin_(12)_Cylinder.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0000001192092896,
+                        2.000000476837158,
+                        1.0000004768371583
+                    ],
+                    "offset": [
+                        -5.960464477539063e-8,
+                        0.0,
+                        -8.940698847936801e-8
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": -30684,
+            "name": "Coin (13)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    2.5,
+                    127.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Coin_(13)_Cylinder.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0000001192092896,
+                        2.000000476837158,
+                        1.0000004768371583
+                    ],
+                    "offset": [
+                        -5.960464477539063e-8,
+                        0.0,
+                        -8.940698847936801e-8
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59328,
+            "name": "Cube",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -27.5,
+                    54.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_pb_Mesh59338.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        5.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59408,
+            "name": "Cube (7)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -25.0,
+                    61.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(7)_pb_Mesh59418.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        5.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60480,
+            "name": "Cube (8)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -22.5,
+                    68.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(8)_pb_Mesh60490.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        5.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59292,
+            "name": "Cube (9)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -20.0,
+                    75.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(9)_pb_Mesh59302.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        5.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59576,
+            "name": "Cube (17)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -15.5,
+                    -15.5,
+                    75.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh59586.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        3.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59882,
+            "name": "Cube (18)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -15.5,
+                    -11.5,
+                    69.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(18)_pb_Mesh59892.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        3.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        -1.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59124,
+            "name": "Cube (19)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -15.5,
+                    -7.5,
+                    77.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh59134.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        3.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        -1.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 59498,
+            "name": "Cube (20)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -15.5,
+                    -3.5,
+                    69.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(20)_pb_Mesh59508.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        3.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        -1.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        },
+        {
+            "id": 60756,
+            "name": "Cube (21)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -15.5,
+                    0.5,
+                    77.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh60766.obj",
+            "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        7.0,
+                        2.0,
+                        3.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        -1.0
+                    ],
+                    "is_trigger": false
+                }
+            ]
+        }
+    ]
+}

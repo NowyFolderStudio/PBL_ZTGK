@@ -69,7 +69,7 @@ namespace NFSEngine {
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
         s_SceneData->CameraPosition = cameraPosition;
-        s_SceneData->Frustum.ExtractFromMatrix(projectionMatrix * viewMatrix);
+        s_SceneData->frustum.ExtractFromMatrix(projectionMatrix * viewMatrix);
 
         if (s_HDRFramebuffer->GetSpecification().width > 0 && s_HDRFramebuffer->GetSpecification().height > 0) {
             s_HDRFramebuffer->Bind();
@@ -88,7 +88,7 @@ namespace NFSEngine {
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
 
-        // TODO doda锟� optymalizacje renderowanie obiekt锟絯 tworzenie id na podsawie tekstur, shadr锟絯
+        // TODO doda閿燂拷 optymalizacje renderowanie obiekt閿熺弹 tworzenie id na podsawie tekstur, shadr閿熺弹
 
         s_RendererQueue.push_back(packet);
     }
