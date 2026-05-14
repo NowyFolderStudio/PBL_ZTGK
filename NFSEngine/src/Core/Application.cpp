@@ -79,15 +79,15 @@ namespace NFSEngine {
             {
                 NFS_PROFILE_SCOPE("LayerStack Logic Update");
 
-                for (Layer* layer : m_LayerStack) {
-                    layer->OnUpdate(deltaTime);
+                for (size_t i = 0; i < m_LayerStack.size(); ++i) {
+                    m_LayerStack[i]->OnUpdate(deltaTime);
                 }
             }
 
             {
                 NFS_PROFILE_SCOPE("LayerStack Rendering Preparation");
-                for (Layer* layer : m_LayerStack) {
-                    layer->OnRender();
+                for (size_t i = 0; i < m_LayerStack.size(); ++i) {
+                    m_LayerStack[i]->OnRender();
                 }
             }
 
@@ -95,8 +95,9 @@ namespace NFSEngine {
             {
                 NFS_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-                for (Layer* layer : m_LayerStack)
-                    layer->OnImGuiRender();
+                for (size_t i = 0; i < m_LayerStack.size(); ++i) {
+                    m_LayerStack[i]->OnImGuiRender();
+                }
             }
             m_ImGuiLayer->End();
 
@@ -112,10 +113,9 @@ namespace NFSEngine {
         dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent& event) { return this->OnKeyPressed(event); });
 
         if (!e.Handled) {
+            for (int i = static_cast<int>(m_LayerStack.size()) - 1; i >= 0; --i) {
+                m_LayerStack[i]->OnEvent(e);
 
-            for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
-
-                (*it)->OnEvent(e);
                 if (e.Handled) {
                     break;
                 }

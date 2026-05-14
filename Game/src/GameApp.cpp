@@ -4,15 +4,22 @@
 #include "NFSEngine.h"
 #include "Core/EntryPoint.hpp"
 
+#include "GameManager.hpp"
+
+class GameManagerLayer : public NFSEngine::Layer {
+public:
+    virtual void OnUpdate(NFSEngine::DeltaTime dt) override { GameManager::Get().ProcessStateChange(); }
+};
+
 class GameApp : public NFSEngine::Application {
 public:
     GameApp(const NFSEngine::ApplicationConfig& config)
         : NFSEngine::Application(config) {
         NFSEngine::RegisterInputActions();
-        // TODO: Add gamemanager.init() and let it handle the layers instead of hardcoding the main menu layer here
-        auto* uiLayer = new UILayer();
-        PushLayer(new LayerExample(uiLayer));
-        PushOverlay(uiLayer);
+
+        PushLayer(new GameManagerLayer());
+
+        GameManager::Get().Init();
     }
 
     ~GameApp() { }

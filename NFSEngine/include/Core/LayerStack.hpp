@@ -16,6 +16,10 @@ namespace NFSEngine {
         void PopLayer(Layer* layer);
         void PopOverlay(Layer* overlay);
 
+        size_t size() const { return m_Layers.size(); }
+        Layer* operator[](size_t index) { return m_Layers[index]; }
+        const Layer* operator[](size_t index) const { return m_Layers[index]; }
+
         std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
         std::vector<Layer*>::iterator end() { return m_Layers.end(); }
         std::vector<Layer*>::reverse_iterator rbegin() { return m_Layers.rbegin(); }

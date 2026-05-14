@@ -5,6 +5,8 @@
 #include <memory>
 #include <vector>
 
+#include "UI/Canvas.hpp"
+
 class PauseLayer : public NFSEngine::Layer {
 public:
     PauseLayer();
@@ -18,4 +20,5 @@ public:
     void OnEvent(NFSEngine::Event& e) override;
 
 private:
+    NFSEngine::Canvas* m_Canvas;
 };

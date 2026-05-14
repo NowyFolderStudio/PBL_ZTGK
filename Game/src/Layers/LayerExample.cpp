@@ -30,6 +30,7 @@
 #include "Platforms/OpenGL/OpenGLTexture.hpp"
 
 #include "SceneLoader/SceneLoader.hpp"
+#include "GameManager.hpp"
 
 #include <imgui.h>
 
@@ -313,6 +314,10 @@ void LayerExample::OnAttach() {
 void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    if (GameManager::Get().GetCurrentState() == GameState::Paused) {
+        return;
+    }
+
     m_Sequencer.Update((float)deltaTime);
     m_DeltaTime = deltaTime;
     m_Scene->OnUpdate(deltaTime);
@@ -455,4 +460,12 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
         NFSEngine::Renderer::OnWindowResize(ev.GetWidth(), ev.GetHeight());
         return false;
     });
+
+    if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
+        auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::Q) {
+            GameManager::Get().TogglePause();
+            e.Handled = true;
+        }
+    }
 }
