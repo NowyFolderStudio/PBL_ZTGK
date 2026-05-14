@@ -72,6 +72,6 @@ private:
 
     UILayer* m_UILayer = nullptr;
 
-    bool m_UseHDRI = true;
+    bool m_UseHDRI = false;
     std::shared_ptr<NFSEngine::Texture> m_HDRTexture;
 };
