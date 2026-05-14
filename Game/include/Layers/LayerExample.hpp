@@ -8,6 +8,7 @@
 #include "Core/Audio/RhythmSequencer.hpp"
 #include "Components/AudioPatternComponent.hpp"
 #include "Renderer/Framebuffer.hpp"
+#include "Renderer/EnvironmentMap.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -54,17 +55,23 @@ private:
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
     std::shared_ptr<NFSEngine::Shader> m_GoochShader;
 
+    std::unique_ptr<NFSEngine::EnvironmentMap> m_EnvironmentMap;
+
     NFSEngine::RhythmSequencer m_Sequencer;
     NFSEngine::AudioPatternComponent* m_TestAudioComp = nullptr;
 
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;
-    NFSEngine::DirectionalLight* m_CachedDirLight = nullptr;
-    NFSEngine::SpotLight* m_CachedSpotLight = nullptr;
 
+    NFSEngine::DirectionalLight* m_CachedDirLight = nullptr;
+    std::vector<NFSEngine::SpotLight*> m_CachedSpotLights;
     std::vector<NFSEngine::PointLight*> m_CachedPointLights;
+
     std::vector<RhythmMover*> m_CachedRhythmMovers;
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
 
     UILayer* m_UILayer = nullptr;
+
+    bool m_UseHDRI = true;
+    std::shared_ptr<NFSEngine::Texture> m_HDRTexture;
 };

@@ -6,7 +6,7 @@
 #include "Components/Transform.hpp"
 #include "Renderer/Model.hpp"
 #include "Renderer/Shader.hpp"
-#include "Renderer/Texture.hpp"
+#include "Renderer/Material.hpp"
 
 
 namespace NFSEngine {
@@ -18,7 +18,7 @@ namespace NFSEngine {
 
     class ModelComponent : public Component {
     public:
-        ModelComponent(GameObject* owner, std::shared_ptr<Shader>, std::shared_ptr<Texture> texture = nullptr);
+        ModelComponent(GameObject* owner, std::shared_ptr<Shader>, std::shared_ptr<Material> material = nullptr);
 
         virtual std::string GetName() const override { return "ModelComponent"; }
 
@@ -31,7 +31,7 @@ namespace NFSEngine {
     private:
         std::vector<LODLevel> m_LODs;
         std::shared_ptr<Shader> m_Shader;
-        std::shared_ptr<Texture> m_Texture;
+        std::shared_ptr<Material> m_Material;
 
         Transform* m_Transform = nullptr;
     };

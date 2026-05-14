@@ -4,11 +4,10 @@
 
 namespace NFSEngine {
 
-    ModelComponent::ModelComponent(GameObject* owner, std::shared_ptr<Shader> shader,
-                                   std::shared_ptr<Texture> texture)
+    ModelComponent::ModelComponent(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material)
         : Component(owner)
         , m_Shader(std::move(shader))
-        , m_Texture(std::move(texture)) { }
+        , m_Material(std::move(material)) { }
 
     void ModelComponent::AddLOD(std::shared_ptr<Model> model, float maxDistance) {
         m_LODs.push_back({ model, maxDistance });
@@ -20,7 +19,6 @@ namespace NFSEngine {
         if (m_LODs.empty() || !m_Shader || !m_Transform) return;
 
         glm::vec3 cameraPos = Renderer::GetCameraPosition();
-
         float distance = glm::distance(cameraPos, m_Transform->GetPosition());
 
         std::shared_ptr<Model> selectedModel = nullptr;;
@@ -35,7 +33,7 @@ namespace NFSEngine {
         if (!selectedModel) return;
 
         for (auto& vao : selectedModel->GetMeshes()) {
-            Renderer::Submit(m_Shader, vao, m_Texture, m_Transform->GetGlobalMatrix());
+            Renderer::Submit(m_Shader, vao, m_Material, m_Transform->GetGlobalMatrix());
         }
     }
 }

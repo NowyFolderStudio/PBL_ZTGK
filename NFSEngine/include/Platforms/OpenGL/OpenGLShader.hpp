@@ -22,6 +22,7 @@ namespace NFSEngine {
         void SetMat4(const std::string& name, const glm::mat4& value) override;
         void SetVec3(const std::string& name, const glm::vec3& value) override;
         void SetVec4(const std::string& name, const glm::vec4& value) override;
+        void SetBool(const std::string& name, const bool value) override;
 
     private:
         std::string m_Name;
