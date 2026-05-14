@@ -27,7 +27,8 @@ uniform sampler2D u_AOMap;
 uniform bool u_HasAOMap;
 
 uniform samplerCube irradianceMap;
-uniform samplerCube environmentMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 
 const float PI = 3.14159265359;
 
@@ -207,29 +208,26 @@ void main() {
         Lo += (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
-    vec3 irradiance = pow(texture(irradianceMap, N).rgb, vec3(2.2));
-    //vec3 irradiance = texture(irradianceMap, N).rgb;
     
-    //vec3 F_ambient = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
-    vec3 F_ambient = fresnelSchlick(max(dot(N, V), 0.0), F0);
-    
+    vec3 F_ambient = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
     vec3 kS_ambient = F_ambient;
     vec3 kD_ambient = 1.0 - kS_ambient;
     kD_ambient *= 1.0 - metallic;
+
+    vec3 irradiance = texture(irradianceMap, N).rgb;
 
     vec3 diffuseAmbient = irradiance * albedo;
     
     vec3 R = reflect(-V, N);
     
-    //vec3 reflectionColor = texture(environmentMap, R).rgb;
-    vec3 reflectionColor = pow(texture(environmentMap, R).rgb, vec3(2.2));
+    const float MAX_REFLECTION_LOD = 4.0;
+    vec3 prefilteredColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;
     
-    vec3 specularAmbient = reflectionColor * F_ambient * (1.0 - roughness);
-
-    float iblIntensity = 0.8;
-    vec3 ambient = (kD_ambient * diffuseAmbient + specularAmbient) * ao * iblIntensity;
-
-    //vec3 ambient = (kD_ambient * diffuseAmbient + specularAmbient) * ao;
+    vec2 envBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).rg;
+    
+    vec3 specularAmbient = prefilteredColor * (F0 * envBRDF.x + envBRDF.y);
+    
+    vec3 ambient = (kD_ambient * diffuseAmbient + specularAmbient) * ao;
     
     vec3 color = ambient + Lo;
 

@@ -128,19 +128,19 @@ void LayerExample::OnAttach() {
     // Sphere
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
-    /*
+    
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");
-        */
+    /*
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Displacement.jpg");
-    
+    */
 
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
@@ -246,21 +246,25 @@ void LayerExample::OnAttach() {
     controller.SetTarget(m_Player->GetTransform());
 
     // Skybox
-    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox3/px.png", "assets/textures/skybox/testSkybox3/nx.png",
-                                       "assets/textures/skybox/testSkybox3/py.png", "assets/textures/skybox/testSkybox3/ny.png",
-                                       "assets/textures/skybox/testSkybox3/pz.png", "assets/textures/skybox/testSkybox3/nz.png" };
+    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
+                                       "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
+                                       "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
     m_EnvironmentMap = std::make_unique<NFSEngine::EnvironmentMap>();
 
-    m_EnvironmentMap->LoadHDR("assets/textures/skybox/testSkybox3/rogland_clear_night_4k.hdr");
+    m_EnvironmentMap->LoadHDR("assets/textures/skybox/testSkybox2/skybox.hdr");
+
+    m_EnvironmentMap->GenerateBRDFLUT();
 
     if (m_UseHDRI) {
         m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
+        m_EnvironmentMap->GeneratePrefilterMap(m_EnvironmentMap->GetEnvironmentMapID());
     }
     else {
         m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
+        m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
     }
 
     // Platforms
@@ -384,20 +388,11 @@ void LayerExample::OnRender() {
             currentShader->SetVec3("viewPos", m_CachedCamera->GetOwner()->GetTransform()->GetPosition());
 
             if (m_EnvironmentMap) {
-                glActiveTexture(GL_TEXTURE5);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvironmentMap->GetIrradianceMapID());
-                currentShader->SetInt("irradianceMap", 5);
-            }
+                m_EnvironmentMap->BindEnvironmentMaps(5, 6, 7);
 
-            if (m_UseHDRI) {
-                glActiveTexture(GL_TEXTURE6);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvironmentMap->GetEnvironmentMapID());
-                currentShader->SetInt("environmentMap", 6);
-            }
-            else if (m_Skybox) {
-                glActiveTexture(GL_TEXTURE6);
-                glBindTexture(GL_TEXTURE_CUBE_MAP, m_Skybox->GetRendererID());
-                currentShader->SetInt("environmentMap", 6);
+                currentShader->SetInt("irradianceMap", 5);
+                currentShader->SetInt("prefilterMap", 6);
+                currentShader->SetInt("brdfLUT", 7);
             }
 
             if (m_CachedDirLight) {
@@ -467,9 +462,7 @@ void LayerExample::OnRender() {
 
         glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
         NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(), camPos);
-        if (!m_UseHDRI) {
-            NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
-        }
+        NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
     }
@@ -479,12 +472,14 @@ void LayerExample::OnImGuiRender() {
     ImGui::Begin("Diagnostic window");
 
     ImGui::Separator();
-    if (ImGui::Checkbox("U¿yj Prawdziwego HDR (Fotorealizm)", &m_UseHDRI)) {
+    if (ImGui::Checkbox("Use HDR Texture?", &m_UseHDRI)) {
         if (m_UseHDRI) {
             m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
+            m_EnvironmentMap->GeneratePrefilterMap(m_EnvironmentMap->GetEnvironmentMapID());
         }
         else {
             m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
+            m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
         }
     }
     ImGui::Separator();
