@@ -59,14 +59,17 @@ namespace NFSEngine {
             t->SetScale(glm::vec3(scl[0], scl[1], scl[2]));
 
             if (j_obj["mesh_path"] != "") {
+                auto material = std::make_shared<NFSEngine::Material>();
+
                 std::string texPath = "assets/textures/cat.png";
 
                 if (j_obj.contains("texture_path") && j_obj["texture_path"] != "") {
                     texPath = j_obj["texture_path"];
                 }
+                material->AlbedoMap = NFSEngine::Texture::Create(texPath);
 
-                auto dynamicTexture = NFSEngine::Texture::Create(texPath);
-                go->AddComponent<ModelComponent>(shader, dynamicTexture);
+                go->AddComponent<ModelComponent>(shader, material);
+
                 auto model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
                 go->GetComponent<ModelComponent>()->AddLOD(model, 1000);
             }

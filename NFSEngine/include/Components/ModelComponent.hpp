@@ -18,7 +18,7 @@ namespace NFSEngine {
 
     class ModelComponent : public Component {
     public:
-        ModelComponent(GameObject* owner, std::shared_ptr<Shader>, std::shared_ptr<Material> material = nullptr);
+        ModelComponent(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material = nullptr);
 
         virtual std::string GetName() const override { return "ModelComponent"; }
 

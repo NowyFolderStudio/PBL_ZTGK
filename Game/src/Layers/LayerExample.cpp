@@ -50,11 +50,11 @@ void LayerExample::OnAttach() {
 
     NFSEngine::SceneLoader::LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
-    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader
-        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/lightShader.frag");
+        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader
-        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
+        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader->Bind();
     m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
 
@@ -304,13 +304,12 @@ void LayerExample::OnAttach() {
     makeCoin("Coin_Left", -23.0f, coinY, 0.0f);
     makeCoin("Coin_Right", 23.0f, coinY, 0.0f);
 
-    // Trap
-    m_HazardCube = m_Scene->CreateGameObject("Hazard_Cube");
-    m_HazardCube->GetTransform()->SetPosition(glm::vec3(5.0f, -1.0f, 5.0f));
-    m_HazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
-    auto& hazardMesh = m_HazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, matWhite);
-    (void)hazardMesh;
-    auto& hazardCol = m_HazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    auto textureWhite2 = NFSEngine::Texture::Create("assets/textures/white.png");
+    NFSEngine::GameObject* hazardCube = m_Scene->CreateGameObject("Hazard_Cube");
+    hazardCube->GetTransform()->SetPosition(glm::vec3(5.0f, -1.0f, 5.0f));
+    hazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& hazardMesh = hazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, matWhite);
+    auto& hazardCol = hazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
     hazardCol.Size = glm::vec3(1.5f, 1.5f, 1.5f);
     auto& hazard = hazardCube->AddComponent<NFSEngine::HazardComponent>();
 
