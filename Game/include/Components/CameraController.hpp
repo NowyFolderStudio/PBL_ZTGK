@@ -3,7 +3,7 @@
 #include "Components/Component.hpp"
 #include "Components/Camera.hpp"
 #include "Components/Transform.hpp"
-#include "Core/Input.hpp"
+#include "Core/InputAction.hpp"
 #include "Core/Application.hpp"
 #include "Events/MouseEvent.hpp"
 #include "Core/Physics/PhysicsSystem.hpp"
@@ -47,7 +47,7 @@ namespace NFSEngine {
         void OnUpdate(DeltaTime deltaTime) override {
             Window& window = Application::Get().GetWindow();
 
-            if (Input::IsKeyDown(Key::Tab)) {
+            if (InputActionManager::IsDown("ToggleCursor")) {
                 if (window.GetCursorMode() == CursorMode::Locked)
                     window.SetCursorMode(CursorMode::Normal);
                 else
@@ -69,6 +69,13 @@ namespace NFSEngine {
 
                 m_LastMouseX = mouseX;
                 m_LastMouseY = mouseY;
+            }
+
+            {
+                float lookX = InputActionManager::GetFloat("LookX");
+                float lookY = InputActionManager::GetFloat("LookY");
+                m_Yaw += lookX * m_ControllerSensitivity;
+                m_Pitch = std::clamp(m_Pitch + lookY * m_ControllerSensitivity, -45.0f, 85.0f);
             }
 
             UpdateCameraTransform(deltaTime);
@@ -153,6 +160,7 @@ namespace NFSEngine {
         float m_ZoomSpeed = 0.8f;
         float m_Yaw = 90.0f, m_Pitch = 25.0f;
         float m_Sensitivity = 0.12f;
+        float m_ControllerSensitivity = 2.5f;
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
     };

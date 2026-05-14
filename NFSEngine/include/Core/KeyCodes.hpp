@@ -151,4 +151,41 @@ namespace NFSEngine {
             ButtonRight = 1,
         };
     } // namespace Mouse
+
+    using ControllerButton = int;
+    namespace ControllerButtons {
+        enum : ControllerButton {
+            A = 0,
+            B = 1,
+            X = 2,
+            Y = 3,
+            LeftBumper = 4,
+            RightBumper = 5,
+            Back = 6,
+            Start = 7,
+            Guide = 8,
+            LeftThumb = 9,
+            RightThumb = 10,
+            DPadUp = 11,
+            DPadRight = 12,
+            DPadDown = 13,
+            DPadLeft = 14
+        };
+    } // namespace ControllerButtons
+
+    using ControllerAxis = int;
+    namespace ControllerAxes {
+        enum : ControllerAxis {
+            LeftX = 0,
+            LeftY = 1,
+            RightX = 2,
+            RightY = 3,
+            LeftTrigger = 4,
+            RightTrigger = 5
+        };
+    } // namespace ControllerAxes
+
+    static constexpr int MAX_CONTROLLERS = 4;
+    static constexpr int CONTROLLER_BUTTON_COUNT = 15;
+    static constexpr int CONTROLLER_AXIS_COUNT = 6;
 } // namespace NFSEngine

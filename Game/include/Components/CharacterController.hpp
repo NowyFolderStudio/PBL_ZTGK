@@ -1,5 +1,4 @@
 #pragma once
-#include "Core/KeyCodes.hpp"
 #include <NFSEngine.h>
 #include "Components/Camera.hpp"
 #include "Core/MathUtils.hpp"
@@ -75,20 +74,17 @@ protected:
     }
 
     virtual void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
-        m_InputDirection = glm::vec3(0.0f);
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::W)) m_InputDirection.z += 1.0f;
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::S)) m_InputDirection.z -= 1.0f;
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::A)) m_InputDirection.x -= 1.0f;
-        if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::D)) m_InputDirection.x += 1.0f;
+        m_InputDirection.x = NFSEngine::InputActionManager::GetFloat("MoveX");
+        m_InputDirection.z = NFSEngine::InputActionManager::GetFloat("MoveZ");
 
-        m_IsJumpPressed = NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space);
-        m_IsDashPressed = NFSEngine::Input::IsKeyPressed(NFSEngine::Key::LeftShift);
+        m_IsJumpPressed = NFSEngine::InputActionManager::IsPressed("Jump");
+        m_IsDashPressed = NFSEngine::InputActionManager::IsPressed("Dash");
 
-        if (NFSEngine::Input::IsKeyDown(NFSEngine::Key::Space)) {
+        if (NFSEngine::InputActionManager::IsDown("Jump")) {
             Jump();
         }
 
-        if (NFSEngine::Input::IsKeyDown(NFSEngine::Key::LeftShift)) {
+        if (NFSEngine::InputActionManager::IsDown("Dash")) {
             Dash();
         }
     }

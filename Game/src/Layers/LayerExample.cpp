@@ -1,4 +1,4 @@
-#include "LayerExample.hpp"
+#include "Layers/LayerExample.hpp"
 
 // Komponenty
 #include "Components/CubeMesh.hpp"

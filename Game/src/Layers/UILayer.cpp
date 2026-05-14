@@ -1,4 +1,4 @@
-#include "UILayer.hpp"
+#include "Layers/UILayer.hpp"
 #include "Core/DeltaTime.hpp"
 #include "GameStateView.hpp"
 
@@ -9,11 +9,7 @@ UILayer::~UILayer() {
     NFSEngine::UIRenderer::Shutdown();
 }
 
-void UILayer::OnAttach() { Init(); }
-
-void UILayer::OnDetach() {}
-
-void UILayer::Init() {
+void UILayer::OnAttach() {
     constexpr int k_MaxLives = 3;
     float virtualWidth = 1920.0f;
     float virtualHeight = 1080.0f;
@@ -66,16 +62,15 @@ void UILayer::Init() {
     }
 }
 
-void UILayer::SetGameState(std::shared_ptr<GameStateView> view) {
-    m_GameState = std::move(view);
-}
+void UILayer::OnDetach() { }
+
+void UILayer::SetGameState(std::shared_ptr<GameStateView> view) { m_GameState = std::move(view); }
 
 void UILayer::SyncFromGameState() {
     if (!m_GameState) return;
 
     if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
-        m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString =
-            "SCORE: " + std::to_string(m_GameState->data.score);
+        m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString = "SCORE: " + std::to_string(m_GameState->data.score);
     }
 
     UpdateHeartVisuals();
@@ -98,20 +93,16 @@ void UILayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     }
 
     SyncFromGameState();
-    Update();
+    m_Canvas->Update();
 }
 
-void UILayer::OnRender() { Render(); }
-
-void UILayer::Update() { m_Canvas->Update(); }
-
-void UILayer::Render() {
+void UILayer::OnRender() {
     NFSEngine::UIRenderer::Begin();
     m_Canvas->Draw();
     NFSEngine::UIRenderer::End();
 }
 
-void UILayer::OnEvent(NFSEngine::Event& e) {}
+void UILayer::OnEvent(NFSEngine::Event& e) { }
 
 void UILayer::UpdateHeartVisuals() {
     if (!m_GameState) return;

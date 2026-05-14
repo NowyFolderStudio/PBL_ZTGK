@@ -1,5 +1,6 @@
 #include "Core/Application.hpp"
 #include "Core/DeltaTime.hpp"
+#include "Core/InputAction.hpp"
 #include "Debug/Profiler.hpp"
 #include "Platforms/WindowsInput.hpp"
 #include "Platforms/Window.hpp"
@@ -47,6 +48,18 @@ namespace NFSEngine {
         layer->OnAttach();
     }
 
+    void Application::PopLayer(Layer* layer) {
+        NFS_PROFILE_FUNCTION();
+        m_LayerStack.PopLayer(layer);
+        layer->OnDetach();
+    }
+
+    void Application::PopOverlay(Layer* layer) {
+        NFS_PROFILE_FUNCTION();
+        m_LayerStack.PopOverlay(layer);
+        layer->OnDetach();
+    }
+
     void Application::Close() { m_Running = false; }
 
     void Application::Run() {
@@ -61,6 +74,7 @@ namespace NFSEngine {
             m_LastFrameTime = time;
 
             Input::UpdateStates();
+            InputActionManager::Get().UpdateAll();
 
             {
                 NFS_PROFILE_SCOPE("LayerStack Logic Update");
