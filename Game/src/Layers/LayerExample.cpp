@@ -107,6 +107,7 @@ void LayerExample::OnAttach() {
     auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Capsule/capsule.obj");
 
     m_Player = m_Scene->CreateGameObject("Player");
+    m_Player->AddTag(NFSEngine::Tags::Player);
     m_Player->GetTransform()->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
     auto& playerComp = m_Player->AddComponent<NFSEngine::ModelComponent>(m_Shader, matCat);
     playerComp.AddLOD(capsuleModel, 10000.0f);
@@ -315,6 +316,7 @@ void LayerExample::OnAttach() {
 
     // GameManager
     NFSEngine::GameObject* gameManager = m_Scene->CreateGameObject("GameManager");
+    gameManager->SetTag(NFSEngine::Tags::GameManager);
     auto& scoreComp = gameManager->AddComponent<NFSEngine::ScoreManagerComponent>();
     auto& livesComp = gameManager->AddComponent<NFSEngine::LivesManagerComponent>();
 

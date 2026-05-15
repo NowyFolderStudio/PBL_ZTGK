@@ -4,11 +4,14 @@
 #include <utility>
 #include <vector>
 #include <memory>
+#include <type_traits>
+#include <cstdint>
 
 #include "Debug/Profiler.hpp"
 #include "Components/Component.hpp"
 #include "Components/Transform.hpp"
 #include "Core/DeltaTime.hpp"
+#include "Core/Tags.hpp"
 
 namespace NFSEngine {
 
@@ -46,6 +49,18 @@ namespace NFSEngine {
 
         void SetActive(bool isActive) { m_Active = isActive; }
 
+        void SetTag(uint32_t tagBits) { m_TagBits = tagBits; }
+
+        void AddTag(uint32_t tagBit) { m_TagBits |= tagBit; }
+
+        void RemoveTag(uint32_t tagBit) { m_TagBits &= ~tagBit; }
+
+        bool CompareTag(uint32_t tagBit) const { return (m_TagBits & tagBit) != 0; }
+
+        template <typename T> bool HasComponent() const {
+            return GetComponent<T>() != nullptr;
+        }
+
         Transform* GetTransform() { return m_Transform; }
 
         Scene* GetScene() { return m_Scene; }
@@ -76,6 +91,16 @@ namespace NFSEngine {
             return nullptr;
         }
 
+        template <typename T> const T* GetComponent() const {
+            NFS_PROFILE_FUNCTION();
+            for (auto& component : m_Components) {
+                if (const T* castedComponent = dynamic_cast<const T*>(component.get())) {
+                    return castedComponent;
+                }
+            }
+            return nullptr;
+        }
+
         template <typename T> void RemoveComponent() {
             static_assert(!std::is_same_v<T, Transform>, "Can't remove Transform component!");
 
@@ -99,6 +124,8 @@ namespace NFSEngine {
         std::vector<std::unique_ptr<Component>> m_Components;
         Transform* m_Transform = nullptr;
         Scene* m_Scene = nullptr;
+
+        uint32_t m_TagBits = Tags::Untagged;
 
         bool m_Destroyed = false;
         bool m_Active = true;

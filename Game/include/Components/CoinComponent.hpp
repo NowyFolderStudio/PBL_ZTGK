@@ -4,7 +4,6 @@
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/ScoreManagerComponent.hpp"
-#include "Components/CharacterController.hpp"
 
 namespace NFSEngine {
 
@@ -24,12 +23,12 @@ namespace NFSEngine {
             collider->IsTrigger = true;
 
             auto* scene = m_Owner->GetScene();
-            auto* gm = scene ? scene->FindGameObject("GameManager") : nullptr;
+            auto* gm = scene ? scene->FindWithTag(Tags::GameManager) : nullptr;
             auto* scoreComp = gm ? gm->GetComponent<ScoreManagerComponent>() : nullptr;
 
             collider->OnTriggerEnter = [this, scoreComp](GameObject* other) {
                 if (m_Collected) return;
-                if (!other->GetComponent<CharacterController>()) return;
+                if (!other->CompareTag(Tags::Player)) return;
                 m_Collected = true;
                 if (scoreComp) scoreComp->AddScore(ScoreValue);
                 m_Owner->SetActive(false);

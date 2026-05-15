@@ -4,7 +4,6 @@
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/LivesManagerComponent.hpp"
-#include "Components/CharacterController.hpp"
 
 namespace NFSEngine {
 
@@ -24,11 +23,11 @@ namespace NFSEngine {
             collider->IsTrigger = true;
 
             auto* scene = m_Owner->GetScene();
-            auto* gm = scene ? scene->FindGameObject("GameManager") : nullptr;
+            auto* gm = scene ? scene->FindWithTag(Tags::GameManager) : nullptr;
             auto* livesComp = gm ? gm->GetComponent<LivesManagerComponent>() : nullptr;
 
             auto hitAction = [this, livesComp](GameObject* other) {
-                if (!other->GetComponent<CharacterController>()) return;
+                if (!other->CompareTag(Tags::Player)) return;
                 if (m_CooldownTimer > 0.0f) return;
                 m_CooldownTimer = HitCooldown;
                 if (livesComp) livesComp->LoseHeart();

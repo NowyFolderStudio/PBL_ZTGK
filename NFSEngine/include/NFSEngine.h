@@ -13,6 +13,7 @@
 #include "Core/Text.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Scene.hpp"
+#include "Core/Tags.hpp"
 
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"

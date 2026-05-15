@@ -27,6 +27,25 @@ namespace NFSEngine {
 
         GameObject* FindGameObject(const std::string& name);
 
+        GameObject* FindWithTag(uint32_t tagHash) {
+            for (auto& go : m_GameObjects) {
+                if (go->CompareTag(tagHash)) {
+                    return go.get();
+                }
+            }
+            return nullptr;
+        }
+
+        std::vector<GameObject*> FindGameObjectsWithTag(uint32_t tagHash) {
+            std::vector<GameObject*> result;
+            for (auto& go : m_GameObjects) {
+                if (go->CompareTag(tagHash)) {
+                    result.push_back(go.get());
+                }
+            }
+            return result;
+        }
+
     private:
         std::vector<std::unique_ptr<GameObject>> m_GameObjects;
         DeltaTime m_FixedDeltaTime = 0.01666f;
