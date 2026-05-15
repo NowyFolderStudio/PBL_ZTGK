@@ -25,6 +25,9 @@ public:
     float LowJumpMultiplier = 3.0f;
     int MaxJumps = 2;
 
+    // Wall jump settings
+    float WallSlideSpeed = 2.0f;
+
     // Dash settings
     float DashSpeed = 20.0f;
     float DashUpwardForce = 9.0f;
@@ -35,6 +38,7 @@ public:
     // Coyote time and jump buffer settings
     float CoyoteTime = 0.15f;
     float JumpBufferTime = 0.15f;
+    float WallCoyoteTime = 0.15f;
 
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
@@ -53,6 +57,10 @@ private:
     float m_CoyoteTimeCounter = 0.0f;
     float m_JumpBufferCounter = 0.0f;
     float m_DashTimeCounter = 0.0f;
+    float m_WallCoyoteCounter = 0.0f;
+
+    glm::vec3 m_LastWallNormal = glm::vec3(0.0f);
+    glm::vec3 m_LastJumpedWallNormal = glm::vec3(0.0f);
 
     float m_CurrentYaw = 0.0f;
     float m_TurnSmoothVelocity = 0.0f;
@@ -111,6 +119,8 @@ private:
     void UpdateStates() {
         if (p_RigidBody->IsGrounded) {
 
+            m_LastJumpedWallNormal = glm::vec3(0.0f);
+
             if (!m_IsDashing) {
                 m_CanDash = true;
             }
@@ -143,6 +153,13 @@ private:
 
         if (m_DashTimeCounter > 0.0f) {
             m_DashTimeCounter -= dt;
+        }
+
+        if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
+            m_LastWallNormal = p_RigidBody->WallNormal;
+            m_WallCoyoteCounter = WallCoyoteTime;
+        } else if (m_WallCoyoteCounter > 0.0f) {
+            m_WallCoyoteCounter -= dt;
         }
     }
 
@@ -180,12 +197,21 @@ private:
 
     void HandleJump() {
         if (m_JumpBufferCounter > 0.0f) {
-            if (m_CoyoteTimeCounter > 0.0f || m_JumpsRemaining > 0) {
+            bool jumped = false;
 
-                if (m_IsDashing) {
-                    m_IsDashing = false;
+            if (m_WallCoyoteCounter > 0.0f && !p_RigidBody->IsGrounded) {
+                
+                bool isSameWall = glm::dot(m_LastWallNormal, m_LastJumpedWallNormal) > 0.9f;
+                
+                if (!isSameWall) {
+                    if (m_IsDashing) m_IsDashing = false;
+                    ExecuteWallJump();
+                    jumped = true;
                 }
+            }
 
+            if (!jumped && (m_CoyoteTimeCounter > 0.0f || m_JumpsRemaining > 0)) {
+                if (m_IsDashing) m_IsDashing = false;
                 ExecuteJump();
             }
         }
@@ -195,6 +221,24 @@ private:
         p_RigidBody->Velocity.y = sqrt(2.0f * JumpHeight * -NFSEngine::PhysicsSystem::Gravity.y);
         m_IsJumping = true;
         m_JumpsRemaining--;
+
+        m_JumpBufferCounter = 0.0f;
+        m_CoyoteTimeCounter = 0.0f;
+    }
+
+    void ExecuteWallJump() {
+        m_LastJumpedWallNormal = m_LastWallNormal;
+
+        glm::vec3 jumpDirection = m_LastWallNormal + glm::vec3(0.0f, 1.2f, 0.0f);
+        jumpDirection = glm::normalize(jumpDirection);
+
+        p_RigidBody->Velocity.y = sqrt(2.0f * JumpHeight * -NFSEngine::PhysicsSystem::Gravity.y);
+
+        p_RigidBody->Velocity.x = jumpDirection.x * MaxSpeed;
+        p_RigidBody->Velocity.z = jumpDirection.z * MaxSpeed;
+
+        m_IsJumping = true;
+        m_JumpsRemaining = MaxJumps - 1;
 
         m_JumpBufferCounter = 0.0f;
         m_CoyoteTimeCounter = 0.0f;
@@ -251,6 +295,21 @@ private:
             p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, 0.0f, currentDec * dt);
             p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, 0.0f, currentDec * dt);
         }
+
+        if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
+            
+            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {}
+            else {
+                glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
+                
+                float dotProduct = glm::dot(currentXZ, m_LastWallNormal);
+                
+                glm::vec3 allowedVelocityXZ = m_LastWallNormal * dotProduct;
+                
+                p_RigidBody->Velocity.x = allowedVelocityXZ.x;
+                p_RigidBody->Velocity.z = allowedVelocityXZ.z;
+            }
+        }
     }
 
     void HandleGravity(float dt) {
@@ -260,5 +319,16 @@ private:
         } else if (p_RigidBody->Velocity.y > 0.0f && !m_IsJumpPressed) {
             p_RigidBody->Velocity.y += NFSEngine::PhysicsSystem::Gravity.y * (LowJumpMultiplier - 1.0f) * dt;
         }
+
+        if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded && p_RigidBody->Velocity.y < 0.0f) {
+            p_RigidBody->Velocity.y = NFSEngine::Math::Clamp(p_RigidBody->Velocity.y, -WallSlideSpeed, 0.0f);
+        }
     }
+
+    bool IsTouchingJumpableWall() const {
+        return p_RigidBody->IsTouchingWall && 
+               p_RigidBody->TouchedWallObject != nullptr && 
+               p_RigidBody->TouchedWallObject->CompareTag(NFSEngine::Tags::WallJumpSurface);
+    }
+
 };

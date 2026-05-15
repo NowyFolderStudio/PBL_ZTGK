@@ -118,6 +118,9 @@ namespace NFSEngine {
             auto* transform = objA->GetTransform();
 
             rigidBody->IsGrounded = false;
+            rigidBody->IsTouchingWall = false;
+            rigidBody->WallNormal = glm::vec3(0.0f);
+            rigidBody->TouchedWallObject = nullptr;
 
             if (rigidBody->UseGravity) {
                 rigidBody->Acceleration += Gravity;
@@ -161,6 +164,11 @@ namespace NFSEngine {
 
                         if (info.ContactNormal.y > 0.7f) {
                             rigidBody->IsGrounded = true;
+                        }
+                        else if (std::abs(info.ContactNormal.y) < 0.3f) {
+                            rigidBody->IsTouchingWall = true;
+                            rigidBody->WallNormal = info.ContactNormal;
+                            rigidBody->TouchedWallObject = objB;
                         }
                     }
                 }

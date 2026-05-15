@@ -227,10 +227,22 @@ void LayerExample::OnAttach() {
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
-    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_GoochShader, matWhite);
+    m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
     m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
+    m_MovingCube2->GetTransform()->SetScale({ 8.0f, 80.0f, 2.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    m_MovingCube2->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(8.0f, 80.0f, 2.0f);
+    m_MovingCube2->AddTag(NFSEngine::Tags::WallJumpSurface);
 
+
+    // Static Cube
+    NFSEngine::GameObject* wall = m_Scene->CreateGameObject("wall");
+    wall->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
+    wall->GetTransform()->SetPosition({ -4.0f, -1.0f, 10.0f });
+    wall->GetTransform()->SetScale({ 8.0f, 80.0f, 2.0f });
+    wall->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    wall->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(8.0f, 80.0f, 2.0f);
+    wall->AddTag(NFSEngine::Tags::WallJumpSurface);
 
     // earth Object
     auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");

@@ -40,6 +40,11 @@ namespace NFSEngine {
         float Mass = 1.0f;
         bool UseGravity = true;
         bool IsGrounded = false;
+
+        bool IsTouchingWall = false;
+        glm::vec3 WallNormal = glm::vec3(0.0f);
+
+        GameObject* TouchedWallObject = nullptr;
     };
 
     struct BoxCollider3DComponent : public ColliderComponent {
