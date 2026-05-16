@@ -1,8 +1,14 @@
 #include "Renderer/Model.hpp"
 #include <iostream>
+#include <limits>
 
 namespace NFSEngine {
-    Model::Model(const std::string& path) { LoadModel(path); }
+    Model::Model(const std::string& path) {
+        m_MeshAABBMin = glm::vec3(std::numeric_limits<float>::max());
+        m_MeshAABBMax = glm::vec3(std::numeric_limits<float>::lowest());
+        LoadModel(path);
+        FinalizeBoundingSphere();
+    }
 
     void Model::LoadModel(const std::string& path) {
         Assimp::Importer import;
@@ -28,6 +34,17 @@ namespace NFSEngine {
         }
     }
 
+    void Model::FinalizeBoundingSphere() {
+        if (m_MeshAABBMin.x > m_MeshAABBMax.x) {
+            m_MeshBoundingSphere = { glm::vec3(0.0f), 0.5f };
+            return;
+        }
+        glm::vec3 center = (m_MeshAABBMin + m_MeshAABBMax) * 0.5f;
+        float radius = glm::length(m_MeshAABBMax - center);
+        if (radius < 0.001f) radius = 0.5f;
+        m_MeshBoundingSphere = { center, radius };
+    }
+
     std::shared_ptr<VertexArray> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
@@ -36,6 +53,9 @@ namespace NFSEngine {
             Vertex vertex;
 
             vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+
+            m_MeshAABBMin = glm::min(m_MeshAABBMin, vertex.Position);
+            m_MeshAABBMax = glm::max(m_MeshAABBMax, vertex.Position);
 
             if (mesh->HasNormals()) {
                 vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };

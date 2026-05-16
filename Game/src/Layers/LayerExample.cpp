@@ -327,10 +327,14 @@ void LayerExample::OnAttach() {
     auto& hazard = hazardCube->AddComponent<NFSEngine::HazardComponent>();
 
     // GameManager
-    NFSEngine::GameObject* gameManager = m_Scene->CreateGameObject("GameManager");
-    gameManager->SetTag(NFSEngine::Tags::GameManager);
-    auto& scoreComp = gameManager->AddComponent<NFSEngine::ScoreManagerComponent>();
-    auto& livesComp = gameManager->AddComponent<NFSEngine::LivesManagerComponent>();
+    NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
+    livesManager->SetTag(NFSEngine::Tags::LivesManager);
+    auto& livesComp = livesManager->AddComponent<NFSEngine::LivesManagerComponent>();
+
+    NFSEngine::GameObject* scoreManager = m_Scene->CreateGameObject("ScoreManager");
+    scoreManager->SetTag(NFSEngine::Tags::ScoreManager);
+    auto& scoreComp = scoreManager->AddComponent<NFSEngine::ScoreManagerComponent>();
+
 
     auto gameState = std::make_shared<GameStateView>();
     gameState->data.score = scoreComp.GetScore();
@@ -534,6 +538,17 @@ void LayerExample::OnImGuiRender() {
 
     ImGui::Separator();
     ImGui::Text("GPU: %.3f ms", NFSEngine::Renderer::GetGPUTime());
+    ImGui::Separator();
+
+    bool cullingEnabled = NFSEngine::Renderer::IsFrustumCullingEnabled();
+    if (ImGui::Checkbox("Frustum Culling", &cullingEnabled)) {
+        NFSEngine::Renderer::SetFrustumCullingEnabled(cullingEnabled);
+    }
+    int cullingMode = NFSEngine::Renderer::GetFrustumCullingMode();
+    const char* modes[] = { "Sphere", "AABB" };
+    if (ImGui::Combo("Culling Mode", &cullingMode, modes, 2)) {
+        NFSEngine::Renderer::SetFrustumCullingMode(cullingMode);
+    }
     ImGui::Separator();
 
     auto stats = NFSEngine::Renderer::GetStats();

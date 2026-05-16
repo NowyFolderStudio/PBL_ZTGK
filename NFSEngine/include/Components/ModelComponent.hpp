@@ -24,6 +24,8 @@ namespace NFSEngine {
 
         void AddLOD(std::shared_ptr<Model> model, float maxDistance);
 
+        const std::vector<LODLevel>& GetLODs() const { return m_LODs; }
+
     protected:
         virtual void OnAwake() override;
         virtual void OnRender() override;

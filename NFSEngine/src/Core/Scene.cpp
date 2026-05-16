@@ -1,3 +1,4 @@
+#include "Core/CullingUtils.hpp"
 #include "Core/Scene.hpp"
 #include "Renderer/Renderer.hpp"
 #include <algorithm>
@@ -79,24 +80,72 @@ namespace NFSEngine {
     void Scene::OnRender() {
         const Frustum& frustum = Renderer::GetFrustum();
         float cullingRange = Renderer::GetCullingRange();
+        bool cullingEnabled = Renderer::IsFrustumCullingEnabled();
+        int cullingMode = Renderer::GetFrustumCullingMode();
 
         for (auto& gameObject : m_GameObjects) {
             if (!gameObject->IsActive()) continue;
 
             Transform* transform = gameObject->GetTransform();
-            // if (transform) {
-            //     BoundingSphere sphere = transform->GetBoundingSphere();
-            //     if (!frustum.TestSphere(sphere)) {
-            //         continue;
-            //     }
 
-            //     if (cullingRange > 0.0f) {
-            //         float dist = glm::distance(sphere.Center, Renderer::GetCameraPosition());
-            //         if (dist - sphere.Radius > cullingRange) {
-            //             continue;
-            //         }
-            //     }
-            // }
+            if (cullingEnabled && transform) {
+                bool visible = true;
+
+                if (cullingMode == 0) {
+                    BoundingSphere localSphere = CullingUtils::GetLocalBoundingSphere(gameObject.get());
+
+                    if (localSphere.Radius > 0.0f) {
+                        glm::mat4 global = transform->GetGlobalMatrix();
+                        glm::vec4 worldCenter = global * glm::vec4(localSphere.Center, 1.0f);
+
+                        float scaleX = glm::length(glm::vec3(global[0]));
+                        float scaleY = glm::length(glm::vec3(global[1]));
+                        float scaleZ = glm::length(glm::vec3(global[2]));
+                        float maxScale = std::max({scaleX, scaleY, scaleZ});
+
+                        BoundingSphere sphere = {glm::vec3(worldCenter), localSphere.Radius * maxScale};
+
+                        if (!frustum.TestSphere(sphere)) visible = false;
+                        if (visible && cullingRange > 0.0f) {
+                            float dist = glm::distance(sphere.Center, Renderer::GetCameraPosition());
+                            if (dist - sphere.Radius > cullingRange) visible = false;
+                        }
+                    }
+                } else {
+                    auto localAABB = CullingUtils::GetLocalAABB(gameObject.get());
+                    bool hasBounds = localAABB.first != localAABB.second;
+
+                    if (hasBounds) {
+                        glm::mat4 global = transform->GetGlobalMatrix();
+                        glm::vec3 corners[8] = {
+                            {localAABB.first.x, localAABB.first.y, localAABB.first.z},
+                            {localAABB.first.x, localAABB.first.y, localAABB.second.z},
+                            {localAABB.first.x, localAABB.second.y, localAABB.first.z},
+                            {localAABB.first.x, localAABB.second.y, localAABB.second.z},
+                            {localAABB.second.x, localAABB.first.y, localAABB.first.z},
+                            {localAABB.second.x, localAABB.first.y, localAABB.second.z},
+                            {localAABB.second.x, localAABB.second.y, localAABB.first.z},
+                            {localAABB.second.x, localAABB.second.y, localAABB.second.z},
+                        };
+                        glm::vec3 worldMin(1e10f), worldMax(-1e10f);
+                        for (auto& c : corners) {
+                            glm::vec3 w = glm::vec3(global * glm::vec4(c, 1.0f));
+                            worldMin = glm::min(worldMin, w);
+                            worldMax = glm::max(worldMax, w);
+                        }
+
+                        if (!frustum.TestAABB(worldMin, worldMax)) visible = false;
+                        if (visible && cullingRange > 0.0f) {
+                            glm::vec3 center = (worldMin + worldMax) * 0.5f;
+                            float radius = glm::length(worldMax - center);
+                            float dist = glm::distance(center, Renderer::GetCameraPosition());
+                            if (dist - radius > cullingRange) visible = false;
+                        }
+                    }
+                }
+
+                if (!visible) continue;
+            }
 
             gameObject->Render();
         }

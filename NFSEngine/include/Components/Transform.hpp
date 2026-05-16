@@ -4,7 +4,6 @@
 #include <glm/ext.hpp>
 
 #include "Components/Component.hpp"
-#include "Renderer/Frustum.hpp"
 
 namespace NFSEngine {
     class Transform : public Component {
@@ -48,7 +47,6 @@ namespace NFSEngine {
         }
 
         glm::vec3 GetWorldPosition();
-        BoundingSphere GetBoundingSphere();
 
         void Move(const glm::vec3& moveVector);
         void Rotate(const glm::vec3& rotationVector);

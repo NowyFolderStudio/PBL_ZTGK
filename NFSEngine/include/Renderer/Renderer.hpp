@@ -59,6 +59,11 @@ namespace NFSEngine {
         static float GetExposure() { return s_Exposure; }
         static void OnWindowResize(uint32_t width, uint32_t height);
 
+        static void SetFrustumCullingEnabled(bool enabled) { s_FrustumCullingEnabled = enabled; }
+        static bool IsFrustumCullingEnabled() { return s_FrustumCullingEnabled; }
+        static void SetFrustumCullingMode(int mode) { s_FrustumCullingMode = mode; }
+        static int GetFrustumCullingMode() { return s_FrustumCullingMode; }
+
     private:
         struct SceneData {
             glm::mat4 ViewMatrix = glm::mat4(1.0f);
@@ -76,6 +81,8 @@ namespace NFSEngine {
 
         static std::shared_ptr<VertexArray> s_SkyboxVAO;
         static float s_CullingRange;
+        static bool s_FrustumCullingEnabled;
+        static int s_FrustumCullingMode;
 
         static std::shared_ptr<Framebuffer> s_HDRFramebuffer;
         static std::shared_ptr<Shader> s_PostProcessShader;

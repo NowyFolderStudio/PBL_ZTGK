@@ -23,7 +23,7 @@ namespace NFSEngine {
             collider->IsTrigger = true;
 
             auto* scene = m_Owner->GetScene();
-            auto* gm = scene ? scene->FindWithTag(Tags::GameManager) : nullptr;
+            auto* gm = scene ? scene->FindWithTag(Tags::ScoreManager) : nullptr;
             auto* scoreComp = gm ? gm->GetComponent<ScoreManagerComponent>() : nullptr;
 
             collider->OnTriggerEnter = [this, scoreComp](GameObject* other) {

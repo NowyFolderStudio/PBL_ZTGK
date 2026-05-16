@@ -16,6 +16,8 @@ namespace NFSEngine {
     std::shared_ptr<VertexArray> Renderer::s_SkyboxVAO = nullptr;
 
     float Renderer::s_CullingRange = 0.0f;
+    bool Renderer::s_FrustumCullingEnabled = true;
+    int Renderer::s_FrustumCullingMode = 0;
 
     std::shared_ptr<Framebuffer> Renderer::s_HDRFramebuffer = nullptr;
     std::shared_ptr<Shader> Renderer::s_PostProcessShader = nullptr;

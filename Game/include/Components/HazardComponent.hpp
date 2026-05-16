@@ -23,7 +23,7 @@ namespace NFSEngine {
             collider->IsTrigger = true;
 
             auto* scene = m_Owner->GetScene();
-            auto* gm = scene ? scene->FindWithTag(Tags::GameManager) : nullptr;
+            auto* gm = scene ? scene->FindWithTag(Tags::LivesManager) : nullptr;
             auto* livesComp = gm ? gm->GetComponent<LivesManagerComponent>() : nullptr;
 
             auto hitAction = [this, livesComp](GameObject* other) {
