@@ -2,7 +2,7 @@
     "scene_name": "Level4",
     "game_objects": [
         {
-            "id": -30620,
+            "id": 53854,
             "name": "Track",
             "parent_id": 0,
             "transform": {
@@ -38,12 +38,29 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "CollectableTrack",
+                    "properties": [
+                        {
+                            "name": "trackNumbers",
+                            "type": "Int32[]",
+                            "value": "System.Int32[]"
+                        },
+                        {
+                            "name": "distance",
+                            "type": "Single",
+                            "value": "1"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": -30626,
+            "id": -1570,
             "name": "Cube (2)",
-            "parent_id": -30620,
+            "parent_id": 53854,
             "transform": {
                 "position": [
                     0.0,
@@ -61,12 +78,13 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_Cube.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_Cube_888.obj",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": []
         },
         {
-            "id": 59512,
+            "id": 53174,
             "name": "Cube (16)",
             "parent_id": 0,
             "transform": {
@@ -86,7 +104,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(16)_pb_Mesh59522.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(16)_pb_Mesh59522_52732.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -102,10 +120,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60578,
+            "id": 54322,
             "name": "Cube (15)",
             "parent_id": 0,
             "transform": {
@@ -125,7 +144,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(15)_pb_Mesh60588.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(15)_pb_Mesh60588_54320.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -141,10 +160,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": -30658,
+            "id": 53804,
             "name": "Track (1)",
             "parent_id": 0,
             "transform": {
@@ -180,12 +200,29 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "CollectableTrack",
+                    "properties": [
+                        {
+                            "name": "trackNumbers",
+                            "type": "Int32[]",
+                            "value": "System.Int32[]"
+                        },
+                        {
+                            "name": "distance",
+                            "type": "Single",
+                            "value": "1"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": -30664,
+            "id": -1402,
             "name": "Cube (2)",
-            "parent_id": -30658,
+            "parent_id": 53804,
             "transform": {
                 "position": [
                     0.0,
@@ -203,12 +240,13 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_Cube.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_Cube_888.obj",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": []
         },
         {
-            "id": 59476,
+            "id": 53134,
             "name": "Directional Light",
             "parent_id": 0,
             "transform": {
@@ -230,10 +268,11 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": []
         },
         {
-            "id": 60314,
+            "id": 54042,
             "name": "GameManager",
             "parent_id": 0,
             "transform": {
@@ -255,10 +294,32 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "GameManager",
+                    "properties": [
+                        {
+                            "name": "playerTransform",
+                            "type": "Transform",
+                            "value": "Player (UnityEngine.Transform)"
+                        },
+                        {
+                            "name": "playerController",
+                            "type": "PlayerController",
+                            "value": ""
+                        },
+                        {
+                            "name": "fallThreshold",
+                            "type": "Single",
+                            "value": "-10000"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 59544,
+            "id": 53208,
             "name": "RythmDirector",
             "parent_id": 0,
             "transform": {
@@ -280,10 +341,42 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "ReworkedRhythmDirector",
+                    "properties": [
+                        {
+                            "name": "bpm",
+                            "type": "Single",
+                            "value": "120"
+                        },
+                        {
+                            "name": "beatsPerMeasure",
+                            "type": "Int32",
+                            "value": "4"
+                        },
+                        {
+                            "name": "tracks",
+                            "type": "List`1",
+                            "value": "System.Collections.Generic.List`1[MusicTrack]"
+                        },
+                        {
+                            "name": "sources",
+                            "type": "List`1",
+                            "value": "System.Collections.Generic.List`1[UnityEngine.AudioSource]"
+                        },
+                        {
+                            "name": "receivers",
+                            "type": "BeatReceiver[]",
+                            "value": "BeatReceiver[]"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 59986,
+            "id": 53684,
             "name": "UIManager",
             "parent_id": 0,
             "transform": {
@@ -305,10 +398,52 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "UIHealthManager",
+                    "properties": [
+                        {
+                            "name": "player",
+                            "type": "PlayerController",
+                            "value": ""
+                        },
+                        {
+                            "name": "healthSegments",
+                            "type": "List`1",
+                            "value": "System.Collections.Generic.List`1[UnityEngine.UI.Image]"
+                        },
+                        {
+                            "name": "fullSegment",
+                            "type": "Sprite",
+                            "value": "SegmentFull (UnityEngine.Sprite)"
+                        },
+                        {
+                            "name": "emptySegment",
+                            "type": "Sprite",
+                            "value": "SegmentEmpty (UnityEngine.Sprite)"
+                        }
+                    ]
+                },
+                {
+                    "name": "UICoinDisplay",
+                    "properties": [
+                        {
+                            "name": "player",
+                            "type": "PlayerController",
+                            "value": ""
+                        },
+                        {
+                            "name": "coinText",
+                            "type": "TextMeshProUGUI",
+                            "value": "CoinText (TMPro.TextMeshProUGUI)"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 60704,
+            "id": 54464,
             "name": "Global Volume",
             "parent_id": 0,
             "transform": {
@@ -330,10 +465,11 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": []
         },
         {
-            "id": 60120,
+            "id": 53830,
             "name": "CompositionManager",
             "parent_id": 0,
             "transform": {
@@ -355,10 +491,22 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "CompositionManager",
+                    "properties": [
+                        {
+                            "name": "availableLines",
+                            "type": "List`1",
+                            "value": "System.Collections.Generic.List`1[SoundLineData]"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 59594,
+            "id": 53268,
             "name": "CheckpointManager",
             "parent_id": 0,
             "transform": {
@@ -380,10 +528,16 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "CheckpointManager",
+                    "properties": []
+                }
+            ]
         },
         {
-            "id": 59182,
+            "id": 52808,
             "name": "Cube (12)",
             "parent_id": 0,
             "transform": {
@@ -403,7 +557,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(12)_pb_Mesh59194.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(12)_pb_Mesh59194_52770.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -419,10 +573,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59484,
+            "id": 53142,
             "name": "Cube (14)",
             "parent_id": 0,
             "transform": {
@@ -442,7 +597,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(14)_pb_Mesh59496.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(14)_pb_Mesh59496_53012.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -458,10 +613,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59386,
+            "id": 53044,
             "name": "Cube (15)",
             "parent_id": 0,
             "transform": {
@@ -481,7 +637,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(15)_pb_Mesh59398.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(15)_pb_Mesh59398_54470.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -497,10 +653,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59800,
+            "id": 53482,
             "name": "Cube (3)",
             "parent_id": 0,
             "transform": {
@@ -520,7 +677,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(3)_pb_Mesh59812.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(3)_pb_Mesh59812_53402.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -536,10 +693,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59838,
+            "id": 53522,
             "name": "DrumsPlatforms",
             "parent_id": 0,
             "transform": {
@@ -561,10 +719,27 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "DrumsPlatforms",
+                    "properties": [
+                        {
+                            "name": "drumPlatforms",
+                            "type": "DrumPlatformRow[]",
+                            "value": "DrumPlatformRow[]"
+                        },
+                        {
+                            "name": "trackIndex",
+                            "type": "Int32",
+                            "value": "0"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 60168,
+            "id": 53892,
             "name": "Cube (17)",
             "parent_id": 0,
             "transform": {
@@ -584,7 +759,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh60180.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh60180_53288.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1826.png",
             "box_colliders": [
                 {
@@ -600,10 +775,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 60186,
+            "id": 53908,
             "name": "Cube (19)",
             "parent_id": 0,
             "transform": {
@@ -623,7 +810,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh60198.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh60198_53736.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1732.png",
             "box_colliders": [
                 {
@@ -639,10 +826,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 59710,
+            "id": 53380,
             "name": "Cube (21)",
             "parent_id": 0,
             "transform": {
@@ -662,7 +861,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh59722.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh59722_54318.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1826.png",
             "box_colliders": [
                 {
@@ -678,10 +877,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 59214,
+            "id": 52844,
             "name": "Cube (23)",
             "parent_id": 0,
             "transform": {
@@ -701,7 +912,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(23)_pb_Mesh59226.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(23)_pb_Mesh59226_53220.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1732.png",
             "box_colliders": [
                 {
@@ -717,10 +928,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 59678,
+            "id": 53348,
             "name": "DrumsPlatforms (1)",
             "parent_id": 0,
             "transform": {
@@ -742,10 +965,27 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "DrumsPlatforms",
+                    "properties": [
+                        {
+                            "name": "drumPlatforms",
+                            "type": "DrumPlatformRow[]",
+                            "value": "DrumPlatformRow[]"
+                        },
+                        {
+                            "name": "trackIndex",
+                            "type": "Int32",
+                            "value": "0"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 60722,
+            "id": 54488,
             "name": "Cube (17)",
             "parent_id": 0,
             "transform": {
@@ -765,7 +1005,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh60736.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh60736_54100.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1826.png",
             "box_colliders": [
                 {
@@ -781,10 +1021,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 59274,
+            "id": 52922,
             "name": "Cube (19)",
             "parent_id": 0,
             "transform": {
@@ -804,7 +1056,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh59288.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh59288_53800.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1732.png",
             "box_colliders": [
                 {
@@ -820,10 +1072,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 60022,
+            "id": 53718,
             "name": "Cube (21)",
             "parent_id": 0,
             "transform": {
@@ -843,7 +1107,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh60036.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh60036_54316.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1826.png",
             "box_colliders": [
                 {
@@ -859,10 +1123,22 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 60296,
+            "id": 54024,
             "name": "Cube (23)",
             "parent_id": 0,
             "transform": {
@@ -882,7 +1158,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(23)_pb_Mesh60310.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(23)_pb_Mesh60310_52772.obj",
             "texture_path": "assets/Level4_Assets/Textures/g1732.png",
             "box_colliders": [
                 {
@@ -898,17 +1174,81 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": [
+                {
+                    "name": "DrumPlatform",
+                    "properties": [
+                        {
+                            "name": "ghostAlpha",
+                            "type": "Single",
+                            "value": "0.302"
+                        }
+                    ]
+                }
             ]
         },
         {
-            "id": 59730,
-            "name": "Spikes",
+            "id": 54476,
+            "name": "Canvas",
             "parent_id": 0,
             "transform": {
                 "position": [
-                    -14.883299827575684,
-                    0.7499998807907105,
-                    276.0810546875
+                    -1920.0,
+                    1080.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.3333333730697632,
+                    1.3333333730697632,
+                    1.3333333730697632
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": 53242,
+            "name": "HealthBar",
+            "parent_id": 54476,
+            "transform": {
+                "position": [
+                    569.9000244140625,
+                    380.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    2.0,
+                    2.0,
+                    2.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": 53324,
+            "name": "HealthSegment",
+            "parent_id": 53242,
+            "transform": {
+                "position": [
+                    50.0,
+                    0.0,
+                    0.0
                 ],
                 "rotation": [
                     0.0,
@@ -923,10 +1263,94 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": []
+            "box_colliders": [],
+            "custom_components": []
         },
         {
-            "id": 60320,
+            "id": 53514,
+            "name": "HealthSegment (1)",
+            "parent_id": 53242,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": 53658,
+            "name": "HealthSegment (2)",
+            "parent_id": 53242,
+            "transform": {
+                "position": [
+                    -50.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": 53692,
+            "name": "CoinText",
+            "parent_id": 54476,
+            "transform": {
+                "position": [
+                    -544.0,
+                    359.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    2.0,
+                    2.0,
+                    2.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": [
+                {
+                    "name": "TextMeshProUGUI",
+                    "properties": []
+                }
+            ]
+        },
+        {
+            "id": 54048,
             "name": "Cube (2)",
             "parent_id": 0,
             "transform": {
@@ -946,7 +1370,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_pb_Mesh60332.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(2)_pb_Mesh60332_53024.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -962,10 +1386,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60250,
+            "id": 53974,
             "name": "Cube (1)",
             "parent_id": 0,
             "transform": {
@@ -985,7 +1410,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(1)_pb_Mesh60262.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(1)_pb_Mesh53984_15792.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1001,10 +1426,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60220,
+            "id": 53942,
             "name": "Cube (3)",
             "parent_id": 0,
             "transform": {
@@ -1024,7 +1450,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(3)_pb_Mesh60230.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(3)_pb_Mesh60230_53802.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1040,10 +1466,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60386,
+            "id": 54122,
             "name": "Cube (13)",
             "parent_id": 0,
             "transform": {
@@ -1063,7 +1490,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(13)_pb_Mesh60396.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(13)_pb_Mesh60396_52842.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1079,10 +1506,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59662,
+            "id": 53332,
             "name": "Cube (14)",
             "parent_id": 0,
             "transform": {
@@ -1102,7 +1530,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(14)_pb_Mesh59672.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(14)_pb_Mesh59672_54232.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1118,10 +1546,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59600,
+            "id": 53274,
             "name": "Cube (6)",
             "parent_id": 0,
             "transform": {
@@ -1141,7 +1570,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(6)_pb_Mesh59610.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(6)_pb_Mesh59610_54004.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1157,10 +1586,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59368,
+            "id": 53028,
             "name": "Cube (4)",
             "parent_id": 0,
             "transform": {
@@ -1180,7 +1610,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(4)_pb_Mesh59378.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(4)_pb_Mesh59378_52892.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1196,10 +1626,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60264,
+            "id": 53990,
             "name": "Cube (11)",
             "parent_id": 0,
             "transform": {
@@ -1219,7 +1650,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(11)_pb_Mesh60274.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(11)_pb_Mesh60274_52988.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1235,10 +1666,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59344,
+            "id": 52992,
             "name": "Cube (12)",
             "parent_id": 0,
             "transform": {
@@ -1258,7 +1690,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(12)_pb_Mesh59354.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(12)_pb_Mesh59354_53322.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1274,10 +1706,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59898,
+            "id": 53584,
             "name": "Cube (10)",
             "parent_id": 0,
             "transform": {
@@ -1297,7 +1730,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(10)_pb_Mesh59908.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(10)_pb_Mesh59908_53008.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1313,10 +1746,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59168,
+            "id": 52794,
             "name": "Cube (5)",
             "parent_id": 0,
             "transform": {
@@ -1336,7 +1770,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(5)_pb_Mesh59178.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(5)_pb_Mesh59178_53862.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1352,205 +1786,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": -30646,
-            "name": "Coin (14)",
-            "parent_id": 0,
-            "transform": {
-                "position": [
-                    3.0,
-                    5.0,
-                    112.5
-                ],
-                "rotation": [
-                    90.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    0.10000000149011612,
-                    1.0
-                ]
-            },
-            "mesh_path": "assets/Level4_Assets/Models/Coin_(14)_Cylinder.obj",
-            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        1.0000001192092896,
-                        2.000000476837158,
-                        1.0000004768371583
-                    ],
-                    "offset": [
-                        -5.960464477539063e-8,
-                        0.0,
-                        -8.940698847936801e-8
-                    ],
-                    "is_trigger": false
-                }
-            ]
-        },
-        {
-            "id": -30672,
-            "name": "Coin (4)",
-            "parent_id": 0,
-            "transform": {
-                "position": [
-                    3.0,
-                    2.5,
-                    103.0
-                ],
-                "rotation": [
-                    90.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    0.10000000149011612,
-                    1.0
-                ]
-            },
-            "mesh_path": "assets/Level4_Assets/Models/Coin_(4)_Cylinder.obj",
-            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        1.0000001192092896,
-                        2.000000476837158,
-                        1.0000004768371583
-                    ],
-                    "offset": [
-                        -5.960464477539063e-8,
-                        0.0,
-                        -8.940698847936801e-8
-                    ],
-                    "is_trigger": false
-                }
-            ]
-        },
-        {
-            "id": -30634,
-            "name": "Coin (11)",
-            "parent_id": 0,
-            "transform": {
-                "position": [
-                    3.0,
-                    2.5,
-                    107.0
-                ],
-                "rotation": [
-                    90.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    0.10000000149011612,
-                    1.0
-                ]
-            },
-            "mesh_path": "assets/Level4_Assets/Models/Coin_(11)_Cylinder.obj",
-            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        1.0000001192092896,
-                        2.000000476837158,
-                        1.0000004768371583
-                    ],
-                    "offset": [
-                        -5.960464477539063e-8,
-                        0.0,
-                        -8.940698847936801e-8
-                    ],
-                    "is_trigger": false
-                }
-            ]
-        },
-        {
-            "id": -30710,
-            "name": "Coin (12)",
-            "parent_id": 0,
-            "transform": {
-                "position": [
-                    3.0,
-                    2.5,
-                    123.0
-                ],
-                "rotation": [
-                    90.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    0.10000000149011612,
-                    1.0
-                ]
-            },
-            "mesh_path": "assets/Level4_Assets/Models/Coin_(12)_Cylinder.obj",
-            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        1.0000001192092896,
-                        2.000000476837158,
-                        1.0000004768371583
-                    ],
-                    "offset": [
-                        -5.960464477539063e-8,
-                        0.0,
-                        -8.940698847936801e-8
-                    ],
-                    "is_trigger": false
-                }
-            ]
-        },
-        {
-            "id": -30684,
-            "name": "Coin (13)",
-            "parent_id": 0,
-            "transform": {
-                "position": [
-                    3.0,
-                    2.5,
-                    127.0
-                ],
-                "rotation": [
-                    90.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    0.10000000149011612,
-                    1.0
-                ]
-            },
-            "mesh_path": "assets/Level4_Assets/Models/Coin_(13)_Cylinder.obj",
-            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        1.0000001192092896,
-                        2.000000476837158,
-                        1.0000004768371583
-                    ],
-                    "offset": [
-                        -5.960464477539063e-8,
-                        0.0,
-                        -8.940698847936801e-8
-                    ],
-                    "is_trigger": false
-                }
-            ]
-        },
-        {
-            "id": 59328,
+            "id": 52974,
             "name": "Cube",
             "parent_id": 0,
             "transform": {
@@ -1570,7 +1810,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_pb_Mesh59338.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_pb_Mesh59338_52792.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1586,10 +1826,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59408,
+            "id": 53062,
             "name": "Cube (7)",
             "parent_id": 0,
             "transform": {
@@ -1609,7 +1850,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(7)_pb_Mesh59418.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(7)_pb_Mesh59418_54266.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1625,10 +1866,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60480,
+            "id": 54218,
             "name": "Cube (8)",
             "parent_id": 0,
             "transform": {
@@ -1648,7 +1890,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(8)_pb_Mesh60490.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(8)_pb_Mesh60490_54190.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1664,10 +1906,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59292,
+            "id": 52940,
             "name": "Cube (9)",
             "parent_id": 0,
             "transform": {
@@ -1687,7 +1930,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(9)_pb_Mesh59302.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(9)_pb_Mesh59302_53266.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1703,10 +1946,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59576,
+            "id": 53252,
             "name": "Cube (17)",
             "parent_id": 0,
             "transform": {
@@ -1726,7 +1970,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh59586.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(17)_pb_Mesh59586_52766.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1742,10 +1986,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59882,
+            "id": 53564,
             "name": "Cube (18)",
             "parent_id": 0,
             "transform": {
@@ -1765,7 +2010,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(18)_pb_Mesh59892.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(18)_pb_Mesh59892_53158.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1781,10 +2026,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59124,
+            "id": 52752,
             "name": "Cube (19)",
             "parent_id": 0,
             "transform": {
@@ -1804,7 +2050,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh59134.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(19)_pb_Mesh59134_53636.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1820,10 +2066,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 59498,
+            "id": 53160,
             "name": "Cube (20)",
             "parent_id": 0,
             "transform": {
@@ -1843,7 +2090,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(20)_pb_Mesh59508.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(20)_pb_Mesh59508_53042.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1859,10 +2106,11 @@
                     ],
                     "is_trigger": false
                 }
-            ]
+            ],
+            "custom_components": []
         },
         {
-            "id": 60756,
+            "id": 54526,
             "name": "Cube (21)",
             "parent_id": 0,
             "transform": {
@@ -1882,7 +2130,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh60766.obj",
+            "mesh_path": "assets/Level4_Assets/Models/Cube_(21)_pb_Mesh60766_53014.obj",
             "texture_path": "assets/Level4_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1898,7 +2146,604 @@
                     ],
                     "is_trigger": false
                 }
+            ],
+            "custom_components": []
+        },
+        {
+            "id": -6086,
+            "name": "Coin",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    3.5000009536743166,
+                    42.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        3.0,
+                        3.0,
+                        2.999999761581421
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "Coin",
+                    "properties": [
+                        {
+                            "name": "rotationSpeed",
+                            "type": "Single",
+                            "value": "100"
+                        },
+                        {
+                            "name": "value",
+                            "type": "Int32",
+                            "value": "1"
+                        }
+                    ]
+                }
             ]
+        },
+        {
+            "id": -6096,
+            "name": "CoinMesh",
+            "parent_id": -6086,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/CoinMesh_Cylinder_890.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -15928,
+            "name": "Coin (2)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -25.499998092651368,
+                    54.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        3.0,
+                        3.0,
+                        2.999999761581421
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "Coin",
+                    "properties": [
+                        {
+                            "name": "rotationSpeed",
+                            "type": "Single",
+                            "value": "100"
+                        },
+                        {
+                            "name": "value",
+                            "type": "Int32",
+                            "value": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -15926,
+            "name": "CoinMesh",
+            "parent_id": -15928,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/CoinMesh_Cylinder_890.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -17004,
+            "name": "Coin (3)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -22.999998092651368,
+                    61.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        3.0,
+                        3.0,
+                        2.999999761581421
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "Coin",
+                    "properties": [
+                        {
+                            "name": "rotationSpeed",
+                            "type": "Single",
+                            "value": "100"
+                        },
+                        {
+                            "name": "value",
+                            "type": "Int32",
+                            "value": "2"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -17006,
+            "name": "CoinMesh",
+            "parent_id": -17004,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/CoinMesh_Cylinder_890.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -17302,
+            "name": "Coin (4)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -20.499998092651368,
+                    68.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        3.0,
+                        3.0,
+                        2.999999761581421
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "Coin",
+                    "properties": [
+                        {
+                            "name": "rotationSpeed",
+                            "type": "Single",
+                            "value": "100"
+                        },
+                        {
+                            "name": "value",
+                            "type": "Int32",
+                            "value": "3"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -17300,
+            "name": "CoinMesh",
+            "parent_id": -17302,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/CoinMesh_Cylinder_890.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -17546,
+            "name": "Coin (5)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    16.5,
+                    -17.999998092651368,
+                    75.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        3.0,
+                        3.0,
+                        2.999999761581421
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "Coin",
+                    "properties": [
+                        {
+                            "name": "rotationSpeed",
+                            "type": "Single",
+                            "value": "100"
+                        },
+                        {
+                            "name": "value",
+                            "type": "Int32",
+                            "value": "4"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -17548,
+            "name": "CoinMesh",
+            "parent_id": -17546,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/CoinMesh_Cylinder_890.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -14802,
+            "name": "Coin (1)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    3.0,
+                    3.5000009536743166,
+                    39.5
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        3.0,
+                        3.0,
+                        3.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "Coin",
+                    "properties": [
+                        {
+                            "name": "rotationSpeed",
+                            "type": "Single",
+                            "value": "100"
+                        },
+                        {
+                            "name": "value",
+                            "type": "Int32",
+                            "value": "1"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -14800,
+            "name": "CoinMesh",
+            "parent_id": -14802,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    90.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    0.10000000149011612,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/CoinMesh_Cylinder_890.obj",
+            "texture_path": "assets/Level4_Assets/Textures/g2905.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -24426,
+            "name": "dart",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    22.456947326660158,
+                    1.5499969720840455,
+                    45.80386734008789
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -24430,
+            "name": "default",
+            "parent_id": -24426,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/dart.obj",
+            "texture_path": "assets/Level4_Assets/Textures/color_dart.png",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -24504,
+            "name": "Postac",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    14.479374885559082,
+                    1.5280874967575074,
+                    46.79545593261719
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -24508,
+            "name": "buty_Material.001",
+            "parent_id": -24504,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/Level4_Assets/Models/Postac.obj",
+            "texture_path": "assets/Level4_Assets/Textures/IMG_1383.JPEG",
+            "box_colliders": [],
+            "custom_components": []
         }
     ]
 }

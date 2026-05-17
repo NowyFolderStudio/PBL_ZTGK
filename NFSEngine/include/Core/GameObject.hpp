@@ -47,7 +47,14 @@ namespace NFSEngine {
 
         bool IsActive() const { return m_Active; }
 
-        void SetActive(bool isActive) { m_Active = isActive; }
+        void SetActive(bool isActive) {
+            m_Active = isActive;
+            int childrenCount = GetTransform()->GetChildCount();
+
+            for (int i = 0; i < childrenCount; i++) {
+                GetTransform()->GetChild(i)->GetOwner()->SetActive(isActive);
+            }
+        }
 
         void SetTag(uint32_t tagBits) { m_TagBits = tagBits; }
 
@@ -57,9 +64,7 @@ namespace NFSEngine {
 
         bool CompareTag(uint32_t tagBit) const { return (m_TagBits & tagBit) != 0; }
 
-        template <typename T> bool HasComponent() const {
-            return GetComponent<T>() != nullptr;
-        }
+        template <typename T> bool HasComponent() const { return GetComponent<T>() != nullptr; }
 
         Transform* GetTransform() { return m_Transform; }
 

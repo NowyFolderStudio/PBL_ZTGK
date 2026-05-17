@@ -14,5 +14,6 @@ namespace NFSEngine {
         virtual void BindTexture(uint32_t textureID, uint32_t slot) override;
         virtual void DrawFullscreenTriangle() override;
         virtual void SetDepthFunction(DepthFunction func) override;
+        virtual void SetWireframeMode(bool value) override;
     };
 } // namespace NFSEngine

@@ -31,9 +31,11 @@
 #include "Platforms/OpenGL/OpenGLTexture.hpp"
 
 #include "SceneLoader/SceneLoader.hpp"
+#include "SceneLoader/CoinComponentLoader.hpp"
 #include "GameManager.hpp"
 
 #include <imgui.h>
+#include <memory>
 
 LayerExample::LayerExample(UILayer* uiLayer)
     : m_UILayer(uiLayer) {
@@ -48,11 +50,16 @@ void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
-    NFSEngine::SceneLoader::LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
+    NFSEngine::SceneLoader sceneLoader;
+
+    sceneLoader.InitDefaultLoaders();
+
+    sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
+
+    sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-    m_AudioShader
-        = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
+    m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader
         = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader->Bind();
@@ -137,7 +144,7 @@ void LayerExample::OnAttach() {
     // Sphere
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
-    
+
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
@@ -234,7 +241,6 @@ void LayerExample::OnAttach() {
     m_MovingCube2->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(8.0f, 80.0f, 2.0f);
     m_MovingCube2->AddTag(NFSEngine::Tags::WallJumpSurface);
 
-
     // Static Cube
     NFSEngine::GameObject* wall = m_Scene->CreateGameObject("wall");
     wall->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
@@ -282,8 +288,7 @@ void LayerExample::OnAttach() {
     if (m_UseHDRI) {
         m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
         m_EnvironmentMap->GeneratePrefilterMap(m_EnvironmentMap->GetEnvironmentMapID());
-    }
-    else {
+    } else {
         m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
         m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
     }
@@ -334,7 +339,6 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* scoreManager = m_Scene->CreateGameObject("ScoreManager");
     scoreManager->SetTag(NFSEngine::Tags::ScoreManager);
     auto& scoreComp = scoreManager->AddComponent<NFSEngine::ScoreManagerComponent>();
-
 
     auto gameState = std::make_shared<GameStateView>();
     gameState->data.score = scoreComp.GetScore();
@@ -518,11 +522,13 @@ void LayerExample::OnImGuiRender() {
         if (m_UseHDRI) {
             m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
             m_EnvironmentMap->GeneratePrefilterMap(m_EnvironmentMap->GetEnvironmentMapID());
-        }
-        else {
+        } else {
             m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
             m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
         }
+    }
+    if (ImGui::Checkbox("Draw Debug Boxes?", &m_DrawDebug)) {
+        Renderer::SetDrawDebug(m_DrawDebug);
     }
     ImGui::Separator();
 

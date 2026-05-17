@@ -31,8 +31,7 @@ namespace NFSEngine {
     void OpenGLRendererAPI::SetDepthTest(bool enabled) {
         if (enabled) {
             glEnable(GL_DEPTH_TEST);
-        }
-        else {
+        } else {
             glDisable(GL_DEPTH_TEST);
         }
     }
@@ -61,4 +60,12 @@ namespace NFSEngine {
             break;
         }
     }
-}
+
+    void OpenGLRendererAPI::SetWireframeMode(bool value) {
+        if (value) {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        } else {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+    }
+} // namespace NFSEngine

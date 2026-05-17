@@ -2,15 +2,25 @@
 #include <memory>
 #include <unordered_map>
 #include <fstream>
-#include <iostream>
 
 #include "Components/Transform.hpp"
-#include "Components/ModelComponent.hpp"
 #include "SceneLoader/SceneLoader.hpp"
+
+#include "SceneLoader/ModelComponentLoader.hpp"
+#include "SceneLoader/BoxColliderLoader.hpp"
 
 using json = nlohmann::json;
 
 namespace NFSEngine {
+
+    void SceneLoader::RegisterLoader(std::unique_ptr<IComponentLoader> loader) { m_Loaders.push_back(std::move(loader)); }
+
+    void SceneLoader::InitDefaultLoaders() {
+        if (m_Loaders.empty()) {
+            RegisterLoader(std::make_unique<ModelComponentLoader>());
+            RegisterLoader(std::make_unique<BoxColliderLoader>());
+        }
+    }
 
     void SceneLoader::LoadScene(Scene* currentScene, const std::string& filepath) {
         NFS_CORE_INFO("Loading scene from file: {0}", filepath);
@@ -40,9 +50,6 @@ namespace NFSEngine {
 
         std::unordered_map<int, GameObject*> instanceMap;
 
-        auto shader = Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
-        auto texture = NFSEngine::Texture::Create("assets/textures/cat.png");
-
         for (const auto& j_obj : j["game_objects"]) {
             int id = j_obj["id"];
             std::string name = j_obj["name"];
@@ -58,50 +65,8 @@ namespace NFSEngine {
             t->SetRotation(glm::vec3(rot[0], rot[1], rot[2]));
             t->SetScale(glm::vec3(scl[0], scl[1], scl[2]));
 
-            if (j_obj["mesh_path"] != "") {
-                auto material = std::make_shared<NFSEngine::Material>();
-
-                std::string texPath = "assets/textures/cat.png";
-
-                if (j_obj.contains("texture_path") && j_obj["texture_path"] != "") {
-                    texPath = j_obj["texture_path"];
-                }
-                material->AlbedoMap = NFSEngine::Texture::Create(texPath);
-
-                go->AddComponent<ModelComponent>(shader, material);
-
-                auto model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
-                go->GetComponent<ModelComponent>()->AddLOD(model, 1000);
-            }
-
-            if (j_obj.contains("box_colliders")) {
-                int colliderIndex = 0;
-
-                for (const auto& j_bc : j_obj["box_colliders"]) {
-                    GameObject* targetObj = go;
-
-                    if (colliderIndex > 0) {
-                        std::string childName = name + "_Collider_" + std::to_string(colliderIndex);
-                        targetObj = currentScene->CreateGameObject(childName);
-
-                        targetObj->GetTransform()->SetParent(go->GetTransform(), false);
-
-                        targetObj->GetTransform()->SetPosition(glm::vec3(0.0f));
-                        targetObj->GetTransform()->SetRotation(glm::vec3(0.0f));
-                        targetObj->GetTransform()->SetScale(glm::vec3(1.0f));
-                    }
-
-                    auto& collider = targetObj->AddComponent<BoxCollider3DComponent>();
-
-                    auto size = j_bc["size"];
-                    auto offset = j_bc["offset"];
-
-                    collider.Size = glm::vec3(size[0], size[1], size[2]);
-                    collider.Offset = glm::vec3(offset[0], offset[1], offset[2]);
-                    collider.IsTrigger = j_bc["is_trigger"];
-
-                    colliderIndex++;
-                }
+            for (auto& loader : m_Loaders) {
+                loader->Load(j_obj, go, currentScene);
             }
 
             instanceMap[id] = go;

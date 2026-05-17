@@ -64,6 +64,11 @@ namespace NFSEngine {
         static void SetFrustumCullingMode(int mode) { s_FrustumCullingMode = mode; }
         static int GetFrustumCullingMode() { return s_FrustumCullingMode; }
 
+        static void SubmitDebugBox(const glm::mat4& transform, const glm::vec4& color = { 0.0f, 1.0f, 0.0f, 1.0f });
+
+        static void SetDrawDebug(bool value);
+        static void DrawDebug();
+
     private:
         struct SceneData {
             glm::mat4 ViewMatrix = glm::mat4(1.0f);
@@ -87,5 +92,16 @@ namespace NFSEngine {
         static std::shared_ptr<Framebuffer> s_HDRFramebuffer;
         static std::shared_ptr<Shader> s_PostProcessShader;
         static float s_Exposure;
+
+        struct DebugBox {
+            glm::mat4 transform;
+            glm::vec4 color;
+        };
+
+        static std::vector<DebugBox> s_DebugQueue;
+        static std::shared_ptr<VertexArray> s_DebugCubeVAO;
+        static std::shared_ptr<Shader> s_DebugShader;
+
+        static bool s_DrawDebug;
     };
 } // namespace NFSEngine

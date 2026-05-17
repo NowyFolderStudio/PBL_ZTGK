@@ -39,6 +39,7 @@ namespace NFSEngine {
         const glm::vec3& GetPosition() const { return m_Position; }
         const glm::quat& GetRotation() const { return m_Rotation; }
         const glm::vec3& GetScale() const { return m_Scale; }
+        const glm::mat4& GetLocalMatrix() const { return m_LocalMatrix; }
         const glm::mat4& GetGlobalMatrix() {
             if (m_Dirty) {
                 RecalculateMatrix();

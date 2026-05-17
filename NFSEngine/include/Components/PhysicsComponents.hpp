@@ -4,6 +4,9 @@
 #include <functional>
 
 #include "Components/Component.hpp"
+#include "Components/Transform.hpp"
+#include "Core/GameObject.hpp"
+#include "Renderer/Renderer.hpp"
 
 namespace NFSEngine {
 
@@ -55,6 +58,22 @@ namespace NFSEngine {
 
         glm::vec3 Size = glm::vec3(1.0f);
         glm::vec3 Offset = glm::vec3(0.0f);
+
+        void OnRender() override {
+            Transform* t = m_Owner->GetComponent<Transform>();
+            if (!t) return;
+
+            glm::mat4 positionMat = glm::translate(glm::mat4(1.0f), t->GetPosition());
+            glm::mat4 offsetMat = glm::translate(glm::mat4(1.0f), Offset);
+            glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), Size);
+            glm::mat4 rotation = glm::mat4_cast(t->GetRotation());
+
+            glm::mat4 debugTransform = positionMat * offsetMat * rotation * scaleMat;
+
+            glm::vec4 color = IsTrigger ? glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) : glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+            Renderer::SubmitDebugBox(debugTransform, color);
+        }
     };
 
     struct SphereCollider3DComponent : public ColliderComponent {

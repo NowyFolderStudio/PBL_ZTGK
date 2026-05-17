@@ -23,10 +23,17 @@ namespace NFSEngine {
     std::shared_ptr<Shader> Renderer::s_PostProcessShader = nullptr;
     float Renderer::s_Exposure = 1.0f;
 
+    std::vector<Renderer::DebugBox> Renderer::s_DebugQueue;
+    std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
+    std::shared_ptr<Shader> Renderer::s_DebugShader;
+
+    bool Renderer::s_DrawDebug;
+
     void Renderer::Init() {
         s_RendererAPI = RendererAPI::Create();
         s_RendererAPI->Init();
         s_GPUTimer = std::make_unique<GPUTimer>();
+        s_DrawDebug = false;
 
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetConfig().WindowWidth;
@@ -59,6 +66,22 @@ namespace NFSEngine {
         auto vbo = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(skyboxVertices, sizeof(skyboxVertices)));
         vbo->SetLayout({ { ShaderDataType::Float3, "aPos" } });
         s_SkyboxVAO->AddVertexBuffer(vbo);
+
+        s_DebugShader = Shader::Create("DebugShader", "assets/shaders/debug.vert", "assets/shaders/debug.frag");
+
+        float cubeVertices[] = { -0.5f, -0.5f, -0.5f, 0.5f, -0.5f, -0.5f, 0.5f, 0.5f, -0.5f, -0.5f, 0.5f, -0.5f,
+                                 -0.5f, -0.5f, 0.5f,  0.5f, -0.5f, 0.5f,  0.5f, 0.5f, 0.5f,  -0.5f, 0.5f, 0.5f };
+
+        uint32_t cubeIndices[]
+            = { 0, 1, 2, 2, 3, 0, 1, 5, 6, 6, 2, 1, 5, 4, 7, 7, 6, 5, 4, 0, 3, 3, 7, 4, 3, 2, 6, 6, 7, 3, 4, 5, 1, 1, 0, 4 };
+
+        s_DebugCubeVAO = std::shared_ptr<VertexArray>(VertexArray::Create());
+        auto debugVBO = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(cubeVertices, sizeof(cubeVertices)));
+        debugVBO->SetLayout({ { ShaderDataType::Float3, "aPos" } });
+        auto debugIBO = std::shared_ptr<IndexBuffer>(IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(uint32_t)));
+
+        s_DebugCubeVAO->AddVertexBuffer(debugVBO);
+        s_DebugCubeVAO->SetIndexBuffer(debugIBO);
     }
 
     void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
@@ -141,6 +164,8 @@ namespace NFSEngine {
             }
         }
 
+        DrawDebug();
+
         s_GPUTimer->End();
         s_RendererQueue.clear();
 
@@ -178,6 +203,37 @@ namespace NFSEngine {
         s_RendererAPI->DrawArrays(s_SkyboxVAO, 36);
 
         s_RendererAPI->SetDepthFunction(DepthFunction::Less);
+    }
+
+    void Renderer::SubmitDebugBox(const glm::mat4& transform, const glm::vec4& color) {
+        s_DebugQueue.push_back({ transform, color });
+    }
+
+    void Renderer::SetDrawDebug(bool value) { s_DrawDebug = value; };
+
+    void Renderer::DrawDebug() {
+        if (!s_DebugQueue.empty() && s_DrawDebug) {
+            s_DebugShader->Bind();
+            s_DebugShader->SetMat4("view", s_SceneData->ViewMatrix);
+            s_DebugShader->SetMat4("projection", s_SceneData->ProjectionMatrix);
+
+            s_RendererAPI->SetWireframeMode(true);
+            s_RendererAPI->SetDepthTest(false);
+
+            s_DebugCubeVAO->Bind();
+
+            for (const auto& box : s_DebugQueue) {
+                s_DebugShader->SetMat4("model", box.transform);
+                s_DebugShader->SetVec4("u_Color", box.color);
+
+                s_RendererAPI->DrawIndexed(s_DebugCubeVAO);
+                s_Stats.drawCalls++;
+            }
+
+            s_RendererAPI->SetWireframeMode(false);
+            s_RendererAPI->SetDepthTest(true);
+            s_DebugQueue.clear();
+        }
     }
 
 } // namespace NFSEngine

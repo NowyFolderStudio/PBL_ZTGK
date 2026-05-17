@@ -4,13 +4,14 @@
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/ScoreManagerComponent.hpp"
+#include "Core/Scene.hpp"
 
 namespace NFSEngine {
 
     class CoinComponent : public Component {
     public:
         explicit CoinComponent(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         std::string GetName() const override { return "CoinComponent"; }
 
