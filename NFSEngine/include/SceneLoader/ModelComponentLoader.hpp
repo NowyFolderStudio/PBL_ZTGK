@@ -7,7 +7,7 @@ namespace NFSEngine {
     public:
         void Load(const nlohmann::json& j_obj, GameObject* targetObj, Scene* currentScene) override {
             if (j_obj.contains("mesh_path") && j_obj["mesh_path"] != "") {
-                auto shader = Shader::Create("BasicShader", "assets/shaders/basic.vert", "assets/shaders/basic.frag");
+                auto shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/lightShader.frag");
                 auto material = std::make_shared<NFSEngine::Material>();
 
                 std::string texPath = "assets/textures/cat.png"; // Fallback

@@ -23,6 +23,7 @@
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
 #include "Renderer/Frustum.hpp"
+#include "Debug/DebugCamera.hpp"
 
 #include "Platforms/Window.hpp"
 #include "Platforms/WindowsInput.hpp"

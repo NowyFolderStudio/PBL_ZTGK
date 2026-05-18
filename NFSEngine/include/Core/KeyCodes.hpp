@@ -149,6 +149,7 @@ namespace NFSEngine {
         enum : MouseCode {
             ButtonLeft = 0,
             ButtonRight = 1,
+            ButtonMiddle = 2,
         };
     } // namespace Mouse
 

@@ -8,6 +8,7 @@
 #include <memory>
 #include <GLFW/glfw3.h>
 #include "Renderer/Renderer.hpp"
+#include "Debug/DebugCamera.hpp"
 
 namespace NFSEngine {
 
@@ -29,6 +30,8 @@ namespace NFSEngine {
         m_Window->SetEventCallback([this](Event& e) { this->OnEvent(e); });
 
         Renderer::Init();
+
+        DebugCamera::Init(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 
         m_ImGuiLayer = new ImGuiLayer();
         PushLayer(m_ImGuiLayer);
@@ -84,6 +87,8 @@ namespace NFSEngine {
                 }
             }
 
+            DebugCamera::OnUpdate(deltaTime);
+
             {
                 NFS_PROFILE_SCOPE("LayerStack Rendering Preparation");
                 for (size_t i = 0; i < m_LayerStack.size(); ++i) {
@@ -120,6 +125,10 @@ namespace NFSEngine {
                     break;
                 }
             }
+        }
+
+        if (!e.Handled) {
+            DebugCamera::OnEvent(e);
         }
     }
 
