@@ -48,6 +48,8 @@ namespace NFSEngine {
         }
 
         glm::vec3 GetWorldPosition();
+        glm::vec3 GetWorldScale();
+        glm::quat GetWorldRotation();
 
         void Move(const glm::vec3& moveVector);
         void Rotate(const glm::vec3& rotationVector);

@@ -91,6 +91,21 @@ namespace NFSEngine {
 
     glm::vec3 Transform::GetWorldPosition() { return glm::vec3(GetGlobalMatrix()[3]); }
 
+    glm::vec3 Transform::GetWorldScale() {
+        const glm::mat4& mat = GetGlobalMatrix();
+        return glm::vec3(glm::length(glm::vec3(mat[0])), glm::length(glm::vec3(mat[1])), glm::length(glm::vec3(mat[2])));
+    }
+
+    glm::quat Transform::GetWorldRotation() {
+        const glm::mat4& mat = GetGlobalMatrix();
+
+        glm::vec3 right = glm::normalize(glm::vec3(mat[0]));
+        glm::vec3 up = glm::normalize(glm::vec3(mat[1]));
+        glm::vec3 forward = glm::normalize(glm::vec3(mat[2]));
+
+        return glm::quat_cast(glm::mat3(right, up, forward));
+    }
+
     void Transform::OnImGuiRender() {
         glm::vec3 pos = GetPosition();
         if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f)) {

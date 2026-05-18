@@ -164,8 +164,7 @@ namespace NFSEngine {
 
                         if (info.ContactNormal.y > 0.7f) {
                             rigidBody->IsGrounded = true;
-                        }
-                        else if (std::abs(info.ContactNormal.y) < 0.3f) {
+                        } else if (std::abs(info.ContactNormal.y) < 0.3f) {
                             rigidBody->IsTouchingWall = true;
                             rigidBody->WallNormal = info.ContactNormal;
                             rigidBody->TouchedWallObject = objB;
@@ -208,57 +207,85 @@ namespace NFSEngine {
 
     AABB PhysicsSystem::GetAABB(Transform* transform, BoxCollider3DComponent* collider) {
         AABB box;
-        box.Min = transform->GetPosition() + collider->Offset - collider->Size * 0.5f;
-        box.Max = transform->GetPosition() + collider->Offset + collider->Size * 0.5f;
+        glm::vec3 worldScale = transform->GetWorldScale();
+        glm::vec3 rotatedOffset = transform->GetWorldRotation() * (collider->Offset * worldScale);
+        glm::vec3 scaledSize = collider->Size * worldScale;
+
+        box.Min = transform->GetWorldPosition() + rotatedOffset - scaledSize * 0.5f;
+        box.Max = transform->GetWorldPosition() + rotatedOffset + scaledSize * 0.5f;
 
         return box;
     };
 
     OBB PhysicsSystem::GetOBB(Transform* transform, BoxCollider3DComponent* collider) {
         OBB obb;
+        glm::vec3 worldScale = transform->GetWorldScale();
+        glm::quat worldRot = transform->GetWorldRotation();
 
-        obb.Center = transform->GetPosition() + collider->Offset;
-        obb.HalfSize = collider->Size * 0.5f;
-        obb.Rotation = transform->GetRotation();
+        glm::vec3 rotatedOffset = worldRot * (collider->Offset * worldScale);
+
+        obb.Center = transform->GetWorldPosition() + rotatedOffset;
+        obb.HalfSize = (collider->Size * worldScale) * 0.5f;
+        obb.Rotation = worldRot;
 
         return obb;
-    };
+    }
 
     Sphere PhysicsSystem::GetSphere(Transform* transform, SphereCollider3DComponent* collider) {
         Sphere sphere;
-        sphere.Center = transform->GetPosition() + collider->Offset;
-        sphere.Radius = collider->Radius;
+        glm::vec3 worldScale = transform->GetWorldScale();
+
+        float maxScale = std::max({ std::abs(worldScale.x), std::abs(worldScale.y), std::abs(worldScale.z) });
+
+        glm::vec3 rotatedOffset = transform->GetWorldRotation() * (collider->Offset * worldScale);
+
+        sphere.Center = transform->GetWorldPosition() + rotatedOffset;
+        sphere.Radius = collider->Radius * maxScale;
 
         return sphere;
-    };
+    }
 
     Capsule PhysicsSystem::GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider) {
         Capsule capsule;
+        glm::vec3 worldScale = transform->GetWorldScale();
+        glm::quat worldRot = transform->GetWorldRotation();
 
-        glm::vec3 halfHeightVec = glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+        float maxRadiusScale = std::max(std::abs(worldScale.x), std::abs(worldScale.z));
+        float scaledHeight = collider->Height * std::abs(worldScale.y);
 
-        glm::quat rotationQuat = transform->GetRotation();
+        glm::vec3 rotatedOffset = worldRot * (collider->Offset * worldScale);
+        glm::vec3 position = transform->GetWorldPosition() + rotatedOffset;
 
-        glm::vec3 rotatedHalfHeightVec = rotationQuat * halfHeightVec;
-
-        glm::vec3 position = transform->GetPosition() + collider->Offset;
+        glm::vec3 halfHeightVec = glm::vec3(0.0f, scaledHeight * 0.5f, 0.0f);
+        glm::vec3 rotatedHalfHeightVec = worldRot * halfHeightVec;
 
         capsule.PointA = position + rotatedHalfHeightVec;
         capsule.PointB = position - rotatedHalfHeightVec;
-        capsule.Radius = collider->Radius;
+        capsule.Radius = collider->Radius * maxRadiusScale;
 
         return capsule;
-    };
+    }
 
     Cylinder PhysicsSystem::GetCylinder(Transform* transform, CylinderCollider3DComponent* collider) {
         Cylinder cylinder;
+        glm::vec3 worldScale = transform->GetWorldScale();
+        glm::quat worldRot = transform->GetWorldRotation();
 
-        cylinder.PointA = transform->GetPosition() + collider->Offset + glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
-        cylinder.PointB = transform->GetPosition() + collider->Offset - glm::vec3(0.0f, collider->Height * 0.5f, 0.0f);
+        float maxRadiusScale = std::max(std::abs(worldScale.x), std::abs(worldScale.z));
+        float scaledHeight = collider->Height * std::abs(worldScale.y);
 
-        cylinder.Radius = collider->Radius;
+        glm::vec3 rotatedOffset = worldRot * (collider->Offset * worldScale);
+        glm::vec3 position = transform->GetWorldPosition() + rotatedOffset;
+
+        glm::vec3 halfHeightVec = glm::vec3(0.0f, scaledHeight * 0.5f, 0.0f);
+
+        glm::vec3 rotatedHalfHeightVec = worldRot * halfHeightVec;
+
+        cylinder.PointA = position + rotatedHalfHeightVec;
+        cylinder.PointB = position - rotatedHalfHeightVec;
+        cylinder.Radius = collider->Radius * maxRadiusScale;
 
         return cylinder;
-    };
+    }
 
 } // namespace NFSEngine
