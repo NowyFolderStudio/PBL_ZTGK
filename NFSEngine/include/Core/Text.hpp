@@ -22,8 +22,8 @@ namespace NFSEngine {
         GLuint VAO, VBO;
         GLuint texture;
 
-        const int atlasWidth = 512;
-        const int atlasHeight = 512;
+        const int atlasWidth = 1024;
+        const int atlasHeight = 1024;
         const int firstChar = 32;
         const int charCount = 96;
 

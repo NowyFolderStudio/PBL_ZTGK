@@ -26,7 +26,8 @@ void MainMenuLayer::OnAttach() {
 
     NFSEngine::UI::LabelParameters titleParams;
     titleParams.position = glm::vec3(virtualWidth / 2.0f, 350.0f, 0.5f);
-    titleParams.text = "NFSEngine GAME";
+    titleParams.color = glm::vec4(1.0f);
+    titleParams.text = "Resample";
     NFSEngine::UI::Label(*m_Canvas, titleParams);
 
     NFSEngine::UI::ButtonParameters startParams;
