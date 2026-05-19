@@ -216,6 +216,20 @@ namespace NFSEngine {
             if (packet.material) {
                 packet.material->Bind(packet.shader);
 
+                for (const auto& [name, value] : packet.material->Properties) {
+                    std::visit([&](auto&& arg) {
+                        using T = std::decay_t<decltype(arg)>;
+                        if constexpr (std::is_same_v<T, float>)
+                            packet.shader->SetFloat(name, arg);
+                        else if constexpr (std::is_same_v<T, int>)
+                            packet.shader->SetInt(name, arg);
+                        else if constexpr (std::is_same_v<T, glm::vec3>)
+                            packet.shader->SetVec3(name, arg);
+                        else if constexpr (std::is_same_v<T, glm::vec4>)
+                            packet.shader->SetVec4(name, arg);
+                        }, value);
+                }
+
                 s_Stats.stateChanges++;
             }
 

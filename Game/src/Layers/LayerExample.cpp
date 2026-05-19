@@ -61,13 +61,8 @@ void LayerExample::OnAttach() {
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
-    m_HazardShader
-        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-    m_HazardShader->Bind();
-    m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
-
-    m_GoochShader
-        = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
+    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    m_GoochShader = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
 
     auto texCat = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto matCat = std::make_shared<NFSEngine::Material>();
@@ -84,6 +79,14 @@ void LayerExample::OnAttach() {
     auto texBlack = NFSEngine::Texture::Create("assets/textures/black.png");
     auto matBlack = std::make_shared<NFSEngine::Material>();
     matBlack->AlbedoMap = texBlack;
+
+    matAudio = std::make_shared<NFSEngine::Material>();
+    matAudio->AlbedoMap = texSample;
+
+    matAudio->SetFloat("u_ScaleStrengthY", 0.3f);
+    matAudio->SetFloat("u_ScaleStrengthXZ", 0.0f);
+    matAudio->SetFloat("u_BendStrength", 0.0f);
+    matAudio->SetFloat("u_TwistStrength", 0.4f);
 
     auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
                             float thickness = 1.0f) -> NFSEngine::GameObject* {
@@ -178,7 +181,7 @@ void LayerExample::OnAttach() {
 
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
-    auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matSample);
+    auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matAudio);
     cylComp.AddLOD(cylinderModel, 10000.0f);
     cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
 
@@ -445,42 +448,21 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     for (auto* keyTrigger : m_CachedPianoKeys) {
         keyTrigger->OnUpdate(deltaTime);
     }
+
+    float songPos = m_Sequencer.GetContinuousBeatTime();
+    matAudio->SetFloat("u_MusicTime", songPos);
 }
 
 void LayerExample::OnRender() {
     if (m_CachedCamera) {
-        
-        m_GoochShader->Bind();
-        m_GoochShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
-        m_Shader->Bind();
-        m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
-        m_AudioShader->Bind();
-        m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-        float songPos = m_Sequencer.GetContinuousBeatTime();
-        m_AudioShader->SetFloat("u_MusicTime", songPos);
-        m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
-        m_AudioShader->SetFloat("u_ScaleStrengthXZ", 0.0f);
-        m_AudioShader->SetFloat("u_BendStrength", 0.0f);
-        m_AudioShader->SetFloat("u_TwistStrength", 0.4f);
-
-        m_HazardShader->Bind();
-        m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
-
-        m_ToonShader->Bind();
-        m_ToonShader->SetInt("texture1", 0);
-        m_ToonShader->SetInt("rampTexture", 1);
-        m_RampTexture->Bind(1);
-
-        glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
         NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), 
             m_CachedCamera->GetProjectionMatrix(),
-            camPos, 
+            m_CachedCamera->GetOwner()->GetTransform()->GetPosition(),
             m_Scene->GetDirLight(), 
             m_Scene->GetPointLights(), 
             m_Scene->GetSpotLights(),
             m_EnvironmentMap.get());
+
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();

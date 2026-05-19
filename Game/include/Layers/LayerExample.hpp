@@ -20,6 +20,7 @@ namespace NFSEngine {
     class DirectionalLight;
     class SpotLight;
     class PointLight;
+    class Material;
 } // namespace NFSEngine
 
 class LayerExample : public NFSEngine::Layer {
@@ -72,4 +73,6 @@ private:
     std::shared_ptr<NFSEngine::Texture> m_HDRTexture;
 
     bool m_DrawDebug = false;
+
+    std::shared_ptr<NFSEngine::Material> matAudio = nullptr;
 };
