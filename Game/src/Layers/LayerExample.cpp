@@ -630,7 +630,7 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
-        if (keyEvent.GetKeyCode() == NFSEngine::Key::P) {
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
             e.Handled = true;
         }

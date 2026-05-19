@@ -70,7 +70,7 @@ void MainMenuLayer::OnAttach() {
     optionsParams.height = 100.0f;
     optionsParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     optionsParams.text = "OPTIONS";
-    optionsParams.onClick = []() { };
+    optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
     NFSEngine::UI::Button(*m_Canvas, optionsParams);
 
     currentY += elementSpacing;
@@ -89,6 +89,10 @@ void MainMenuLayer::OnAttach() {
 void MainMenuLayer::OnDetach() { }
 
 void MainMenuLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    if (GameManager::Get().IsOptionsOpen()) {
+        return;
+    }
+
     if (m_Canvas) {
         m_Canvas->Update();
     }

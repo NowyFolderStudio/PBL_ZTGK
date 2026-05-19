@@ -15,8 +15,8 @@ private:
     NFSEngine::Layer* m_MainMenuLayer = nullptr;
     NFSEngine::Layer* m_CurrentLayer = nullptr;
     NFSEngine::Layer* m_PauseOverlay = nullptr;
-    NFSEngine::Layer* m_GameUILayer
-        = nullptr; // TODO: This should be probably created at the start of the game and just toggled on/off
+    NFSEngine::Layer* m_GameUILayer = nullptr;
+    NFSEngine::Layer* m_OptionsOverlay = nullptr;
 
     std::vector<NFSEngine::Layer*> m_GarbageLayers;
     bool m_HasPendingState = false;
@@ -29,6 +29,10 @@ public:
     void Init();
     void ChangeState(GameState newState);
     void TogglePause();
+
+    void OpenOptions();
+    void CloseOptions();
+    bool IsOptionsOpen() const { return m_OptionsOverlay != nullptr; }
 
     void RequestStateChange(GameState newState);
     void ProcessStateChange();

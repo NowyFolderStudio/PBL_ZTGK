@@ -4,6 +4,7 @@
 #include "Layers/GameLayer.hpp"
 #include "Layers/PauseLayer.hpp"
 #include "Layers/UILayer.hpp"
+#include "Layers/OptionsLayer.hpp"
 #include "Layers/LayerExample.hpp"
 
 GameManager& GameManager::Get() {
@@ -39,6 +40,12 @@ void GameManager::ChangeState(GameState newState) {
         app.PopOverlay(m_PauseOverlay);
         m_GarbageLayers.push_back(m_PauseOverlay);
         m_PauseOverlay = nullptr;
+    }
+
+    if (m_OptionsOverlay) {
+        app.PopOverlay(m_OptionsOverlay);
+        m_GarbageLayers.push_back(m_OptionsOverlay);
+        m_OptionsOverlay = nullptr;
     }
 
     m_CurrentState = newState;
@@ -91,6 +98,27 @@ void GameManager::TogglePause() {
         m_GarbageLayers.push_back(m_PauseOverlay);
         m_PauseOverlay = nullptr;
     }
+}
+
+void GameManager::OpenOptions() {
+    if (m_OptionsOverlay) return;
+
+    auto& app = NFSEngine::Application::Get();
+
+    m_OptionsOverlay = new OptionsLayer();
+
+    app.PushOverlay(m_OptionsOverlay);
+}
+
+void GameManager::CloseOptions() {
+    if (!m_OptionsOverlay) return;
+
+    auto& app = NFSEngine::Application::Get();
+
+    app.PopOverlay(m_OptionsOverlay);
+
+    m_GarbageLayers.push_back(m_OptionsOverlay);
+    m_OptionsOverlay = nullptr;
 }
 
 void GameManager::RequestStateChange(GameState newState) {

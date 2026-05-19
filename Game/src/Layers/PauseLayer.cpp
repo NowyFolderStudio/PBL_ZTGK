@@ -62,7 +62,7 @@ void PauseLayer::OnAttach() {
     optionsParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     optionsParams.text = "OPTIONS";
     optionsParams.textColor = glm::vec4(1.0f);
-    optionsParams.onClick = []() { /* TODO: Open options menu */ };
+    optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
     NFSEngine::UI::Button(*m_Canvas, optionsParams);
 
     currentY += elementSpacing;
@@ -83,6 +83,10 @@ void PauseLayer::OnAttach() {
 void PauseLayer::OnDetach() { }
 
 void PauseLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    if (GameManager::Get().IsOptionsOpen()) {
+        return;
+    }
+
     if (m_Canvas) {
         m_Canvas->Update();
     }
@@ -99,7 +103,7 @@ void PauseLayer::OnRender() {
 void PauseLayer::OnEvent(NFSEngine::Event& e) {
     if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
-        if (keyEvent.GetKeyCode() == NFSEngine::Key::P) {
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
             e.Handled = true;
         }
