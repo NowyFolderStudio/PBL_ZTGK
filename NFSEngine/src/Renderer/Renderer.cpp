@@ -163,10 +163,10 @@ namespace NFSEngine {
                 packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
 
                 if (s_SceneData->EnvMap) {
-                    s_SceneData->EnvMap->BindEnvironmentMaps(5, 6, 7);
-                    packet.shader->SetInt("irradianceMap", 5);
-                    packet.shader->SetInt("prefilterMap", 6);
-                    packet.shader->SetInt("brdfLUT", 7);
+                    s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
+                    packet.shader->SetInt("irradianceMap", 30);
+                    packet.shader->SetInt("prefilterMap", 29);
+                    packet.shader->SetInt("brdfLUT", 28);
                 }
 
                 if (s_SceneData->DirLight) {

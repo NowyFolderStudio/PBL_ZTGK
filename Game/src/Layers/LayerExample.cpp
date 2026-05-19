@@ -54,15 +54,12 @@ void LayerExample::OnAttach() {
     NFSEngine::SceneLoader sceneLoader;
 
     sceneLoader.InitDefaultLoaders();
-
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
-
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-    m_GoochShader = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
 
     auto texCat = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto matCat = std::make_shared<NFSEngine::Material>();
@@ -72,13 +69,11 @@ void LayerExample::OnAttach() {
     auto matSample = std::make_shared<NFSEngine::Material>();
     matSample->AlbedoMap = texSample;
 
-    auto texWhite = NFSEngine::Texture::Create("assets/textures/white.png");
     auto matWhite = std::make_shared<NFSEngine::Material>();
-    matWhite->AlbedoMap = texWhite;
+    matWhite->AlbedoColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    auto texBlack = NFSEngine::Texture::Create("assets/textures/black.png");
     auto matBlack = std::make_shared<NFSEngine::Material>();
-    matBlack->AlbedoMap = texBlack;
+    matBlack->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
 
     matAudio = std::make_shared<NFSEngine::Material>();
     matAudio->AlbedoMap = texSample;
@@ -88,8 +83,7 @@ void LayerExample::OnAttach() {
     matAudio->SetFloat("u_BendStrength", 0.0f);
     matAudio->SetFloat("u_TwistStrength", 0.4f);
 
-    auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
-                            float thickness = 1.0f) -> NFSEngine::GameObject* {
+    auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ, float thickness = 1.0f) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
         obj->GetTransform()->SetPosition({ x, y, z });
         obj->GetTransform()->SetScale({ sizeX, thickness, sizeZ });
@@ -126,22 +120,26 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
 
-    // PlayerModel
-    NFSEngine::GLTextureParameters rampParams;
-    rampParams.WrapS = GL_CLAMP_TO_EDGE;
-    rampParams.WrapT = GL_CLAMP_TO_EDGE;
-    rampParams.MinFilter = GL_NEAREST;
-    rampParams.MagFilter = GL_NEAREST;
-    rampParams.GenerateMipmaps = false;
-
-    m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
     auto playerModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player.obj");
-    m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-    m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
-    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
     auto texPlayer = NFSEngine::Texture::Create("assets/models/Player/playerModelTexture.JPEG");
+
+    NFSEngine::TextureParameters rampParams;
+    rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
+    rampParams.WrapT = NFSEngine::TextureWrap::Clamp;
+    rampParams.MinFilter = NFSEngine::TextureFilter::Nearest;
+    rampParams.MagFilter = NFSEngine::TextureFilter::Nearest;
+    rampParams.GenerateMipmaps = false;
+    m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
+
+    m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
+
     auto matPlayer = std::make_shared<NFSEngine::Material>();
     matPlayer->AlbedoMap = texPlayer;
+    matPlayer->RampMap = m_RampTexture;
+
+    m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
+    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
+
     auto& toonComp = m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(m_ToonShader, matPlayer);
     toonComp.AddLOD(playerModel, 10000.0f);
 

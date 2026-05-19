@@ -24,6 +24,7 @@ namespace NFSEngine {
 		std::shared_ptr<Texture> MetallicMap = nullptr;
 		std::shared_ptr<Texture> RoughnessMap = nullptr;
 		std::shared_ptr<Texture> AOMap = nullptr;
+		std::shared_ptr<Texture> RampMap = nullptr;
 
 		std::unordered_map<std::string, MaterialValue> Properties;
 

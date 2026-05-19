@@ -5,7 +5,25 @@
 #include "nfspch.h"
 
 namespace NFSEngine {
-    OpenGLTexture::OpenGLTexture(const std::string& path, GLTextureParameters parameters)
+
+    static GLenum NFSTextureWrapToGL(TextureWrap wrap) {
+        switch (wrap) {
+        case TextureWrap::Repeat: return GL_REPEAT;
+        case TextureWrap::Clamp:  return GL_CLAMP_TO_EDGE;
+        }
+        return GL_REPEAT;
+    }
+
+    static GLenum NFSTextureFilterToGL(TextureFilter filter, bool isMinFilter, bool mipmaps) {
+        if (filter == TextureFilter::Linear) {
+            return (isMinFilter && mipmaps) ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
+        }
+        else {
+            return (isMinFilter && mipmaps) ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
+        }
+    }
+
+    OpenGLTexture::OpenGLTexture(const std::string& path, const TextureParameters& parameters)
         : m_Path(path)
         , m_Parameters(parameters) {
 
@@ -36,10 +54,10 @@ namespace NFSEngine {
                 glGenTextures(1, &m_RendererID);
                 glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameters.WrapS);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameters.WrapT);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, parameters.MinFilter);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameters.MagFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, NFSTextureWrapToGL(parameters.WrapS));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, NFSTextureWrapToGL(parameters.WrapT));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, NFSTextureFilterToGL(parameters.MagFilter, false, false));
 
                 glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_FLOAT, data);
                 if (parameters.GenerateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
@@ -80,10 +98,10 @@ namespace NFSEngine {
                 glGenTextures(1, &m_RendererID);
                 glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, parameters.WrapS);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, parameters.WrapT);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, parameters.MinFilter);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, parameters.MagFilter);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, NFSTextureWrapToGL(parameters.WrapS));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, NFSTextureWrapToGL(parameters.WrapT));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, NFSTextureFilterToGL(parameters.MagFilter, false, false));
 
                 glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
                 if (parameters.GenerateMipmaps) glGenerateMipmap(GL_TEXTURE_2D);
@@ -98,7 +116,7 @@ namespace NFSEngine {
         }
     }
 
-    OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height)
+    OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, const TextureParameters& parameters)
         : m_Width(width)
         , m_Height(height) {
         m_InternalFormat = GL_RGBA8;
@@ -107,10 +125,10 @@ namespace NFSEngine {
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, NFSTextureWrapToGL(parameters.WrapS));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, NFSTextureWrapToGL(parameters.WrapT));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, NFSTextureFilterToGL(parameters.MagFilter, false, false));
 
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, nullptr);
     }

@@ -13,8 +13,8 @@ namespace NFSEngine {
 
     class OpenGLTexture : public Texture {
     public:
-        OpenGLTexture(const std::string& path, GLTextureParameters parameters = GLTextureParameters());
-        OpenGLTexture(uint32_t width, uint32_t height);
+        OpenGLTexture(const std::string& path, const TextureParameters& parameters);
+        OpenGLTexture(uint32_t width, uint32_t height, const TextureParameters& parameters);
         virtual ~OpenGLTexture();
 
         virtual uint32_t GetWidth() const override { return m_Width; }
@@ -26,7 +26,7 @@ namespace NFSEngine {
 
     private:
         std::string m_Path;
-        GLTextureParameters m_Parameters;
+        TextureParameters m_Parameters;
         uint32_t m_Width, m_Height;
         uint32_t m_RendererID;
         GLenum m_InternalFormat, m_DataFormat;
