@@ -152,11 +152,5 @@ namespace NFSEngine {
         return true;
     }
 
-    bool Application::OnKeyPressed(KeyPressedEvent& e) {
-        if (e.GetKeyCode() == Key::Escape) {
-            this->Close();
-            return true;
-        }
-        return false;
-    }
+    bool Application::OnKeyPressed(KeyPressedEvent& e) { return false; }
 } // namespace NFSEngine

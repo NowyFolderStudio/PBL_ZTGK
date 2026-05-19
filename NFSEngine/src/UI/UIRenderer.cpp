@@ -28,6 +28,8 @@ namespace NFSEngine {
         s_Data->DefaultWhiteTexture = Texture::Create(1, 1);
         uint32_t whitePixel = 0xFFFFFFFF;
         s_Data->DefaultWhiteTexture->SetData(&whitePixel, sizeof(uint32_t));
+
+        SetProjection(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
     }
 
     void UIRenderer::Shutdown() {

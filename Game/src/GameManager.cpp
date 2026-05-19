@@ -29,6 +29,12 @@ void GameManager::ChangeState(GameState newState) {
         m_CurrentLayer = nullptr;
     }
 
+    if (m_GameUILayer) {
+        app.PopOverlay(m_GameUILayer);
+        m_GarbageLayers.push_back(m_GameUILayer);
+        m_GameUILayer = nullptr;
+    }
+
     if (m_PauseOverlay) {
         app.PopOverlay(m_PauseOverlay);
         m_GarbageLayers.push_back(m_PauseOverlay);
@@ -39,18 +45,23 @@ void GameManager::ChangeState(GameState newState) {
 
     switch (m_CurrentState) {
     case GameState::MainMenu:
+        app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Normal);
+
         m_CurrentLayer = new MainMenuLayer();
         app.PushLayer(m_CurrentLayer);
         break;
     case GameState::Playing: {
-
+        app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
         // m_CurrentLayer = new GameLayer();
         // app.PushLayer(m_CurrentLayer);
 
-        auto* uiLayer = new UILayer();
-        app.PushOverlay(uiLayer);
-        m_CurrentLayer = new LayerExample(uiLayer);
+        m_GameUILayer = new UILayer();
+        app.PushOverlay(m_GameUILayer);
+
+        // Here we should change layerexample constructor
+        m_CurrentLayer = new LayerExample(static_cast<UILayer*>(m_GameUILayer));
         app.PushLayer(m_CurrentLayer);
+
         break;
     }
     case GameState::Paused:
@@ -65,11 +76,17 @@ void GameManager::TogglePause() {
 
     if (m_CurrentState == GameState::Playing) {
         m_CurrentState = GameState::Paused;
+
+        app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Normal);
+
         m_PauseOverlay = new PauseLayer();
         app.PushOverlay(m_PauseOverlay);
 
     } else if (m_CurrentState == GameState::Paused) {
         m_CurrentState = GameState::Playing;
+
+        app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
+
         app.PopOverlay(m_PauseOverlay);
         m_GarbageLayers.push_back(m_PauseOverlay);
         m_PauseOverlay = nullptr;

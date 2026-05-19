@@ -391,6 +391,11 @@ void LayerExample::OnAttach() {
         if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
         if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
     }
+
+    uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
+    uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
+
+    NFSEngine::Renderer::OnWindowResize(width, height);
 }
 
 void LayerExample::OnDetach() { }
@@ -605,6 +610,10 @@ void LayerExample::OnImGuiRender() {
 }
 
 void LayerExample::OnEvent(NFSEngine::Event& e) {
+    if (GameManager::Get().GetCurrentState() == GameState::Paused) {
+        return;
+    }
+
     if (m_CachedCameraController && !NFSEngine::DebugCamera::IsActive()) {
         m_CachedCameraController->OnEvent(e);
     }
