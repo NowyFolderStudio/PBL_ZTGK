@@ -63,10 +63,6 @@ private:
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;
 
-    NFSEngine::DirectionalLight* m_CachedDirLight = nullptr;
-    std::vector<NFSEngine::SpotLight*> m_CachedSpotLights;
-    std::vector<NFSEngine::PointLight*> m_CachedPointLights;
-
     std::vector<RhythmMover*> m_CachedRhythmMovers;
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
 

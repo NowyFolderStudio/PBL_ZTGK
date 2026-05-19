@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Core/GameObject.hpp"
+
 #include "Components/Component.hpp"
 #include "Components/Transform.hpp"
 
@@ -20,43 +22,15 @@ namespace NFSEngine {
         SpotLight(GameObject* owner)
             : Component(owner) { }
 
+        ~SpotLight();
+
         virtual std::string GetName() const override { return "SpotLight"; }
+
+        virtual void OnAwake() override;
 
         Transform* GetTransform() const { return m_Transform; }
 
-        void OnImGuiRender() override {
-            ImGui::ColorEdit3("Color", glm::value_ptr(Color));
-            ImGui::DragFloat3("Direction", glm::value_ptr(Direction), 0.01f);
-            ImGui::DragFloat("Intensity", &Intensity, 0.1f, 0.0f, 1000.0f);
-
-            ImGui::Separator();
-            ImGui::Text("Angles (K箃y w stopniach)");
-
-            float innerAngle = glm::degrees(glm::acos(CutOff));
-            float outerAngle = glm::degrees(glm::acos(OuterCutOff));
-
-            bool anglesChanged = false;
-            if (ImGui::DragFloat("Inner Angle", &innerAngle, 0.5f, 0.0f, 90.0f)) anglesChanged = true;
-            if (ImGui::DragFloat("Outer Angle", &outerAngle, 0.5f, 0.0f, 90.0f)) anglesChanged = true;
-
-            if (anglesChanged) {
-                if (outerAngle < innerAngle) {
-                    outerAngle = innerAngle;
-                }
-
-                CutOff = glm::cos(glm::radians(innerAngle));
-                OuterCutOff = glm::cos(glm::radians(outerAngle));
-            }
-
-            ImGui::Separator();
-            ImGui::Text("Attenuation (Zanikanie)");
-            ImGui::DragFloat("Constant", &Constant, 0.01f, 0.0f, 10.0f);
-            ImGui::DragFloat("Linear", &Linear, 0.001f, 0.0f, 1.0f);
-            ImGui::DragFloat("Quadratic", &Quadratic, 0.0001f, 0.0f, 1.0f);
-        }
-
-    protected:
-        virtual void OnAwake() override { m_Transform = m_Owner->GetComponent<Transform>(); }
+        void OnImGuiRender() override;
 
     private:
         Transform* m_Transform = nullptr;

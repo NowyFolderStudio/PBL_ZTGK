@@ -12,6 +12,11 @@
 #include "Renderer/Material.hpp"
 
 namespace NFSEngine {
+    class DirectionalLight;
+    class PointLight;
+    class SpotLight;
+    class EnvironmentMap;
+
     struct RenderPacket {
         uint64_t sortKey = 0;
 
@@ -35,7 +40,14 @@ namespace NFSEngine {
 
         inline static RendererAPI& GetAPI() { return *s_RendererAPI; }
 
-        static void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition);
+        static void BeginScene(const glm::mat4& viewMatrix, 
+            const glm::mat4& projectionMatrix, 
+            const glm::vec3& cameraPosition,
+            DirectionalLight* dirLight,
+            const std::vector<PointLight*>& pointLights,
+            const std::vector<SpotLight*>& spotLights,
+            EnvironmentMap* envMap);
+
         static void EndScene();
 
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
@@ -75,6 +87,11 @@ namespace NFSEngine {
             glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
             glm::vec3 CameraPosition = glm::vec3(0.0f);
             Frustum frustum;
+
+            DirectionalLight* DirLight = nullptr;
+            const std::vector<PointLight*>* PointLights = nullptr;
+            const std::vector<SpotLight*>* SpotLights = nullptr;
+            EnvironmentMap* EnvMap = nullptr;
         };
 
         static SceneData* s_SceneData;

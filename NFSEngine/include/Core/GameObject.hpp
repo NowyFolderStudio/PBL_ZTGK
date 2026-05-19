@@ -28,13 +28,17 @@ namespace NFSEngine {
             m_Transform = transform.get();
             m_Components.push_back(std::move(transform));
         }
-
+        
+        // Gdy uzyjemy tego konstruktora to gameObject nie bedzie wiedzial do jakiej sceny nalezy
+        // co nie jest zbyt idealne moze to zepsuc dzialanie komponentow swiatla
+        // w przypadku checi uzycia go daj znac, porozmawiajmy!
+        /*
         GameObject(std::string name = "GameObject")
             : name(std::move(name)) {
             auto transform = std::make_unique<Transform>(this);
             m_Transform = transform.get();
             m_Components.push_back(std::move(transform));
-        }
+        }*/
 
         void Awake();
         void Start();

@@ -385,9 +385,6 @@ void LayerExample::OnAttach() {
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
         if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
-        if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) m_CachedDirLight = dirLight;
-        if (auto* spotLight = go->GetComponent<NFSEngine::SpotLight>()) m_CachedSpotLights.push_back(spotLight);
-        if (auto* pointLight = go->GetComponent<NFSEngine::PointLight>()) m_CachedPointLights.push_back(pointLight);
         if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
         if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
     }
@@ -452,67 +449,9 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
 void LayerExample::OnRender() {
     if (m_CachedCamera) {
-        auto bindLightsAndCamera = [&](std::shared_ptr<NFSEngine::Shader> currentShader) {
-            currentShader->Bind();
-            currentShader->SetVec3("viewPos", m_CachedCamera->GetOwner()->GetTransform()->GetPosition());
-
-            if (m_EnvironmentMap) {
-                m_EnvironmentMap->BindEnvironmentMaps(5, 6, 7);
-
-                currentShader->SetInt("irradianceMap", 5);
-                currentShader->SetInt("prefilterMap", 6);
-                currentShader->SetInt("brdfLUT", 7);
-            }
-
-            if (m_CachedDirLight) {
-                currentShader->SetVec3("dirLight.direction", m_CachedDirLight->Direction);
-                currentShader->SetVec3("dirLight.color", m_CachedDirLight->Color);
-                currentShader->SetFloat("dirLight.intensity", m_CachedDirLight->Intensity);
-            }
-
-            int lightIndex = 0;
-            for (auto* light : m_CachedPointLights) {
-                std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
-                currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
-                currentShader->SetVec3(base + "color", light->Color);
-                currentShader->SetFloat(base + "intensity", light->Intensity);
-                currentShader->SetFloat(base + "constant", light->Constant);
-                currentShader->SetFloat(base + "linear", light->Linear);
-                currentShader->SetFloat(base + "quadratic", light->Quadratic);
-
-                lightIndex++;
-                if (lightIndex >= 16) break;
-            }
-            currentShader->SetInt("activePointLights", lightIndex);
-
-            int spotIndex = 0;
-            for (auto* light : m_CachedSpotLights) {
-                std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
-                currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
-                currentShader->SetVec3(base + "direction", light->Direction);
-                currentShader->SetVec3(base + "color", light->Color);
-                currentShader->SetFloat(base + "intensity", light->Intensity);
-                currentShader->SetFloat(base + "cutOff", light->CutOff);
-                currentShader->SetFloat(base + "outerCutOff", light->OuterCutOff);
-                currentShader->SetFloat(base + "constant", light->Constant);
-                currentShader->SetFloat(base + "linear", light->Linear);
-                currentShader->SetFloat(base + "quadratic", light->Quadratic);
-
-                spotIndex++;
-                if (spotIndex >= 4) break;
-            }
-            currentShader->SetInt("activeSpotLights", spotIndex);
-        };
-
-        bindLightsAndCamera(m_Shader);
-        bindLightsAndCamera(m_AudioShader);
-        bindLightsAndCamera(m_ToonShader);
-
-        bindLightsAndCamera(m_GoochShader);
+        
         m_GoochShader->Bind();
         m_GoochShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
-        bindLightsAndCamera(m_HazardShader);
 
         m_Shader->Bind();
         m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
@@ -535,7 +474,13 @@ void LayerExample::OnRender() {
         m_RampTexture->Bind(1);
 
         glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
-        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(), camPos);
+        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), 
+            m_CachedCamera->GetProjectionMatrix(),
+            camPos, 
+            m_Scene->GetDirLight(), 
+            m_Scene->GetPointLights(), 
+            m_Scene->GetSpotLights(),
+            m_EnvironmentMap.get());
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
