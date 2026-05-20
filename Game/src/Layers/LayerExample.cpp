@@ -264,7 +264,7 @@ void LayerExample::OnAttach() {
 
     // Platform Ramp
     NFSEngine::GameObject* rampObj = m_Scene->CreateGameObject("Ramp");
-    rampObj->GetTransform()->SetPosition({ -10.0f, -1.5f, 0.0f });
+    rampObj->GetTransform()->SetPosition({ -10.0f, -1.5f, -6.0f });
     rampObj->GetTransform()->SetRotation({ 0.0f, 0.0f, -30.0f });
     rampObj->GetTransform()->SetScale({ 12.0f, 1.0f, 4.0f });
     rampObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);

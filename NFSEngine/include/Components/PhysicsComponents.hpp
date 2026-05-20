@@ -25,6 +25,8 @@ namespace NFSEngine {
         std::function<void(GameObject* other)> OnTriggerStay = nullptr;
         std::function<void(GameObject* other)> OnTriggerExit = nullptr;
 
+        std::function<void(GameObject* other, glm::vec3 contactNormal)> OnCollisionEnter = nullptr;
+
         ColliderComponent(GameObject* owner, ColliderType type)
             : Component(owner)
             , Type(type) { }

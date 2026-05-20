@@ -16,6 +16,7 @@ public:
     float Acceleration = 80.0f;
     float Deceleration = 80.0f;
     float AirControl = 0.5f;
+    float AirFriction = 0.5f;
 
     // Rotation settings
     float TurnSmoothTime = 0.1f;
@@ -120,38 +121,7 @@ protected:
     }
 
 private:
-    void UpdateStates() { // TODO: Refactor this method, it's doing too much
-        NFSEngine::GameObject* contactObject = nullptr;
-        glm::vec3 contactNormal = glm::vec3(0.0f);
-
-        if (p_RigidBody->IsGrounded && p_RigidBody->TouchedFloorObject != nullptr) {
-            contactObject = p_RigidBody->TouchedFloorObject;
-            contactNormal = p_RigidBody->FloorNormal;
-        } else if (p_RigidBody->IsTouchingWall && p_RigidBody->TouchedWallObject != nullptr) {
-            contactObject = p_RigidBody->TouchedWallObject;
-            contactNormal = p_RigidBody->WallNormal;
-        }
-
-        if (contactObject) {
-            if (auto* bouncer = contactObject->GetComponent<BounceComponent>()) {
-
-                glm::vec3 trampolineUp = contactObject->GetTransform()->GetUp();
-
-                float alignment = glm::dot(contactNormal, trampolineUp);
-
-                if (alignment > 0.7f) {
-                    float speed = sqrt(2.0f * bouncer->BounceHeight * -NFSEngine::PhysicsSystem::Gravity.y);
-
-                    p_RigidBody->Velocity = trampolineUp * speed;
-
-                    m_Owner->GetTransform()->Move(trampolineUp * 0.1f);
-
-                    p_RigidBody->IsGrounded = false;
-                    p_RigidBody->IsTouchingWall = false;
-                }
-            }
-        }
-
+    void UpdateStates() {
         if (p_RigidBody->IsGrounded) {
 
             m_LastJumpedWallNormal = glm::vec3(0.0f);
@@ -339,8 +309,18 @@ private:
             p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, targetVel.z, currentAcc * dt);
 
         } else {
-            p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, 0.0f, currentDec * dt);
-            p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, 0.0f, currentDec * dt);
+            if (p_RigidBody->IsGrounded) {
+
+                p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, 0.0f, currentDec * dt);
+                p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, 0.0f, currentDec * dt);
+            } else {
+                float dragMultiplier = glm::clamp(1.0f - (AirFriction * dt), 0.0f, 1.0f);
+
+                if (m_IsDashing) dragMultiplier = glm::clamp(1.0f - (1.0f * dt), 0.0f, 1.0f);
+
+                p_RigidBody->Velocity.x *= dragMultiplier;
+                p_RigidBody->Velocity.z *= dragMultiplier;
+            }
         }
 
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {

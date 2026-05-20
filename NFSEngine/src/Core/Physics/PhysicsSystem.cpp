@@ -162,6 +162,9 @@ namespace NFSEngine {
                             rigidBody->Velocity -= info.ContactNormal * pushback;
                         }
 
+                        if (colA->OnCollisionEnter) colA->OnCollisionEnter(objB, info.ContactNormal);
+                        if (colB->OnCollisionEnter) colB->OnCollisionEnter(objA, -info.ContactNormal);
+
                         if (info.ContactNormal.y > 0.7f) {
                             rigidBody->IsGrounded = true;
                             rigidBody->TouchedFloorObject = objB; // TODO: Rework to use one object
