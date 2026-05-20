@@ -65,9 +65,15 @@ void LayerExample::OnAttach() {
     auto matCat = std::make_shared<NFSEngine::Material>();
     matCat->AlbedoMap = texCat;
 
-    auto texSample = NFSEngine::Texture::Create("assets/textures/sample.png");
+    auto texSampleAlbedo = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Color.png");
+    auto texSampleRoughness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Roughness.png");
+    auto texSampleMetalness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1k-PNG_Metalness.png");
+    auto texSampleAO = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_AmbientOcclusion.png");
     auto matSample = std::make_shared<NFSEngine::Material>();
-    matSample->AlbedoMap = texSample;
+    matSample->AlbedoMap = texSampleAlbedo;
+    matSample->RoughnessMap = texSampleRoughness;
+    matSample->MetallicMap = texSampleMetalness;
+    matSample->AOMap = texSampleAO;
 
     auto matWhite = std::make_shared<NFSEngine::Material>();
     matWhite->AlbedoColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -76,7 +82,7 @@ void LayerExample::OnAttach() {
     matBlack->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
 
     matAudio = std::make_shared<NFSEngine::Material>();
-    matAudio->AlbedoMap = texSample;
+    matAudio->AlbedoMap = texSampleAlbedo;
 
     matAudio->SetFloat("u_ScaleStrengthY", 0.3f);
     matAudio->SetFloat("u_ScaleStrengthXZ", 0.0f);
@@ -146,13 +152,13 @@ void LayerExample::OnAttach() {
     // Sphere
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
-
+    /*
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");
-    /*
+   
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
@@ -160,10 +166,15 @@ void LayerExample::OnAttach() {
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Displacement.jpg");
     */
 
+    auto texSphereAlbedo = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_Color.png");
+    auto texSphereNormal = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_NormalGL.png");
+    auto texSphereRoughness = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_Roughness.png");
+    auto texSphereAO = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_AmbientOcclusion.png");
+
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
     matSpherePBR->NormalMap = texSphereNormal;
-    matSpherePBR->MetallicMap = texSphereMetallic;
+    //matSpherePBR->MetallicMap = texSphereMetallic;
     matSpherePBR->RoughnessMap = texSphereRoughness;
     matSpherePBR->AOMap = texSphereAO;
 
@@ -222,8 +233,8 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
-    sunComp.Color = glm::vec3(0.2f, 0.3f, 0.92f);
-    sunComp.Intensity = 0.0f;
+    sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
+    sunComp.Intensity = 8.0f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
     spotObj->GetTransform()->SetPosition({ 0.0f, 3.5f, -3.0f });

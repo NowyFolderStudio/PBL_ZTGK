@@ -13,7 +13,7 @@ namespace NFSEngine {
     void Model::LoadModel(const std::string& path) {
         Assimp::Importer import;
 
-        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate);
+        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
@@ -69,6 +69,13 @@ namespace NFSEngine {
                 vertex.TexCoords = glm::vec2(0.0f);
             }
 
+            if (mesh->HasTangentsAndBitangents()) {
+                vertex.Tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+            }
+            else {
+                vertex.Tangent = glm::vec3(0.0f);
+            }
+
             vertices.push_back(vertex);
         }
 
@@ -86,7 +93,9 @@ namespace NFSEngine {
 
         BufferLayout layout = { { ShaderDataType::Float3, "a_Position" },
                                 { ShaderDataType::Float3, "a_Normal" },
-                                { ShaderDataType::Float2, "a_TexCoord" } };
+                                { ShaderDataType::Float2, "a_TexCoord" },
+                                { ShaderDataType::Float3, "a_Tangent" } 
+        };
         vbo->SetLayout(layout);
 
         vao->AddVertexBuffer(vbo);
