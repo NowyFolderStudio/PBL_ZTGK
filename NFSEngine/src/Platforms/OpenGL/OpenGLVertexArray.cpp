@@ -48,9 +48,16 @@ namespace NFSEngine {
         const auto& layout = vertexBuffer->GetLayout();
         for (const auto& element : layout) {
             glEnableVertexAttribArray(index);
-            glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
-                                  element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                                  (const void*)(uintptr_t)element.Offset);
+
+            if (element.Type == ShaderDataType::Int || element.Type == ShaderDataType::Int2
+                || element.Type == ShaderDataType::Int3 || element.Type == ShaderDataType::Int4) {
+                glVertexAttribIPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
+                                       layout.GetStride(), (const void*)(uintptr_t)element.Offset);
+            } else {
+                glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
+                                      element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
+                                      (const void*)(uintptr_t)element.Offset);
+            }
             index++;
         }
 

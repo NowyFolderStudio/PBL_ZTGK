@@ -105,13 +105,15 @@ namespace NFSEngine {
     }
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
-                          const std::shared_ptr<Material>& material, const glm::mat4& transform) {
+                          const std::shared_ptr<Material>& material, const glm::mat4& transform,
+                          const std::vector<glm::mat4>& boneTransforms) {
         RenderPacket packet;
         packet.vao = vao;
         packet.shader = shader;
         packet.material = material;
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
+        packet.boneTransforms = boneTransforms;
 
         // TODO doda閿燂拷 optymalizacje renderowanie obiekt閿熺弹 tworzenie id na podsawie tekstur, shadr閿熺弹
 
@@ -146,6 +148,10 @@ namespace NFSEngine {
             }
 
             packet.shader->SetMat4("model", packet.transform);
+
+            if (!packet.boneTransforms.empty()) {
+                packet.shader->SetMat4Array("finalBonesMatrices", packet.boneTransforms);
+            }
 
             if (packet.material) {
                 packet.material->Bind(packet.shader);

@@ -129,7 +129,7 @@ void main() {
 
 	vec3 Lo = vec3(0.0);
 
-    // Œwiatlo kierunkowe
+    // Directional light
  
     vec3 L_dir = normalize(-dirLight.direction);
     vec3 H_dir = normalize(V + L_dir);
@@ -150,7 +150,7 @@ void main() {
     float NdotL_dir = max(dot(N, L_dir), 0.0);
     Lo += (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir;
 
-    // Œwiat³o punktowe
+    // Point light
 
 	for(int i = 0; i < activePointLights; ++i) {
         vec3 L = normalize(pointLights[i].position - FragPos);

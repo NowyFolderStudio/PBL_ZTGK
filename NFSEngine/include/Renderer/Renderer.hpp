@@ -19,6 +19,8 @@ namespace NFSEngine {
         std::shared_ptr<Shader> shader;
         std::shared_ptr<Material> material;
         glm::mat4 transform = glm::mat4(1.0f);
+
+        std::vector<glm::mat4> boneTransforms;
     };
 
     struct RendererStats {
@@ -39,7 +41,8 @@ namespace NFSEngine {
         static void EndScene();
 
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
-                           const std::shared_ptr<Material>& material, const glm::mat4& transform);
+                           const std::shared_ptr<Material>& material, const glm::mat4& transform,
+                           const std::vector<glm::mat4>& boneTransforms = { });
 
         // TODO: Implement static Shutdown() method
 

@@ -1,5 +1,6 @@
 #include "Core/CullingUtils.hpp"
 #include "Core/Scene.hpp"
+#include "Debug/Profiler.hpp"
 #include "Renderer/Renderer.hpp"
 #include <algorithm>
 
@@ -101,9 +102,9 @@ namespace NFSEngine {
                         float scaleX = glm::length(glm::vec3(global[0]));
                         float scaleY = glm::length(glm::vec3(global[1]));
                         float scaleZ = glm::length(glm::vec3(global[2]));
-                        float maxScale = std::max({scaleX, scaleY, scaleZ});
+                        float maxScale = std::max({ scaleX, scaleY, scaleZ });
 
-                        BoundingSphere sphere = {glm::vec3(worldCenter), localSphere.Radius * maxScale};
+                        BoundingSphere sphere = { glm::vec3(worldCenter), localSphere.Radius * maxScale };
 
                         if (!frustum.TestSphere(sphere)) visible = false;
                         if (visible && cullingRange > 0.0f) {
@@ -118,14 +119,14 @@ namespace NFSEngine {
                     if (hasBounds) {
                         glm::mat4 global = transform->GetGlobalMatrix();
                         glm::vec3 corners[8] = {
-                            {localAABB.first.x, localAABB.first.y, localAABB.first.z},
-                            {localAABB.first.x, localAABB.first.y, localAABB.second.z},
-                            {localAABB.first.x, localAABB.second.y, localAABB.first.z},
-                            {localAABB.first.x, localAABB.second.y, localAABB.second.z},
-                            {localAABB.second.x, localAABB.first.y, localAABB.first.z},
-                            {localAABB.second.x, localAABB.first.y, localAABB.second.z},
-                            {localAABB.second.x, localAABB.second.y, localAABB.first.z},
-                            {localAABB.second.x, localAABB.second.y, localAABB.second.z},
+                            { localAABB.first.x, localAABB.first.y, localAABB.first.z },
+                            { localAABB.first.x, localAABB.first.y, localAABB.second.z },
+                            { localAABB.first.x, localAABB.second.y, localAABB.first.z },
+                            { localAABB.first.x, localAABB.second.y, localAABB.second.z },
+                            { localAABB.second.x, localAABB.first.y, localAABB.first.z },
+                            { localAABB.second.x, localAABB.first.y, localAABB.second.z },
+                            { localAABB.second.x, localAABB.second.y, localAABB.first.z },
+                            { localAABB.second.x, localAABB.second.y, localAABB.second.z },
                         };
                         glm::vec3 worldMin(1e10f), worldMax(-1e10f);
                         for (auto& c : corners) {

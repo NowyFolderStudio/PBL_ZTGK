@@ -24,6 +24,7 @@ namespace NFSEngine {
         virtual void SetVec3(const std::string& name, const glm::vec3& value) = 0;
         virtual void SetVec4(const std::string& name, const glm::vec4& value) = 0;
         virtual void SetBool(const std::string& name, bool value) = 0;
+        virtual void SetMat4Array(const std::string& name, const std::vector<glm::mat4>& value) = 0;
 
         static std::shared_ptr<Shader> Create(const std::string& name, const std::string& vertexPath,
                                               const std::string& fragmentPath);

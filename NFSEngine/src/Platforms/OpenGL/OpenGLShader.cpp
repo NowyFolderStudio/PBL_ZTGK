@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace NFSEngine {
 
@@ -73,6 +74,10 @@ namespace NFSEngine {
 
     void OpenGLShader::SetBool(const std::string& name, const bool value) {
         glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), (int)value);
+    }
+
+    void OpenGLShader::SetMat4Array(const std::string& name, const std::vector<glm::mat4>& value) {
+        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), value.size(), GL_FALSE, glm::value_ptr(value[0]));
     }
 
     void OpenGLShader::CheckCompileErrors(uint32_t shader, std::string type) {

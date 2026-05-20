@@ -52,21 +52,21 @@ namespace NFSEngine {
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
 
-            vertex.Position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
+            vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 
-            m_MeshAABBMin = glm::min(m_MeshAABBMin, vertex.Position);
-            m_MeshAABBMax = glm::max(m_MeshAABBMax, vertex.Position);
+            m_MeshAABBMin = glm::min(m_MeshAABBMin, vertex.position);
+            m_MeshAABBMax = glm::max(m_MeshAABBMax, vertex.position);
 
             if (mesh->HasNormals()) {
-                vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
+                vertex.normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
             } else {
-                vertex.Normal = glm::vec3(0.0f);
+                vertex.normal = glm::vec3(0.0f);
             }
 
             if (mesh->mTextureCoords[0]) {
-                vertex.TexCoords = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+                vertex.texCoords = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
             } else {
-                vertex.TexCoords = glm::vec2(0.0f);
+                vertex.texCoords = glm::vec2(0.0f);
             }
 
             vertices.push_back(vertex);
@@ -79,6 +79,8 @@ namespace NFSEngine {
             }
         }
 
+        ExtractBoneWeightForVertices(vertices, mesh, scene);
+
         std::shared_ptr<VertexArray> vao = std::shared_ptr<VertexArray>(VertexArray::Create());
 
         std::shared_ptr<VertexBuffer> vbo
@@ -86,7 +88,9 @@ namespace NFSEngine {
 
         BufferLayout layout = { { ShaderDataType::Float3, "a_Position" },
                                 { ShaderDataType::Float3, "a_Normal" },
-                                { ShaderDataType::Float2, "a_TexCoord" } };
+                                { ShaderDataType::Float2, "a_TexCoord" },
+                                { ShaderDataType::Int4, "a_BoneIDs" },
+                                { ShaderDataType::Float4, "a_Weights" } };
         vbo->SetLayout(layout);
 
         vao->AddVertexBuffer(vbo);
@@ -96,5 +100,61 @@ namespace NFSEngine {
         vao->SetIndexBuffer(ibo);
 
         return vao;
+    }
+
+    glm::mat4 Model::ConvertMatrixToGLMFormat(const aiMatrix4x4& from) {
+        glm::mat4 to;
+        to[0][0] = from.a1;
+        to[1][0] = from.a2;
+        to[2][0] = from.a3;
+        to[3][0] = from.a4;
+        to[0][1] = from.b1;
+        to[1][1] = from.b2;
+        to[2][1] = from.b3;
+        to[3][1] = from.b4;
+        to[0][2] = from.c1;
+        to[1][2] = from.c2;
+        to[2][2] = from.c3;
+        to[3][2] = from.c4;
+        to[0][3] = from.d1;
+        to[1][3] = from.d2;
+        to[2][3] = from.d3;
+        to[3][3] = from.d4;
+        return to;
+    }
+
+    void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene) {
+        for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
+            int boneID = -1;
+            std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
+
+            if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end()) {
+                BoneInfo newBoneInfo;
+                newBoneInfo.id = m_BoneCounter;
+                newBoneInfo.offset = ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
+                m_BoneInfoMap[boneName] = newBoneInfo;
+                boneID = m_BoneCounter;
+                m_BoneCounter++;
+            } else {
+                boneID = m_BoneInfoMap[boneName].id;
+            }
+
+            assert(boneID != -1);
+            auto weights = mesh->mBones[boneIndex]->mWeights;
+            int numWeights = mesh->mBones[boneIndex]->mNumWeights;
+
+            for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex) {
+                int vertexId = weights[weightIndex].mVertexId;
+                float weight = weights[weightIndex].mWeight;
+
+                for (int i = 0; i < MAX_BONE_INFLUENCE; ++i) {
+                    if (vertices[vertexId].boneIDs[i] < 0) {
+                        vertices[vertexId].boneWeights[i] = weight;
+                        vertices[vertexId].boneIDs[i] = boneID;
+                        break;
+                    }
+                }
+            }
+        }
     }
 } // namespace NFSEngine
