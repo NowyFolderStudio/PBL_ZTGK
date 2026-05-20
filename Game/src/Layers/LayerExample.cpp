@@ -113,6 +113,7 @@ void LayerExample::OnAttach() {
     m_MovingCube = m_Scene->CreateGameObject("Rotated_Cube");
     m_MovingCube->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCat);
     m_MovingCube->GetTransform()->SetRotation(glm::vec3(0.0f, 30.0f, 0.0f));
+    m_MovingCube->GetTransform()->SetPosition(glm::vec3(0.0f, 0.0f, 15.0f));
     m_MovingCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     // Player
@@ -145,7 +146,7 @@ void LayerExample::OnAttach() {
     matPlayer->RampMap = m_RampTexture;
 
     m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
-    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
+    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(-15.0f, 0.0f, 0.0f));
 
     auto& toonComp = m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(m_ToonShader, matPlayer);
     toonComp.AddLOD(playerModel, 10000.0f);
@@ -180,11 +181,13 @@ void LayerExample::OnAttach() {
     matSpherePBR->AOMap = texSphereAO;
 
     NFSEngine::GameObject* sphereObj = m_Scene->CreateGameObject("Center_PBR_Sphere");
-    sphereObj->GetTransform()->SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+    sphereObj->GetTransform()->SetPosition(glm::vec3(-23.0f, 1.0f, 0.0f));
     sphereObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
     auto& sphereComp = sphereObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matSpherePBR);
     sphereComp.AddLOD(sphereModel, 10000.0f);
+
+    // Model samolotu
 
     // Kod wczytujacy obiekt wielo meshowy / materialowy, mozliwe jest przeniesienie takiego wczytywania do jakiejs klasy za to
     // odpowiedzialnej
@@ -238,7 +241,7 @@ void LayerExample::OnAttach() {
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
     auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matAudio);
     cylComp.AddLOD(cylinderModel, 10000.0f);
-    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
+    cylinderObj->GetTransform()->SetPosition({ 0.0f, 0.0f, -15.0f });
     cylinderObj->AddComponent<BounceComponent>();
 
     // Gramophone
@@ -291,10 +294,11 @@ void LayerExample::OnAttach() {
     spotComp.Direction = { 0.0f, -1.0f, -0.5f };
     spotComp.Intensity = 130.0f;
 
+    // Stupid ass walls
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
-    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
+    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -500.0f, 0.0f });
     m_MovingCube2->GetTransform()->SetScale({ 8.0f, 80.0f, 2.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
     m_MovingCube2->AddTag(NFSEngine::Tags::WallJumpSurface);
@@ -302,26 +306,10 @@ void LayerExample::OnAttach() {
     // Static Cube
     NFSEngine::GameObject* wall = m_Scene->CreateGameObject("wall");
     wall->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
-    wall->GetTransform()->SetPosition({ -4.0f, -1.0f, 10.0f });
+    wall->GetTransform()->SetPosition({ -4.0f, -500.0f, 10.0f });
     wall->GetTransform()->SetScale({ 8.0f, 80.0f, 2.0f });
     wall->AddComponent<NFSEngine::BoxCollider3DComponent>();
     wall->AddTag(NFSEngine::Tags::WallJumpSurface);
-
-    // earth Object
-    auto earthModel = std::make_shared<NFSEngine::Model>("assets/models/Earth/Sun.gltf");
-    auto texEarth = NFSEngine::Texture::Create("assets/models/Earth/2k_earth_daymap.jpg");
-    auto matEarth = std::make_shared<NFSEngine::Material>();
-    matEarth->AlbedoMap = texEarth;
-
-    NFSEngine::GameObject* earthObj = m_Scene->CreateGameObject("Earth");
-    earthObj->GetTransform()->SetPosition(glm::vec3(2.0f, 0.0f, -5.0f));
-    auto& earthComp = earthObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matEarth);
-    earthComp.AddLOD(earthModel, 10000.0f);
-    earthObj->AddComponent<NFSEngine::SphereCollider3DComponent>();
-
-    auto& earthMover = earthObj->AddComponent<RhythmMover>();
-    earthMover.TargetPattern = "PianoPattern1";
-    earthMover.SetBasePosition(earthObj->GetTransform()->GetPosition());
 
     // Camera
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
@@ -379,9 +367,8 @@ void LayerExample::OnAttach() {
     makeCoin("Coin_Left", -23.0f, coinY, 0.0f);
     makeCoin("Coin_Right", 23.0f, coinY, 0.0f);
 
-    auto textureWhite2 = NFSEngine::Texture::Create("assets/textures/white.png");
     NFSEngine::GameObject* hazardCube = m_Scene->CreateGameObject("Hazard_Cube");
-    hazardCube->GetTransform()->SetPosition(glm::vec3(5.0f, -1.0f, 5.0f));
+    hazardCube->GetTransform()->SetPosition(glm::vec3(15.0f, 0.0f, 0.0f));
     hazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
     auto& hazardMesh = hazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, matWhite);
     auto& hazardCol = hazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
@@ -407,11 +394,11 @@ void LayerExample::OnAttach() {
     NFSEngine::AudioEngine::Init();
     m_Sequencer.Start(120.0f);
 
-    NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoTest");
-    auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
-    audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
+    NFSEngine::GameObject* bassObj = m_Scene->CreateGameObject("BassTest");
+    auto& audioComp = bassObj->AddComponent<NFSEngine::AudioPatternComponent>();
+    audioComp.LoadPattern("assets/audio/patterns/BassPatternPrototype.json", &m_Sequencer);
     m_TestAudioComp = &audioComp;
-    audioComp.SetVolume(0.0);
+    audioComp.SetVolume(1.0);
 
     // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");

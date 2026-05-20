@@ -18,7 +18,7 @@ uniform float u_BendStrength;
 uniform float u_TwistStrength;
 
 void main() {
-	float wave = sin(u_MusicTime * 3.14159);
+	float wave = sin(u_MusicTime * 3.14159 * 2);
 
 	vec3 localPos = aPos;
 
