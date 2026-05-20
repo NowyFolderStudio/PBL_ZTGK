@@ -14,6 +14,11 @@ GameManager& GameManager::Get() {
 
 void GameManager::Init() { ChangeState(GameState::MainMenu); }
 
+void GameManager::LoadLevel(const std::string& levelPath) {
+    m_CurrentLevelPath = levelPath;
+    RequestStateChange(GameState::Playing);
+}
+
 void GameManager::ChangeState(GameState newState) {
     auto& app = NFSEngine::Application::Get();
 
@@ -59,13 +64,10 @@ void GameManager::ChangeState(GameState newState) {
         break;
     case GameState::Playing: {
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
-        // m_CurrentLayer = new GameLayer();
-        // app.PushLayer(m_CurrentLayer);
 
         m_GameUILayer = new UILayer();
         app.PushOverlay(m_GameUILayer);
 
-        // Here we should change layerexample constructor
         m_CurrentLayer = new LayerExample(static_cast<UILayer*>(m_GameUILayer));
         app.PushLayer(m_CurrentLayer);
 
