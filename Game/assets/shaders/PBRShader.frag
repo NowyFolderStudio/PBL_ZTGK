@@ -118,7 +118,7 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
 }
 
 void main() {
-	vec3 albedo = u_HasAlbedoMap ? pow(texture(u_AlbedoMap, TexCoord).rgb, vec3(2.2)) : u_AlbedoColor;
+	vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
 
 	vec3 N = normalize(Normal);
 

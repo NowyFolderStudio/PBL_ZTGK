@@ -6,6 +6,8 @@ namespace NFSEngine {
     Model::Model(const std::string& path) {
         m_MeshAABBMin = glm::vec3(std::numeric_limits<float>::max());
         m_MeshAABBMax = glm::vec3(std::numeric_limits<float>::lowest());
+
+        m_Directory = std::filesystem::path(path).parent_path().string();
         LoadModel(path);
         FinalizeBoundingSphere();
     }
@@ -13,14 +15,44 @@ namespace NFSEngine {
     void Model::LoadModel(const std::string& path) {
         Assimp::Importer import;
 
-        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+        const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
             return;
         }
 
+        LoadMaterials(scene);
         ProcessNode(scene->mRootNode, scene);
+    }
+
+    void Model::LoadMaterials(const aiScene* scene) {
+        m_MaterialInfo.reserve(scene->mNumMaterials);
+
+        for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
+            aiMaterial* material = scene->mMaterials[i];
+            AssimpMaterialInfo info;
+
+            aiString name;
+            material->Get(AI_MATKEY_NAME, name);
+            info.Name = name.C_Str();
+
+            auto extractPath = [&](aiTextureType type, std::string& outPath) {
+                if (material->GetTextureCount(type) > 0) {
+                    aiString path;
+                    material->GetTexture(type, 0, &path);
+                    outPath = m_Directory + "/" + path.C_Str();
+                }
+                };
+
+            extractPath(aiTextureType_DIFFUSE, info.AlbedoPath);
+            extractPath(aiTextureType_NORMALS, info.NormalPath);
+            extractPath(aiTextureType_DIFFUSE_ROUGHNESS, info.RoughnessPath);
+            extractPath(aiTextureType_METALNESS, info.MetallicPath);
+            extractPath(aiTextureType_AMBIENT_OCCLUSION, info.AmbientOcclusionPath);
+
+            m_MaterialInfo.push_back(info);
+        }
     }
 
     void Model::ProcessNode(aiNode* node, const aiScene* scene) {
@@ -45,7 +77,7 @@ namespace NFSEngine {
         m_MeshBoundingSphere = { center, radius };
     }
 
-    std::shared_ptr<VertexArray> Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
+    MeshData Model::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;
 
@@ -104,6 +136,10 @@ namespace NFSEngine {
 
         vao->SetIndexBuffer(ibo);
 
-        return vao;
+        MeshData meshData;
+        meshData.VAO = vao;
+        meshData.MaterialIndex = mesh->mMaterialIndex; // Kluczowy moment!
+
+        return meshData;
     }
 } // namespace NFSEngine

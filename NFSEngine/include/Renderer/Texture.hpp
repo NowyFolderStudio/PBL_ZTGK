@@ -16,6 +16,7 @@ namespace NFSEngine {
         TextureFilter MinFilter = TextureFilter::Linear;
         TextureFilter MagFilter = TextureFilter::Linear;
         bool GenerateMipmaps = true;
+        bool sRGB = true;
     };
 
     class Texture {

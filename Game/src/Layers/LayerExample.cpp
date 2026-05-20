@@ -186,6 +186,51 @@ void LayerExample::OnAttach() {
     auto& sphereComp = sphereObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matSpherePBR);
     sphereComp.AddLOD(sphereModel, 10000.0f);
 
+
+    // Kod wczytujacy obiekt wielo meshowy / materialowy, mozliwe jest przeniesienie takiego wczytywania do jakiejs klasy za to odpowiedzialnej
+
+    std::string modelPath = "assets/models/fa-18/FA-18C.obj";
+    auto airplaneModel = std::make_shared<NFSEngine::Model>(modelPath);
+
+    NFSEngine::GameObject* airplaneObj = m_Scene->CreateGameObject("FA-18C");
+    airplaneObj->GetTransform()->SetPosition(glm::vec3(0.0f, 15.0f, -23.0f));
+    airplaneObj->GetTransform()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+    airplaneObj->GetTransform()->SetScale(glm::vec3(1.0f));
+
+    auto& airplaneComp = airplaneObj->AddComponent<NFSEngine::ModelComponent>(m_Shader);
+    airplaneComp.AddLOD(airplaneModel, 10000.0f);
+
+    const auto& materialInfos = airplaneModel->GetMaterialInfo();
+
+    std::string textureFolder = "assets/models/fa-18/";
+
+    for (size_t i = 0; i < materialInfos.size(); i++) {
+        auto mat = std::make_shared<NFSEngine::Material>();
+
+        mat->AlbedoColor = glm::vec3(0.7f);
+        mat->Roughness = 0.9f;
+        mat->Metallic = 0.0f;
+
+        auto TryLoadTexture = [&](const std::string& assimpPath) -> std::shared_ptr<NFSEngine::Texture> {
+            if (assimpPath.empty()) return nullptr;
+
+            std::string filename = std::filesystem::path(assimpPath).filename().string();
+            std::string fullPath = textureFolder + filename;
+
+            if (std::filesystem::exists(fullPath)) {
+                return NFSEngine::Texture::Create(fullPath);
+            }
+            return nullptr;
+            };
+
+        mat->AlbedoMap = TryLoadTexture(materialInfos[i].AlbedoPath);
+        mat->NormalMap = TryLoadTexture(materialInfos[i].NormalPath);
+        mat->RoughnessMap = TryLoadTexture(materialInfos[i].RoughnessPath);
+        mat->MetallicMap = TryLoadTexture(materialInfos[i].MetallicPath);
+
+        airplaneComp.SetMaterial(i, mat);
+    }
+
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 
@@ -237,7 +282,7 @@ void LayerExample::OnAttach() {
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
-    sunComp.Intensity = 8.0f;
+    sunComp.Intensity = 1.0f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
     spotObj->GetTransform()->SetPosition({ 0.0f, 3.5f, -3.0f });
@@ -463,6 +508,7 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
     float songPos = m_Sequencer.GetContinuousBeatTime();
     matAudio->SetFloat("u_MusicTime", songPos);
+
 }
 
 void LayerExample::OnRender() {

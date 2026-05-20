@@ -79,17 +79,17 @@ namespace NFSEngine {
 
                 GLenum internalFormat = 0, dataFormat = 0;
                 if (channels == 1) {
-                    internalFormat = GL_RGBA8;
+                    internalFormat = GL_R8;
                     dataFormat = GL_RED;
                 }
-                if (channels == 4) {
-                    internalFormat = GL_RGBA8;
-                    dataFormat = GL_RGBA;
-                }
                 else if (channels == 3) {
-                    internalFormat = GL_RGB8;
+                    internalFormat = parameters.sRGB ? GL_SRGB8 : GL_RGB8;
                     dataFormat = GL_RGB;
                     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+                }
+                else if (channels == 4) {
+                    internalFormat = parameters.sRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+                    dataFormat = GL_RGBA;
                 }
 
                 m_InternalFormat = internalFormat;

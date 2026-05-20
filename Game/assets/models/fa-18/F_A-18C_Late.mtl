@@ -1,0 +1,176 @@
+newmtl 2dc7f697-07f2-4b52-b08e-62fd4579b50d
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/fa_18c_late_c.jpg
+map_Ks textures/fa_18c_late_n_s.jpg
+map_normal textures/fa_18c_late_n_n.jpg
+map_ao textures/fa_18c_late_n_ao.jpg
+
+newmtl 58ae374e-cf13-4279-bb36-562a34a549c9
+Kd 0.000 0.000 0.000
+Ks 1.000 1.000 1.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.17
+
+newmtl 41259170-161e-4445-946c-055ff4203d60
+Kd 1.000 1.000 1.000
+Ks 0.502 0.502 0.502
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/fa_18_reflective_c.jpg
+map_Ks textures/empty_n_s.jpg
+map_normal textures/empty_n_n.jpg
+map_ao textures/empty_n_ao.jpg
+
+newmtl 586a96e1-af0f-4b86-9a2a-df4a8b0ad789
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/fa_18_inside_c.jpg
+map_Ks textures/fa_18_inside_n_s.jpg
+map_normal textures/fa_18_inside_n_n.jpg
+map_ao textures/fa_18_inside_n_ao.jpg
+
+newmtl eba21230-6fe3-4e8e-9ffc-82eebd96d33e
+Kd 0.000 0.000 0.000
+Ks 1.000 1.000 1.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.75
+
+newmtl 8b03cc26-73c4-45d6-a0d7-d04020abc906
+Kd 0.000 0.000 0.000
+Ks 1.000 1.000 1.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.75
+
+newmtl 246afd66-7c56-4954-86a3-e3f1d2248bcc
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/fa_18c_late_interior_c.jpg
+map_Ks textures/fa_18c_late_interior_n_s.jpg
+map_normal textures/fa_18c_late_interior_n_n.jpg
+map_ao textures/fa_18c_late_interior_n_ao.jpg
+
+newmtl 83ccdc39-3ab9-4b85-8253-f67d3126b4e1
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/fa_18c_central_pylon_c.jpg
+map_Ks textures/fa_18c_central_pylon_n_s.jpg
+map_normal textures/fa_18c_central_pylon_n_n.jpg
+map_ao textures/fa_18c_central_pylon_n_ao.jpg
+
+newmtl 2370e85f-c9c2-4b12-9c19-b8a3d48ac6db
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/bru32a_adapter_c.jpg
+map_Ks textures/bru32a_adapter_n_s.jpg
+map_normal textures/bru32a_adapter_n_n.jpg
+map_ao textures/bru32a_adapter_n_ao.jpg
+
+newmtl d187cc0f-7d49-47a9-a75a-90b24253b4ba
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/fa_18_wing_pylons_c.jpg
+map_Ks textures/fa_18_wing_pylons_n_s.jpg
+map_normal textures/fa_18_wing_pylons_n_n.jpg
+map_ao textures/fa_18_wing_pylons_n_ao.jpg
+
+newmtl 3e9d6924-4bb4-4030-88bf-dbd0f678849b
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/martin_baker_sju_17_seat_c.jpg
+map_Ks textures/martin_baker_sju_17_seat_n_s.jpg
+map_normal textures/martin_baker_sju_17_seat_n_n.jpg
+map_ao textures/martin_baker_sju_17_seat_n_ao.jpg
+
+newmtl b8ddaf11-a2b5-4e4e-a1a1-03eecd2f2946
+Kd 1.000 1.000 1.000
+Ks 0.502 0.502 0.502
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/radio_net_c.jpg
+map_Ks textures/radio_net_n_s.jpg
+map_normal textures/radio_net_n_n.jpg
+map_ao textures/radio_net_n_ao.jpg
+map_d textures/radio_net_c_a.png
+
+newmtl dac103d5-712d-4b1a-a48c-939df8a082fb
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/us_agm_65g_c.jpg
+map_Ks textures/us_agm_65d_n_s.jpg
+map_normal textures/us_agm_65d_n_n.jpg
+map_ao textures/us_agm_65d_n_ao.jpg
+
+newmtl d62f799e-7f45-4518-8e17-0061b0ceca21
+Kd 0.000 0.000 0.000
+Ks 0.000 0.000 0.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.9
+
+newmtl 2b131a05-ad92-4f80-b004-c3dd8c33099b
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/lau_117a_launcher_c.jpg
+map_Ks textures/lau_117a_launcher_n_s.jpg
+map_normal textures/lau_117a_launcher_n_n.jpg
+map_ao textures/lau_117a_launcher_n_ao.jpg
+
+newmtl 3300994b-0463-4060-89e0-760f03e336ed
+Kd 1.000 0.000 1.000
+Ks 0.067 0.067 0.067
+Ns 30
+Ke 0.000 0.000 0.000
+
+newmtl e6fae691-5a4c-4451-ab1a-78f6f85c63db
+Kd 1.000 1.000 1.000
+Ks 0.000 0.000 0.000
+Ns 30
+Ke 0.000 0.000 0.000
+map_Kd textures/litening_2_pod_c.jpg
+map_Ks textures/litening_2_pod_n_s.jpg
+map_normal textures/litening_2_pod_n_n.jpg
+map_ao textures/litening_2_pod_n_ao.jpg
+
+newmtl 540813d5-2781-4ffb-8cf7-f7a8eda5fba4
+Kd 0.000 0.000 0.000
+Ks 0.000 0.000 0.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.15
+
+newmtl 1d40f902-be8c-46f9-b848-8b8795074ab5
+Kd 0.000 0.000 0.000
+Ks 0.000 0.000 0.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.2
+
+newmtl 5ee3be0b-f780-4826-aaa0-1178a52c750c
+Kd 0.000 0.000 0.000
+Ks 1.000 1.000 1.000
+Ns 255
+Ke 0.000 0.000 0.000
+d 0.75
+
