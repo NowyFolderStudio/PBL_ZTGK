@@ -89,6 +89,10 @@ namespace NFSEngine {
         m_Dirty = false;
     }
 
+    glm::vec3 Transform::GetForward() { return glm::normalize(glm::vec3(GetGlobalMatrix()[2])); }
+
+    glm::vec3 Transform::GetUp() { return glm::normalize(glm::vec3(GetGlobalMatrix()[1])); }
+
     glm::vec3 Transform::GetWorldPosition() { return glm::vec3(GetGlobalMatrix()[3]); }
 
     glm::vec3 Transform::GetWorldScale() {

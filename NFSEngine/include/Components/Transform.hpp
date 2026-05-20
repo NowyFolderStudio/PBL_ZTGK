@@ -47,6 +47,9 @@ namespace NFSEngine {
             return m_GlobalMatrix;
         }
 
+        glm::vec3 GetForward();
+        glm::vec3 GetUp();
+
         glm::vec3 GetWorldPosition();
         glm::vec3 GetWorldScale();
         glm::quat GetWorldRotation();

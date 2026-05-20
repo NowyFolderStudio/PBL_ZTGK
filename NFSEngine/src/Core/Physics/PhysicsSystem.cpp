@@ -164,6 +164,9 @@ namespace NFSEngine {
 
                         if (info.ContactNormal.y > 0.7f) {
                             rigidBody->IsGrounded = true;
+                            rigidBody->TouchedFloorObject = objB; // TODO: Rework to use one object
+                            rigidBody->FloorNormal = info.ContactNormal;
+
                         } else if (std::abs(info.ContactNormal.y) < 0.3f) {
                             rigidBody->IsTouchingWall = true;
                             rigidBody->WallNormal = info.ContactNormal;

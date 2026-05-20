@@ -59,7 +59,8 @@ void LayerExample::OnAttach() {
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
-    m_HazardShader = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    m_HazardShader
+        = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
 
     auto texCat = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto matCat = std::make_shared<NFSEngine::Material>();
@@ -89,7 +90,8 @@ void LayerExample::OnAttach() {
     matAudio->SetFloat("u_BendStrength", 0.0f);
     matAudio->SetFloat("u_TwistStrength", 0.4f);
 
-    auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ, float thickness = 1.0f) -> NFSEngine::GameObject* {
+    auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
+                            float thickness = 1.0f) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
         obj->GetTransform()->SetPosition({ x, y, z });
         obj->GetTransform()->SetScale({ sizeX, thickness, sizeZ });
@@ -157,7 +159,7 @@ void LayerExample::OnAttach() {
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");
-   
+
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
@@ -173,7 +175,7 @@ void LayerExample::OnAttach() {
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
     matSpherePBR->NormalMap = texSphereNormal;
-    //matSpherePBR->MetallicMap = texSphereMetallic;
+    // matSpherePBR->MetallicMap = texSphereMetallic;
     matSpherePBR->RoughnessMap = texSphereRoughness;
     matSpherePBR->AOMap = texSphereAO;
 
@@ -192,6 +194,7 @@ void LayerExample::OnAttach() {
     auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matAudio);
     cylComp.AddLOD(cylinderModel, 10000.0f);
     cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
+    cylinderObj->AddComponent<BounceComponent>();
 
     // Gramophone
     auto gramophoneModel0 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneHIGH.obj");
@@ -221,6 +224,7 @@ void LayerExample::OnAttach() {
     rampObj->GetTransform()->SetScale({ 12.0f, 1.0f, 4.0f });
     rampObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
     rampObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    rampObj->AddComponent<BounceComponent>();
 
     // Lighting
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
@@ -463,13 +467,9 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
 void LayerExample::OnRender() {
     if (m_CachedCamera) {
-        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), 
-            m_CachedCamera->GetProjectionMatrix(),
-            m_CachedCamera->GetOwner()->GetTransform()->GetPosition(),
-            m_Scene->GetDirLight(), 
-            m_Scene->GetPointLights(), 
-            m_Scene->GetSpotLights(),
-            m_EnvironmentMap.get());
+        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(),
+                                        m_CachedCamera->GetOwner()->GetTransform()->GetPosition(), m_Scene->GetDirLight(),
+                                        m_Scene->GetPointLights(), m_Scene->GetSpotLights(), m_EnvironmentMap.get());
 
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();

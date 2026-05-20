@@ -1,6 +1,7 @@
 #pragma once
 #include <NFSEngine.h>
 #include "Components/Camera.hpp"
+#include "BounceComponent.hpp"
 #include "Core/MathUtils.hpp"
 
 class CharacterController : public NFSEngine::Component {
@@ -119,7 +120,38 @@ protected:
     }
 
 private:
-    void UpdateStates() {
+    void UpdateStates() { // TODO: Refactor this method, it's doing too much
+        NFSEngine::GameObject* contactObject = nullptr;
+        glm::vec3 contactNormal = glm::vec3(0.0f);
+
+        if (p_RigidBody->IsGrounded && p_RigidBody->TouchedFloorObject != nullptr) {
+            contactObject = p_RigidBody->TouchedFloorObject;
+            contactNormal = p_RigidBody->FloorNormal;
+        } else if (p_RigidBody->IsTouchingWall && p_RigidBody->TouchedWallObject != nullptr) {
+            contactObject = p_RigidBody->TouchedWallObject;
+            contactNormal = p_RigidBody->WallNormal;
+        }
+
+        if (contactObject) {
+            if (auto* bouncer = contactObject->GetComponent<BounceComponent>()) {
+
+                glm::vec3 trampolineUp = contactObject->GetTransform()->GetUp();
+
+                float alignment = glm::dot(contactNormal, trampolineUp);
+
+                if (alignment > 0.7f) {
+                    float speed = sqrt(2.0f * bouncer->BounceHeight * -NFSEngine::PhysicsSystem::Gravity.y);
+
+                    p_RigidBody->Velocity = trampolineUp * speed;
+
+                    m_Owner->GetTransform()->Move(trampolineUp * 0.1f);
+
+                    p_RigidBody->IsGrounded = false;
+                    p_RigidBody->IsTouchingWall = false;
+                }
+            }
+        }
+
         if (p_RigidBody->IsGrounded) {
 
             m_LastJumpedWallNormal = glm::vec3(0.0f);

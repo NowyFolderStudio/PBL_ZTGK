@@ -46,8 +46,10 @@ namespace NFSEngine {
 
         bool IsTouchingWall = false;
         glm::vec3 WallNormal = glm::vec3(0.0f);
+        glm::vec3 FloorNormal = glm::vec3(0.0f);
 
         GameObject* TouchedWallObject = nullptr;
+        GameObject* TouchedFloorObject = nullptr;
     };
 
     struct BoxCollider3DComponent : public ColliderComponent {
