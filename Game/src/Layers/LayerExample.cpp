@@ -95,7 +95,6 @@ void LayerExample::OnAttach() {
         obj->GetTransform()->SetScale({ sizeX, thickness, sizeZ });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
         auto& col = obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-        col.Size = glm::vec3(sizeX, thickness, sizeZ);
         return obj;
     };
 
