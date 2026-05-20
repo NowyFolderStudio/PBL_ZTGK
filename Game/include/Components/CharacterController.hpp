@@ -1,6 +1,7 @@
 #pragma once
 #include <NFSEngine.h>
 #include "Components/Camera.hpp"
+#include "BounceComponent.hpp"
 #include "Core/MathUtils.hpp"
 
 class CharacterController : public NFSEngine::Component {
@@ -27,6 +28,8 @@ public:
 
     // Wall jump settings
     float WallSlideSpeed = 2.0f;
+    float WallJumpPushForce = 15.0f;
+    float WallJumpLockTime = 0.2f;
 
     // Dash settings
     float DashSpeed = 20.0f;
@@ -58,6 +61,7 @@ private:
     float m_JumpBufferCounter = 0.0f;
     float m_DashTimeCounter = 0.0f;
     float m_WallCoyoteCounter = 0.0f;
+    float m_WallJumpLockCounter = 0.0f;
 
     glm::vec3 m_LastWallNormal = glm::vec3(0.0f);
     glm::vec3 m_LastJumpedWallNormal = glm::vec3(0.0f);
@@ -116,7 +120,38 @@ protected:
     }
 
 private:
-    void UpdateStates() {
+    void UpdateStates() { // TODO: Refactor this method, it's doing too much
+        NFSEngine::GameObject* contactObject = nullptr;
+        glm::vec3 contactNormal = glm::vec3(0.0f);
+
+        if (p_RigidBody->IsGrounded && p_RigidBody->TouchedFloorObject != nullptr) {
+            contactObject = p_RigidBody->TouchedFloorObject;
+            contactNormal = p_RigidBody->FloorNormal;
+        } else if (p_RigidBody->IsTouchingWall && p_RigidBody->TouchedWallObject != nullptr) {
+            contactObject = p_RigidBody->TouchedWallObject;
+            contactNormal = p_RigidBody->WallNormal;
+        }
+
+        if (contactObject) {
+            if (auto* bouncer = contactObject->GetComponent<BounceComponent>()) {
+
+                glm::vec3 trampolineUp = contactObject->GetTransform()->GetUp();
+
+                float alignment = glm::dot(contactNormal, trampolineUp);
+
+                if (alignment > 0.7f) {
+                    float speed = sqrt(2.0f * bouncer->BounceHeight * -NFSEngine::PhysicsSystem::Gravity.y);
+
+                    p_RigidBody->Velocity = trampolineUp * speed;
+
+                    m_Owner->GetTransform()->Move(trampolineUp * 0.1f);
+
+                    p_RigidBody->IsGrounded = false;
+                    p_RigidBody->IsTouchingWall = false;
+                }
+            }
+        }
+
         if (p_RigidBody->IsGrounded) {
 
             m_LastJumpedWallNormal = glm::vec3(0.0f);
@@ -155,6 +190,13 @@ private:
             m_DashTimeCounter -= dt;
         }
 
+        if (m_WallJumpLockCounter > 0.0f) {
+            m_WallJumpLockCounter -= dt;
+        }
+        if (p_RigidBody->IsGrounded || IsTouchingJumpableWall()) {
+            m_WallJumpLockCounter = 0.0f;
+        }
+
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
             m_LastWallNormal = p_RigidBody->WallNormal;
             m_WallCoyoteCounter = WallCoyoteTime;
@@ -186,6 +228,11 @@ private:
 
     void HandleRotation(float dt) {
         glm::vec3 moveDir = GetMovementDirection();
+
+        if (m_WallJumpLockCounter > 0.0f) {
+            moveDir = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
+        }
+
         if (glm::length(moveDir) > 0.1f) {
             float targetAngle = glm::degrees(atan2(moveDir.x, moveDir.z));
             m_CurrentYaw = NFSEngine::Math::SmoothDampAngle(m_CurrentYaw, targetAngle, m_TurnSmoothVelocity, TurnSmoothTime, dt);
@@ -200,14 +247,10 @@ private:
             bool jumped = false;
 
             if (m_WallCoyoteCounter > 0.0f && !p_RigidBody->IsGrounded) {
-                
-                bool isSameWall = glm::dot(m_LastWallNormal, m_LastJumpedWallNormal) > 0.9f;
-                
-                if (!isSameWall) {
-                    if (m_IsDashing) m_IsDashing = false;
-                    ExecuteWallJump();
-                    jumped = true;
-                }
+
+                if (m_IsDashing) m_IsDashing = false;
+                ExecuteWallJump();
+                jumped = true;
             }
 
             if (!jumped && (m_CoyoteTimeCounter > 0.0f || m_JumpsRemaining > 0)) {
@@ -227,21 +270,20 @@ private:
     }
 
     void ExecuteWallJump() {
-        m_LastJumpedWallNormal = m_LastWallNormal;
-
-        glm::vec3 jumpDirection = m_LastWallNormal + glm::vec3(0.0f, 1.2f, 0.0f);
-        jumpDirection = glm::normalize(jumpDirection);
+        glm::vec3 jumpDirection = m_LastWallNormal;
 
         p_RigidBody->Velocity.y = sqrt(2.0f * JumpHeight * -NFSEngine::PhysicsSystem::Gravity.y);
 
-        p_RigidBody->Velocity.x = jumpDirection.x * MaxSpeed;
-        p_RigidBody->Velocity.z = jumpDirection.z * MaxSpeed;
+        p_RigidBody->Velocity.x = jumpDirection.x * WallJumpPushForce;
+        p_RigidBody->Velocity.z = jumpDirection.z * WallJumpPushForce;
 
         m_IsJumping = true;
         m_JumpsRemaining = MaxJumps - 1;
 
         m_JumpBufferCounter = 0.0f;
         m_CoyoteTimeCounter = 0.0f;
+
+        m_WallJumpLockCounter = WallJumpLockTime;
     }
 
     void Dash() {
@@ -272,6 +314,11 @@ private:
     }
 
     void ApplyMovement(float dt) {
+
+        if (m_WallJumpLockCounter > 0.0f) {
+            return;
+        }
+
         glm::vec3 targetDir = GetMovementDirection();
 
         float currentMaxSpeed = m_IsDashing ? DashSpeed : MaxSpeed;
@@ -297,15 +344,15 @@ private:
         }
 
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
-            
-            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {}
-            else {
+
+            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {
+            } else {
                 glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
-                
+
                 float dotProduct = glm::dot(currentXZ, m_LastWallNormal);
-                
+
                 glm::vec3 allowedVelocityXZ = m_LastWallNormal * dotProduct;
-                
+
                 p_RigidBody->Velocity.x = allowedVelocityXZ.x;
                 p_RigidBody->Velocity.z = allowedVelocityXZ.z;
             }
@@ -326,9 +373,7 @@ private:
     }
 
     bool IsTouchingJumpableWall() const {
-        return p_RigidBody->IsTouchingWall && 
-               p_RigidBody->TouchedWallObject != nullptr && 
-               p_RigidBody->TouchedWallObject->CompareTag(NFSEngine::Tags::WallJumpSurface);
+        return p_RigidBody->IsTouchingWall && p_RigidBody->TouchedWallObject != nullptr
+            && p_RigidBody->TouchedWallObject->CompareTag(NFSEngine::Tags::WallJumpSurface);
     }
-
 };

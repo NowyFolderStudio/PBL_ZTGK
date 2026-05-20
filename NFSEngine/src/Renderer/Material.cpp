@@ -52,5 +52,14 @@ namespace NFSEngine {
         else {
             shader->SetBool("u_HasAOMap", false);
         }
+
+        if (RampMap) {
+            RampMap->Bind(5);
+            shader->SetInt("u_RampMap", 5);
+            shader->SetBool("u_HasRampMap", true);
+        }
+        else {
+            shader->SetBool("u_HasRampMap", false);
+        }
 	}
 }

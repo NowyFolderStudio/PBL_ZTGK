@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Components/Component.hpp"
 #include <glm/glm.hpp>
-#include <imgui.h>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Components/Component.hpp"
 
 namespace NFSEngine {
     class DirectionalLight : public Component {
@@ -14,14 +15,12 @@ namespace NFSEngine {
         DirectionalLight(GameObject* owner)
             : Component(owner) { }
 
+        ~DirectionalLight();
+
         virtual std::string GetName() const override { return "DirectionalLight"; }
 
-        void OnImGuiRender() override {
-            ImGui::ColorEdit3("Color", glm::value_ptr(Color));
+        void OnAwake() override;
 
-            ImGui::DragFloat3("Direction", glm::value_ptr(Direction), 0.01f);
-
-            ImGui::DragFloat("Intensity", &Intensity, 0.1f, 0.0f, 100.0f);
-        }
+        void OnImGuiRender() override;
     };
 } // namespace NFSEngine

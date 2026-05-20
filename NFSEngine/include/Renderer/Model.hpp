@@ -16,10 +16,25 @@
 
 namespace NFSEngine {
 
+    struct MeshData {
+        std::shared_ptr<VertexArray> VAO;
+        unsigned int MaterialIndex = 0;
+    };
+
+    struct AssimpMaterialInfo {
+        std::string Name;
+        std::string AlbedoPath;
+        std::string NormalPath;
+        std::string RoughnessPath;
+        std::string MetallicPath;
+        std::string AmbientOcclusionPath;
+    };
+
     struct Vertex {
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoords;
+        glm::vec3 tangent;
 
         std::array<int, MAX_BONE_INFLUENCE> boneIDs = { -1, -1, -1, -1 };
         std::array<float, MAX_BONE_INFLUENCE> boneWeights = { 0.0f, 0.0f, 0.0f, 0.0f };
@@ -34,7 +49,9 @@ namespace NFSEngine {
     public:
         Model(const std::string& path);
 
-        std::vector<std::shared_ptr<VertexArray>> GetMeshes() const { return m_Meshes; }
+        const std::vector<MeshData>& GetMeshes() const { return m_Meshes; }
+
+        const std::vector<AssimpMaterialInfo>& GetMaterialInfo() const { return m_MaterialInfo; }
 
         const BoundingSphere& GetMeshBoundingSphere() const { return m_MeshBoundingSphere; }
         const glm::vec3& GetMeshAABBMin() const { return m_MeshAABBMin; }
@@ -44,7 +61,10 @@ namespace NFSEngine {
         int GetBoneCount() const { return m_BoneCounter; }
 
     private:
-        std::vector<std::shared_ptr<VertexArray>> m_Meshes;
+        std::vector<MeshData> m_Meshes;
+        std::vector<AssimpMaterialInfo> m_MaterialInfo;
+
+        std::string m_Directory;
 
         glm::vec3 m_MeshAABBMin = glm::vec3(std::numeric_limits<float>::max());
         glm::vec3 m_MeshAABBMax = glm::vec3(std::numeric_limits<float>::lowest());
@@ -59,7 +79,7 @@ namespace NFSEngine {
 
         static glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from);
         void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
-
-        std::shared_ptr<VertexArray> ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        MeshData ProcessMesh(aiMesh* mesh, const aiScene* scene);
+        void LoadMaterials(const aiScene* scene);
     };
 } // namespace NFSEngine

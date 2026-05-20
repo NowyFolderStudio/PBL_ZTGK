@@ -10,6 +10,10 @@
 
 namespace NFSEngine {
 
+    class DirectionalLight;
+    class PointLight;
+    class SpotLight;
+
     class Scene {
     public:
         Scene() = default;
@@ -26,34 +30,36 @@ namespace NFSEngine {
         const std::vector<std::unique_ptr<GameObject>>& GetAllGameObjects() const { return m_GameObjects; }
 
         GameObject* FindGameObject(const std::string& name);
+        GameObject* FindWithTag(uint32_t tagHash);
+        std::vector<GameObject*> FindGameObjectsWithTag(uint32_t tagHash);
 
-        GameObject* FindWithTag(uint32_t tagHash) {
-            for (auto& go : m_GameObjects) {
-                if (go->CompareTag(tagHash)) {
-                    return go.get();
-                }
-            }
-            return nullptr;
-        }
+        // Light things
+        void RegisterDirectionalLight(DirectionalLight* light) { m_CachedDirLight = light; }
+        void RegisterPointLight(PointLight* light) { m_CachedPointLights.push_back(light); }
+        void RegisterSpotLight(SpotLight* light) { m_CachedSpotLights.push_back(light); }
 
-        std::vector<GameObject*> FindGameObjectsWithTag(uint32_t tagHash) {
-            std::vector<GameObject*> result;
-            for (auto& go : m_GameObjects) {
-                if (go->CompareTag(tagHash)) {
-                    result.push_back(go.get());
-                }
-            }
-            return result;
-        }
+        void UnregisterDirectionalLight(DirectionalLight* light);
+        void UnregisterPointLight(PointLight* light);
+        void UnregisterSpotLight(SpotLight* light);
+
+        NFSEngine::DirectionalLight* GetDirLight() const { return m_CachedDirLight; }
+        const std::vector<NFSEngine::PointLight*>& GetPointLights() const { return m_CachedPointLights; }
+        const std::vector<NFSEngine::SpotLight*>& GetSpotLights() const { return m_CachedSpotLights; }
+
 
     private:
-        std::vector<std::unique_ptr<GameObject>> m_GameObjects;
         DeltaTime m_FixedDeltaTime = 0.01666f;
         float m_Accumulator = 0.0f;
 
         std::vector<RigidBody3DComponent*> m_PhysicsBodies;
         std::vector<ColliderComponent*> m_Colliders;
         PhysicsSystem m_PhysicsSystem;
+
+        NFSEngine::DirectionalLight* m_CachedDirLight = nullptr;
+        std::vector<NFSEngine::SpotLight*> m_CachedSpotLights;
+        std::vector<NFSEngine::PointLight*> m_CachedPointLights;
+
+        std::vector<std::unique_ptr<GameObject>> m_GameObjects;
     };
 
 } // namespace NFSEngine

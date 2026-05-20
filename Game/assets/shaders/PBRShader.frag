@@ -6,6 +6,8 @@ in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Normal;
 
+in mat3 TBN;
+
 uniform vec3 viewPos;
 
 uniform sampler2D u_AlbedoMap;
@@ -116,8 +118,17 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
 }
 
 void main() {
-	vec3 albedo = u_HasAlbedoMap ? pow(texture(u_AlbedoMap, TexCoord).rgb, vec3(2.2)) : u_AlbedoColor;
+	vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
+
 	vec3 N = normalize(Normal);
+
+    if (u_HasNormalMap) {
+        vec3 normalMap = texture(u_NormalMap, TexCoord).rgb;
+        normalMap = normalMap * 2.0 - 1.0;
+        
+        N = normalize(TBN * normalMap);
+    }
+
 	float metallic = u_HasMetallicMap ? texture(u_MetallicMap, TexCoord).r : u_Metallic;
     float roughness = u_HasRoughnessMap ? texture(u_RoughnessMap, TexCoord).r : u_Roughness;
     float ao = u_HasAOMap ? texture(u_AOMap, TexCoord).r : 1.0;

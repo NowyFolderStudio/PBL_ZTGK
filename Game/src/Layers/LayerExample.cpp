@@ -54,51 +54,55 @@ void LayerExample::OnAttach() {
     NFSEngine::SceneLoader sceneLoader;
 
     sceneLoader.InitDefaultLoaders();
-
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
-
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader
         = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-    m_HazardShader->Bind();
-    m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
-
-    m_GoochShader
-        = NFSEngine::Shader::Create("GoochShader", "assets/shaders/lightShader.vert", "assets/shaders/goochShader.frag");
 
     auto texCat = NFSEngine::Texture::Create("assets/textures/cat.png");
     auto matCat = std::make_shared<NFSEngine::Material>();
     matCat->AlbedoMap = texCat;
 
-    auto texSample = NFSEngine::Texture::Create("assets/textures/sample.png");
+    auto texSampleAlbedo = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Color.png");
+    auto texSampleRoughness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Roughness.png");
+    auto texSampleMetalness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1k-PNG_Metalness.png");
+    auto texSampleAO = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_AmbientOcclusion.png");
     auto matSample = std::make_shared<NFSEngine::Material>();
-    matSample->AlbedoMap = texSample;
+    matSample->AlbedoMap = texSampleAlbedo;
+    matSample->RoughnessMap = texSampleRoughness;
+    matSample->MetallicMap = texSampleMetalness;
+    matSample->AOMap = texSampleAO;
 
-    auto texWhite = NFSEngine::Texture::Create("assets/textures/white.png");
     auto matWhite = std::make_shared<NFSEngine::Material>();
-    matWhite->AlbedoMap = texWhite;
+    matWhite->AlbedoColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    auto texBlack = NFSEngine::Texture::Create("assets/textures/black.png");
     auto matBlack = std::make_shared<NFSEngine::Material>();
-    matBlack->AlbedoMap = texBlack;
+    matBlack->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
+
+    matAudio = std::make_shared<NFSEngine::Material>();
+    matAudio->AlbedoMap = texSampleAlbedo;
+
+    matAudio->SetFloat("u_ScaleStrengthY", 0.3f);
+    matAudio->SetFloat("u_ScaleStrengthXZ", 0.0f);
+    matAudio->SetFloat("u_BendStrength", 0.0f);
+    matAudio->SetFloat("u_TwistStrength", 0.4f);
 
     auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
                             float thickness = 1.0f) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
-        obj->GetTransform()->SetPosition({x, y, z});
-        obj->GetTransform()->SetScale({sizeX, thickness, sizeZ});
+        obj->GetTransform()->SetPosition({ x, y, z });
+        obj->GetTransform()->SetScale({ sizeX, thickness, sizeZ });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
         auto& col = obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-        col.Size = glm::vec3(sizeX, thickness, sizeZ);
         return obj;
     };
 
     auto makeCoin = [&](const std::string& name, float x, float y, float z) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
-        obj->GetTransform()->SetPosition({x, y, z});
+        obj->GetTransform()->SetPosition({ x, y, z });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCat);
         obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
         obj->AddComponent<NFSEngine::CoinComponent>();
@@ -123,35 +127,39 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
 
-    // PlayerModel
-    NFSEngine::GLTextureParameters rampParams;
-    rampParams.WrapS = GL_CLAMP_TO_EDGE;
-    rampParams.WrapT = GL_CLAMP_TO_EDGE;
-    rampParams.MinFilter = GL_NEAREST;
-    rampParams.MagFilter = GL_NEAREST;
-    rampParams.GenerateMipmaps = false;
-
-    m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
     auto playerModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player.obj");
-    m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-    m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
-    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
     auto texPlayer = NFSEngine::Texture::Create("assets/models/Player/playerModelTexture.JPEG");
+
+    NFSEngine::TextureParameters rampParams;
+    rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
+    rampParams.WrapT = NFSEngine::TextureWrap::Clamp;
+    rampParams.MinFilter = NFSEngine::TextureFilter::Nearest;
+    rampParams.MagFilter = NFSEngine::TextureFilter::Nearest;
+    rampParams.GenerateMipmaps = false;
+    m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
+
+    m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
+
     auto matPlayer = std::make_shared<NFSEngine::Material>();
     matPlayer->AlbedoMap = texPlayer;
+    matPlayer->RampMap = m_RampTexture;
+
+    m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
+    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
+
     auto& toonComp = m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(m_ToonShader, matPlayer);
     toonComp.AddLOD(playerModel, 10000.0f);
 
     // Sphere
 
     auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");
-
+    /*
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Metalness.jpg");
     auto texSphereRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Roughness.jpg");
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal053B_1K-JPG_Displacement.jpg");
-    /*
+
     auto texSphereAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texSphereNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texSphereMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
@@ -159,10 +167,15 @@ void LayerExample::OnAttach() {
     auto texSphereAO = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Displacement.jpg");
     */
 
+    auto texSphereAlbedo = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_Color.png");
+    auto texSphereNormal = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_NormalGL.png");
+    auto texSphereRoughness = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_Roughness.png");
+    auto texSphereAO = NFSEngine::Texture::Create("assets/textures/Rock64/Rock064_1K-PNG_AmbientOcclusion.png");
+
     auto matSpherePBR = std::make_shared<NFSEngine::Material>();
     matSpherePBR->AlbedoMap = texSphereAlbedo;
     matSpherePBR->NormalMap = texSphereNormal;
-    matSpherePBR->MetallicMap = texSphereMetallic;
+    // matSpherePBR->MetallicMap = texSphereMetallic;
     matSpherePBR->RoughnessMap = texSphereRoughness;
     matSpherePBR->AOMap = texSphereAO;
 
@@ -173,14 +186,60 @@ void LayerExample::OnAttach() {
     auto& sphereComp = sphereObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matSpherePBR);
     sphereComp.AddLOD(sphereModel, 10000.0f);
 
+    // Kod wczytujacy obiekt wielo meshowy / materialowy, mozliwe jest przeniesienie takiego wczytywania do jakiejs klasy za to
+    // odpowiedzialnej
+
+    std::string modelPath = "assets/models/fa-18/FA-18C.obj";
+    auto airplaneModel = std::make_shared<NFSEngine::Model>(modelPath);
+
+    NFSEngine::GameObject* airplaneObj = m_Scene->CreateGameObject("FA-18C");
+    airplaneObj->GetTransform()->SetPosition(glm::vec3(0.0f, 15.0f, -23.0f));
+    airplaneObj->GetTransform()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+    airplaneObj->GetTransform()->SetScale(glm::vec3(1.0f));
+
+    auto& airplaneComp = airplaneObj->AddComponent<NFSEngine::ModelComponent>(m_Shader);
+    airplaneComp.AddLOD(airplaneModel, 10000.0f);
+
+    const auto& materialInfos = airplaneModel->GetMaterialInfo();
+
+    std::string textureFolder = "assets/models/fa-18/";
+
+    for (size_t i = 0; i < materialInfos.size(); i++) {
+        auto mat = std::make_shared<NFSEngine::Material>();
+
+        mat->AlbedoColor = glm::vec3(0.7f);
+        mat->Roughness = 0.9f;
+        mat->Metallic = 0.0f;
+
+        auto TryLoadTexture = [&](const std::string& assimpPath) -> std::shared_ptr<NFSEngine::Texture> {
+            if (assimpPath.empty()) return nullptr;
+
+            std::string filename = std::filesystem::path(assimpPath).filename().string();
+            std::string fullPath = textureFolder + filename;
+
+            if (std::filesystem::exists(fullPath)) {
+                return NFSEngine::Texture::Create(fullPath);
+            }
+            return nullptr;
+        };
+
+        mat->AlbedoMap = TryLoadTexture(materialInfos[i].AlbedoPath);
+        mat->NormalMap = TryLoadTexture(materialInfos[i].NormalPath);
+        mat->RoughnessMap = TryLoadTexture(materialInfos[i].RoughnessPath);
+        mat->MetallicMap = TryLoadTexture(materialInfos[i].MetallicPath);
+
+        airplaneComp.SetMaterial(i, mat);
+    }
+
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 
     NFSEngine::GameObject* cylinderObj = m_Scene->CreateGameObject("Static_Cylinder");
     cylinderObj->AddComponent<NFSEngine::CylinderCollider3DComponent>();
-    auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matSample);
+    auto& cylComp = cylinderObj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matAudio);
     cylComp.AddLOD(cylinderModel, 10000.0f);
-    cylinderObj->GetTransform()->SetPosition({4.0f, 0.0f, 1.0f});
+    cylinderObj->GetTransform()->SetPosition({ 4.0f, 0.0f, 1.0f });
+    cylinderObj->AddComponent<BounceComponent>();
 
     // Gramophone
     auto gramophoneModel0 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneHIGH.obj");
@@ -192,63 +251,60 @@ void LayerExample::OnAttach() {
     gramophoneComp.AddLOD(gramophoneModel0, 30.0f);
     gramophoneComp.AddLOD(gramophoneModel1, 45.0f);
     gramophoneComp.AddLOD(gramophoneModel2, 9999.9f);
-    gramophoneObj->GetTransform()->SetPosition({23.0f, 2.0f, 0.0f});
-    gramophoneObj->GetTransform()->SetScale({3.0f, 3.0f, 3.0f});
-    gramophoneObj->GetTransform()->SetRotation({0.0f, 90.0f, 0.f});
+    gramophoneObj->GetTransform()->SetPosition({ 23.0f, 2.0f, 0.0f });
+    gramophoneObj->GetTransform()->SetScale({ 3.0f, 3.0f, 3.0f });
+    gramophoneObj->GetTransform()->SetRotation({ 0.0f, 90.0f, 0.f });
 
     // Central Platform
     m_Floor = m_Scene->CreateGameObject("Floor");
-    m_Floor->GetTransform()->SetPosition({0.0f, -2.0f, 0.0f});
+    m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
     m_Floor->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
     m_Floor->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    m_Floor->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(20.0f, 1.0f, 20.0f);
-    m_Floor->GetTransform()->SetScale({20.0f, 1.0f, 20.0f});
+    m_Floor->GetTransform()->SetScale({ 20.0f, 1.0f, 20.0f });
 
     // Platform Ramp
     NFSEngine::GameObject* rampObj = m_Scene->CreateGameObject("Ramp");
-    rampObj->GetTransform()->SetPosition({-10.0f, -1.5f, 0.0f});
-    rampObj->GetTransform()->SetRotation({0.0f, 0.0f, -30.0f});
-    rampObj->GetTransform()->SetScale({12.0f, 1.0f, 4.0f});
+    rampObj->GetTransform()->SetPosition({ -10.0f, -1.5f, 0.0f });
+    rampObj->GetTransform()->SetRotation({ 0.0f, 0.0f, -30.0f });
+    rampObj->GetTransform()->SetScale({ 12.0f, 1.0f, 4.0f });
     rampObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
     rampObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    rampObj->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(12.0f, 1.0f, 4.0f);
+    rampObj->AddComponent<BounceComponent>();
 
     // Lighting
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({0.0f, 2.0f, 2.0f});
+    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = {1.0f, 0.3f, 0.3f};
+    lightComp.Color = { 1.0f, 0.3f, 0.3f };
     lightComp.Intensity = 120.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
-    sunComp.Color = glm::vec3(0.2f, 0.3f, 0.92f);
-    sunComp.Intensity = 0.0f;
+    sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
+    sunComp.Intensity = 1.0f;
 
     NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
-    spotObj->GetTransform()->SetPosition({0.0f, 3.5f, -3.0f});
+    spotObj->GetTransform()->SetPosition({ 0.0f, 3.5f, -3.0f });
     auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
-    spotComp.Color = {0.1f, 0.2f, 0.93f};
-    spotComp.Direction = {0.0f, -1.0f, -0.5f};
+    spotComp.Color = { 0.1f, 0.2f, 0.93f };
+    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
     spotComp.Intensity = 130.0f;
 
     // Static Cube
     m_MovingCube2 = m_Scene->CreateGameObject("Static_Reference_Cube");
     m_MovingCube2->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
-    m_MovingCube2->GetTransform()->SetPosition({-4.0f, -1.0f, 0.0f});
-    m_MovingCube2->GetTransform()->SetScale({8.0f, 80.0f, 2.0f});
+    m_MovingCube2->GetTransform()->SetPosition({ -4.0f, -1.0f, 0.0f });
+    m_MovingCube2->GetTransform()->SetScale({ 8.0f, 80.0f, 2.0f });
     m_MovingCube2->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    m_MovingCube2->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(8.0f, 80.0f, 2.0f);
     m_MovingCube2->AddTag(NFSEngine::Tags::WallJumpSurface);
 
     // Static Cube
     NFSEngine::GameObject* wall = m_Scene->CreateGameObject("wall");
     wall->AddComponent<NFSEngine::CubeMesh>(m_Shader, matWhite);
-    wall->GetTransform()->SetPosition({-4.0f, -1.0f, 10.0f});
-    wall->GetTransform()->SetScale({8.0f, 80.0f, 2.0f});
+    wall->GetTransform()->SetPosition({ -4.0f, -1.0f, 10.0f });
+    wall->GetTransform()->SetScale({ 8.0f, 80.0f, 2.0f });
     wall->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    wall->GetComponent<NFSEngine::BoxCollider3DComponent>()->Size = glm::vec3(8.0f, 80.0f, 2.0f);
     wall->AddTag(NFSEngine::Tags::WallJumpSurface);
 
     // earth Object
@@ -274,11 +330,9 @@ void LayerExample::OnAttach() {
     controller.SetTarget(m_Player->GetTransform());
 
     // Skybox
-    std::vector<std::string> faces = {
-        "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
-        "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
-        "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png"
-    };
+    std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
+                                       "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
+                                       "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
     m_Skybox = NFSEngine::Skybox::Create(faces);
     m_SkyboxShader = NFSEngine::Shader::Create("Skybox", "assets/shaders/skybox.vert", "assets/shaders/skybox.frag");
 
@@ -331,7 +385,6 @@ void LayerExample::OnAttach() {
     hazardCube->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
     auto& hazardMesh = hazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, matWhite);
     auto& hazardCol = hazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    hazardCol.Size = glm::vec3(1.5f, 1.5f, 1.5f);
     auto& hazard = hazardCube->AddComponent<NFSEngine::HazardComponent>();
 
     // GameManager
@@ -370,7 +423,6 @@ void LayerExample::OnAttach() {
     pianoBase->GetTransform()->SetPosition(glm::vec3(44.f, -2.f, 0.f));
     pianoBase->GetTransform()->SetScale(glm::vec3(12.f, 1.f, 5.f));
     auto& pianoCol = pianoBase->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    pianoCol.Size = glm::vec3(12.f, 1.f, 5.f);
 
     for (int i = 0; i < 7; i++) {
         std::string keyName = "PianoKey" + std::to_string(i);
@@ -393,15 +445,17 @@ void LayerExample::OnAttach() {
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
         if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
-        if (auto* dirLight = go->GetComponent<NFSEngine::DirectionalLight>()) m_CachedDirLight = dirLight;
-        if (auto* spotLight = go->GetComponent<NFSEngine::SpotLight>()) m_CachedSpotLights.push_back(spotLight);
-        if (auto* pointLight = go->GetComponent<NFSEngine::PointLight>()) m_CachedPointLights.push_back(pointLight);
         if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
         if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
     }
+
+    uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
+    uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
+
+    NFSEngine::Renderer::OnWindowResize(width, height);
 }
 
-void LayerExample::OnDetach() {}
+void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     if (GameManager::Get().GetCurrentState() == GameState::Paused) {
@@ -451,94 +505,17 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     for (auto* keyTrigger : m_CachedPianoKeys) {
         keyTrigger->OnUpdate(deltaTime);
     }
+
+    float songPos = m_Sequencer.GetContinuousBeatTime();
+    matAudio->SetFloat("u_MusicTime", songPos);
 }
 
 void LayerExample::OnRender() {
     if (m_CachedCamera) {
-        auto bindLightsAndCamera = [&](std::shared_ptr<NFSEngine::Shader> currentShader) {
-            currentShader->Bind();
-            currentShader->SetVec3("viewPos", m_CachedCamera->GetOwner()->GetTransform()->GetPosition());
+        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(),
+                                        m_CachedCamera->GetOwner()->GetTransform()->GetPosition(), m_Scene->GetDirLight(),
+                                        m_Scene->GetPointLights(), m_Scene->GetSpotLights(), m_EnvironmentMap.get());
 
-            if (m_EnvironmentMap) {
-                m_EnvironmentMap->BindEnvironmentMaps(5, 6, 7);
-
-                currentShader->SetInt("irradianceMap", 5);
-                currentShader->SetInt("prefilterMap", 6);
-                currentShader->SetInt("brdfLUT", 7);
-            }
-
-            if (m_CachedDirLight) {
-                currentShader->SetVec3("dirLight.direction", m_CachedDirLight->Direction);
-                currentShader->SetVec3("dirLight.color", m_CachedDirLight->Color);
-                currentShader->SetFloat("dirLight.intensity", m_CachedDirLight->Intensity);
-            }
-
-            int lightIndex = 0;
-            for (auto* light : m_CachedPointLights) {
-                std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
-                currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
-                currentShader->SetVec3(base + "color", light->Color);
-                currentShader->SetFloat(base + "intensity", light->Intensity);
-                currentShader->SetFloat(base + "constant", light->Constant);
-                currentShader->SetFloat(base + "linear", light->Linear);
-                currentShader->SetFloat(base + "quadratic", light->Quadratic);
-
-                lightIndex++;
-                if (lightIndex >= 16) break;
-            }
-            currentShader->SetInt("activePointLights", lightIndex);
-
-            int spotIndex = 0;
-            for (auto* light : m_CachedSpotLights) {
-                std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
-                currentShader->SetVec3(base + "position", light->GetTransform()->GetPosition());
-                currentShader->SetVec3(base + "direction", light->Direction);
-                currentShader->SetVec3(base + "color", light->Color);
-                currentShader->SetFloat(base + "intensity", light->Intensity);
-                currentShader->SetFloat(base + "cutOff", light->CutOff);
-                currentShader->SetFloat(base + "outerCutOff", light->OuterCutOff);
-                currentShader->SetFloat(base + "constant", light->Constant);
-                currentShader->SetFloat(base + "linear", light->Linear);
-                currentShader->SetFloat(base + "quadratic", light->Quadratic);
-
-                spotIndex++;
-                if (spotIndex >= 4) break;
-            }
-            currentShader->SetInt("activeSpotLights", spotIndex);
-        };
-
-        bindLightsAndCamera(m_Shader);
-        bindLightsAndCamera(m_AudioShader);
-        bindLightsAndCamera(m_ToonShader);
-
-        bindLightsAndCamera(m_GoochShader);
-        m_GoochShader->Bind();
-        m_GoochShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
-        bindLightsAndCamera(m_HazardShader);
-
-        m_Shader->Bind();
-        m_Shader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-
-        m_AudioShader->Bind();
-        m_AudioShader->SetVec4("u_ColorTint", glm::vec4(1.0f));
-        float songPos = m_Sequencer.GetContinuousBeatTime();
-        m_AudioShader->SetFloat("u_MusicTime", songPos);
-        m_AudioShader->SetFloat("u_ScaleStrengthY", 0.3f);
-        m_AudioShader->SetFloat("u_ScaleStrengthXZ", 0.0f);
-        m_AudioShader->SetFloat("u_BendStrength", 0.0f);
-        m_AudioShader->SetFloat("u_TwistStrength", 0.4f);
-
-        m_HazardShader->Bind();
-        m_HazardShader->SetVec4("u_ColorTint", glm::vec4(1.0f, 0.1f, 0.1f, 1.0f));
-
-        m_ToonShader->Bind();
-        m_ToonShader->SetInt("texture1", 0);
-        m_ToonShader->SetInt("rampTexture", 1);
-        m_RampTexture->Bind(1);
-
-        glm::vec3 camPos = m_CachedCamera->GetOwner()->GetTransform()->GetPosition();
-        NFSEngine::Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(), camPos);
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
@@ -590,7 +567,7 @@ void LayerExample::OnImGuiRender() {
         NFSEngine::Renderer::SetFrustumCullingEnabled(cullingEnabled);
     }
     int cullingMode = NFSEngine::Renderer::GetFrustumCullingMode();
-    const char* modes[] = {"Sphere", "AABB"};
+    const char* modes[] = { "Sphere", "AABB" };
     if (ImGui::Combo("Culling Mode", &cullingMode, modes, 2)) {
         NFSEngine::Renderer::SetFrustumCullingMode(cullingMode);
     }
@@ -602,7 +579,7 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("Triangle count: %u", stats.triangleCount);
     ImGui::Text("State changes: %u", stats.stateChanges);
 
-    static float values[90] = {0};
+    static float values[90] = { 0 };
     static int values_offset = 0;
     values[values_offset] = currentFrameTime;
     values_offset = (values_offset + 1) % 90;
@@ -613,6 +590,10 @@ void LayerExample::OnImGuiRender() {
 }
 
 void LayerExample::OnEvent(NFSEngine::Event& e) {
+    if (GameManager::Get().GetCurrentState() == GameState::Paused) {
+        return;
+    }
+
     if (m_CachedCameraController && !NFSEngine::DebugCamera::IsActive()) {
         m_CachedCameraController->OnEvent(e);
     }
@@ -629,7 +610,7 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
-        if (keyEvent.GetKeyCode() == NFSEngine::Key::Q) {
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
             e.Handled = true;
         }

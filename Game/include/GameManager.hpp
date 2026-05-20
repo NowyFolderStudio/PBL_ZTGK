@@ -15,6 +15,10 @@ private:
     NFSEngine::Layer* m_MainMenuLayer = nullptr;
     NFSEngine::Layer* m_CurrentLayer = nullptr;
     NFSEngine::Layer* m_PauseOverlay = nullptr;
+    NFSEngine::Layer* m_GameUILayer = nullptr;
+    NFSEngine::Layer* m_OptionsOverlay = nullptr;
+
+    std::string m_CurrentLevelPath = "assets/scenes/Level4_export.json";
 
     std::vector<NFSEngine::Layer*> m_GarbageLayers;
     bool m_HasPendingState = false;
@@ -26,7 +30,14 @@ public:
     static GameManager& Get();
     void Init();
     void ChangeState(GameState newState);
+
+    void LoadLevel(const std::string& levelPath);
+
     void TogglePause();
+
+    void OpenOptions();
+    void CloseOptions();
+    bool IsOptionsOpen() const { return m_OptionsOverlay != nullptr; }
 
     void RequestStateChange(GameState newState);
     void ProcessStateChange();

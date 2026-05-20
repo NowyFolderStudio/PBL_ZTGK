@@ -5,6 +5,9 @@
 namespace NFSEngine {
     class UIRenderer {
     public:
+        static constexpr float VIRTUAL_WIDTH = 1920.0f;
+        static constexpr float VIRTUAL_HEIGHT = 1080.0f;
+
         static void Init();
 
         static void Shutdown();

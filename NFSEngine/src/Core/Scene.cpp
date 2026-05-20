@@ -4,6 +4,10 @@
 #include "Renderer/Renderer.hpp"
 #include <algorithm>
 
+#include "Components/DirectionalLight.hpp"
+#include "Components/PointLight.hpp"
+#include "Components/SpotLight.hpp"
+
 namespace NFSEngine {
 
     GameObject* Scene::CreateGameObject(const std::string& name) {
@@ -150,6 +154,43 @@ namespace NFSEngine {
 
             gameObject->Render();
         }
+    }
+
+    GameObject* Scene::FindWithTag(uint32_t tagHash) {
+        for (auto& go : m_GameObjects) {
+            if (go->CompareTag(tagHash)) {
+                return go.get();
+            }
+        }
+        return nullptr;
+    }
+
+    std::vector<GameObject*> Scene::FindGameObjectsWithTag(uint32_t tagHash) {
+        std::vector<GameObject*> result;
+        for (auto& go : m_GameObjects) {
+            if (go->CompareTag(tagHash)) {
+                result.push_back(go.get());
+            }
+        }
+        return result;
+    }
+
+    void Scene::UnregisterDirectionalLight(DirectionalLight* light) {
+        m_CachedDirLight = nullptr;
+    }
+
+    void Scene::UnregisterPointLight(PointLight* light) {
+        m_CachedPointLights.erase(
+            std::remove(m_CachedPointLights.begin(), m_CachedPointLights.end(), light),
+            m_CachedPointLights.end()
+        );
+    }
+
+    void Scene::UnregisterSpotLight(SpotLight* light) {
+        m_CachedSpotLights.erase(
+            std::remove(m_CachedSpotLights.begin(), m_CachedSpotLights.end(), light),
+            m_CachedSpotLights.end()
+        );
     }
 
 } // namespace NFSEngine

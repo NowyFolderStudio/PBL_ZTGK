@@ -1,8 +1,14 @@
+#include <algorithm>
+
 #include "Renderer/Renderer.hpp"
 #include "Debug/Profiler.hpp"
 #include "Debug/GPUTimer.hpp"
 #include "Core/Application.hpp"
-#include <algorithm>
+
+#include "Renderer/EnvironmentMap.hpp"
+#include "Components/DirectionalLight.hpp"
+#include "Components/PointLight.hpp"
+#include "Components/SpotLight.hpp"
 
 namespace NFSEngine {
 
@@ -90,11 +96,21 @@ namespace NFSEngine {
         }
     }
 
-    void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition) {
+    void Renderer::BeginScene(const glm::mat4& viewMatrix,
+        const glm::mat4& projectionMatrix,
+        const glm::vec3& cameraPosition, 
+        DirectionalLight* dirLight,
+        const std::vector<PointLight*>& pointLights,
+        const std::vector<SpotLight*>& spotLights,
+        EnvironmentMap* envMap) {
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
         s_SceneData->CameraPosition = cameraPosition;
         s_SceneData->frustum.ExtractFromMatrix(projectionMatrix * viewMatrix);
+        s_SceneData->DirLight = dirLight;
+        s_SceneData->PointLights = &pointLights;
+        s_SceneData->SpotLights = &spotLights;
+        s_SceneData->EnvMap = envMap;
 
         if (s_HDRFramebuffer->GetSpecification().width > 0 && s_HDRFramebuffer->GetSpecification().height > 0) {
             s_HDRFramebuffer->Bind();
@@ -145,6 +161,56 @@ namespace NFSEngine {
 
                 packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
                 packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
+
+                packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
+
+                if (s_SceneData->EnvMap) {
+                    s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
+                    packet.shader->SetInt("irradianceMap", 30);
+                    packet.shader->SetInt("prefilterMap", 29);
+                    packet.shader->SetInt("brdfLUT", 28);
+                }
+
+                if (s_SceneData->DirLight) {
+                    packet.shader->SetVec3("dirLight.direction", s_SceneData->DirLight->Direction);
+                    packet.shader->SetVec3("dirLight.color", s_SceneData->DirLight->Color);
+                    packet.shader->SetFloat("dirLight.intensity", s_SceneData->DirLight->Intensity);
+                }
+
+                if (s_SceneData->PointLights) {
+                    int lightIndex = 0;
+                    for (auto* light : *s_SceneData->PointLights) {
+                        if (lightIndex >= 16) break;
+                        std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+                        packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                        packet.shader->SetVec3(base + "color", light->Color);
+                        packet.shader->SetFloat(base + "intensity", light->Intensity);
+                        packet.shader->SetFloat(base + "constant", light->Constant);
+                        packet.shader->SetFloat(base + "linear", light->Linear);
+                        packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                        lightIndex++;
+                    }
+                    packet.shader->SetInt("activePointLights", lightIndex);
+                }
+
+                if (s_SceneData->SpotLights) {
+                    int spotIndex = 0;
+                    for (auto* light : *s_SceneData->SpotLights) {
+                        if (spotIndex >= 4) break;
+                        std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
+                        packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                        packet.shader->SetVec3(base + "direction", light->Direction);
+                        packet.shader->SetVec3(base + "color", light->Color);
+                        packet.shader->SetFloat(base + "intensity", light->Intensity);
+                        packet.shader->SetFloat(base + "cutOff", light->CutOff);
+                        packet.shader->SetFloat(base + "outerCutOff", light->OuterCutOff);
+                        packet.shader->SetFloat(base + "constant", light->Constant);
+                        packet.shader->SetFloat(base + "linear", light->Linear);
+                        packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                        spotIndex++;
+                    }
+                    packet.shader->SetInt("activeSpotLights", spotIndex);
+                }
             }
 
             packet.shader->SetMat4("model", packet.transform);
@@ -155,6 +221,20 @@ namespace NFSEngine {
 
             if (packet.material) {
                 packet.material->Bind(packet.shader);
+
+                for (const auto& [name, value] : packet.material->Properties) {
+                    std::visit([&](auto&& arg) {
+                        using T = std::decay_t<decltype(arg)>;
+                        if constexpr (std::is_same_v<T, float>)
+                            packet.shader->SetFloat(name, arg);
+                        else if constexpr (std::is_same_v<T, int>)
+                            packet.shader->SetInt(name, arg);
+                        else if constexpr (std::is_same_v<T, glm::vec3>)
+                            packet.shader->SetVec3(name, arg);
+                        else if constexpr (std::is_same_v<T, glm::vec4>)
+                            packet.shader->SetVec4(name, arg);
+                        }, value);
+                }
 
                 s_Stats.stateChanges++;
             }
