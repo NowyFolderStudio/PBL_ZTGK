@@ -75,4 +75,10 @@ private:
     bool m_DrawDebug = false;
 
     std::shared_ptr<NFSEngine::Material> matAudio = nullptr;
+    std::shared_ptr<NFSEngine::Material> matGoldPBR = nullptr;
+    std::shared_ptr<NFSEngine::Material> matGramophone1 = nullptr;
+    std::shared_ptr<NFSEngine::Material> matGramophone2 = nullptr;
+    std::shared_ptr<NFSEngine::Material> matGramophone3 = nullptr;
+    std::shared_ptr<NFSEngine::Material> matGramophone4 = nullptr;
+    std::shared_ptr<NFSEngine::Material> matGramophone5 = nullptr;
 };

@@ -38,5 +38,23 @@ namespace NFSEngine {
 		void SetFloat(const std::string& name, float value) { Properties[name] = value; }
 		void SetVec4(const std::string& name, glm::vec4 value) { Properties[name] = value; }
 		void SetVec3(const std::string& name, glm::vec3 value) { Properties[name] = value; }
+
+		std::shared_ptr<Material> Clone() const {
+			auto copy = std::make_shared<Material>();
+			copy->AlbedoMap = this->AlbedoMap;
+			copy->NormalMap = this->NormalMap;
+			copy->MetallicMap = this->MetallicMap;
+			copy->RoughnessMap = this->RoughnessMap;
+			copy->AOMap = this->AOMap;
+			copy->RampMap = this->RampMap;
+
+			copy->AlbedoColor = this->AlbedoColor;
+			copy->Metallic = this->Metallic;
+			copy->Roughness = this->Roughness;
+
+			copy->Properties = this->Properties;
+
+			return copy;
+		}
 	};
 }

@@ -89,10 +89,10 @@ void LayerExample::OnAttach() {
     matAudio = std::make_shared<NFSEngine::Material>();
     matAudio->AlbedoMap = texSampleAlbedo;
 
-    matAudio->SetFloat("u_ScaleStrengthY", 0.3f);
-    matAudio->SetFloat("u_ScaleStrengthXZ", 0.0f);
+    matAudio->SetFloat("u_ScaleStrengthY", 0.5f);
+    matAudio->SetFloat("u_ScaleStrengthXZ", 0.5f);
     matAudio->SetFloat("u_BendStrength", 0.0f);
-    matAudio->SetFloat("u_TwistStrength", 0.4f);
+    matAudio->SetFloat("u_TwistStrength", 0.5f);
 
     auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
                             float thickness = 1.0f) -> NFSEngine::GameObject* {
@@ -441,6 +441,69 @@ void LayerExample::OnAttach() {
         if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
     }
 
+    auto texGoldAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
+    auto texGoldNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
+    auto texGoldMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
+    auto texGoldRoughness = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Roughness.jpg");
+
+    matGoldPBR = std::make_shared<NFSEngine::Material>();
+    matGoldPBR->AlbedoMap = texGoldAlbedo;
+    matGoldPBR->NormalMap = texGoldNormal;
+    matGoldPBR->MetallicMap = texGoldMetallic;
+    matGoldPBR->RoughnessMap = texGoldRoughness;
+
+    matGoldPBR->SetFloat("u_ScaleStrengthY", 0.0f);
+    matGoldPBR->SetFloat("u_ScaleStrengthXZ", 0.0f);
+    matGoldPBR->SetFloat("u_BendStrength", 0.0f);
+    matGoldPBR->SetFloat("u_TwistStrength", 0.0f);
+
+    matGramophone1 = matGoldPBR->Clone();
+    matGramophone1->SetFloat("u_ScaleStrengthY", 0.5f);
+    matGramophone2 = matGoldPBR->Clone();
+    matGramophone2->SetFloat("u_ScaleStrengthXZ", 0.5f);
+    matGramophone3 = matGoldPBR->Clone();
+    matGramophone3->SetFloat("u_BendStrength", 0.5f);
+    matGramophone4 = matGoldPBR->Clone();
+    matGramophone4->SetFloat("u_TwistStrength", 0.5f);
+    matGramophone5 = matGoldPBR->Clone();
+    matGramophone5->SetFloat("u_ScaleStrengthY", 0.5f);
+    matGramophone5->SetFloat("u_ScaleStrengthXZ", 0.2f);
+    matGramophone5->SetFloat("u_BendStrength", 0.1f);
+    matGramophone5->SetFloat("u_TwistStrength", 0.5f);
+
+    NFSEngine::GameObject* musicGramophone1Obj = m_Scene->CreateGameObject("musicGramophone");
+    musicGramophone1Obj->GetTransform()->SetPosition(glm::vec3(-10.0f, 0.0f, 8.0f));
+    musicGramophone1Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& musicGramophone1Comp = musicGramophone1Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone1);
+    musicGramophone1Comp.AddLOD(gramophoneModel1, 10000.0f);
+
+    NFSEngine::GameObject* musicGramophone2Obj = m_Scene->CreateGameObject("musicGramophone");
+    musicGramophone2Obj->GetTransform()->SetPosition(glm::vec3(-5.0f, 0.0f, 8.0f));
+    musicGramophone2Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& musicGramophone2Comp = musicGramophone2Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone2);
+    musicGramophone2Comp.AddLOD(gramophoneModel1, 10000.0f);
+
+    NFSEngine::GameObject* musicGramophone3Obj = m_Scene->CreateGameObject("musicGramophone");
+    musicGramophone3Obj->GetTransform()->SetPosition(glm::vec3(0.0f, 0.0f, 8.0f));
+    musicGramophone3Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& musicGramophone3Comp = musicGramophone3Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone3);
+    musicGramophone3Comp.AddLOD(gramophoneModel1, 10000.0f);
+
+    NFSEngine::GameObject* musicGramophone4Obj = m_Scene->CreateGameObject("musicGramophone");
+    musicGramophone4Obj->GetTransform()->SetPosition(glm::vec3(5.0f, 0.0f, 8.0f));
+    musicGramophone4Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& musicGramophone4Comp = musicGramophone4Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone4);
+    musicGramophone4Comp.AddLOD(gramophoneModel1, 10000.0f);
+
+    NFSEngine::GameObject* musicGramophone5Obj = m_Scene->CreateGameObject("musicGramophone");
+    musicGramophone5Obj->GetTransform()->SetPosition(glm::vec3(10.0f, 0.0f, 8.0f));
+    musicGramophone5Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    auto& musicGramophone5Comp = musicGramophone5Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone5);
+    musicGramophone5Comp.AddLOD(gramophoneModel1, 10000.0f);
+
+
+
+
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
 
@@ -500,6 +563,11 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
     float songPos = m_Sequencer.GetContinuousBeatTime();
     matAudio->SetFloat("u_MusicTime", songPos);
+    matGramophone1->SetFloat("u_MusicTime", songPos);
+    matGramophone2->SetFloat("u_MusicTime", songPos);
+    matGramophone3->SetFloat("u_MusicTime", songPos);
+    matGramophone4->SetFloat("u_MusicTime", songPos);
+    matGramophone5->SetFloat("u_MusicTime", songPos);
 }
 
 void LayerExample::OnRender() {
