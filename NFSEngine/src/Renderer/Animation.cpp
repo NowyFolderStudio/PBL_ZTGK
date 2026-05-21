@@ -9,7 +9,9 @@
 namespace NFSEngine {
     std::shared_ptr<Animation> Animation::LoadSingle(const std::string& path, Model* model) {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        const aiScene* scene = importer.ReadFile(path,
+                                                 aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals
+                                                     | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 
         if (!scene || !scene->mRootNode || scene->mNumAnimations == 0) {
             NFS_CORE_ERROR("ERROR::ANIMATION::Animation not found in file: {}", path);
@@ -23,7 +25,9 @@ namespace NFSEngine {
 
     std::shared_ptr<Animation> Animation::LoadByName(const std::string& path, Model* model, const std::string& animationName) {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        const aiScene* scene = importer.ReadFile(path,
+                                                 aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals
+                                                     | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 
         if (!scene || !scene->mRootNode || scene->mNumAnimations == 0) {
             return nullptr;
@@ -50,7 +54,9 @@ namespace NFSEngine {
 
     std::shared_ptr<Animation> Animation::LoadSliced(const std::string& path, Model* model, float startTime, float endTime) {
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        const aiScene* scene = importer.ReadFile(path,
+                                                 aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals
+                                                     | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 
         if (!scene || !scene->mRootNode || scene->mNumAnimations == 0) {
             return nullptr;
@@ -64,7 +70,9 @@ namespace NFSEngine {
     std::vector<std::shared_ptr<Animation>> Animation::LoadAll(const std::string& path, Model* model) {
         std::vector<std::shared_ptr<Animation>> animations;
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
+        const aiScene* scene = importer.ReadFile(path,
+                                                 aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals
+                                                     | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 
         if (!scene || !scene->mRootNode || scene->mNumAnimations == 0) {
             NFS_CORE_ERROR("ERROR::ANIMATION::Animation not found in file: {}", path);

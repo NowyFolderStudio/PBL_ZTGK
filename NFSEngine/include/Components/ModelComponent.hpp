@@ -2,12 +2,12 @@
 
 #include <vector>
 
+#include "Components/AnimatorComponent.hpp"
 #include "Components/Component.hpp"
 #include "Components/Transform.hpp"
 #include "Renderer/Model.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Material.hpp"
-
 
 namespace NFSEngine {
 
@@ -43,5 +43,6 @@ namespace NFSEngine {
         std::vector<std::shared_ptr<Material>> m_Materials;
 
         Transform* m_Transform = nullptr;
+        AnimatorComponent* m_Animator = nullptr;
     };
 } // namespace NFSEngine

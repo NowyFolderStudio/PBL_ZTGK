@@ -57,9 +57,6 @@ namespace NFSEngine {
         const glm::vec3& GetMeshAABBMin() const { return m_MeshAABBMin; }
         const glm::vec3& GetMeshAABBMax() const { return m_MeshAABBMax; }
 
-        std::map<std::string, BoneInfo>& GetBoneInfoMap() { return m_BoneInfoMap; }
-        int GetBoneCount() const { return m_BoneCounter; }
-
     private:
         std::vector<MeshData> m_Meshes;
         std::vector<AssimpMaterialInfo> m_MaterialInfo;
@@ -70,16 +67,12 @@ namespace NFSEngine {
         glm::vec3 m_MeshAABBMax = glm::vec3(std::numeric_limits<float>::lowest());
         BoundingSphere m_MeshBoundingSphere;
 
-        std::map<std::string, BoneInfo> m_BoneInfoMap;
-        int m_BoneCounter = 0;
-
         void LoadModel(const std::string& path);
         void ProcessNode(aiNode* node, const aiScene* scene);
+        MeshData ProcessMesh(aiMesh* mesh, const aiScene* scene);
+
         void FinalizeBoundingSphere();
 
-        static glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from);
-        void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
-        MeshData ProcessMesh(aiMesh* mesh, const aiScene* scene);
         void LoadMaterials(const aiScene* scene);
     };
 } // namespace NFSEngine

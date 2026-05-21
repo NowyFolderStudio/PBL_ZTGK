@@ -1,12 +1,14 @@
 #include "Layers/LayerExample.hpp"
 
 // Komponenty
+#include "Components/AnimatorComponent.hpp"
 #include "Components/CubeMesh.hpp"
 #include "Components/CoinComponent.hpp"
 #include "Components/HazardComponent.hpp"
 #include "Components/ScoreManagerComponent.hpp"
 #include "Components/LivesManagerComponent.hpp"
 #include "Components/CharacterController.hpp"
+#include "Core/Log.hpp"
 #include "GameStateView.hpp"
 #include "Components/ModelComponent.hpp"
 #include "Components/RhythmMover.hpp"
@@ -23,6 +25,7 @@
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Audio/AudioEngine.hpp"
+#include "Renderer/Animation.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "Renderer/Renderer.hpp"
@@ -37,6 +40,7 @@
 
 #include <imgui.h>
 #include <memory>
+#include <vector>
 
 LayerExample::LayerExample(UILayer* uiLayer)
     : m_UILayer(uiLayer) {
@@ -57,7 +61,7 @@ void LayerExample::OnAttach() {
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
-    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader
         = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -116,19 +120,33 @@ void LayerExample::OnAttach() {
     m_MovingCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     // Player
-    auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Capsule/capsule.obj");
+    auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player_with_animations.fbx");
 
+    auto animationShader
+        = NFSEngine::Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(NFSEngine::Tags::Player);
     m_Player->GetTransform()->SetPosition(glm::vec3(0.0f, 2.0f, 0.0f));
-    auto& playerComp = m_Player->AddComponent<NFSEngine::ModelComponent>(m_Shader, matCat);
+    auto playerMaterial = std::make_shared<Material>();
+    auto* playerModel = m_Scene->CreateGameObject("PlayerModel");
+    playerModel->GetTransform()->SetParent(m_Player->GetTransform());
+    playerModel->GetTransform()->SetPosition({ 0, -1.5f, 0 });
+    playerModel->GetTransform()->SetScale({ 0.03, 0.03, 0.03 });
+    playerMaterial->AlbedoMap = NFSEngine::Texture::Create("assets/models/Player/Tekstura_postac_tshirt.png");
+    auto& playerComp = playerModel->AddComponent<NFSEngine::ModelComponent>(animationShader, playerMaterial);
     playerComp.AddLOD(capsuleModel, 10000.0f);
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
+    // playerModel->AddComponent<AnimatorComponent>();
+    auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
+    auto animations = Animation::LoadAll("assets/models/Player/Player_with_animations.fbx", m);
 
-    auto playerModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player.obj");
-    auto texPlayer = NFSEngine::Texture::Create("assets/models/Player/playerModelTexture.JPEG");
+    // playerModel->GetComponent<AnimatorComponent>()->PlayAnimation(animations[1]);
+
+    for (const std::shared_ptr<Animation>& a : animations) {
+        NFS_INFO("Animation loaded: {}", a->GetName());
+    }
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
@@ -139,16 +157,6 @@ void LayerExample::OnAttach() {
     m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
 
     m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
-
-    auto matPlayer = std::make_shared<NFSEngine::Material>();
-    matPlayer->AlbedoMap = texPlayer;
-    matPlayer->RampMap = m_RampTexture;
-
-    m_PlayerModel = m_Scene->CreateGameObject("PlayerModel");
-    m_PlayerModel->GetTransform()->SetPosition(glm::vec3(2.0f, 2.0f, 0.0f));
-
-    auto& toonComp = m_PlayerModel->AddComponent<NFSEngine::ModelComponent>(m_ToonShader, matPlayer);
-    toonComp.AddLOD(playerModel, 10000.0f);
 
     // Sphere
 

@@ -1,4 +1,5 @@
 #include "Components/ModelComponent.hpp"
+#include "Components/AnimatorComponent.hpp"
 #include "Core/GameObject.hpp"
 #include "Renderer/Renderer.hpp"
 
@@ -13,11 +14,12 @@ namespace NFSEngine {
         }
     }
 
-    void ModelComponent::AddLOD(std::shared_ptr<Model> model, float maxDistance) {
-        m_LODs.push_back({ model, maxDistance });
-    }
+    void ModelComponent::AddLOD(std::shared_ptr<Model> model, float maxDistance) { m_LODs.push_back({ model, maxDistance }); }
 
-    void ModelComponent::OnAwake() { m_Transform = m_Owner->GetComponent<Transform>(); }
+    void ModelComponent::OnAwake() {
+        m_Transform = m_Owner->GetComponent<Transform>();
+        m_Animator = m_Owner->GetComponent<AnimatorComponent>();
+    }
 
     void ModelComponent::OnRender() {
         if (m_LODs.empty() || !m_Shader || !m_Transform) return;
@@ -36,18 +38,25 @@ namespace NFSEngine {
 
         if (!selectedModel) return;
 
+        std::vector<glm::mat4> boneTransforms;
+
+        if (m_Animator) {
+            boneTransforms = m_Animator->GetFinalBoneMatrices();
+        } else {
+            boneTransforms.resize(100, glm::mat4(1.0f));
+        }
+
         for (const auto& meshData : selectedModel->GetMeshes()) {
 
             std::shared_ptr<Material> currentMaterial = nullptr;
 
             if (meshData.MaterialIndex < m_Materials.size()) {
                 currentMaterial = m_Materials[meshData.MaterialIndex];
-            }
-            else if (!m_Materials.empty()) {
+            } else if (!m_Materials.empty()) {
                 currentMaterial = m_Materials[0];
             }
 
-            Renderer::Submit(m_Shader, meshData.VAO, currentMaterial, m_Transform->GetGlobalMatrix());
+            Renderer::Submit(m_Shader, meshData.VAO, currentMaterial, m_Transform->GetGlobalMatrix(), boneTransforms);
         }
     }
-}
+} // namespace NFSEngine

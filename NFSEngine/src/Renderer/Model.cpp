@@ -1,4 +1,5 @@
 #include "Renderer/Model.hpp"
+#include "assimp/postprocess.h"
 #include <iostream>
 #include <limits>
 
@@ -15,8 +16,9 @@ namespace NFSEngine {
     void Model::LoadModel(const std::string& path) {
         Assimp::Importer import;
 
-        const aiScene* scene
-            = import.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
+        const aiScene* scene = import.ReadFile(path,
+                                               aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals
+                                                   | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
@@ -118,7 +120,24 @@ namespace NFSEngine {
             }
         }
 
-        ExtractBoneWeightForVertices(vertices, mesh, scene);
+        for (auto& vertex : vertices) {
+            float totalWeight = 0.0f;
+
+            // 1. Zliczamy obecną sumę wag dla wierzchołka
+            for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+                totalWeight += vertex.boneWeights[i];
+            }
+
+            // 2. Jeśli suma jest większa od zera, dzielimy każdą wagę przez sumę
+            if (totalWeight > 0.0f) {
+                for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
+                    vertex.boneWeights[i] /= totalWeight;
+                }
+            } else {
+                vertex.boneIDs[0] = 0;
+                vertex.boneWeights[0] = 1.0f;
+            }
+        }
 
         std::shared_ptr<VertexArray> vao = std::shared_ptr<VertexArray>(VertexArray::Create());
 
@@ -142,61 +161,5 @@ namespace NFSEngine {
         meshData.MaterialIndex = mesh->mMaterialIndex; // Kluczowy moment!
 
         return meshData;
-    }
-
-    glm::mat4 Model::ConvertMatrixToGLMFormat(const aiMatrix4x4& from) {
-        glm::mat4 to;
-        to[0][0] = from.a1;
-        to[1][0] = from.a2;
-        to[2][0] = from.a3;
-        to[3][0] = from.a4;
-        to[0][1] = from.b1;
-        to[1][1] = from.b2;
-        to[2][1] = from.b3;
-        to[3][1] = from.b4;
-        to[0][2] = from.c1;
-        to[1][2] = from.c2;
-        to[2][2] = from.c3;
-        to[3][2] = from.c4;
-        to[0][3] = from.d1;
-        to[1][3] = from.d2;
-        to[2][3] = from.d3;
-        to[3][3] = from.d4;
-        return to;
-    }
-
-    void Model::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene) {
-        for (unsigned int boneIndex = 0; boneIndex < mesh->mNumBones; ++boneIndex) {
-            int boneID = -1;
-            std::string boneName = mesh->mBones[boneIndex]->mName.C_Str();
-
-            if (m_BoneInfoMap.find(boneName) == m_BoneInfoMap.end()) {
-                BoneInfo newBoneInfo;
-                newBoneInfo.id = m_BoneCounter;
-                newBoneInfo.offset = ConvertMatrixToGLMFormat(mesh->mBones[boneIndex]->mOffsetMatrix);
-                m_BoneInfoMap[boneName] = newBoneInfo;
-                boneID = m_BoneCounter;
-                m_BoneCounter++;
-            } else {
-                boneID = m_BoneInfoMap[boneName].id;
-            }
-
-            assert(boneID != -1);
-            auto weights = mesh->mBones[boneIndex]->mWeights;
-            int numWeights = mesh->mBones[boneIndex]->mNumWeights;
-
-            for (int weightIndex = 0; weightIndex < numWeights; ++weightIndex) {
-                int vertexId = weights[weightIndex].mVertexId;
-                float weight = weights[weightIndex].mWeight;
-
-                for (int i = 0; i < MAX_BONE_INFLUENCE; ++i) {
-                    if (vertices[vertexId].boneIDs[i] < 0) {
-                        vertices[vertexId].boneWeights[i] = weight;
-                        vertices[vertexId].boneIDs[i] = boneID;
-                        break;
-                    }
-                }
-            }
-        }
     }
 } // namespace NFSEngine
