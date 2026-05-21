@@ -1,0 +1,104 @@
+{
+  "patternName": "BassPatternPrototype",
+  "audioFile": "assets/audio/sounds/bassslap02.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 4,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "C4"
+    },
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 1,
+      "note": "D#4"
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "G4"
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 1,
+      "note": "C4"
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "G4"
+    },
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 1,
+      "note": "A#4"
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "D5"
+    },
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 1,
+      "note": "G4"
+    },
+    {
+      "bar": 3,
+      "beat": 1,
+      "16th": 1,
+      "note": "G#4"
+    },
+    {
+      "bar": 3,
+      "beat": 2,
+      "16th": 1,
+      "note": "C5"
+    },
+    {
+      "bar": 3,
+      "beat": 3,
+      "16th": 1,
+      "note": "D#5"
+    },
+    {
+      "bar": 3,
+      "beat": 4,
+      "16th": 1,
+      "note": "G#4"
+    },
+    {
+      "bar": 4,
+      "beat": 1,
+      "16th": 1,
+      "note": "F4"
+    },
+    {
+      "bar": 4,
+      "beat": 2,
+      "16th": 1,
+      "note": "G#4"
+    },
+    {
+      "bar": 4,
+      "beat": 3,
+      "16th": 1,
+      "note": "C5"
+    },
+    {
+      "bar": 4,
+      "beat": 4,
+      "16th": 1,
+      "note": "F4"
+    }
+  ]
+}
