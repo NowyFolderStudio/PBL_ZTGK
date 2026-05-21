@@ -101,6 +101,12 @@ void PauseLayer::OnRender() {
 }
 
 void PauseLayer::OnEvent(NFSEngine::Event& e) {
+    NFSEngine::EventDispatcher dispatcher(e);
+    dispatcher.Dispatch<NFSEngine::WindowResizeEvent>([](NFSEngine::WindowResizeEvent& ev) {
+        NFSEngine::Renderer::OnWindowResize(ev.GetWidth(), ev.GetHeight());
+        return false;
+    });
+
     if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
         if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
