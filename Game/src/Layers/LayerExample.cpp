@@ -6,6 +6,7 @@
 #include "Components/CoinComponent.hpp"
 #include "Components/HazardComponent.hpp"
 #include "Components/CheckpointComponent.hpp"
+#include "Components/ZoneCameraTriggerComponent.hpp"
 #include "Components/ScoreManagerComponent.hpp"
 #include "Components/LivesManagerComponent.hpp"
 #include "Components/CharacterController.hpp"
@@ -37,6 +38,7 @@
 #include "SceneLoader/SceneLoader.hpp"
 #include "SceneLoader/CoinComponentLoader.hpp"
 #include "SceneLoader/CheckpointComponentLoader.hpp"
+#include "SceneLoader/ZoneCameraTriggerComponentLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -62,6 +64,7 @@ void LayerExample::OnAttach() {
     sceneLoader.InitDefaultLoaders();
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<CheckpointComponentLoader>());
+    sceneLoader.RegisterLoader(std::make_unique<ZoneCameraTriggerComponentLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
@@ -389,6 +392,15 @@ void LayerExample::OnAttach() {
     checkpoint->AddComponent<NFSEngine::BoxCollider3DComponent>();
     checkpoint->AddComponent<CheckpointComponent>();
 
+    NFSEngine::GameObject* camZone = m_Scene->CreateGameObject("CamZone_Piano");
+    camZone->GetTransform()->SetPosition(glm::vec3(44.0f, 1.0f, 0.0f));
+    camZone->GetTransform()->SetScale(glm::vec3(14.0f, 5.0f, 5.0f));
+    camZone->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    auto& camTrigger = camZone->AddComponent<ZoneCameraTriggerComponent>();
+    camTrigger.CustomYaw = 90.0f;
+    camTrigger.CustomPitch = 45.0f;
+    camTrigger.CustomDistance = 15.0f;
+
     // GameManager
     NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
     livesManager->SetTag(NFSEngine::Tags::LivesManager);
@@ -523,9 +535,18 @@ void LayerExample::OnAttach() {
 void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
-    if (GameManager::Get().GetCurrentState() == GameState::Paused) {
+    bool isPaused = (GameManager::Get().GetCurrentState() == GameState::Paused);
+    static bool prevWasPaused = false;
+
+    if (isPaused) {
+        prevWasPaused = true;
         return;
     }
+
+    if (prevWasPaused && m_CachedCameraController) {
+        m_CachedCameraController->ResetMouseDelta();
+    }
+    prevWasPaused = false;
 
     // DebugCamera
     bool editorActive = NFSEngine::DebugCamera::IsActive();

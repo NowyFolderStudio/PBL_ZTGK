@@ -20,14 +20,31 @@ namespace NFSEngine {
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
 
+        void SetCameraOverride(float yaw, float pitch, float distance) {
+            if (!m_OverrideActive) {
+                m_OriginalYaw = m_Yaw;
+                m_OriginalPitch = m_Pitch;
+                m_OriginalDistance = m_Distance;
+            }
+            m_ReturningToOriginal = false;
+            m_OverrideActive = true;
+            m_OverrideYaw = yaw;
+            m_OverridePitch = pitch;
+            m_OverrideDistance = distance;
+        }
+
+        void ClearCameraOverride() {
+            m_OverrideYaw = m_OriginalYaw;
+            m_OverridePitch = m_OriginalPitch;
+            m_OverrideDistance = m_OriginalDistance;
+            m_ReturningToOriginal = true;
+        }
+
+        void ResetMouseDelta() { m_FirstFrame = true; }
+
         void OnEvent(Event& e) {
             EventDispatcher dispatcher(e);
 
-            dispatcher.Dispatch<MouseScrolledEvent>([this](const MouseScrolledEvent& ev) {
-                m_Distance -= ev.GetYOffset() * m_ZoomSpeed;
-                m_Distance = std::clamp(m_Distance, m_MinDistance, m_MaxDistance);
-                return true;
-            });
             dispatcher.Dispatch<MouseButtonPressedEvent>([](const MouseButtonPressedEvent& ev) {
                 if (!ImGui::GetIO().WantCaptureMouse) {
                     if (ev.GetMouseButton() == Mouse::ButtonLeft || ev.GetMouseButton() == Mouse::ButtonRight) {
@@ -46,6 +63,7 @@ namespace NFSEngine {
 
         void OnUpdate(DeltaTime deltaTime) override {
             Window& window = Application::Get().GetWindow();
+            float dt = static_cast<float>(deltaTime);
 
             if (InputActionManager::IsDown("ToggleCursor")) {
                 if (window.GetCursorMode() == CursorMode::Locked)
@@ -54,24 +72,47 @@ namespace NFSEngine {
                     window.SetCursorMode(CursorMode::Locked);
             }
 
-            if (window.GetCursorMode() == CursorMode::Locked) {
+            bool cursorLocked = (window.GetCursorMode() == CursorMode::Locked);
+
+            if (dt > 0.2f) {
+                m_FirstFrame = true;
+            }
+
+            if (cursorLocked) {
                 float mouseX = Input::GetMouseX();
                 float mouseY = Input::GetMouseY();
 
-                if (m_FirstFrame) {
-                    m_LastMouseX = mouseX;
-                    m_LastMouseY = mouseY;
-                    m_FirstFrame = false;
+                if (!m_OverrideActive && !m_FirstFrame) {
+                    m_Yaw += (mouseX - m_LastMouseX) * m_Sensitivity;
+                    m_Pitch = std::clamp(m_Pitch + ((mouseY - m_LastMouseY) * m_Sensitivity), -45.0f, 85.0f);
                 }
 
-                m_Yaw += (mouseX - m_LastMouseX) * m_Sensitivity;
-                m_Pitch = std::clamp(m_Pitch + ((mouseY - m_LastMouseY) * m_Sensitivity), -45.0f, 85.0f);
-
+                m_FirstFrame = false;
                 m_LastMouseX = mouseX;
                 m_LastMouseY = mouseY;
+            } else {
+                m_FirstFrame = true;
             }
 
-            {
+            if (m_OverrideActive) {
+                float yawDiff = m_OverrideYaw - m_Yaw;
+                if (yawDiff > 180.0f) yawDiff -= 360.0f;
+                if (yawDiff < -180.0f) yawDiff += 360.0f;
+                m_Yaw += yawDiff * std::min(1.0f, m_OverrideLerpSpeed * dt);
+                m_Pitch = glm::mix(m_Pitch, m_OverridePitch, m_OverrideLerpSpeed * dt);
+                m_Distance = m_OverrideDistance;
+
+                if (m_ReturningToOriginal) {
+                    float remainingYaw = m_OverrideYaw - m_Yaw;
+                    if (remainingYaw > 180.0f) remainingYaw -= 360.0f;
+                    if (remainingYaw < -180.0f) remainingYaw += 360.0f;
+                    if (std::abs(remainingYaw) < 0.1f && std::abs(m_Pitch - m_OverridePitch) < 0.1f
+                        && std::abs(m_Distance - m_OverrideDistance) < 0.1f) {
+                        m_OverrideActive = false;
+                        m_ReturningToOriginal = false;
+                    }
+                }
+            } else {
                 float lookX = InputActionManager::GetFloat("LookX");
                 float lookY = InputActionManager::GetFloat("LookY");
                 m_Yaw += lookX * m_ControllerSensitivity;
@@ -155,13 +196,20 @@ namespace NFSEngine {
         Transform* m_Target = nullptr;
         float m_Distance = 12.0f;
         float m_CurrentDistance = 12.0f;
-        float m_MinDistance = 2.0f;
-        float m_MaxDistance = 40.0f;
-        float m_ZoomSpeed = 0.8f;
         float m_Yaw = 90.0f, m_Pitch = 25.0f;
         float m_Sensitivity = 0.12f;
         float m_ControllerSensitivity = 2.5f;
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
+
+        bool m_OverrideActive = false;
+        float m_OverrideYaw = 0.0f;
+        float m_OverridePitch = 0.0f;
+        float m_OverrideDistance = 0.0f;
+        float m_OverrideLerpSpeed = 5.0f;
+        float m_OriginalYaw = 90.0f;
+        float m_OriginalPitch = 25.0f;
+        float m_OriginalDistance = 12.0f;
+        bool m_ReturningToOriginal = false;
     };
 } // namespace NFSEngine
