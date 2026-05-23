@@ -4,6 +4,7 @@
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/LivesManagerComponent.hpp"
+#include "Components/CharacterController.hpp"
 
 namespace NFSEngine {
 
@@ -28,6 +29,8 @@ namespace NFSEngine {
 
             auto hitAction = [this, livesComp](GameObject* other) {
                 if (!other->CompareTag(Tags::Player)) return;
+                auto* cc = other->GetComponent<CharacterController>();
+                if (cc && cc->IsInvulnerable()) return;
                 if (m_CooldownTimer > 0.0f) return;
                 m_CooldownTimer = HitCooldown;
                 if (livesComp) livesComp->LoseHeart();

@@ -69,6 +69,9 @@ private:
 
     UILayer* m_UILayer = nullptr;
 
+    float m_DeathPlaneY = -50.0f;
+    glm::vec3 m_PlayerSpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);
+
     bool m_UseHDRI = false;
     std::shared_ptr<NFSEngine::Texture> m_HDRTexture;
 

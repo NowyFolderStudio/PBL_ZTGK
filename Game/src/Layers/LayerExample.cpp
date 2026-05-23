@@ -139,6 +139,7 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
+    m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     // playerModel->AddComponent<AnimatorComponent>();
     auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
     auto animations = Animation::LoadAll("assets/models/Player/Player_with_animations.fbx", m);
@@ -541,6 +542,18 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_Sequencer.Update((float)deltaTime);
     m_DeltaTime = deltaTime;
     m_Scene->OnUpdate(deltaTime);
+
+    if (m_Player) {
+        auto* lm = m_Scene->FindWithTag(NFSEngine::Tags::LivesManager);
+        auto* livesComp = lm ? lm->GetComponent<NFSEngine::LivesManagerComponent>() : nullptr;
+        auto* cc = m_Player->GetComponent<CharacterController>();
+        float playerY = m_Player->GetTransform()->GetPosition().y;
+
+        if (playerY < m_DeathPlaneY || (livesComp && livesComp->GetLives() <= 0)) {
+            if (cc) cc->Respawn();
+            if (livesComp) livesComp->ResetLives();
+        }
+    }
 
     if (editorActive && m_CachedCamera) {
         auto* camTransform = m_CachedCamera->GetOwner()->GetTransform();

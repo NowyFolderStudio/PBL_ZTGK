@@ -44,6 +44,34 @@ public:
     float JumpBufferTime = 0.15f;
     float WallCoyoteTime = 0.15f;
 
+    float InvulnerabilityDuration = 2.0f;
+    glm::vec3 SpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);
+
+    void Respawn() {
+        m_Owner->GetTransform()->SetPosition(SpawnPosition);
+
+        if (p_RigidBody) {
+            p_RigidBody->Velocity = glm::vec3(0.0f);
+            p_RigidBody->IsGrounded = false;
+        }
+
+        m_JumpsRemaining = MaxJumps;
+        m_IsJumping = false;
+        m_IsDashing = false;
+        m_CanDash = true;
+        m_DashTimeCounter = 0.0f;
+        m_CoyoteTimeCounter = 0.0f;
+        m_JumpBufferCounter = 0.0f;
+        m_WallCoyoteCounter = 0.0f;
+        m_WallJumpLockCounter = 0.0f;
+        m_LastWallNormal = glm::vec3(0.0f);
+        m_LastJumpedWallNormal = glm::vec3(0.0f);
+        m_IsInvulnerable = true;
+        m_InvulnerabilityTimer = InvulnerabilityDuration;
+    }
+
+    bool IsInvulnerable() const { return m_IsInvulnerable; }
+
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
     NFSEngine::Transform* m_CameraTransform = nullptr;
@@ -63,6 +91,9 @@ private:
     float m_DashTimeCounter = 0.0f;
     float m_WallCoyoteCounter = 0.0f;
     float m_WallJumpLockCounter = 0.0f;
+
+    bool m_IsInvulnerable = false;
+    float m_InvulnerabilityTimer = 0.0f;
 
     glm::vec3 m_LastWallNormal = glm::vec3(0.0f);
     glm::vec3 m_LastJumpedWallNormal = glm::vec3(0.0f);
@@ -172,6 +203,13 @@ private:
             m_WallCoyoteCounter = WallCoyoteTime;
         } else if (m_WallCoyoteCounter > 0.0f) {
             m_WallCoyoteCounter -= dt;
+        }
+
+        if (m_InvulnerabilityTimer > 0.0f) {
+            m_InvulnerabilityTimer -= dt;
+            if (m_InvulnerabilityTimer <= 0.0f) {
+                m_IsInvulnerable = false;
+            }
         }
     }
 
