@@ -5,6 +5,7 @@
 #include "Components/CubeMesh.hpp"
 #include "Components/CoinComponent.hpp"
 #include "Components/HazardComponent.hpp"
+#include "Components/CheckpointComponent.hpp"
 #include "Components/ScoreManagerComponent.hpp"
 #include "Components/LivesManagerComponent.hpp"
 #include "Components/CharacterController.hpp"
@@ -35,6 +36,7 @@
 
 #include "SceneLoader/SceneLoader.hpp"
 #include "SceneLoader/CoinComponentLoader.hpp"
+#include "SceneLoader/CheckpointComponentLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -59,6 +61,7 @@ void LayerExample::OnAttach() {
 
     sceneLoader.InitDefaultLoaders();
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
+    sceneLoader.RegisterLoader(std::make_unique<CheckpointComponentLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
@@ -379,6 +382,12 @@ void LayerExample::OnAttach() {
     auto& hazardMesh = hazardCube->AddComponent<NFSEngine::CubeMesh>(m_HazardShader, matWhite);
     auto& hazardCol = hazardCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
     auto& hazard = hazardCube->AddComponent<NFSEngine::HazardComponent>();
+
+    NFSEngine::GameObject* checkpoint = m_Scene->CreateGameObject("Checkpoint_Start");
+    checkpoint->GetTransform()->SetPosition(glm::vec3(0.0f, 7.0f, 40.0f));
+    checkpoint->GetTransform()->SetScale(glm::vec3(20.0f, 15.0f, 0.1f));
+    checkpoint->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    checkpoint->AddComponent<CheckpointComponent>();
 
     // GameManager
     NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
