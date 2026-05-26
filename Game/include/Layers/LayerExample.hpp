@@ -12,6 +12,7 @@
 
 // Forward declarations
 class RhythmMover;
+class RhythmPlatform;
 class PianoKeyTrigger;
 
 namespace NFSEngine {
@@ -64,6 +65,7 @@ private:
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;
 
+    std::vector<RhythmPlatform*> m_CachedRhythmPlatforms;
     std::vector<RhythmMover*> m_CachedRhythmMovers;
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
 

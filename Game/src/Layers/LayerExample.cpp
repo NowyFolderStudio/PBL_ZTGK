@@ -22,6 +22,7 @@
 #include "Components/PointLight.hpp"
 #include "Components/DirectionalLight.hpp"
 #include "Components/SpotLight.hpp"
+#include "Components/RhythmPlatform.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -195,11 +196,27 @@ void LayerExample::OnAttach() {
     matSpherePBR->AOMap = texSphereAO;
 
     NFSEngine::GameObject* sphereObj = m_Scene->CreateGameObject("Center_PBR_Sphere");
+    
     sphereObj->GetTransform()->SetPosition(glm::vec3(-23.0f, 1.0f, 0.0f));
     sphereObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
+    sphereObj->AddComponent<RhythmMover>();
+
     auto& sphereComp = sphereObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matSpherePBR);
     sphereComp.AddLOD(sphereModel, 10000.0f);
+
+
+    // Rhythm Platform
+
+    NFSEngine::GameObject* rhythmPlat = m_Scene->CreateGameObject("RhythmPlatform1");
+    rhythmPlat->GetTransform()->SetPosition(glm::vec3(5.0f, 5.0f, 5.0f));
+    rhythmPlat->GetTransform()->SetScale(glm::vec3(4.0f, 1.0f, 4.0f));
+
+    rhythmPlat->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
+    rhythmPlat->AddComponent<NFSEngine::BoxCollider3DComponent>();
+
+    auto& rPlatComp = rhythmPlat->AddComponent<RhythmPlatform>();
+
 
     // Airplane model
     // Code below load multi-mesh/material object. It is possible to move such loading to some class responsible for it.
@@ -461,6 +478,7 @@ void LayerExample::OnAttach() {
         if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
         if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
         if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
+        if (auto* platform = go->GetComponent<RhythmPlatform>()) m_CachedRhythmPlatforms.push_back(platform);
     }
 
     auto texGoldAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
@@ -703,6 +721,10 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     for (auto* mover : m_CachedRhythmMovers) {
         mover->OnEvent(e);
+    }
+
+    for (auto* platform : m_CachedRhythmPlatforms) {
+        platform->OnEvent(e);
     }
 
     NFSEngine::EventDispatcher dispatcher(e);
