@@ -10,7 +10,7 @@
 namespace NFSEngine {
 	class AudioPatternComponent : public Component {
 	public:
-		AudioPatternComponent(GameObject* owner) : Component(owner) {};
+		AudioPatternComponent(GameObject* owner) : Component(owner), m_Sound() {};
 		~AudioPatternComponent() override;
 
 		void LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer);
@@ -27,7 +27,7 @@ namespace NFSEngine {
 		void LoadSound(const std::string& filepath);
 		void PlayNote(float pitchOffset);
 
-		ma_sound m_Sound;
+		ma_sound m_Sound; // NOLINT
 		bool m_IsLoaded = false;
 
 		Pattern m_CurrentPattern;
