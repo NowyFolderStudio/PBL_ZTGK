@@ -53,31 +53,41 @@ namespace NFSEngine {
     void OpenGLShader::Bind() const { glUseProgram(m_RendererID); }
     void OpenGLShader::Unbind() const { glUseProgram(0); }
 
+    GLint OpenGLShader::GetUniformLocation(const std::string& name) {
+        auto it = m_UniformLocationCache.find(name);
+        if (it != m_UniformLocationCache.end()) {
+            return it->second;
+        }
+        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        m_UniformLocationCache[name] = location;
+        return location;
+    }
+
     void OpenGLShader::SetInt(const std::string& name, int value) {
-        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+        glUniform1i(GetUniformLocation(name), value);
     }
     void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value) {
-        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &value[0][0]);
+        glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
     }
 
     void OpenGLShader::SetFloat(const std::string& name, float value) {
-        glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+        glUniform1f(GetUniformLocation(name), value);
     }
 
     void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value) {
-        glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+        glUniform3fv(GetUniformLocation(name), 1, &value[0]);
     }
 
     void OpenGLShader::SetVec4(const std::string& name, const glm::vec4& value) {
-        glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+        glUniform4fv(GetUniformLocation(name), 1, &value[0]);
     }
 
     void OpenGLShader::SetBool(const std::string& name, const bool value) {
-        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), (int)value);
+        glUniform1i(GetUniformLocation(name), (int)value);
     }
 
     void OpenGLShader::SetMat4Array(const std::string& name, const std::vector<glm::mat4>& value) {
-        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), value.size(), GL_FALSE, glm::value_ptr(value[0]));
+        glUniformMatrix4fv(GetUniformLocation(name), value.size(), GL_FALSE, glm::value_ptr(value[0]));
     }
 
     void OpenGLShader::CheckCompileErrors(uint32_t shader, std::string type) {

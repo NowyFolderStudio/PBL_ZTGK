@@ -24,6 +24,7 @@ namespace NFSEngine {
         int height = static_cast<int>(config.WindowHeight);
 
         m_Window = Window::Create(title, width, height);
+        glfwSwapInterval(config.VSync ? 1 : 0);
         static WindowsInput windowsInput;
         Input::instance = &windowsInput;
 

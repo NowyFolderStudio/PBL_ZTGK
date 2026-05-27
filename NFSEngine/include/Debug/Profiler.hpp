@@ -170,8 +170,12 @@ namespace NFSEngine {
 // PROFILER'S MACROS (USE THOSE INSTEAD OF CLASSES)
 // ========================================================================
 
-// CHANGE TO 0 TURN OFF PROFILER FOR THE PROJECT
+// Profiler is only active in Debug builds
+#ifdef NFS_DEBUG
 #define NFS_PROFILE 1
+#else
+#define NFS_PROFILE 0
+#endif
 
 #if NFS_PROFILE
 
@@ -238,7 +242,7 @@ namespace NFSEngine {
 
 #else
 
-#define NFS_PROFILE_BEGIN_SESSION(name, filepath)
+#define NFS_PROFILE_BEGIN_SESSION(...)
 #define NFS_PROFILE_END_SESSION()
 #define NFS_PROFILE_SCOPE(name)
 #define NFS_PROFILE_FUNCTION()

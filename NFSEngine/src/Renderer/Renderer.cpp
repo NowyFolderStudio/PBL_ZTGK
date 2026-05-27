@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <array>
 
 #include "Renderer/Renderer.hpp"
 #include "Debug/Profiler.hpp"
@@ -11,6 +12,58 @@
 #include "Components/SpotLight.hpp"
 
 namespace NFSEngine {
+
+    namespace {
+
+        struct LightUniformCache {
+            std::array<std::string, 16> pointPosition;
+            std::array<std::string, 16> pointColor;
+            std::array<std::string, 16> pointIntensity;
+            std::array<std::string, 16> pointConstant;
+            std::array<std::string, 16> pointLinear;
+            std::array<std::string, 16> pointQuadratic;
+
+            std::array<std::string, 4> spotPosition;
+            std::array<std::string, 4> spotDirection;
+            std::array<std::string, 4> spotColor;
+            std::array<std::string, 4> spotIntensity;
+            std::array<std::string, 4> spotCutOff;
+            std::array<std::string, 4> spotOuterCutOff;
+            std::array<std::string, 4> spotConstant;
+            std::array<std::string, 4> spotLinear;
+            std::array<std::string, 4> spotQuadratic;
+
+            LightUniformCache() {
+                for (int i = 0; i < 16; i++) {
+                    std::string base = "pointLights[" + std::to_string(i) + "].";
+                    pointPosition[i] = base + "position";
+                    pointColor[i] = base + "color";
+                    pointIntensity[i] = base + "intensity";
+                    pointConstant[i] = base + "constant";
+                    pointLinear[i] = base + "linear";
+                    pointQuadratic[i] = base + "quadratic";
+                }
+                for (int i = 0; i < 4; i++) {
+                    std::string base = "spotLights[" + std::to_string(i) + "].";
+                    spotPosition[i] = base + "position";
+                    spotDirection[i] = base + "direction";
+                    spotColor[i] = base + "color";
+                    spotIntensity[i] = base + "intensity";
+                    spotCutOff[i] = base + "cutOff";
+                    spotOuterCutOff[i] = base + "outerCutOff";
+                    spotConstant[i] = base + "constant";
+                    spotLinear[i] = base + "linear";
+                    spotQuadratic[i] = base + "quadratic";
+                }
+            }
+        };
+
+        static const LightUniformCache& GetLightCache() {
+            static LightUniformCache cache;
+            return cache;
+        }
+
+    }
 
     std::vector<RenderPacket> Renderer::s_RendererQueue;
     std::unique_ptr<RendererAPI> Renderer::s_RendererAPI = nullptr;
@@ -179,15 +232,15 @@ namespace NFSEngine {
 
                 if (s_SceneData->PointLights) {
                     int lightIndex = 0;
+                    const auto& cache = GetLightCache();
                     for (auto* light : *s_SceneData->PointLights) {
                         if (lightIndex >= 16) break;
-                        std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
-                        packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
-                        packet.shader->SetVec3(base + "color", light->Color);
-                        packet.shader->SetFloat(base + "intensity", light->Intensity);
-                        packet.shader->SetFloat(base + "constant", light->Constant);
-                        packet.shader->SetFloat(base + "linear", light->Linear);
-                        packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                        packet.shader->SetVec3(cache.pointPosition[lightIndex], light->GetOwner()->GetTransform()->GetPosition());
+                        packet.shader->SetVec3(cache.pointColor[lightIndex], light->Color);
+                        packet.shader->SetFloat(cache.pointIntensity[lightIndex], light->Intensity);
+                        packet.shader->SetFloat(cache.pointConstant[lightIndex], light->Constant);
+                        packet.shader->SetFloat(cache.pointLinear[lightIndex], light->Linear);
+                        packet.shader->SetFloat(cache.pointQuadratic[lightIndex], light->Quadratic);
                         lightIndex++;
                     }
                     packet.shader->SetInt("activePointLights", lightIndex);
@@ -195,18 +248,18 @@ namespace NFSEngine {
 
                 if (s_SceneData->SpotLights) {
                     int spotIndex = 0;
+                    const auto& cache = GetLightCache();
                     for (auto* light : *s_SceneData->SpotLights) {
                         if (spotIndex >= 4) break;
-                        std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
-                        packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
-                        packet.shader->SetVec3(base + "direction", light->Direction);
-                        packet.shader->SetVec3(base + "color", light->Color);
-                        packet.shader->SetFloat(base + "intensity", light->Intensity);
-                        packet.shader->SetFloat(base + "cutOff", light->CutOff);
-                        packet.shader->SetFloat(base + "outerCutOff", light->OuterCutOff);
-                        packet.shader->SetFloat(base + "constant", light->Constant);
-                        packet.shader->SetFloat(base + "linear", light->Linear);
-                        packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                        packet.shader->SetVec3(cache.spotPosition[spotIndex], light->GetOwner()->GetTransform()->GetPosition());
+                        packet.shader->SetVec3(cache.spotDirection[spotIndex], light->Direction);
+                        packet.shader->SetVec3(cache.spotColor[spotIndex], light->Color);
+                        packet.shader->SetFloat(cache.spotIntensity[spotIndex], light->Intensity);
+                        packet.shader->SetFloat(cache.spotCutOff[spotIndex], light->CutOff);
+                        packet.shader->SetFloat(cache.spotOuterCutOff[spotIndex], light->OuterCutOff);
+                        packet.shader->SetFloat(cache.spotConstant[spotIndex], light->Constant);
+                        packet.shader->SetFloat(cache.spotLinear[spotIndex], light->Linear);
+                        packet.shader->SetFloat(cache.spotQuadratic[spotIndex], light->Quadratic);
                         spotIndex++;
                     }
                     packet.shader->SetInt("activeSpotLights", spotIndex);
