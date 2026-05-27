@@ -196,7 +196,7 @@ void LayerExample::OnAttach() {
     matSpherePBR->AOMap = texSphereAO;
 
     NFSEngine::GameObject* sphereObj = m_Scene->CreateGameObject("Center_PBR_Sphere");
-    
+
     sphereObj->GetTransform()->SetPosition(glm::vec3(-23.0f, 1.0f, 0.0f));
     sphereObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
@@ -204,7 +204,6 @@ void LayerExample::OnAttach() {
 
     auto& sphereComp = sphereObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matSpherePBR);
     sphereComp.AddLOD(sphereModel, 10000.0f);
-
 
     // Rhythm Platform
 
@@ -216,7 +215,6 @@ void LayerExample::OnAttach() {
     rhythmPlat->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     auto& rPlatComp = rhythmPlat->AddComponent<RhythmPlatform>();
-
 
     // Airplane model
     // Code below load multi-mesh/material object. It is possible to move such loading to some class responsible for it.
@@ -541,9 +539,6 @@ void LayerExample::OnAttach() {
     auto& musicGramophone5Comp = musicGramophone5Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone5);
     musicGramophone5Comp.AddLOD(gramophoneModel1, 10000.0f);
 
-
-
-
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
 
@@ -553,6 +548,7 @@ void LayerExample::OnAttach() {
 void LayerExample::OnDetach() { }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    NFS_PROFILE_FUNCTION();
     bool isPaused = (GameManager::Get().GetCurrentState() == GameState::Paused);
     static bool prevWasPaused = false;
 
@@ -587,48 +583,60 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         }
     }
 
-    m_Sequencer.Update((float)deltaTime);
+    {
+        NFS_PROFILE_SCOPE("LayerExample: Audio Sequencer Update");
+        m_Sequencer.Update((float)deltaTime);
+    }
     m_DeltaTime = deltaTime;
-    m_Scene->OnUpdate(deltaTime);
 
-    if (m_Player) {
-        auto* lm = m_Scene->FindWithTag(NFSEngine::Tags::LivesManager);
-        auto* livesComp = lm ? lm->GetComponent<NFSEngine::LivesManagerComponent>() : nullptr;
-        auto* cc = m_Player->GetComponent<CharacterController>();
-        float playerY = m_Player->GetTransform()->GetPosition().y;
+    {
+        NFS_PROFILE_SCOPE("LayerExample: Scene Update");
+        m_Scene->OnUpdate(deltaTime);
+    }
+    {
+        NFS_PROFILE_SCOPE("LayerExample: Player & Logic Update");
+        if (m_Player) {
+            auto* lm = m_Scene->FindWithTag(NFSEngine::Tags::LivesManager);
+            auto* livesComp = lm ? lm->GetComponent<NFSEngine::LivesManagerComponent>() : nullptr;
+            auto* cc = m_Player->GetComponent<CharacterController>();
+            float playerY = m_Player->GetTransform()->GetPosition().y;
 
-        if (playerY < m_DeathPlaneY || (livesComp && livesComp->GetLives() <= 0)) {
-            if (cc) cc->Respawn();
-            if (livesComp) livesComp->ResetLives();
+            if (playerY < m_DeathPlaneY || (livesComp && livesComp->GetLives() <= 0)) {
+                if (cc) cc->Respawn();
+                if (livesComp) livesComp->ResetLives();
+            }
+        }
+
+        if (editorActive && m_CachedCamera) {
+            auto* camTransform = m_CachedCamera->GetOwner()->GetTransform();
+            camTransform->SetPosition(NFSEngine::DebugCamera::GetPosition());
+            glm::vec3 euler = glm::degrees(glm::eulerAngles(NFSEngine::DebugCamera::GetOrientation()));
+            camTransform->SetRotation(euler);
+        }
+
+        if (m_TestAudioComp) {
+            m_TestAudioComp->OnUpdate(deltaTime);
+        }
+
+        for (auto* mover : m_CachedRhythmMovers) {
+            mover->OnUpdate(deltaTime);
+        }
+
+        for (auto* keyTrigger : m_CachedPianoKeys) {
+            keyTrigger->OnUpdate(deltaTime);
         }
     }
 
-    if (editorActive && m_CachedCamera) {
-        auto* camTransform = m_CachedCamera->GetOwner()->GetTransform();
-        camTransform->SetPosition(NFSEngine::DebugCamera::GetPosition());
-        glm::vec3 euler = glm::degrees(glm::eulerAngles(NFSEngine::DebugCamera::GetOrientation()));
-        camTransform->SetRotation(euler);
+    {
+        NFS_PROFILE_SCOPE("LayerExample: Material Uniforms Update");
+        float songPos = m_Sequencer.GetContinuousBeatTime();
+        matAudio->SetFloat("u_MusicTime", songPos);
+        matGramophone1->SetFloat("u_MusicTime", songPos);
+        matGramophone2->SetFloat("u_MusicTime", songPos);
+        matGramophone3->SetFloat("u_MusicTime", songPos);
+        matGramophone4->SetFloat("u_MusicTime", songPos);
+        matGramophone5->SetFloat("u_MusicTime", songPos);
     }
-
-    if (m_TestAudioComp) {
-        m_TestAudioComp->OnUpdate(deltaTime);
-    }
-
-    for (auto* mover : m_CachedRhythmMovers) {
-        mover->OnUpdate(deltaTime);
-    }
-
-    for (auto* keyTrigger : m_CachedPianoKeys) {
-        keyTrigger->OnUpdate(deltaTime);
-    }
-
-    float songPos = m_Sequencer.GetContinuousBeatTime();
-    matAudio->SetFloat("u_MusicTime", songPos);
-    matGramophone1->SetFloat("u_MusicTime", songPos);
-    matGramophone2->SetFloat("u_MusicTime", songPos);
-    matGramophone3->SetFloat("u_MusicTime", songPos);
-    matGramophone4->SetFloat("u_MusicTime", songPos);
-    matGramophone5->SetFloat("u_MusicTime", songPos);
 }
 
 void LayerExample::OnRender() {

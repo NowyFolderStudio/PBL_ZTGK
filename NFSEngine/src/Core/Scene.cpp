@@ -14,6 +14,9 @@ namespace NFSEngine {
         auto go = std::make_unique<GameObject>(this, name);
         GameObject* rawPtr = go.get();
         m_GameObjects.push_back(std::move(go));
+
+        m_PhysicsListsDirty = true;
+
         return rawPtr;
     }
 
@@ -27,59 +30,76 @@ namespace NFSEngine {
     }
 
     void Scene::OnUpdate(DeltaTime deltaTime) {
+        NFS_PROFILE_FUNCTION();
 
-        for (size_t i = 0; i < m_GameObjects.size(); i++) {
-            auto& gameObject = m_GameObjects[i];
-            gameObject->Awake();
-            gameObject->Start();
-        }
-
-        m_PhysicsBodies.clear();
-        m_Colliders.clear();
-
-        for (const auto& gameObject : m_GameObjects) {
-            if (!gameObject->IsActive()) continue;
-
-            if (auto* rb = gameObject->GetComponent<RigidBody3DComponent>()) {
-                m_PhysicsBodies.push_back(rb);
+        {
+            NFS_PROFILE_SCOPE("Scene: Awake & Start");
+            for (size_t i = 0; i < m_GameObjects.size(); i++) {
+                auto& gameObject = m_GameObjects[i];
+                gameObject->Awake();
+                gameObject->Start();
             }
-            if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
-                m_Colliders.push_back(col);
+        }
+        {
+            NFS_PROFILE_SCOPE("Scene: Physics Prep (Vectors)");
+            if (m_PhysicsListsDirty) {
+                m_PhysicsBodies.clear();
+                m_Colliders.clear();
+
+                for (const auto& gameObject : m_GameObjects) {
+                    if (!gameObject->IsActive()) continue;
+
+                    if (auto* rb = gameObject->GetComponent<RigidBody3DComponent>()) {
+                        m_PhysicsBodies.push_back(rb);
+                    }
+                    if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
+                        m_Colliders.push_back(col);
+                    }
+                }
+
+                m_PhysicsListsDirty = false;
             }
         }
 
         if (deltaTime > 0.25f) deltaTime = 0.25f;
         m_Accumulator += deltaTime;
 
-        while (m_Accumulator >= m_FixedDeltaTime) {
+        {
+            NFS_PROFILE_SCOPE("Scene: Fixed Update & Physics");
+            while (m_Accumulator >= m_FixedDeltaTime) {
+                for (size_t i = 0; i < m_GameObjects.size(); i++) {
+                    auto& gameObject = m_GameObjects[i];
+                    gameObject->FixedUpdate(m_FixedDeltaTime);
+                }
+                m_PhysicsSystem.Update(m_PhysicsBodies, m_Colliders, m_FixedDeltaTime);
+                m_Accumulator -= m_FixedDeltaTime;
+            }
+        }
+
+        {
+            NFS_PROFILE_SCOPE("Scene: Main GameObjects Update");
             for (size_t i = 0; i < m_GameObjects.size(); i++) {
                 auto& gameObject = m_GameObjects[i];
-                gameObject->FixedUpdate(m_FixedDeltaTime);
+                gameObject->Update(deltaTime);
             }
-
-            m_PhysicsSystem.Update(m_PhysicsBodies, m_Colliders, m_FixedDeltaTime);
-
-            m_Accumulator -= m_FixedDeltaTime;
         }
 
-        for (size_t i = 0; i < m_GameObjects.size(); i++) {
-            auto& gameObject = m_GameObjects[i];
-            gameObject->Update(deltaTime);
-        }
+        {
+            NFS_PROFILE_SCOPE("Scene: Garbage Collection");
+            m_GameObjects.erase(std::remove_if(m_GameObjects.begin(), m_GameObjects.end(),
+                                               [this](const std::unique_ptr<GameObject>& gameObject) {
+                                                   if (gameObject->IsDestroyed()) {
 
-        m_GameObjects.erase(std::remove_if(m_GameObjects.begin(), m_GameObjects.end(),
-                                           [this](const std::unique_ptr<GameObject>& gameObject) {
-                                               if (gameObject->IsDestroyed()) {
-
-                                                   if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
-                                                       m_PhysicsSystem.RemoveCollider(col);
+                                                       if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
+                                                           m_PhysicsSystem.RemoveCollider(col);
+                                                       }
+                                                       m_PhysicsListsDirty = true;
+                                                       return true;
                                                    }
-
-                                                   return true;
-                                               }
-                                               return false;
-                                           }),
-                            m_GameObjects.end());
+                                                   return false;
+                                               }),
+                                m_GameObjects.end());
+        }
     }
 
     void Scene::OnRender() {
@@ -175,22 +195,16 @@ namespace NFSEngine {
         return result;
     }
 
-    void Scene::UnregisterDirectionalLight(DirectionalLight* light) {
-        m_CachedDirLight = nullptr;
-    }
+    void Scene::UnregisterDirectionalLight(DirectionalLight* light) { m_CachedDirLight = nullptr; }
 
     void Scene::UnregisterPointLight(PointLight* light) {
-        m_CachedPointLights.erase(
-            std::remove(m_CachedPointLights.begin(), m_CachedPointLights.end(), light),
-            m_CachedPointLights.end()
-        );
+        m_CachedPointLights.erase(std::remove(m_CachedPointLights.begin(), m_CachedPointLights.end(), light),
+                                  m_CachedPointLights.end());
     }
 
     void Scene::UnregisterSpotLight(SpotLight* light) {
-        m_CachedSpotLights.erase(
-            std::remove(m_CachedSpotLights.begin(), m_CachedSpotLights.end(), light),
-            m_CachedSpotLights.end()
-        );
+        m_CachedSpotLights.erase(std::remove(m_CachedSpotLights.begin(), m_CachedSpotLights.end(), light),
+                                 m_CachedSpotLights.end());
     }
 
 } // namespace NFSEngine

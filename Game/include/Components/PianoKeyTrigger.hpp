@@ -26,7 +26,8 @@ public:
             m_CurrentCooldown -= deltaTime.GetSeconds();
         }
 
-        bool isCurrentlyColliding = NFSEngine::PhysicsSystem::CheckCollision(GetOwner(), TargetPlayer).IsColliding;
+        bool isCurrentlyColliding = false;
+        // bool isCurrentlyColliding = NFSEngine::PhysicsSystem::CheckCollision(GetOwner(), TargetPlayer).IsColliding;
 
         if (isCurrentlyColliding) {
 
