@@ -3,8 +3,6 @@
 #include <glad/glad.h>
 #include "Renderer/Shader.hpp"
 
-#include <unordered_map>
-
 namespace NFSEngine {
 
     class OpenGLShader : public Shader {
@@ -28,11 +26,8 @@ namespace NFSEngine {
         void SetMat4Array(const std::string& name, const std::vector<glm::mat4>& value) override;
 
     private:
-        GLint GetUniformLocation(const std::string& name);
-
         std::string m_Name;
         uint32_t m_RendererID;
-        std::unordered_map<std::string, GLint> m_UniformLocationCache;
 
         void CheckCompileErrors(uint32_t shader, std::string type);
         std::string ReadFile(const std::string& filepath);

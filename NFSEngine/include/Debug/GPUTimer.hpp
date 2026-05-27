@@ -14,11 +14,7 @@ namespace NFSEngine {
 
         float GetTimeMS() const {
             GLuint64 timeNanoseconds = 0;
-            GLint available = 0;
-            glGetQueryObjectiv(m_QueryId, GL_QUERY_RESULT_AVAILABLE, &available);
-            if (available) {
-                glGetQueryObjectui64v(m_QueryId, GL_QUERY_RESULT, &timeNanoseconds);
-            }
+            glGetQueryObjectui64v(m_QueryId, GL_QUERY_RESULT, &timeNanoseconds);
             return static_cast<float>(timeNanoseconds) / 1000000.0f;
         }
 
