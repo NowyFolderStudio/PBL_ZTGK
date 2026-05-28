@@ -218,7 +218,7 @@ void LayerExample::OnAttach() {
 
     // Airplane model
     // Code below load multi-mesh/material object. It is possible to move such loading to some class responsible for it.
-
+    /*
     std::string modelPath = "assets/models/fa-18/FA-18C.obj";
     auto airplaneModel = std::make_shared<NFSEngine::Model>(modelPath);
 
@@ -260,7 +260,7 @@ void LayerExample::OnAttach() {
 
         airplaneComp.SetMaterial(i, mat);
     }
-
+    */
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 

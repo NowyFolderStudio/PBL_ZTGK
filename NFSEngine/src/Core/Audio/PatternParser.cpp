@@ -43,6 +43,7 @@ namespace NFSEngine {
 			note.bar = noteNode["bar"];
 			note.beat = noteNode["beat"];
 			note.sixteenth = noteNode["16th"];
+			note.lengthIn16ths = noteNode.value("length", 4);
 
 			int targetNoteValue = GetNoteValue(noteNode["note"]);
 			note.pitchOffset = static_cast<float>(targetNoteValue - rootNoteValue);
