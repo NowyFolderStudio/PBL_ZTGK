@@ -47,8 +47,8 @@
 #include <memory>
 #include <vector>
 
-LayerExample::LayerExample(UILayer* uiLayer)
-    : m_UILayer(uiLayer) {
+LayerExample::LayerExample(HUDLayer* hudLayer)
+    : m_HUDLayer(hudLayer) {
     m_Player = nullptr;
     m_MovingCube = nullptr;
     m_Scene = nullptr;
@@ -430,7 +430,7 @@ void LayerExample::OnAttach() {
     gameState->data.lives = livesComp.GetLives();
     scoreComp.m_OnScoreChanged = [gameState](int s) { gameState->data.score = s; };
     livesComp.m_OnLivesChanged = [gameState](int l) { gameState->data.lives = l; };
-    if (m_UILayer) m_UILayer->SetGameState(gameState);
+    if (m_HUDLayer) m_HUDLayer->SetGameState(gameState);
 
     // Audio
     NFSEngine::AudioEngine::Init();

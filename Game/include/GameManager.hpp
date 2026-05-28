@@ -15,7 +15,7 @@ private:
     NFSEngine::Layer* m_MainMenuLayer = nullptr;
     NFSEngine::Layer* m_CurrentLayer = nullptr;
     NFSEngine::Layer* m_PauseOverlay = nullptr;
-    NFSEngine::Layer* m_GameUILayer = nullptr;
+    NFSEngine::Layer* m_GameHUDLayer = nullptr;
     NFSEngine::Layer* m_OptionsOverlay = nullptr;
 
     std::string m_CurrentLevelPath = "assets/scenes/Level4_export.json";

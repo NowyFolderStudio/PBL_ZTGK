@@ -3,7 +3,7 @@
 #include "Layers/MainMenuLayer.hpp"
 #include "Layers/GameLayer.hpp"
 #include "Layers/PauseLayer.hpp"
-#include "Layers/UILayer.hpp"
+#include "Layers/HUDLayer.hpp"
 #include "Layers/OptionsLayer.hpp"
 #include "Layers/LayerExample.hpp"
 
@@ -35,10 +35,10 @@ void GameManager::ChangeState(GameState newState) {
         m_CurrentLayer = nullptr;
     }
 
-    if (m_GameUILayer) {
-        app.PopOverlay(m_GameUILayer);
-        m_GarbageLayers.push_back(m_GameUILayer);
-        m_GameUILayer = nullptr;
+    if (m_GameHUDLayer) {
+        app.PopOverlay(m_GameHUDLayer);
+        m_GarbageLayers.push_back(m_GameHUDLayer);
+        m_GameHUDLayer = nullptr;
     }
 
     if (m_PauseOverlay) {
@@ -65,10 +65,10 @@ void GameManager::ChangeState(GameState newState) {
     case GameState::Playing: {
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
 
-        m_GameUILayer = new UILayer();
-        app.PushOverlay(m_GameUILayer);
+        m_GameHUDLayer = new HUDLayer();
+        app.PushOverlay(m_GameHUDLayer);
 
-        m_CurrentLayer = new LayerExample(static_cast<UILayer*>(m_GameUILayer));
+        m_CurrentLayer = new LayerExample(static_cast<HUDLayer*>(m_GameHUDLayer));
         app.PushLayer(m_CurrentLayer);
 
         break;

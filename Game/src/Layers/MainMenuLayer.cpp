@@ -37,7 +37,7 @@ void MainMenuLayer::OnAttach() {
     NFSEngine::UI::LabelParameters titleParams;
     titleParams.position = glm::vec3(centerX, currentY, 0.5f);
     titleParams.color = glm::vec4(1.0f);
-    titleParams.text = "Resample";
+    titleParams.text = "Out Of Tune";
     titleParams.scale = 3.0f;
     NFSEngine::UI::Label(*m_Canvas, titleParams);
 
