@@ -2,6 +2,7 @@
 #include "assimp/postprocess.h"
 #include <iostream>
 #include <limits>
+#include <vector>
 
 namespace NFSEngine {
     Model::Model(const std::string& path) {
@@ -86,6 +87,7 @@ namespace NFSEngine {
 
         for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
             Vertex vertex;
+            SetVertexBoneDataToDefault(vertex);
 
             vertex.position = { mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z };
 
@@ -120,24 +122,7 @@ namespace NFSEngine {
             }
         }
 
-        for (auto& vertex : vertices) {
-            float totalWeight = 0.0f;
-
-            // 1. Zliczamy obecną sumę wag dla wierzchołka
-            for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
-                totalWeight += vertex.boneWeights[i];
-            }
-
-            // 2. Jeśli suma jest większa od zera, dzielimy każdą wagę przez sumę
-            if (totalWeight > 0.0f) {
-                for (int i = 0; i < MAX_BONE_INFLUENCE; i++) {
-                    vertex.boneWeights[i] /= totalWeight;
-                }
-            } else {
-                vertex.boneIDs[0] = 0;
-                vertex.boneWeights[0] = 1.0f;
-            }
-        }
+        ExtractBoneWeightForVertices(vertices, mesh, scene);
 
         std::shared_ptr<VertexArray> vao = std::shared_ptr<VertexArray>(VertexArray::Create());
 
@@ -158,7 +143,7 @@ namespace NFSEngine {
 
         MeshData meshData;
         meshData.VAO = vao;
-        meshData.MaterialIndex = mesh->mMaterialIndex; // Kluczowy moment!
+        meshData.MaterialIndex = mesh->mMaterialIndex;
 
         return meshData;
     }

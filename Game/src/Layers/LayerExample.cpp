@@ -67,7 +67,7 @@ void LayerExample::OnAttach() {
     sceneLoader.RegisterLoader(std::make_unique<ZoneCameraTriggerComponentLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
 
-    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
     m_HazardShader
         = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -78,7 +78,7 @@ void LayerExample::OnAttach() {
 
     auto texSampleAlbedo = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Color.png");
     auto texSampleRoughness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Roughness.png");
-    auto texSampleMetalness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1k-PNG_Metalness.png");
+    auto texSampleMetalness = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Metalness.png");
     auto texSampleAO = NFSEngine::Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_AmbientOcclusion.png");
     auto matSample = std::make_shared<NFSEngine::Material>();
     matSample->AlbedoMap = texSampleAlbedo;
@@ -146,15 +146,14 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
-    // playerModel->AddComponent<AnimatorComponent>();
+    playerModel->AddComponent<AnimatorComponent>();
     auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
-    auto animations = Animation::LoadAll("assets/models/Player/Player_with_animations.fbx", m);
 
-    // playerModel->GetComponent<AnimatorComponent>()->PlayAnimation(animations[1]);
+    auto animation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 1);
 
-    for (const std::shared_ptr<Animation>& a : animations) {
-        NFS_INFO("Animation loaded: {}", a->GetName());
-    }
+    NFS_INFO("Animation loaded: {}", animation->GetName());
+
+    playerModel->GetComponent<AnimatorComponent>()->PlayAnimation(animation);
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
@@ -522,9 +521,6 @@ void LayerExample::OnAttach() {
     musicGramophone5Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
     auto& musicGramophone5Comp = musicGramophone5Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone5);
     musicGramophone5Comp.AddLOD(gramophoneModel1, 10000.0f);
-
-
-
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();

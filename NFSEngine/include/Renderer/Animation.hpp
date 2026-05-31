@@ -1,61 +1,134 @@
 #pragma once
+#include <string>
 #include <vector>
-#include <map>
 #include <glm/glm.hpp>
 #include <assimp/scene.h>
-#include "nfspch.h"
+#include <assimp/Importer.hpp>
+#include "Core/Log.hpp"
+#include "Renderer/Model.hpp"
+#include "Renderer/Bone.hpp"
+#include "assimp/anim.h"
+#include <assimp/postprocess.h>
 
 namespace NFSEngine {
-
-    class Model;
 
     struct AssimpNodeData {
         glm::mat4 transformation;
         std::string name;
+        int childrenCount;
         std::vector<AssimpNodeData> children;
-    };
-
-    template <typename T> struct KeyFrame {
-        float timeStamp;
-        T value;
-    };
-
-    struct BoneTransformTrack {
-        std::vector<KeyFrame<glm::vec3>> positions;
-        std::vector<KeyFrame<glm::quat>> rotations;
-        std::vector<KeyFrame<glm::vec3>> scales;
     };
 
     class Animation {
     public:
-        static std::shared_ptr<Animation> LoadSingle(const std::string& path, Model* model);
-        static std::shared_ptr<Animation> LoadByName(const std::string& path, Model* model, const std::string& animationName);
-        static std::shared_ptr<Animation> LoadSliced(const std::string& path, Model* model, float startTime, float endTime);
-        static std::vector<std::shared_ptr<Animation>> LoadAll(const std::string& path, Model* model);
+        Animation(const std::string& animationPath, Model* model) {
+            Assimp::Importer importer;
+            const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
+            assert(scene && scene->mRootNode);
+            auto animation = scene->mAnimations[0];
+            m_Duration = animation->mDuration;
+            m_TicksPerSecond = animation->mTicksPerSecond;
+            ReadHeirarchyData(m_RootNode, scene->mRootNode);
+            ReadMissingBones(animation, *model);
+        }
 
-        float GetTicksPerSecond() const { return m_TicksPerSecond; }
-        float GetDuration() const { return m_Duration; }
-        const AssimpNodeData& GetRootNode() const { return m_RootNode; }
-        const std::map<std::string, BoneTransformTrack>& GetBones() const { return m_Bones; }
-        const std::string& GetName() const { return m_Name; }
+        Animation(const std::string& animationPath, Model* model, int animationIndex) {
+            Assimp::Importer importer;
+            const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
+            assert(scene && scene->mRootNode);
+            aiAnimation* animation = scene->mAnimations[0];
+
+            if (animationIndex < scene->mNumAnimations) {
+                animation = scene->mAnimations[animationIndex];
+            } else {
+                NFS_CORE_WARN("Animation indes {} do not exist in this file: {}", animationIndex, animationPath);
+            }
+
+            m_Duration = animation->mDuration;
+            m_TicksPerSecond = animation->mTicksPerSecond;
+            m_Name = animation->mName.C_Str();
+            ReadHeirarchyData(m_RootNode, scene->mRootNode);
+            ReadMissingBones(animation, *model);
+        }
+
+        ~Animation() { }
+
+        Bone* FindBone(const std::string& name) {
+            auto iter
+                = std::find_if(m_Bones.begin(), m_Bones.end(), [&](const Bone& Bone) { return Bone.GetBoneName() == name; });
+            if (iter == m_Bones.end())
+                return nullptr;
+            else
+                return &(*iter);
+        }
+
+        float GetTicksPerSecond() { return m_TicksPerSecond; }
+        float GetDuration() { return m_Duration; }
+        std::string GetName() { return m_Name; }
+        const AssimpNodeData& GetRootNode() { return m_RootNode; }
+        const std::map<std::string, BoneInfo>& GetBoneIDMap() { return m_BoneInfoMap; }
 
     private:
-        Animation() = default;
-        void SetupFromAssimp(const aiAnimation* animation, const aiScene* scene, Model* model);
-        void SetupSlicedFromAssimp(const aiAnimation* animation, const aiScene* scene, Model* model, float start, float end);
+        void ReadMissingBones(const aiAnimation* animation, Model& model) {
+            int size = animation->mNumChannels;
 
-        void ReadHierarchyData(AssimpNodeData& dest, const aiNode* src);
-        void ReadMissingBones(const aiAnimation* animation, Model* model);
-        void ReadSlicedBones(const aiAnimation* animation, Model* model, float start, float end);
+            auto& boneInfoMap = model.GetBoneInfoMap(); // getting m_BoneInfoMap from Model class
+            int& boneCount = model.GetBoneCount(); // getting the m_BoneCounter from Model class
 
-        static glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from);
-        static glm::vec3 GetGLMVec(const aiVector3D& vec);
-        static glm::quat GetGLMQuat(const aiQuaternion& pOrientation);
+            // reading channels(bones engaged in an animation and their keyframes)
+            for (int i = 0; i < size; i++) {
+                auto channel = animation->mChannels[i];
+                std::string boneName = channel->mNodeName.data;
 
-        float m_Duration = 0.0f;
-        int m_TicksPerSecond = 0;
-        std::map<std::string, BoneTransformTrack> m_Bones;
+                if (boneInfoMap.find(boneName) == boneInfoMap.end()) {
+                    boneInfoMap[boneName].id = boneCount;
+                    boneCount++;
+                }
+                m_Bones.push_back(Bone(channel->mNodeName.data, boneInfoMap[channel->mNodeName.data].id, channel));
+            }
+
+            m_BoneInfoMap = boneInfoMap;
+        }
+
+        void ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src) {
+            assert(src);
+
+            dest.name = src->mName.data;
+            dest.transformation = ConvertMatrixToGLMFormat(src->mTransformation);
+            dest.childrenCount = src->mNumChildren;
+
+            for (int i = 0; i < src->mNumChildren; i++) {
+                AssimpNodeData newData;
+                ReadHeirarchyData(newData, src->mChildren[i]);
+                dest.children.push_back(newData);
+            }
+        }
+        float m_Duration;
+        int m_TicksPerSecond;
+        std::vector<Bone> m_Bones;
         AssimpNodeData m_RootNode;
+        std::map<std::string, BoneInfo> m_BoneInfoMap;
         std::string m_Name;
+
+        static inline glm::mat4 ConvertMatrixToGLMFormat(const aiMatrix4x4& from) {
+            glm::mat4 to;
+            to[0][0] = from.a1;
+            to[1][0] = from.a2;
+            to[2][0] = from.a3;
+            to[3][0] = from.a4;
+            to[0][1] = from.b1;
+            to[1][1] = from.b2;
+            to[2][1] = from.b3;
+            to[3][1] = from.b4;
+            to[0][2] = from.c1;
+            to[1][2] = from.c2;
+            to[2][2] = from.c3;
+            to[3][2] = from.c4;
+            to[0][3] = from.d1;
+            to[1][3] = from.d2;
+            to[2][3] = from.d3;
+            to[3][3] = from.d4;
+            return to;
+        }
     };
 } // namespace NFSEngine

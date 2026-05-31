@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <string>
 
 #include "Renderer/Renderer.hpp"
 #include "Debug/Profiler.hpp"
@@ -96,13 +97,9 @@ namespace NFSEngine {
         }
     }
 
-    void Renderer::BeginScene(const glm::mat4& viewMatrix,
-        const glm::mat4& projectionMatrix,
-        const glm::vec3& cameraPosition, 
-        DirectionalLight* dirLight,
-        const std::vector<PointLight*>& pointLights,
-        const std::vector<SpotLight*>& spotLights,
-        EnvironmentMap* envMap) {
+    void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition,
+                              DirectionalLight* dirLight, const std::vector<PointLight*>& pointLights,
+                              const std::vector<SpotLight*>& spotLights, EnvironmentMap* envMap) {
         s_SceneData->ViewMatrix = viewMatrix;
         s_SceneData->ProjectionMatrix = projectionMatrix;
         s_SceneData->CameraPosition = cameraPosition;
@@ -216,24 +213,28 @@ namespace NFSEngine {
             packet.shader->SetMat4("model", packet.transform);
 
             if (!packet.boneTransforms.empty()) {
-                packet.shader->SetMat4Array("finalBonesMatrices", packet.boneTransforms);
+                for (int i = 0; i < packet.boneTransforms.size(); i++) {
+                    packet.shader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                }
             }
 
             if (packet.material) {
                 packet.material->Bind(packet.shader);
 
                 for (const auto& [name, value] : packet.material->Properties) {
-                    std::visit([&](auto&& arg) {
-                        using T = std::decay_t<decltype(arg)>;
-                        if constexpr (std::is_same_v<T, float>)
-                            packet.shader->SetFloat(name, arg);
-                        else if constexpr (std::is_same_v<T, int>)
-                            packet.shader->SetInt(name, arg);
-                        else if constexpr (std::is_same_v<T, glm::vec3>)
-                            packet.shader->SetVec3(name, arg);
-                        else if constexpr (std::is_same_v<T, glm::vec4>)
-                            packet.shader->SetVec4(name, arg);
-                        }, value);
+                    std::visit(
+                        [&](auto&& arg) {
+                            using T = std::decay_t<decltype(arg)>;
+                            if constexpr (std::is_same_v<T, float>)
+                                packet.shader->SetFloat(name, arg);
+                            else if constexpr (std::is_same_v<T, int>)
+                                packet.shader->SetInt(name, arg);
+                            else if constexpr (std::is_same_v<T, glm::vec3>)
+                                packet.shader->SetVec3(name, arg);
+                            else if constexpr (std::is_same_v<T, glm::vec4>)
+                                packet.shader->SetVec4(name, arg);
+                        },
+                        value);
                 }
 
                 s_Stats.stateChanges++;

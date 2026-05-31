@@ -7,7 +7,7 @@
 #include <vector>
 #include <memory>
 #include <string>
-
+#include "imgui.h"
 namespace NFSEngine {
 
     class AnimatorComponent : public Component {
@@ -15,25 +15,19 @@ namespace NFSEngine {
         AnimatorComponent(GameObject* owner);
 
         virtual std::string GetName() const override { return "AnimatorComponent"; }
-        void PlayAnimation(std::shared_ptr<Animation> animation);
-        void OnAwake() override;
+        void PlayAnimation(const std::shared_ptr<Animation>& animation);
         void OnUpdate(DeltaTime deltaTime) override;
 
-        const std::vector<glm::mat4>& GetFinalBoneMatrices() const { return m_FinalBoneMatrices; }
+        void OnImGuiRender() override { ImGui::DragFloat("Time", &m_CurrentTime, 0.1f); }
+
+        std::vector<glm::mat4> GetFinalBoneMatrices() { return m_FinalBoneMatrices; };
 
     private:
-        void CalculateBoneTransform(const AssimpNodeData* node, const glm::mat4& parentTransform);
-        int GetPositionIndex(float animationTime, const BoneTransformTrack& track);
-        int GetRotationIndex(float animationTime, const BoneTransformTrack& track);
-        int GetScaleIndex(float animationTime, const BoneTransformTrack& track);
-
-        glm::vec3 InterpolatePosition(float animationTime, const BoneTransformTrack& track);
-        glm::quat InterpolateRotation(float animationTime, const BoneTransformTrack& track);
-        glm::vec3 InterpolateScale(float animationTime, const BoneTransformTrack& track);
+        void CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 parentTransform);
 
         std::vector<glm::mat4> m_FinalBoneMatrices;
         std::shared_ptr<Animation> m_CurrentAnimation;
-        Model* m_CurrentModel;
         float m_CurrentTime;
+        float m_DeltaTime;
     };
 } // namespace NFSEngine
