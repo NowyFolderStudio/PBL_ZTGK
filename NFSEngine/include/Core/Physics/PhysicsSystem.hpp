@@ -39,6 +39,7 @@ namespace NFSEngine {
         static Sphere GetSphere(Transform* transform, SphereCollider3DComponent* collider);
         static Capsule GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider);
         static Cylinder GetCylinder(Transform* transform, CylinderCollider3DComponent* collider);
+        static AABB GetColliderBounds(ColliderComponent* col);
 
     private:
         static constexpr float CELL_SIZE = 20.0f;
