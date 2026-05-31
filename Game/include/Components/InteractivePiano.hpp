@@ -29,7 +29,7 @@ public:
 				ma_sound_set_pitch(&m_KeySounds[i], pitchMultiplier);
 			}
 			else {
-				std::cout << "B³¹d ³adowania dŸwiêku" << std::endl;
+				std::cout << "Blad ladowania dzwieku" << std::endl;
 			}
 		}
 

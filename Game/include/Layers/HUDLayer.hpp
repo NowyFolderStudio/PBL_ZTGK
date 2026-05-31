@@ -7,10 +7,10 @@
 
 struct GameStateView;
 
-class UILayer : public NFSEngine::Layer {
+class HUDLayer : public NFSEngine::Layer {
 public:
-    UILayer();
-    virtual ~UILayer() override;
+    HUDLayer();
+    virtual ~HUDLayer() override;
 
     virtual void OnAttach() override;
     virtual void OnDetach() override;
@@ -23,7 +23,12 @@ public:
 
 private:
     void SyncFromGameState();
+    void AnimateElements(NFSEngine::DeltaTime deltaTime);
     void UpdateHeartVisuals();
+
+    void InitScoreUI();
+    void InitHeartsUI();
+    void InitAuraUI();
 
     NFSEngine::Canvas* m_Canvas = nullptr;
 

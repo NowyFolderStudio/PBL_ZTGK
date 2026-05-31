@@ -4,8 +4,10 @@
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
 #include "Core/Audio/PatternParser.hpp"
+
 #include <miniaudio/miniaudio.h>
 #include <string>
+#include <vector>
 
 namespace NFSEngine {
 	class AudioPatternComponent : public Component {
@@ -24,10 +26,20 @@ namespace NFSEngine {
 		float GetVolume() const { return m_Volume; }
 
 	private:
-		void LoadSound(const std::string& filepath);
-		void PlayNote(float pitchOffset);
+		struct VoiceData {
+			bool isPlaying = false;
+			bool isFading = false;
+			float fadeTimer = 0.0f;
+			int stop16thTotal = 0;
+		};
 
-		ma_sound m_Sound;
+		void LoadSound(const std::string& filepath);
+		void PlayNote(float pitchOffset, int lengthIn16ths);
+
+		std::vector<ma_sound> m_Voices;
+		std::vector<VoiceData> m_VoiceData;
+		int m_CurrentVoiceIndex = 0;
+
 		bool m_IsLoaded = false;
 
 		Pattern m_CurrentPattern;

@@ -46,11 +46,11 @@ namespace NFSEngine {
         const std::vector<NFSEngine::PointLight*>& GetPointLights() const { return m_CachedPointLights; }
         const std::vector<NFSEngine::SpotLight*>& GetSpotLights() const { return m_CachedSpotLights; }
 
-
     private:
         DeltaTime m_FixedDeltaTime = 0.01666f;
         float m_Accumulator = 0.0f;
 
+        bool m_PhysicsListsDirty = true;
         std::vector<RigidBody3DComponent*> m_PhysicsBodies;
         std::vector<ColliderComponent*> m_Colliders;
         PhysicsSystem m_PhysicsSystem;

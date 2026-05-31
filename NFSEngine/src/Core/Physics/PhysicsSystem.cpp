@@ -4,35 +4,35 @@
 
 namespace NFSEngine {
 
-    CollisionInfo PhysicsSystem::CheckCollision(GameObject* a, GameObject* b) {
-        auto* colliderA = a->GetComponent<ColliderComponent>();
-        auto* colliderB = b->GetComponent<ColliderComponent>();
+    CollisionInfo PhysicsSystem::CheckCollision(ColliderComponent* colliderA, ColliderComponent* colliderB) {
 
         if (!colliderA || !colliderB) return CollisionInfo();
+
+        Transform* transformA = colliderA->GetOwner()->GetTransform();
+        Transform* transformB = colliderB->GetOwner()->GetTransform();
 
         if (colliderA->Type == ColliderType::Box && colliderB->Type == ColliderType::Box) {
             auto* boxA = static_cast<BoxCollider3DComponent*>(colliderA);
             auto* boxB = static_cast<BoxCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckAABB(GetAABB(a->GetTransform(), boxA), GetAABB(b->GetTransform(), boxB));
+            return CollisionDetector::CheckAABB(GetAABB(transformA, boxA), GetAABB(transformB, boxB));
         }
 
         if (colliderA->Type == ColliderType::Sphere && colliderB->Type == ColliderType::Sphere) {
             auto* sphereA = static_cast<SphereCollider3DComponent*>(colliderA);
             auto* sphereB = static_cast<SphereCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckSphere(GetSphere(a->GetTransform(), sphereA), GetSphere(b->GetTransform(), sphereB));
+            return CollisionDetector::CheckSphere(GetSphere(transformA, sphereA), GetSphere(transformB, sphereB));
         }
 
         if (colliderA->Type == ColliderType::Box && colliderB->Type == ColliderType::Sphere) {
             auto* boxA = static_cast<BoxCollider3DComponent*>(colliderA);
             auto* sphereB = static_cast<SphereCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckAABBSphere(GetAABB(a->GetTransform(), boxA), GetSphere(b->GetTransform(), sphereB));
+            return CollisionDetector::CheckAABBSphere(GetAABB(transformA, boxA), GetSphere(transformB, sphereB));
         }
 
         if (colliderA->Type == ColliderType::Sphere && colliderB->Type == ColliderType::Box) {
             auto* sphereA = static_cast<SphereCollider3DComponent*>(colliderA);
             auto* boxB = static_cast<BoxCollider3DComponent*>(colliderB);
-            auto info
-                = CollisionDetector::CheckAABBSphere(GetAABB(b->GetTransform(), boxB), GetSphere(a->GetTransform(), sphereA));
+            auto info = CollisionDetector::CheckAABBSphere(GetAABB(transformB, boxB), GetSphere(transformA, sphereA));
             info.ContactNormal = -info.ContactNormal;
             return info;
         }
@@ -40,15 +40,13 @@ namespace NFSEngine {
         if (colliderA->Type == ColliderType::Capsule && colliderB->Type == ColliderType::Capsule) {
             auto* capsuleA = static_cast<CapsuleCollider3DComponent*>(colliderA);
             auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckCapsule(GetCapsule(a->GetTransform(), capsuleA),
-                                                   GetCapsule(b->GetTransform(), capsuleB));
+            return CollisionDetector::CheckCapsule(GetCapsule(transformA, capsuleA), GetCapsule(transformB, capsuleB));
         }
 
         if (colliderA->Type == ColliderType::Sphere && colliderB->Type == ColliderType::Capsule) {
             auto* sphereA = static_cast<SphereCollider3DComponent*>(colliderA);
             auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
-            auto info = CollisionDetector::CheckCapsuleSphere(GetCapsule(b->GetTransform(), capsuleB),
-                                                              GetSphere(a->GetTransform(), sphereA));
+            auto info = CollisionDetector::CheckCapsuleSphere(GetCapsule(transformB, capsuleB), GetSphere(transformA, sphereA));
             info.ContactNormal = -info.ContactNormal;
             return info;
         }
@@ -56,21 +54,19 @@ namespace NFSEngine {
         if (colliderA->Type == ColliderType::Capsule && colliderB->Type == ColliderType::Sphere) {
             auto* capsuleA = static_cast<CapsuleCollider3DComponent*>(colliderA);
             auto* sphereB = static_cast<SphereCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckCapsuleSphere(GetCapsule(a->GetTransform(), capsuleA),
-                                                         GetSphere(b->GetTransform(), sphereB));
+            return CollisionDetector::CheckCapsuleSphere(GetCapsule(transformA, capsuleA), GetSphere(transformB, sphereB));
         }
 
         if (colliderA->Type == ColliderType::Capsule && colliderB->Type == ColliderType::Box) {
             auto* capsuleA = static_cast<CapsuleCollider3DComponent*>(colliderA);
             auto* boxB = static_cast<BoxCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckCapsuleOBB(GetCapsule(a->GetTransform(), capsuleA), GetOBB(b->GetTransform(), boxB));
+            return CollisionDetector::CheckCapsuleOBB(GetCapsule(transformA, capsuleA), GetOBB(transformB, boxB));
         }
 
         if (colliderA->Type == ColliderType::Box && colliderB->Type == ColliderType::Capsule) {
             auto* boxA = static_cast<BoxCollider3DComponent*>(colliderA);
             auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
-            auto info
-                = CollisionDetector::CheckCapsuleOBB(GetCapsule(b->GetTransform(), capsuleB), GetOBB(a->GetTransform(), boxA));
+            auto info = CollisionDetector::CheckCapsuleOBB(GetCapsule(transformB, capsuleB), GetOBB(transformA, boxA));
             info.ContactNormal = -info.ContactNormal;
             return info;
         }
@@ -78,22 +74,20 @@ namespace NFSEngine {
         if (colliderA->Type == ColliderType::Cylinder && colliderB->Type == ColliderType::Cylinder) {
             auto* cylinderA = static_cast<CylinderCollider3DComponent*>(colliderA);
             auto* cylinderB = static_cast<CylinderCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckCylinder(GetCylinder(a->GetTransform(), cylinderA),
-                                                    GetCylinder(b->GetTransform(), cylinderB));
+            return CollisionDetector::CheckCylinder(GetCylinder(transformA, cylinderA), GetCylinder(transformB, cylinderB));
         }
 
         if (colliderA->Type == ColliderType::Capsule && colliderB->Type == ColliderType::Cylinder) {
             auto* capsuleA = static_cast<CapsuleCollider3DComponent*>(colliderA);
             auto* cylinderB = static_cast<CylinderCollider3DComponent*>(colliderB);
-            return CollisionDetector::CheckCapsuleCylinder(GetCapsule(a->GetTransform(), capsuleA),
-                                                           GetCylinder(b->GetTransform(), cylinderB));
+            return CollisionDetector::CheckCapsuleCylinder(GetCapsule(transformA, capsuleA), GetCylinder(transformB, cylinderB));
         }
 
         if (colliderA->Type == ColliderType::Cylinder && colliderB->Type == ColliderType::Capsule) {
             auto* cylinderA = static_cast<CylinderCollider3DComponent*>(colliderA);
             auto* capsuleB = static_cast<CapsuleCollider3DComponent*>(colliderB);
-            auto info = CollisionDetector::CheckCapsuleCylinder(GetCapsule(b->GetTransform(), capsuleB),
-                                                                GetCylinder(a->GetTransform(), cylinderA));
+            auto info
+                = CollisionDetector::CheckCapsuleCylinder(GetCapsule(transformB, capsuleB), GetCylinder(transformA, cylinderA));
             info.ContactNormal = -info.ContactNormal;
             return info;
         }
@@ -103,93 +97,131 @@ namespace NFSEngine {
 
     void PhysicsSystem::Update(const std::vector<RigidBody3DComponent*>& rigidBodies,
                                const std::vector<ColliderComponent*>& allColliders, DeltaTime deltaTime) {
+        NFS_PROFILE_FUNCTION();
         float dt = static_cast<float>(deltaTime);
 
         std::set<std::pair<ColliderComponent*, ColliderComponent*>> currentFrameTriggers;
-
-        for (auto* rigidBody : rigidBodies) {
-            GameObject* objA = rigidBody->GetOwner();
-
-            if (!objA->IsActive()) continue;
-
-            auto* colA = objA->GetComponent<ColliderComponent>();
-            if (!colA) continue;
-
-            auto* transform = objA->GetTransform();
-
-            rigidBody->IsGrounded = false;
-            rigidBody->IsTouchingWall = false;
-            rigidBody->WallNormal = glm::vec3(0.0f);
-            rigidBody->TouchedWallObject = nullptr;
-
-            if (rigidBody->UseGravity) {
-                rigidBody->Acceleration += Gravity;
+        {
+            NFS_PROFILE_SCOPE("Physics: Clear Grid");
+            for (auto& [key, colliders] : m_Grid) {
+                colliders.clear();
             }
-            rigidBody->Velocity += rigidBody->Acceleration * dt;
-            rigidBody->Acceleration = glm::vec3(0.0f);
+        }
 
-            glm::vec3 moveDelta = rigidBody->Velocity * dt;
+        {
+            NFS_PROFILE_SCOPE("Physics: Populate Grid");
+            for (auto* col : allColliders) {
+                if (!col->GetOwner()->IsActive()) continue;
 
-            transform->Move(moveDelta);
+                glm::vec3 pos = col->GetOwner()->GetTransform()->GetWorldPosition();
+                GridKey key = GetGridKey(pos);
 
-            for (auto* colB : allColliders) {
-                GameObject* objB = colB->GetOwner();
-                if (objA == objB || !objB->IsActive()) continue;
+                m_Grid[key].push_back(col);
+            }
+        }
+        {
 
-                CollisionInfo info = CheckCollision(objA, objB);
+            NFS_PROFILE_SCOPE("Physics: Check Collisions & Move");
+            for (auto* rigidBody : rigidBodies) {
+                GameObject* objA = rigidBody->GetOwner();
 
-                if (info.IsColliding) {
+                if (!objA->IsActive()) continue;
 
-                    if (colA->IsTrigger || colB->IsTrigger) {
+                auto* colA = objA->GetComponent<ColliderComponent>();
+                if (!colA) continue;
 
-                        auto pair = (colA < colB) ? std::make_pair(colA, colB) : std::make_pair(colB, colA);
-                        currentFrameTriggers.insert(pair);
+                auto* transform = objA->GetTransform();
 
-                        bool isNewCollision = m_TriggerPairs.find(pair) == m_TriggerPairs.end();
+                rigidBody->IsGrounded = false;
+                rigidBody->IsTouchingWall = false;
+                rigidBody->WallNormal = glm::vec3(0.0f);
+                rigidBody->TouchedWallObject = nullptr;
 
-                        if (isNewCollision) {
-                            if (colA->OnTriggerEnter) colA->OnTriggerEnter(objB);
-                            if (colB->OnTriggerEnter) colB->OnTriggerEnter(objA);
-                        } else {
-                            if (colA->OnTriggerStay) colA->OnTriggerStay(objB);
-                            if (colB->OnTriggerStay) colB->OnTriggerStay(objA);
-                        }
-                    } else {
-                        transform->Move(info.ContactNormal * info.PenetrationDepth);
-                        float pushback = glm::dot(rigidBody->Velocity, info.ContactNormal);
+                if (rigidBody->UseGravity) {
+                    rigidBody->Acceleration += Gravity;
+                }
+                rigidBody->Velocity += rigidBody->Acceleration * dt;
+                rigidBody->Acceleration = glm::vec3(0.0f);
 
-                        if (pushback < 0.0f) {
-                            rigidBody->Velocity -= info.ContactNormal * pushback;
-                        }
+                glm::vec3 moveDelta = rigidBody->Velocity * dt;
+                transform->Move(moveDelta);
 
-                        if (colA->OnCollisionEnter) colA->OnCollisionEnter(objB, info.ContactNormal);
-                        if (colB->OnCollisionEnter) colB->OnCollisionEnter(objA, -info.ContactNormal);
+                glm::vec3 myPos = transform->GetWorldPosition();
+                GridKey myKey = GetGridKey(myPos);
 
-                        if (info.ContactNormal.y > 0.7f) {
-                            rigidBody->IsGrounded = true;
-                            rigidBody->TouchedFloorObject = objB; // TODO: Rework to use one object
-                            rigidBody->FloorNormal = info.ContactNormal;
+                for (int x = -1; x <= 1; ++x) {
+                    for (int y = -1; y <= 1; ++y) {
+                        for (int z = -1; z <= 1; ++z) {
 
-                        } else if (std::abs(info.ContactNormal.y) < 0.3f) {
-                            rigidBody->IsTouchingWall = true;
-                            rigidBody->WallNormal = info.ContactNormal;
-                            rigidBody->TouchedWallObject = objB;
+                            GridKey searchKey = { myKey.x + x, myKey.y + y, myKey.z + z };
+
+                            auto it = m_Grid.find(searchKey);
+                            if (it != m_Grid.end()) {
+                                for (auto* colB : it->second) {
+                                    GameObject* objB = colB->GetOwner();
+                                    if (objA == objB) continue;
+
+                                    CollisionInfo info = CheckCollision(colA, colB);
+
+                                    if (info.IsColliding) {
+
+                                        if (colA->IsTrigger || colB->IsTrigger) {
+
+                                            auto pair = (colA < colB) ? std::make_pair(colA, colB) : std::make_pair(colB, colA);
+                                            currentFrameTriggers.insert(pair);
+
+                                            bool isNewCollision = m_TriggerPairs.find(pair) == m_TriggerPairs.end();
+
+                                            if (isNewCollision) {
+                                                if (colA->OnTriggerEnter) colA->OnTriggerEnter(objB);
+                                                if (colB->OnTriggerEnter) colB->OnTriggerEnter(objA);
+                                            } else {
+                                                if (colA->OnTriggerStay) colA->OnTriggerStay(objB);
+                                                if (colB->OnTriggerStay) colB->OnTriggerStay(objA);
+                                            }
+                                        } else {
+                                            transform->Move(info.ContactNormal * info.PenetrationDepth);
+                                            float pushback = glm::dot(rigidBody->Velocity, info.ContactNormal);
+
+                                            if (pushback < 0.0f) {
+                                                rigidBody->Velocity -= info.ContactNormal * pushback;
+                                            }
+
+                                            if (colA->OnCollisionEnter) colA->OnCollisionEnter(objB, info.ContactNormal);
+                                            if (colB->OnCollisionEnter) colB->OnCollisionEnter(objA, -info.ContactNormal);
+
+                                            if (info.ContactNormal.y > 0.7f) {
+                                                rigidBody->IsGrounded = true;
+                                                rigidBody->TouchedFloorObject = objB; // TODO: Rework to use one object
+                                                rigidBody->FloorNormal = info.ContactNormal;
+
+                                            } else if (std::abs(info.ContactNormal.y) < 0.3f) {
+                                                rigidBody->IsTouchingWall = true;
+                                                rigidBody->WallNormal = info.ContactNormal;
+                                                rigidBody->TouchedWallObject = objB;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-
-        for (const auto& pair : m_TriggerPairs) {
-            if (currentFrameTriggers.find(pair) == currentFrameTriggers.end()) {
-                if (pair.first && pair.second) {
-                    if (pair.first->OnTriggerExit) pair.first->OnTriggerExit(pair.second->GetOwner());
-                    if (pair.second->OnTriggerExit) pair.second->OnTriggerExit(pair.first->GetOwner());
+        {
+            NFS_PROFILE_SCOPE("Physics: Triggers Update");
+            for (const auto& pair : m_TriggerPairs) {
+                if (currentFrameTriggers.find(pair) == currentFrameTriggers.end()) {
+                    if (pair.first && pair.second) {
+                        if (pair.first->OnTriggerExit) pair.first->OnTriggerExit(pair.second->GetOwner());
+                        if (pair.second->OnTriggerExit) pair.second->OnTriggerExit(pair.first->GetOwner());
+                    }
                 }
             }
-        }
 
-        m_TriggerPairs = std::move(currentFrameTriggers);
+            m_TriggerPairs = std::move(currentFrameTriggers);
+        }
     };
 
     void PhysicsSystem::RemoveCollider(ColliderComponent* collider) {

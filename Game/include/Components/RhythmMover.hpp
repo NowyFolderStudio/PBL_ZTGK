@@ -5,7 +5,7 @@
 
 class RhythmMover : public NFSEngine::Component {
 public:
-	std::string TargetPattern = "PianoPattern1";
+	std::string TargetPattern = "BassPatternPrototype";
 	
 	float JumpHeight = 2.0f;
 	float FallSpeed = 5.0f;
@@ -34,8 +34,8 @@ public:
 		}
 	}
 
-	void SetBasePosition(const glm::vec3& startPos) {
-		m_BasePosition = startPos;
+	virtual void OnAwake() override {
+		m_BasePosition = GetOwner()->GetTransform()->GetPosition();
 	}
 
 private:

@@ -6,19 +6,20 @@
 
 namespace NFSEngine {
 	struct NoteEvent {
-		int bar; 
-		int beat;
-		int sixteenth;
+		int bar = 1; 
+		int beat = 1;
+		int sixteenth = 1;
+		int lengthIn16ths = 4;
 
-		int trackID;
-		float pitchOffset;
+		int trackID = 0;
+		float pitchOffset = 0.0f;
 		std::string noteName;
 	};
 
 	struct Pattern {
 		std::string name;
 		std::string audioFile;
-		int totalBars;
+		int totalBars = 4;
 		std::vector<NoteEvent> notes;
 	};
 

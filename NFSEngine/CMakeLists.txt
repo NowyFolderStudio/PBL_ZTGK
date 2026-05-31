@@ -61,6 +61,11 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC 
+    include
+    src
+)
+
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC 
     ${IMGUI_DIR}
     ${IMGUI_DIR}/backends
     thirdparty/glad/include
@@ -68,10 +73,9 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     thirdparty/assimp/include
     thirdparty/glm
     thirdparty
-    include
-    src
     thirdparty/tinygltf
     thirdparty/stb
+    thirdparty/spdlog/include
 )
 
 # Linking spdlog to the engine (spdlog v1.x)

@@ -10,6 +10,19 @@
 #include <utility>
 
 namespace NFSEngine {
+
+    struct GridKey {
+        int x, y, z;
+
+        bool operator==(const GridKey& other) const { return x == other.x && y == other.y && z == other.z; }
+    };
+
+    struct GridKeyHash {
+        std::size_t operator()(const GridKey& key) const {
+            return ((std::hash<int>()(key.x) ^ (std::hash<int>()(key.y) << 1)) >> 1) ^ (std::hash<int>()(key.z) << 1);
+        }
+    };
+
     class PhysicsSystem {
     public:
         static inline glm::vec3 Gravity = glm::vec3(0.0f, -25.0f, 0.0f);
@@ -19,7 +32,7 @@ namespace NFSEngine {
 
         void RemoveCollider(ColliderComponent* collider);
 
-        static CollisionInfo CheckCollision(GameObject* a, GameObject* b);
+        static CollisionInfo CheckCollision(ColliderComponent* colliderA, ColliderComponent* colliderB);
 
         static AABB GetAABB(Transform* transform, BoxCollider3DComponent* collider);
         static OBB GetOBB(Transform* transform, BoxCollider3DComponent* collider);
@@ -28,6 +41,16 @@ namespace NFSEngine {
         static Cylinder GetCylinder(Transform* transform, CylinderCollider3DComponent* collider);
 
     private:
+        static constexpr float CELL_SIZE = 20.0f;
+
+        using SpatialGrid = std::unordered_map<GridKey, std::vector<ColliderComponent*>, GridKeyHash>;
+        SpatialGrid m_Grid;
+
+        GridKey GetGridKey(const glm::vec3& position) const {
+            return { static_cast<int>(std::floor(position.x / CELL_SIZE)), static_cast<int>(std::floor(position.y / CELL_SIZE)),
+                     static_cast<int>(std::floor(position.z / CELL_SIZE)) };
+        }
+
         std::set<std::pair<ColliderComponent*, ColliderComponent*>> m_TriggerPairs;
     };
 } // namespace NFSEngine

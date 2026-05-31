@@ -1,4 +1,6 @@
 ---
+HeaderFilterRegex: '^.*/(NFSEngine|Game)/(src|include)/((?!thirdparty).)*$'
+
 Checks: >
   -*,
   bugprone-*,

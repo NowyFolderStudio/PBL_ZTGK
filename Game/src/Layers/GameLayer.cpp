@@ -5,9 +5,9 @@
 
 // It doesn't work now
 
-GameLayer::GameLayer(const std::string& levelPath, UILayer* uiLayer)
+GameLayer::GameLayer(const std::string& levelPath, HUDLayer* hudLayer)
     : m_LevelFilePath(levelPath)
-    , m_UILayer(uiLayer) { }
+    , m_HUDLayer(hudLayer) { }
 
 GameLayer::~GameLayer() { }
 
