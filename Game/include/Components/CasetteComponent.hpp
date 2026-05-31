@@ -2,16 +2,14 @@
 
 #include <NFSEngine.h>
 
-#include "Components/Managers/ScoreManager.hpp"
+#include "Components/Managers/AuraManager.hpp"
 
-class CoinComponent : public NFSEngine::Component {
+class CasetteComponent : public NFSEngine::Component {
 public:
-    explicit CoinComponent(NFSEngine::GameObject* owner)
+    explicit CasetteComponent(NFSEngine::GameObject* owner)
         : NFSEngine::Component(owner) { }
 
-    std::string GetName() const override { return "CoinComponent"; }
-
-    int ScoreValue = 67;
+    std::string GetName() const override { return "CasetteComponent"; }
 
 protected:
     void OnStart() override {
@@ -25,11 +23,11 @@ protected:
 
             m_Collected = true;
 
-            if (ScoreManager::Instance) {
-                ScoreManager::Instance->AddScore(ScoreValue);
+            if (AuraManager::Instance) {
+                AuraManager::Instance->UnlockNextAura();
             }
 
-            m_Owner->Destroy();
+            m_Owner->SetActive(false);
         };
     }
 
