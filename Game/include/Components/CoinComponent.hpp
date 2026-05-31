@@ -1,43 +1,38 @@
 #pragma once
 
-#include "Components/Component.hpp"
-#include "Components/PhysicsComponents.hpp"
-#include "Core/GameObject.hpp"
-#include "Components/ScoreManagerComponent.hpp"
-#include "Core/Scene.hpp"
+#include <NFSEngine.h>
 
-namespace NFSEngine {
+#include "Components/Managers/ScoreManager.hpp"
 
-    class CoinComponent : public Component {
-    public:
-        explicit CoinComponent(GameObject* owner)
-            : Component(owner) { }
+class CoinComponent : public NFSEngine::Component {
+public:
+    explicit CoinComponent(NFSEngine::GameObject* owner)
+        : NFSEngine::Component(owner) { }
 
-        std::string GetName() const override { return "CoinComponent"; }
+    std::string GetName() const override { return "CoinComponent"; }
 
-        int ScoreValue = 1000;
+    int ScoreValue = 67;
 
-    protected:
-        void OnStart() override {
-            auto* collider = m_Owner->GetComponent<ColliderComponent>();
-            if (!collider) return;
-            collider->IsTrigger = true;
+protected:
+    void OnStart() override {
+        auto* collider = m_Owner->GetComponent<NFSEngine::ColliderComponent>();
+        if (!collider) return;
+        collider->IsTrigger = true;
 
-            auto* scene = m_Owner->GetScene();
-            auto* gm = scene ? scene->FindWithTag(Tags::ScoreManager) : nullptr;
-            auto* scoreComp = gm ? gm->GetComponent<ScoreManagerComponent>() : nullptr;
+        collider->OnTriggerEnter = [this](NFSEngine::GameObject* other) {
+            if (m_Collected) return;
+            if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
-            collider->OnTriggerEnter = [this, scoreComp](GameObject* other) {
-                if (m_Collected) return;
-                if (!other->CompareTag(Tags::Player)) return;
-                m_Collected = true;
-                if (scoreComp) scoreComp->AddScore(ScoreValue);
-                m_Owner->SetActive(false);
-            };
-        }
+            m_Collected = true;
 
-    private:
-        bool m_Collected = false;
-    };
+            if (ScoreManager::Instance) {
+                ScoreManager::Instance->AddScore(ScoreValue);
+            }
 
-} // namespace NFSEngine
+            m_Owner->SetActive(false);
+        };
+    }
+
+private:
+    bool m_Collected = false;
+};

@@ -3,7 +3,7 @@
 #include "Components/Component.hpp"
 #include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
-#include "Components/LivesManagerComponent.hpp"
+#include "Components/Managers/LivesManager.hpp"
 #include "Components/CharacterController.hpp"
 
 namespace NFSEngine {
@@ -11,7 +11,7 @@ namespace NFSEngine {
     class HazardComponent : public Component {
     public:
         explicit HazardComponent(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         std::string GetName() const override { return "HazardComponent"; }
 
@@ -25,7 +25,7 @@ namespace NFSEngine {
 
             auto* scene = m_Owner->GetScene();
             auto* gm = scene ? scene->FindWithTag(Tags::LivesManager) : nullptr;
-            auto* livesComp = gm ? gm->GetComponent<LivesManagerComponent>() : nullptr;
+            auto* livesComp = gm ? gm->GetComponent<LivesManager>() : nullptr;
 
             auto hitAction = [this, livesComp](GameObject* other) {
                 if (!other->CompareTag(Tags::Player)) return;

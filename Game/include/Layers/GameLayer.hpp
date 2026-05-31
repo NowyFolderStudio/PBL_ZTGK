@@ -5,12 +5,11 @@
 #include <memory>
 #include <vector>
 
-#include "HUDLayer.hpp"
 #include "Components/Camera.hpp"
 
 class GameLayer : public NFSEngine::Layer {
 public:
-    GameLayer(const std::string& levelPath, HUDLayer* hudLayer);
+    GameLayer(const std::string& levelPath);
     virtual ~GameLayer() override;
 
     virtual void OnAttach() override;
@@ -22,7 +21,6 @@ public:
 
 private:
     std::string m_LevelFilePath;
-    HUDLayer* m_HUDLayer;
     std::unique_ptr<NFSEngine::Scene> m_Scene;
 
     NFSEngine::Camera* m_CachedCamera = nullptr;

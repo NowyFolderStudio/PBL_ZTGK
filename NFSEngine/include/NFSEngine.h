@@ -14,6 +14,7 @@
 #include "Core/GameObject.hpp"
 #include "Core/Scene.hpp"
 #include "Core/Tags.hpp"
+#include "Core/Action.hpp"
 
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"

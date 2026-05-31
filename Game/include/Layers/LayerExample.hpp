@@ -1,7 +1,6 @@
 #pragma once
 
 #include "NFSEngine.h"
-#include "HUDLayer.hpp"
 #include <memory>
 #include <vector>
 #include "Renderer/Skybox.hpp"
@@ -9,6 +8,7 @@
 #include "Components/AudioPatternComponent.hpp"
 #include "Renderer/Framebuffer.hpp"
 #include "Renderer/EnvironmentMap.hpp"
+#include "Components/HUDComponent.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -26,7 +26,7 @@ namespace NFSEngine {
 
 class LayerExample : public NFSEngine::Layer {
 public:
-    LayerExample(HUDLayer* hudLayer);
+    LayerExample();
     ~LayerExample() override;
 
     void OnAttach() override;
@@ -37,6 +37,8 @@ public:
     void OnEvent(NFSEngine::Event& e) override;
 
 private:
+    HUDComponent* m_HUD = nullptr;
+
     NFSEngine::GameObject* m_Player = nullptr;
     NFSEngine::GameObject* m_MovingCube = nullptr;
     NFSEngine::GameObject* m_MovingCube2 = nullptr;
@@ -68,8 +70,6 @@ private:
     std::vector<RhythmPlatform*> m_CachedRhythmPlatforms;
     std::vector<RhythmMover*> m_CachedRhythmMovers;
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
-
-    HUDLayer* m_HUDLayer = nullptr;
 
     float m_DeathPlaneY = -50.0f;
     glm::vec3 m_PlayerSpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);

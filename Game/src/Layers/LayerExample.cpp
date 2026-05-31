@@ -7,11 +7,12 @@
 #include "Components/HazardComponent.hpp"
 #include "Components/CheckpointComponent.hpp"
 #include "Components/ZoneCameraTriggerComponent.hpp"
-#include "Components/ScoreManagerComponent.hpp"
-#include "Components/LivesManagerComponent.hpp"
+#include "Components/Managers/ScoreManager.hpp"
+#include "Components/Managers/LivesManager.hpp"
+#include "Components/Managers/AuraManager.hpp"
 #include "Components/CharacterController.hpp"
+#include "Components/Controllers/AuraInputController.hpp"
 #include "Core/Log.hpp"
-#include "GameStateView.hpp"
 #include "Components/ModelComponent.hpp"
 #include "Components/RhythmMover.hpp"
 #include "Components/InteractivePiano.hpp"
@@ -23,6 +24,7 @@
 #include "Components/DirectionalLight.hpp"
 #include "Components/SpotLight.hpp"
 #include "Components/RhythmPlatform.hpp"
+#include "Components/HUDComponent.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -47,8 +49,7 @@
 #include <memory>
 #include <vector>
 
-LayerExample::LayerExample(HUDLayer* hudLayer)
-    : m_HUDLayer(hudLayer) {
+LayerExample::LayerExample() {
     m_Player = nullptr;
     m_MovingCube = nullptr;
     m_Scene = nullptr;
@@ -59,6 +60,17 @@ LayerExample::~LayerExample() { NFSEngine::AudioEngine::Shutdown(); }
 void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
+
+    NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
+    livesManager->SetTag(NFSEngine::Tags::LivesManager);
+    livesManager->AddComponent<LivesManager>();
+
+    NFSEngine::GameObject* scoreManager = m_Scene->CreateGameObject("ScoreManager");
+    scoreManager->SetTag(NFSEngine::Tags::ScoreManager);
+    scoreManager->AddComponent<ScoreManager>();
+
+    NFSEngine::GameObject* auraManager = m_Scene->CreateGameObject("AuraManager");
+    auraManager->AddComponent<AuraManager>();
 
     NFSEngine::SceneLoader sceneLoader;
 
@@ -101,6 +113,9 @@ void LayerExample::OnAttach() {
     matAudio->SetFloat("u_BendStrength", 0.0f);
     matAudio->SetFloat("u_TwistStrength", 0.5f);
 
+    NFSEngine::GameObject* uiObj = m_Scene->CreateGameObject("HUD");
+    m_HUD = &uiObj->AddComponent<HUDComponent>();
+
     auto makePlatform = [&](const std::string& name, float x, float y, float z, float sizeX, float sizeZ,
                             float thickness = 1.0f) -> NFSEngine::GameObject* {
         NFSEngine::GameObject* obj = m_Scene->CreateGameObject(name);
@@ -116,7 +131,7 @@ void LayerExample::OnAttach() {
         obj->GetTransform()->SetPosition({ x, y, z });
         obj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCat);
         obj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-        obj->AddComponent<NFSEngine::CoinComponent>();
+        obj->AddComponent<CoinComponent>();
         return obj;
     };
 
@@ -148,6 +163,9 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<CharacterController>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     playerModel->AddComponent<AnimatorComponent>();
+
+    m_Player->AddComponent<AuraInputController>();
+
     auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
 
     auto animation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 1);
@@ -415,22 +433,6 @@ void LayerExample::OnAttach() {
     camTrigger.CustomPitch = 45.0f;
     camTrigger.CustomDistance = 15.0f;
 
-    // GameManager
-    NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
-    livesManager->SetTag(NFSEngine::Tags::LivesManager);
-    auto& livesComp = livesManager->AddComponent<NFSEngine::LivesManagerComponent>();
-
-    NFSEngine::GameObject* scoreManager = m_Scene->CreateGameObject("ScoreManager");
-    scoreManager->SetTag(NFSEngine::Tags::ScoreManager);
-    auto& scoreComp = scoreManager->AddComponent<NFSEngine::ScoreManagerComponent>();
-
-    auto gameState = std::make_shared<GameStateView>();
-    gameState->data.score = scoreComp.GetScore();
-    gameState->data.lives = livesComp.GetLives();
-    scoreComp.m_OnScoreChanged = [gameState](int s) { gameState->data.score = s; };
-    livesComp.m_OnLivesChanged = [gameState](int l) { gameState->data.lives = l; };
-    if (m_HUDLayer) m_HUDLayer->SetGameState(gameState);
-
     // Audio
     NFSEngine::AudioEngine::Init();
     m_Sequencer.Start(120.0f);
@@ -596,7 +598,7 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         NFS_PROFILE_SCOPE("LayerExample: Player & Logic Update");
         if (m_Player) {
             auto* lm = m_Scene->FindWithTag(NFSEngine::Tags::LivesManager);
-            auto* livesComp = lm ? lm->GetComponent<NFSEngine::LivesManagerComponent>() : nullptr;
+            auto* livesComp = lm ? lm->GetComponent<LivesManager>() : nullptr;
             auto* cc = m_Player->GetComponent<CharacterController>();
             float playerY = m_Player->GetTransform()->GetPosition().y;
 
@@ -647,6 +649,10 @@ void LayerExample::OnRender() {
         NFSEngine::Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
         NFSEngine::Renderer::EndScene();
+    }
+
+    if (m_HUD) {
+        m_HUD->RenderUI();
     }
 }
 

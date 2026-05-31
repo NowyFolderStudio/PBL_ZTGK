@@ -13,21 +13,20 @@ namespace NFSEngine {
             .BindAxis1DKeys(Key::W, Key::S)
             .BindControllerAxis(ControllerAxes::LeftY, 0, -1.0f, 0.15f);
 
-        actions.Create("Jump", InputAction::Type::Button)
-            .BindKey(Key::Space)
-            .BindControllerButton(ControllerButtons::A);
+        actions.Create("Jump", InputAction::Type::Button).BindKey(Key::Space).BindControllerButton(ControllerButtons::A);
 
         actions.Create("Dash", InputAction::Type::Button)
             .BindKey(Key::LeftShift)
             .BindControllerButton(ControllerButtons::RightBumper);
 
-        actions.Create("ToggleCursor", InputAction::Type::Button)
-            .BindKey(Key::Tab);
+        actions.Create("ToggleCursor", InputAction::Type::Button).BindKey(Key::Tab);
 
-        actions.Create("LookX", InputAction::Type::Axis1D)
-            .BindControllerAxis(ControllerAxes::RightX, 0, 1.0f, 0.15f);
+        actions.Create("LookX", InputAction::Type::Axis1D).BindControllerAxis(ControllerAxes::RightX, 0, 1.0f, 0.15f);
 
-        actions.Create("LookY", InputAction::Type::Axis1D)
-            .BindControllerAxis(ControllerAxes::RightY, 0, 1.0f, 0.15f);
+        actions.Create("LookY", InputAction::Type::Axis1D).BindControllerAxis(ControllerAxes::RightY, 0, 1.0f, 0.15f);
+
+        actions.Create("NextAura", InputAction::Type::Button).BindKey(Key::E);
+
+        actions.Create("PreviousAura", InputAction::Type::Button).BindKey(Key::Q);
     }
-}
+} // namespace NFSEngine
