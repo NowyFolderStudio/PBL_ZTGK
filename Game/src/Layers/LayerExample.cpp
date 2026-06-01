@@ -168,11 +168,11 @@ void LayerExample::OnAttach() {
 
     auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
 
-    auto animation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 1);
+    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 1);
+    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 2);
 
-    NFS_INFO("Animation loaded: {}", animation->GetName());
-
-    playerModel->GetComponent<AnimatorComponent>()->PlayAnimation(animation);
+    playerModel->GetComponent<AnimatorComponent>()->AddAnimation(idleAnimation);
+    playerModel->GetComponent<AnimatorComponent>()->AddAnimation(runAnimation);
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
@@ -235,7 +235,6 @@ void LayerExample::OnAttach() {
 
     // Airplane model
     // Code below load multi-mesh/material object. It is possible to move such loading to some class responsible for it.
-    /*
     std::string modelPath = "assets/models/fa-18/FA-18C.obj";
     auto airplaneModel = std::make_shared<NFSEngine::Model>(modelPath);
 
@@ -277,7 +276,7 @@ void LayerExample::OnAttach() {
 
         airplaneComp.SetMaterial(i, mat);
     }
-    */
+
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
 

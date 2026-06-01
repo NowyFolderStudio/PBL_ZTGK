@@ -15,8 +15,10 @@ namespace NFSEngine {
         AnimatorComponent(GameObject* owner);
 
         virtual std::string GetName() const override { return "AnimatorComponent"; }
-        void PlayAnimation(const std::shared_ptr<Animation>& animation);
+        void AddAnimation(const std::shared_ptr<Animation>& animation);
+        void PlayAnimation(int index);
         void OnUpdate(DeltaTime deltaTime) override;
+        void SetAnimationSpeed(float speed) { m_AnimationSpeed = speed; }
 
         void OnImGuiRender() override { ImGui::DragFloat("Time", &m_CurrentTime, 0.1f); }
 
@@ -26,7 +28,9 @@ namespace NFSEngine {
         void CalculateBoneTransform(const AssimpNodeData* node, glm::mat4 parentTransform);
 
         std::vector<glm::mat4> m_FinalBoneMatrices;
-        std::shared_ptr<Animation> m_CurrentAnimation;
+        std::vector<std::shared_ptr<Animation>> m_Animations;
+        int m_CurrentAnimationIndex = 0;
+        float m_AnimationSpeed = 1.0f;
         float m_CurrentTime;
         float m_DeltaTime;
     };
