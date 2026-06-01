@@ -5,8 +5,8 @@
 
 class RhythmMover : public NFSEngine::Component {
 public:
-	std::string TargetPattern = "BassPatternPrototype";
-	
+	std::string TargetTrack = "Piano";
+
 	float JumpHeight = 2.0f;
 	float FallSpeed = 5.0f;
 
@@ -43,7 +43,7 @@ private:
 	float m_CurrentJumpOffset = 0.0f;
 
 	bool OnNotePlayed(NFSEngine::NotePlayedEvent& e) {
-		if (e.GetPatternName() != TargetPattern) return false;
+		if (e.GetTrackName() != TargetTrack) return false;
 
 		m_CurrentJumpOffset = JumpHeight;
 

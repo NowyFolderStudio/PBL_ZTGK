@@ -9,8 +9,7 @@
 
 class RhythmPlatform : public NFSEngine::Component {
 public:
-    std::string TargetPattern = "BassPatternPrototype";
-
+    std::string TargetTrack = "Bass";
     bool StartsActive = true;
 
     RhythmPlatform(NFSEngine::GameObject* owner) : Component(owner) {}
@@ -18,24 +17,32 @@ public:
     std::string GetName() const override { return "RhythmPlatform"; }
 
     virtual void OnAwake() override {
-        m_IsActive = StartsActive;
-
-        m_OriginalScale = GetOwner()->GetTransform()->GetScale();
-
-        ApplyState();
+        Initialize();
     }
 
-    void OnEvent(NFSEngine::Event& e){
+    void OnEvent(NFSEngine::Event& e) {
         NFSEngine::EventDispatcher dispatcher(e);
         dispatcher.Dispatch<NFSEngine::NotePlayedEvent>(std::bind(&RhythmPlatform::OnNotePlayed, this, std::placeholders::_1));
     }
 
 private:
     bool m_IsActive = true;
+    bool m_Initialized = false;
     glm::vec3 m_OriginalScale{ 1.0f };
 
+    void Initialize() {
+        if (!m_Initialized) {
+            m_OriginalScale = GetOwner()->GetTransform()->GetScale();
+            m_IsActive = StartsActive;
+            m_Initialized = true;
+            ApplyState();
+        }
+    }
+
     bool OnNotePlayed(NFSEngine::NotePlayedEvent& e) {
-        if (e.GetPatternName() != TargetPattern) return false;
+        if (e.GetTrackName() != TargetTrack) return false;
+
+        Initialize();
 
         m_IsActive = !m_IsActive;
         ApplyState();
@@ -43,12 +50,14 @@ private:
         return false;
     }
 
-    void ApplyState() {       
+    void ApplyState() {
+        auto transform = GetOwner()->GetTransform();
+
         if (m_IsActive) {
-            GetOwner()->GetTransform()->SetScale(m_OriginalScale);
+            transform->SetScale(m_OriginalScale);
         }
         else {
-            GetOwner()->GetTransform()->SetScale(glm::vec3(0.0f));
+            transform->SetScale(glm::vec3(0.001f));
         }
     }
 };

@@ -1,61 +1,67 @@
 #include "Core/AudioManager.hpp"
+#include <algorithm>
+#include <iostream>
 
 namespace NFSEngine {
 
-    AudioManager::AudioManager()
-        : fmodSystem(nullptr) { }
+	std::unordered_map<std::string, std::vector<AudioPatternComponent*>> AudioManager::m_TrackGroups;
 
-    AudioManager::~AudioManager() { Cleanup(); }
+	void AudioManager::Init() {
+		std::cout << "[AudioManager] Zainicjalizowano system zarzadzania sciezkami." << std::endl;
+	}
 
-    bool AudioManager::Init() {
-        FMOD_RESULT result = FMOD::System_Create(&fmodSystem);
+	void AudioManager::Shutdown() {
+		m_TrackGroups.clear();
+		std::cout << "[AudioManager] Wyczyszczono przypisane sciezki i wylaczono." << std::endl;
+	}
 
-        if (result != FMOD_OK) return false;
+	void AudioManager::Update(DeltaTime deltaTime) {
+		for (auto& pair : m_TrackGroups) {
+			for (auto* comp : pair.second) {
+				if (comp) {
+					comp->OnUpdate(deltaTime);
+				}
+			}
+		}
+	}
 
-        result = fmodSystem->init(512, FMOD_INIT_NORMAL, nullptr);
+	void AudioManager::RegisterPattern(AudioPatternComponent* component) {
+		if (component) {
+			m_TrackGroups[component->TrackName].push_back(component);
+		}
+	}
 
-        if (result != FMOD_OK) return false;
+	void AudioManager::UnregisterPattern(AudioPatternComponent* component) {
+		if (!component) return;
+		auto& group = m_TrackGroups[component->TrackName];
+		group.erase(std::remove(group.begin(), group.end(), component), group.end());
+	}
 
-        return true;
-    }
+	void AudioManager::SetActivePatternInTrack(const std::string& trackName, const std::string& patternName) {
+		if (m_TrackGroups.find(trackName) == m_TrackGroups.end()) return;
 
-    void AudioManager::Update() {
-        if (fmodSystem) {
-            fmodSystem->update();
-        }
-    }
+		for (auto* comp : m_TrackGroups[trackName]) {
+			if (comp->GetPatternName() == patternName) {
+				comp->IsActive = true;
+				std::cout << "[AudioManager] Wlaczono: " << patternName << " na kanale " << trackName << std::endl;
+			}
+			else {
+				comp->IsActive = false;
+			}
+		}
+	}
 
-    void AudioManager::LoopSound(const std::string& soundFile, float volume) {
-        if (!fmodSystem) return;
+	void AudioManager::MuteTrack(const std::string& trackName, bool mute) {
+		if (m_TrackGroups.find(trackName) == m_TrackGroups.end()) return;
+		for (auto* comp : m_TrackGroups[trackName]) {
+			comp->IsActive = !mute;
+		}
+	}
 
-        FMOD::Sound* sound = nullptr;
-
-        std::string fullPath = "assets/audio/" + soundFile;
-
-        FMOD_RESULT result = fmodSystem->createSound(fullPath.c_str(), FMOD_DEFAULT | FMOD_LOOP_NORMAL, nullptr, &sound);
-
-        if (result != FMOD_OK) {
-            std::cerr << "[FMOD BLAD] Nie udalo sie zaladowac pliku: " << soundFile << " (Kod bledu: " << result << ")"
-                      << std::endl;
-            return;
-        }
-
-        FMOD::Channel* channel = nullptr;
-
-        fmodSystem->playSound(sound, nullptr, true, &channel);
-
-        if (channel) {
-            channel->setVolume(volume);
-            channel->setPaused(false);
-        }
-    }
-
-    void AudioManager::Cleanup() {
-        if (fmodSystem) {
-            fmodSystem->close();
-            fmodSystem->release();
-            fmodSystem = nullptr;
-        }
-    }
-
-} // namespace NFSEngine
+	void AudioManager::SetTrackVolume(const std::string& trackName, float volume) {
+		if (m_TrackGroups.find(trackName) == m_TrackGroups.end()) return;
+		for (auto* comp : m_TrackGroups[trackName]) {
+			comp->SetVolume(volume);
+		}
+	}
+}

@@ -20,10 +20,14 @@ namespace NFSEngine {
 		void OnUpdate(DeltaTime deltaTime) override;
 		void OnImGuiRender() override;
 
-		std::string GetName() const override { return "AudioComponent"; }
-
 		void SetVolume(float volume);
+
 		float GetVolume() const { return m_Volume; }
+		std::string GetName() const override { return "AudioComponent"; }
+		std::string GetPatternName() const { return m_CurrentPattern.name; }
+
+		std::string TrackName = "Default";
+		bool IsActive = true;
 
 	private:
 		struct VoiceData {

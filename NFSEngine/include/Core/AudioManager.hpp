@@ -1,23 +1,28 @@
 #pragma once
-
-#include <fmod.hpp>
+#include "Components/AudioPatternComponent.hpp"
 #include <string>
-#include <iostream>
+#include <vector>
+#include <unordered_map>
 
 namespace NFSEngine {
 
-    class AudioManager {
-    public:
-        AudioManager();
-        ~AudioManager();
+	class AudioManager {
+	public:
+		static void Init();
+		static void Shutdown();
 
-        bool Init();
-        void Update();
-        void LoopSound(const std::string& soundFile, float volume);
-        void Cleanup();
+		static void Update(DeltaTime deltaTime);
 
-    private:
-        FMOD::System* fmodSystem;
-    };
+		static void RegisterPattern(AudioPatternComponent* component);
+		static void UnregisterPattern(AudioPatternComponent* component);
 
-} // namespace NFSEngine
+		static void SetActivePatternInTrack(const std::string& trackName, const std::string& patternName);
+
+		static void MuteTrack(const std::string& trackName, bool mute);
+		static void SetTrackVolume(const std::string& trackName, float volume);
+
+	private:
+		static std::unordered_map<std::string, std::vector<AudioPatternComponent*>> m_TrackGroups;
+	};
+
+}

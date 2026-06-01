@@ -62,7 +62,6 @@ private:
     std::unique_ptr<NFSEngine::EnvironmentMap> m_EnvironmentMap;
 
     NFSEngine::RhythmSequencer m_Sequencer;
-    NFSEngine::AudioPatternComponent* m_TestAudioComp = nullptr;
 
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;

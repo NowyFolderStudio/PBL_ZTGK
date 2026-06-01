@@ -1,5 +1,5 @@
 {
-  "patternName": "PianoPattern2",
+  "patternName": "PianoPattern1",
   "audioFile": "assets/audio/sounds/piano02.ogg",
   "rootNote": "A4",
   "lengthInBars": 4,
@@ -9,84 +9,84 @@
       "beat": 1,
       "16th": 1,
       "length": 16,
-      "note": "C5"
+      "note": "C4"
     },
     {
       "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "D#4"
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "G4"
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "G4"
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "A#4"
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "D5"
+    },
+    {
+      "bar": 3,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "G#4"
+    },
+    {
+      "bar": 3,
+      "beat": 1,
+      "16th": 1,
+      "length": 16,
+      "note": "C5"
+    },
+    {
+      "bar": 3,
       "beat": 1,
       "16th": 1,
       "length": 16,
       "note": "D#5"
     },
     {
-      "bar": 1,
+      "bar": 4,
       "beat": 1,
       "16th": 1,
       "length": 16,
-      "note": "G5"
-    },
-    {
-      "bar": 2,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "G5"
-    },
-    {
-      "bar": 2,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "A#5"
-    },
-    {
-      "bar": 2,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "D6"
-    },
-    {
-      "bar": 3,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "G#5"
-    },
-    {
-      "bar": 3,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "C6"
-    },
-    {
-      "bar": 3,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "D#6"
+      "note": "F4"
     },
     {
       "bar": 4,
       "beat": 1,
       "16th": 1,
       "length": 16,
-      "note": "F5"
+      "note": "G#4"
     },
     {
       "bar": 4,
       "beat": 1,
       "16th": 1,
       "length": 16,
-      "note": "G#5"
-    },
-    {
-      "bar": 4,
-      "beat": 1,
-      "16th": 1,
-      "length": 16,
-      "note": "C6"
+      "note": "C5"
     }
 
   ]

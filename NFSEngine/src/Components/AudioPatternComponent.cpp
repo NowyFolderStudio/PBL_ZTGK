@@ -104,19 +104,21 @@ namespace NFSEngine {
 
 		if (current16thTotal > m_LastPlayed16thTotal) {
 
-			int absoluteBar = m_Sequencer->GetCurrentBar();
-			int currentBeat = m_Sequencer->GetBeatInBar();
-			int current16th = m_Sequencer->Get16thInBeat();
+			if (IsActive) {
+				int absoluteBar = m_Sequencer->GetCurrentBar();
+				int currentBeat = m_Sequencer->GetBeatInBar();
+				int current16th = m_Sequencer->Get16thInBeat();
 
-			int localBar = ((absoluteBar - 1) % m_CurrentPattern.totalBars) + 1;
+				int localBar = ((absoluteBar - 1) % m_CurrentPattern.totalBars) + 1;
 
-			for (const auto& note : m_CurrentPattern.notes) {
-				if (note.bar == localBar && note.beat == currentBeat && note.sixteenth == current16th) {
+				for (const auto& note : m_CurrentPattern.notes) {
+					if (note.bar == localBar && note.beat == currentBeat && note.sixteenth == current16th) {
 
-					PlayNote(note.pitchOffset, note.lengthIn16ths);
+						PlayNote(note.pitchOffset, note.lengthIn16ths);
 
-					NotePlayedEvent noteEvent(m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat, current16th);
-					Application::Get().OnEvent(noteEvent);
+						NotePlayedEvent noteEvent(TrackName, m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat, current16th);
+						Application::Get().OnEvent(noteEvent);
+					}
 				}
 			}
 

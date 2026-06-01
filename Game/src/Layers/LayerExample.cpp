@@ -32,6 +32,7 @@
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Audio/AudioEngine.hpp"
+#include "Core/AudioManager.hpp"
 #include "Renderer/Animation.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
@@ -237,7 +238,7 @@ void LayerExample::OnAttach() {
 
     // Airplane model
     // Code below load multi-mesh/material object. It is possible to move such loading to some class responsible for it.
-    std::string modelPath = "assets/models/fa-18/FA-18C.obj";
+    /*std::string modelPath = "assets/models/fa-18/FA-18C.obj";
     auto airplaneModel = std::make_shared<NFSEngine::Model>(modelPath);
 
     NFSEngine::GameObject* airplaneObj = m_Scene->CreateGameObject("FA-18C");
@@ -277,7 +278,7 @@ void LayerExample::OnAttach() {
         mat->MetallicMap = TryLoadTexture(materialInfos[i].MetallicPath);
 
         airplaneComp.SetMaterial(i, mat);
-    }
+    }*/
 
     // Static Cylinder
     auto cylinderModel = std::make_shared<NFSEngine::Model>("assets/models/Cylinder/cylinder.obj");
@@ -447,13 +448,34 @@ void LayerExample::OnAttach() {
 
     // Audio
     NFSEngine::AudioEngine::Init();
+
+    NFSEngine::AudioManager::Init();
     m_Sequencer.Start(120.0f);
 
-    NFSEngine::GameObject* bassObj = m_Scene->CreateGameObject("BassTest");
-    auto& audioComp = bassObj->AddComponent<NFSEngine::AudioPatternComponent>();
-    audioComp.LoadPattern("assets/audio/patterns/BassPatternPrototype.json", &m_Sequencer);
-    m_TestAudioComp = &audioComp;
-    audioComp.SetVolume(1.0);
+    NFSEngine::GameObject* bassObj1 = m_Scene->CreateGameObject("BassMusicPlayer1");
+    auto& bassComp1 = bassObj1->AddComponent<NFSEngine::AudioPatternComponent>();
+    bassComp1.TrackName = "Bass";
+    bassComp1.LoadPattern("assets/audio/patterns/BassPatternPrototype.json", &m_Sequencer);
+    bassComp1.SetVolume(1.0);
+    NFSEngine::AudioManager::RegisterPattern(&bassComp1);
+
+    NFSEngine::GameObject* bassObj2 = m_Scene->CreateGameObject("BassMusicPlayer2");
+    auto& bassComp2 = bassObj2->AddComponent<NFSEngine::AudioPatternComponent>();
+    bassComp2.TrackName = "Bass";
+    bassComp2.LoadPattern("assets/audio/patterns/BassPatternPrototype2.json", &m_Sequencer);
+    bassComp2.SetVolume(1.0);
+    NFSEngine::AudioManager::RegisterPattern(&bassComp2);
+
+    NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoMusicPlayer");
+    auto& audioComp2 = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
+    audioComp2.TrackName = "Piano";
+    audioComp2.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
+    audioComp2.SetVolume(0.5);
+    NFSEngine::AudioManager::RegisterPattern(&audioComp2);
+
+    NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
+
+
 
     // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
@@ -599,6 +621,8 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     {
         NFS_PROFILE_SCOPE("LayerExample: Audio Sequencer Update");
         m_Sequencer.Update((float)deltaTime);
+
+        NFSEngine::AudioManager::Update(deltaTime);
     }
     m_DeltaTime = deltaTime;
 
@@ -625,10 +649,6 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
             camTransform->SetPosition(NFSEngine::DebugCamera::GetPosition());
             glm::vec3 euler = glm::degrees(glm::eulerAngles(NFSEngine::DebugCamera::GetOrientation()));
             camTransform->SetRotation(euler);
-        }
-
-        if (m_TestAudioComp) {
-            m_TestAudioComp->OnUpdate(deltaTime);
         }
 
         for (auto* mover : m_CachedRhythmMovers) {
@@ -762,6 +782,17 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
         if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
+            e.Handled = true;
+        }
+
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::D1) {
+            NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
+            NFS_INFO("Zmieniono na Bass 1");
+            e.Handled = true;
+        }
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::D2) {
+            NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype2");
+            NFS_INFO("Zmieniono na Bass 2");
             e.Handled = true;
         }
     }
