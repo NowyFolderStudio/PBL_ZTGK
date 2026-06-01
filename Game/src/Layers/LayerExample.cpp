@@ -27,6 +27,7 @@
 #include "Components/HUDComponent.hpp"
 #include "Components/AuraPlatform.hpp"
 #include "Components/PusherComponent.hpp"
+#include "Components/DancingWall.hpp"
 #include "Components/CasetteComponent.hpp"
 
 // Core & Renderer
@@ -47,6 +48,8 @@
 #include "SceneLoader/CoinComponentLoader.hpp"
 #include "SceneLoader/CheckpointComponentLoader.hpp"
 #include "SceneLoader/ZoneCameraTriggerComponentLoader.hpp"
+#include "SceneLoader/DancingWallLoader.hpp"
+#include "SceneLoader/RhythmPlatformLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -83,6 +86,8 @@ void LayerExample::OnAttach() {
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<CheckpointComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<ZoneCameraTriggerComponentLoader>());
+    sceneLoader.RegisterLoader(std::make_unique<DancingWallLoader>());
+    sceneLoader.RegisterLoader(std::make_unique<RhythmPlatformLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/POziomix_export.json");
 
     int gameObjectCounter = m_Scene->GetAllGameObjects().size();
@@ -533,14 +538,6 @@ void LayerExample::OnAttach() {
         keyTrigger.SetBasePosition(keyObj->GetTransform()->GetPosition());
     }
 
-    for (const auto& go : m_Scene->GetAllGameObjects()) {
-        if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
-        if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
-        if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
-        if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
-        if (auto* platform = go->GetComponent<RhythmPlatform>()) m_CachedRhythmPlatforms.push_back(platform);
-    }
-
     auto texGoldAlbedo = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Color.jpg");
     auto texGoldNormal = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_NormalGL.jpg");
     auto texGoldMetallic = NFSEngine::Texture::Create("assets/models/ball/texture/Metal048A_1K-JPG_Metalness.jpg");
@@ -600,6 +597,55 @@ void LayerExample::OnAttach() {
     musicGramophone5Obj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
     auto& musicGramophone5Comp = musicGramophone5Obj->AddComponent<NFSEngine::ModelComponent>(m_AudioShader, matGramophone5);
     musicGramophone5Comp.AddLOD(gramophoneModel1, 10000.0f);
+
+    // Dancing Wall
+    /*
+    NFSEngine::GameObject* dancingWallObj = m_Scene->CreateGameObject("DancingWall");
+    dancingWallObj->GetTransform()->SetPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+    auto& wallLogic = dancingWallObj->AddComponent<DancingWall>();
+
+    wallLogic.PopOutOffset = glm::vec3(7.0f, 0.0f, 0.0f);
+    wallLogic.PopOutSpeed = 20.0f;
+    wallLogic.ReturnSpeed = 4.0f;
+
+    float tileX = 10.0f;
+    float tileZ = 3.0f;
+
+    for (int groupIdx = 0; groupIdx < 3; groupIdx++) {
+        NFSEngine::GameObject* groupObj = m_Scene->CreateGameObject("Group" + std::to_string(groupIdx));
+        groupObj->GetTransform()->SetParent(dancingWallObj->GetTransform());
+
+        groupObj->GetTransform()->SetPosition(glm::vec3(0.0f, 0.0f, groupIdx * 4.0f * tileZ));
+
+        for (int tileIdx = 0; tileIdx < 4; tileIdx++) {
+            NFSEngine::GameObject* tileObj = m_Scene->CreateGameObject("Tile" + std::to_string(tileIdx));
+            tileObj->GetTransform()->SetParent(groupObj->GetTransform());
+
+            tileObj->GetTransform()->SetPosition(glm::vec3(0.0f, 0.0f, tileIdx * tileZ));
+            tileObj->GetTransform()->SetScale(glm::vec3(tileX, 10.0f, tileZ)); 
+
+            tileObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matSample);
+            tileObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+        }
+    }
+
+    wallLogic.OnAwake();
+    */
+    for (const auto& go : m_Scene->GetAllGameObjects()) {
+        if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
+        if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;
+        if (auto* mover = go->GetComponent<RhythmMover>()) m_CachedRhythmMovers.push_back(mover);
+        if (auto* pianoKey = go->GetComponent<PianoKeyTrigger>()) m_CachedPianoKeys.push_back(pianoKey);
+        if (auto* platform = go->GetComponent<RhythmPlatform>()) {
+            m_CachedRhythmPlatforms.push_back(platform);
+            platform->OnAwake();
+        }
+
+        if (auto* wall = go->GetComponent<DancingWall>()) {
+            m_CachedDancingWalls.push_back(wall);
+            wall->OnAwake();
+        }
+    }
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
@@ -699,6 +745,10 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         for (auto mat : m_AnimatedMaterials) {
             mat->SetFloat("u_MusicTime", songPos);
         }
+    }
+
+    for (auto* wall : m_CachedDancingWalls) {
+        wall->OnUpdate(deltaTime);
     }
 }
 
@@ -800,6 +850,10 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     for (auto* platform : m_CachedRhythmPlatforms) {
         platform->OnEvent(e);
+    }
+
+    for (auto* wall : m_CachedDancingWalls) {
+        wall->OnEvent(e);
     }
 
     NFSEngine::EventDispatcher dispatcher(e);
