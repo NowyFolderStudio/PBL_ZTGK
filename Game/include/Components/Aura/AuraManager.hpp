@@ -1,6 +1,7 @@
 #pragma once
 
 #include <NFSEngine.h>
+#include "Core/AudioManager.hpp"
 
 enum class AuraType { // TODO: Rename it
     First,
@@ -35,6 +36,10 @@ protected:
             return;
         }
         Instance = this;
+
+        UnlockNextAura();
+
+        UnlockNextAura();
     }
 
     void OnStart() override { }
@@ -75,6 +80,16 @@ public:
 
         if (!IsAuraUnlocked(newAura)) {
             return;
+        }
+
+        if (CurrentAura == AuraType::First) {
+            NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
+            NFSEngine::AudioManager::SetActivePatternInTrack("Piano", "PianoPattern1");
+        }
+
+        if (CurrentAura == AuraType::Second) {
+            NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype2");
+            NFSEngine::AudioManager::SetActivePatternInTrack("Piano", "PianoPattern2");
         }
 
         CurrentAura = newAura;

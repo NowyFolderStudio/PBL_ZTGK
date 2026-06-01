@@ -9,7 +9,7 @@
 #include "Components/ZoneCameraTriggerComponent.hpp"
 #include "Components/Managers/ScoreManager.hpp"
 #include "Components/Managers/LivesManager.hpp"
-#include "Components/Managers/AuraManager.hpp"
+#include "Components/Aura/AuraManager.hpp"
 #include "Components/CharacterController.hpp"
 #include "Components/Controllers/AuraInputController.hpp"
 #include "Core/Log.hpp"
@@ -466,14 +466,22 @@ void LayerExample::OnAttach() {
     bassComp2.SetVolume(1.0);
     NFSEngine::AudioManager::RegisterPattern(&bassComp2);
 
-    NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoMusicPlayer");
-    auto& audioComp2 = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
+    NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoMusicPlayer1");
+    auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
+    audioComp.TrackName = "Piano";
+    audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
+    audioComp.SetVolume(0.5);
+    NFSEngine::AudioManager::RegisterPattern(&audioComp);
+
+    NFSEngine::GameObject* pianoObj2 = m_Scene->CreateGameObject("PianoMusicPlayer2");
+    auto& audioComp2 = pianoObj2->AddComponent<NFSEngine::AudioPatternComponent>();
     audioComp2.TrackName = "Piano";
-    audioComp2.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
+    audioComp2.LoadPattern("assets/audio/patterns/PianoPattern2.json", &m_Sequencer);
     audioComp2.SetVolume(0.5);
     NFSEngine::AudioManager::RegisterPattern(&audioComp2);
 
     NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
+    NFSEngine::AudioManager::SetActivePatternInTrack("Piano", "PianoPattern1");
 
 
 
@@ -782,17 +790,6 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
         if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
-            e.Handled = true;
-        }
-
-        if (keyEvent.GetKeyCode() == NFSEngine::Key::D1) {
-            NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
-            NFS_INFO("Zmieniono na Bass 1");
-            e.Handled = true;
-        }
-        if (keyEvent.GetKeyCode() == NFSEngine::Key::D2) {
-            NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype2");
-            NFS_INFO("Zmieniono na Bass 2");
             e.Handled = true;
         }
     }

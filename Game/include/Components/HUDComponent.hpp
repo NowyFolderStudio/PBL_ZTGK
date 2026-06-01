@@ -1,7 +1,7 @@
 #pragma once
 
 #include <NFSEngine.h>
-#include "Managers/AuraManager.hpp"
+#include "Aura/AuraManager.hpp"
 #include "Managers/ScoreManager.hpp"
 #include "Managers/LivesManager.hpp"
 
@@ -173,13 +173,13 @@ private:
         std::string auraText = "AURA: ";
         switch (newAura) {
         case AuraType::First:
-            auraText += "BASS";
+            auraText += "PIANO";
             break;
         case AuraType::Second:
-            auraText += "GUITAR";
+            auraText += "BASS";
             break;
         case AuraType::Third:
-            auraText += "PIANO";
+            auraText += "GUITAR";
             break;
         default:
             auraText += "UNKNOWN";

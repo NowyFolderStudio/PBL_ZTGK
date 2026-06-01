@@ -1,7 +1,7 @@
 #pragma once
 #include <NFSEngine.h>
 #include "InputActions.hpp"
-#include "../Managers/AuraManager.hpp"
+#include "../Aura/AuraManager.hpp"
 
 class AuraInputController : public NFSEngine::Component {
 public:

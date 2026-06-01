@@ -1,5 +1,5 @@
 {
-  "patternName": "PianoPattern1",
+  "patternName": "PianoPattern2",
   "audioFile": "assets/audio/sounds/piano02.ogg",
   "rootNote": "A4",
   "lengthInBars": 4,
