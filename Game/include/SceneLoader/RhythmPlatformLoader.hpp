@@ -3,11 +3,11 @@
 #include "SceneLoader/IComponentLoader.hpp"
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
-#include "Components/ZoneCameraTriggerComponent.hpp"
+#include "Components/RhythmPlatform.hpp"
 
 using namespace NFSEngine;
 
-class ZoneCameraTriggerComponentLoader : public NFSEngine::IComponentLoader {
+class RhythmPlatformLoader : public NFSEngine::IComponentLoader {
     void Load(const nlohmann::json& j_obj, GameObject* targetObj, Scene* currentScene) override {
         if (!j_obj.contains("custom_components")) {
             return;
@@ -15,27 +15,24 @@ class ZoneCameraTriggerComponentLoader : public NFSEngine::IComponentLoader {
 
         for (const auto& comp : j_obj["custom_components"]) {
 
-            if (comp["name"] == "ZoneCameraTrigger") {
+            if (comp["name"] == "RhythmPlatform") {
 
-                auto& zoneCameraComp = targetObj->AddComponent<ZoneCameraTriggerComponent>();
-
+                auto& rhythmPlatformComp = targetObj->AddComponent<RhythmPlatform>();
                 for (const auto& prop : comp["properties"]) {
                     std::string propName = prop["name"];
                     std::string propValue = prop["value"];
                     if (propValue.empty()) continue;
 
-                    if (propName == "customYaw") {
-                        zoneCameraComp.CustomYaw = std::stof(propValue);
+                    if (propName == "TargetTrack") {
+                        rhythmPlatformComp.TargetTrack = propValue;
                     }
-                    if (propName == "customPitch") {
-                        zoneCameraComp.CustomPitch = std::stof(propValue);
+
+                    if (propName == "StartsActive") {
+                        rhythmPlatformComp.StartsActive = (propValue == "true");
                     }
-                    if (propName == "customDistance") {
-                        zoneCameraComp.CustomDistance = std::stof(propValue);
-                    }
+
                     break;
                 }
             }
         }
-    }
-};
+    };
