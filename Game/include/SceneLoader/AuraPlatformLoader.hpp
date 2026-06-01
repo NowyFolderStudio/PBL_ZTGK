@@ -4,6 +4,7 @@
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/AuraPlatform.hpp"
+#include "Components/Aura/AuraManager.hpp"
 
 using namespace NFSEngine;
 
@@ -23,12 +24,23 @@ class AuraPlatformLoader : public NFSEngine::IComponentLoader {
                     std::string propValue = prop["value"];
                     if (propValue.empty()) continue;
 
-                    if (propName == "required aura") {
-                        // auraPlatformComp.RequiredAura = propValue;
+                    if (propName == "RequiredAura") {
+                        auraPlatformComp.RequiredAura = ParseAuraType(propValue);
                     }
                 }
                 break;
             }
         }
+    }
+
+    AuraType ParseAuraType(const std::string& auraStr) {
+        if (auraStr == "Bass") {
+            return AuraType::First;
+        } else if (auraStr == "Guitar") {
+            return AuraType::Second;
+        } else if (auraStr == "Piano") {
+            return AuraType::Third;
+        }
+        return AuraType::None;
     }
 };

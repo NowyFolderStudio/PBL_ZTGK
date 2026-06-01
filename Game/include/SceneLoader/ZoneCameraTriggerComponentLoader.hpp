@@ -16,8 +16,25 @@ class ZoneCameraTriggerComponentLoader : public NFSEngine::IComponentLoader {
         for (const auto& comp : j_obj["custom_components"]) {
 
             if (comp["name"] == "ZoneCameraTrigger") {
-                targetObj->AddComponent<ZoneCameraTriggerComponent>();
-                break;
+
+                auto& zoneCameraComp = targetObj->AddComponent<ZoneCameraTriggerComponent>();
+
+                for (const auto& prop : comp["properties"]) {
+                    std::string propName = prop["name"];
+                    std::string propValue = prop["value"];
+                    if (propValue.empty()) continue;
+
+                    if (propName == "customYaw") {
+                        zoneCameraComp.CustomYaw = std::stof(propValue);
+                    }
+                    if (propName == "customPitch") {
+                        zoneCameraComp.CustomPitch = std::stof(propValue);
+                    }
+                    if (propName == "customDistance") {
+                        zoneCameraComp.CustomDistance = std::stof(propValue);
+                    }
+                    break;
+                }
             }
         }
     }

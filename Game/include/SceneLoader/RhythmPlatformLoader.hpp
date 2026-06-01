@@ -3,7 +3,7 @@
 #include "SceneLoader/IComponentLoader.hpp"
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
-#include "Components/RhythmPlatform.hpp" // Upewnij siê, ¿e œcie¿ka jest poprawna
+#include "Components/RhythmPlatform.hpp" // Upewnij siï¿½, ï¿½e ï¿½cieï¿½ka jest poprawna
 
 #include <string>
 
