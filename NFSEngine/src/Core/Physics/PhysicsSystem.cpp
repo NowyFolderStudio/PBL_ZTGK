@@ -1,6 +1,7 @@
 #include "Core/Physics/PhysicsSystem.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/Transform.hpp"
+#include <unordered_set>
 
 namespace NFSEngine {
 
@@ -113,10 +114,19 @@ namespace NFSEngine {
             for (auto* col : allColliders) {
                 if (!col->GetOwner()->IsActive()) continue;
 
-                glm::vec3 pos = col->GetOwner()->GetTransform()->GetWorldPosition();
-                GridKey key = GetGridKey(pos);
+                AABB box = GetColliderBounds(col);
 
-                m_Grid[key].push_back(col);
+                GridKey minKey = GetGridKey(box.Min);
+                GridKey maxKey = GetGridKey(box.Max);
+
+                for (int x = minKey.x; x <= maxKey.x; ++x) {
+                    for (int y = minKey.y; y <= maxKey.y; ++y) {
+                        for (int z = minKey.z; z <= maxKey.z; ++z) {
+                            GridKey key = { x, y, z };
+                            m_Grid[key].push_back(col);
+                        }
+                    }
+                }
             }
         }
         {
@@ -149,6 +159,8 @@ namespace NFSEngine {
                 glm::vec3 myPos = transform->GetWorldPosition();
                 GridKey myKey = GetGridKey(myPos);
 
+                std::unordered_set<ColliderComponent*> checkedColliders;
+
                 for (int x = -1; x <= 1; ++x) {
                     for (int y = -1; y <= 1; ++y) {
                         for (int z = -1; z <= 1; ++z) {
@@ -160,6 +172,10 @@ namespace NFSEngine {
                                 for (auto* colB : it->second) {
                                     GameObject* objB = colB->GetOwner();
                                     if (objA == objB) continue;
+
+                                    if (!checkedColliders.insert(colB).second) {
+                                        continue;
+                                    }
 
                                     CollisionInfo info = CheckCollision(colA, colB);
 
@@ -324,6 +340,38 @@ namespace NFSEngine {
         cylinder.Radius = collider->Radius * maxRadiusScale;
 
         return cylinder;
+    }
+
+    AABB PhysicsSystem::GetColliderBounds(ColliderComponent* col) {
+        Transform* transform = col->GetOwner()->GetTransform();
+
+        switch (col->Type) {
+        case ColliderType::Box:
+            return GetAABB(transform, static_cast<BoxCollider3DComponent*>(col));
+
+        case ColliderType::Sphere: {
+            auto sphere = GetSphere(transform, static_cast<SphereCollider3DComponent*>(col));
+            return { sphere.Center - glm::vec3(sphere.Radius), sphere.Center + glm::vec3(sphere.Radius) };
+        }
+
+        case ColliderType::Capsule: {
+            auto capsule = GetCapsule(transform, static_cast<CapsuleCollider3DComponent*>(col));
+            glm::vec3 radiusVec(capsule.Radius);
+            glm::vec3 minP = glm::min(capsule.PointA, capsule.PointB) - radiusVec;
+            glm::vec3 maxP = glm::max(capsule.PointA, capsule.PointB) + radiusVec;
+            return { minP, maxP };
+        }
+
+        case ColliderType::Cylinder: {
+            auto cylinder = GetCylinder(transform, static_cast<CylinderCollider3DComponent*>(col));
+            glm::vec3 radiusVec(cylinder.Radius);
+            glm::vec3 minP = glm::min(cylinder.PointA, cylinder.PointB) - radiusVec;
+            glm::vec3 maxP = glm::max(cylinder.PointA, cylinder.PointB) + radiusVec;
+            return { minP, maxP };
+        }
+        }
+
+        return { glm::vec3(0.0f), glm::vec3(0.0f) };
     }
 
 } // namespace NFSEngine

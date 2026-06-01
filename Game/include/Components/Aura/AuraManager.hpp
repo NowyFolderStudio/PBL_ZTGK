@@ -26,6 +26,9 @@ public:
     NFSEngine::Action<AuraType> OnAuraChanged;
     AuraType CurrentAura = AuraType::First;
 
+private:
+    std::vector<AuraType> m_UnlockedAuras;
+
 protected:
     void OnAwake() override {
         if (Instance != nullptr && Instance != this) {
@@ -45,8 +48,34 @@ protected:
     void OnDisable() override { }
 
 public:
+    void UnlockAura(AuraType aura) {
+        if (std::find(m_UnlockedAuras.begin(), m_UnlockedAuras.end(), aura) == m_UnlockedAuras.end()) {
+            m_UnlockedAuras.push_back(aura);
+        }
+    }
+
+    void UnlockNextAura() {
+        static const std::vector<AuraType> progressionOrder = { AuraType::First, AuraType::Second, AuraType::Third };
+
+        size_t currentProgress = m_UnlockedAuras.size();
+
+        if (currentProgress < progressionOrder.size()) {
+            AuraType nextAura = progressionOrder[currentProgress];
+
+            UnlockAura(nextAura);
+        }
+    }
+
+    bool IsAuraUnlocked(AuraType aura) const {
+        return std::find(m_UnlockedAuras.begin(), m_UnlockedAuras.end(), aura) != m_UnlockedAuras.end();
+    }
+
     void ChangeAura(AuraType newAura) {
         if (CurrentAura == newAura) return;
+
+        if (!IsAuraUnlocked(newAura)) {
+            return;
+        }
 
         CurrentAura = newAura;
 

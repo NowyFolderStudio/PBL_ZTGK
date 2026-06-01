@@ -28,7 +28,7 @@ namespace NFSEngine {
             m_Transform = transform.get();
             m_Components.push_back(std::move(transform));
         }
-        
+
         // Gdy uzyjemy tego konstruktora to gameObject nie bedzie wiedzial do jakiej sceny nalezy
         // co nie jest zbyt idealne moze to zepsuc dzialanie komponentow swiatla
         // w przypadku checi uzycia go daj znac, porozmawiajmy!
@@ -46,7 +46,14 @@ namespace NFSEngine {
         void Update(DeltaTime deltaTime);
         void Render();
 
-        void Destroy() { m_Destroyed = true; }
+        void Destroy() {
+            m_Destroyed = true;
+            int childrenCount = GetTransform()->GetChildCount();
+
+            for (int i = 0; i < childrenCount; i++) {
+                GetTransform()->GetChild(i)->GetOwner()->Destroy();
+            }
+        }
         bool IsDestroyed() const { return m_Destroyed; }
 
         bool IsActive() const { return m_Active; }
