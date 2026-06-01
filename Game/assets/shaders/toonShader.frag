@@ -53,14 +53,16 @@ uniform int activeSpotLights;
 
 const float PI = 3.14159265359;
 
-float ambientValue = 0.1;
+float ambientValue = 0.1;      // możesz zwiększyć, jeśli scena jest za ciemna
 float specularStrength = 0.1;
 float shininess = 8.0;
-float rimThreshold = 0.1;
+float rimThreshold = 0.1;     // nieużywane w nowej formule rim
 float rimAmount = 0.71;
 
 vec3 GetRampDiffuse(float NdotL) {
-    float diffUV = NdotL * 0.5 + 0.5;
+    // Przycinamy do [0,1], bo rampa jest dla światła padającego
+    float clamped = clamp(NdotL, 0.0, 1.0);
+    float diffUV = clamped * 0.5 + 0.5;
     if (u_HasRampMap) {
         return texture(u_RampMap, vec2(diffUV, 0.5)).rgb;
     }
@@ -72,15 +74,22 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo) {
     vec3 radiance = light.color * light.intensity;
 
     float NdotL = dot(normal, lightDir);
-    vec3 rampDiffuse = GetRampDiffuse(NdotL);
+    vec3 rampDiffuse = GetRampDiffuse(NdotL);   // wewnątrz i tak clampujemy
 
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float NdotH = max(dot(normal, halfwayDir), 0.0);
     float specIntensity = pow(NdotH, shininess);
     float toonSpec = smoothstep(0.5, 0.5, specIntensity);
     
-    float rimDot = 1.0 - dot(viewDir, normal);
-    float rimIntensity = rimDot * pow(NdotL, rimThreshold);
+    // Poprawiony rim – świeci tam, gdzie powierzchnia jest słabo oświetlona
+    float rimDot = 1.0 - abs(dot(viewDir, normal));   // kąt między view a normalną
+    float NdotL_safe = max(NdotL, 0.0);
+    // Użyj jednej z poniższych linii (obie bezpieczne):
+    // (A) Rim zanikający przy pełnym oświetleniu
+    float rimIntensity = rimDot * (1.0 - NdotL_safe);
+    // (B) Alternatywna, pierwotna formuła z zabezpieczeniem:
+    // float rimIntensity = rimDot * pow(NdotL_safe, rimThreshold);
+    
     float toonRim = smoothstep(rimAmount - 0.01, rimAmount + 0.01, rimIntensity);
     
     vec3 diffuse = (rampDiffuse / PI) * radiance * albedo;
@@ -140,7 +149,7 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec
 
 void main()
 {
-    vec3 albedo = u_HasAlbedoMap ? pow(texture(u_AlbedoMap, TexCoord).rgb, vec3(2.2)) : u_AlbedoColor;
+    vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
 
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);

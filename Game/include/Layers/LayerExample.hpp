@@ -10,6 +10,7 @@
 #include "Renderer/Framebuffer.hpp"
 #include "Renderer/EnvironmentMap.hpp"
 #include "Components/HUDComponent.hpp"
+#include "Components/DancingWall.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -87,4 +88,6 @@ private:
     std::shared_ptr<NFSEngine::Material> matGramophone3 = nullptr;
     std::shared_ptr<NFSEngine::Material> matGramophone4 = nullptr;
     std::shared_ptr<NFSEngine::Material> matGramophone5 = nullptr;
+
+    std::vector<DancingWall*> m_CachedDancingWalls;
 };

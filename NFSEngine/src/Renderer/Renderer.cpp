@@ -119,7 +119,7 @@ namespace NFSEngine {
 
     void Renderer::Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
                           const std::shared_ptr<Material>& material, const glm::mat4& transform,
-                          const std::vector<glm::mat4>& boneTransforms, const glm::vec3& bBoxMin, const glm::vec3& bBoxMax) {
+                          const std::vector<glm::mat4>& boneTransforms) {
         RenderPacket packet;
         packet.vao = vao;
         packet.shader = shader;
@@ -127,8 +127,6 @@ namespace NFSEngine {
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
         packet.boneTransforms = boneTransforms;
-        packet.bBoxMin;
-        packet.bBoxMax;
 
         // TODO doda閿燂拷 optymalizacje renderowanie obiekt閿熺弹 tworzenie id na podsawie tekstur, shadr閿熺弹
 
@@ -162,8 +160,6 @@ namespace NFSEngine {
                 packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
 
                 packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
-                packet.shader->SetVec3("u_BBoxMin", packet.bBoxMin);
-                packet.shader->SetVec3("u_BBoxMax", packet.bBoxMax);
 
                 if (s_SceneData->EnvMap) {
                     s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);

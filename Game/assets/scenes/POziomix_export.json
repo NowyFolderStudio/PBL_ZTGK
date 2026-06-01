@@ -2,7 +2,7 @@
     "scene_name": "POziomix",
     "game_objects": [
         {
-            "id": 76052,
+            "id": 80332,
             "name": "Poziom",
             "parent_id": 0,
             "transform": {
@@ -28,9 +28,9 @@
             "custom_components": []
         },
         {
-            "id": 76564,
+            "id": 80860,
             "name": "Section1",
-            "parent_id": 76052,
+            "parent_id": 80332,
             "transform": {
                 "position": [
                     0.0,
@@ -54,9 +54,9 @@
             "custom_components": []
         },
         {
-            "id": 75932,
+            "id": 80208,
             "name": "Box1-1",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -9.468669891357422,
@@ -74,7 +74,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box1-1_pb_Mesh194844_76412.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box1-1_pb_Mesh194844_80708.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -94,9 +94,9 @@
             "custom_components": []
         },
         {
-            "id": 75606,
+            "id": 79854,
             "name": "Chest1-1",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -3.6199989318847658,
@@ -134,9 +134,9 @@
             "custom_components": []
         },
         {
-            "id": 75428,
+            "id": 79668,
             "name": "Chest1-2",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -9.325279235839844,
@@ -174,9 +174,9 @@
             "custom_components": []
         },
         {
-            "id": 76204,
+            "id": 80486,
             "name": "Box1-2",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -7.468669891357422,
@@ -194,7 +194,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box1-2_pb_Mesh194960_75892.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box1-2_pb_Mesh194960_80154.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -214,9 +214,9 @@
             "custom_components": []
         },
         {
-            "id": 76108,
+            "id": 80386,
             "name": "Vinyl1-1",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -13.468669891357422,
@@ -254,9 +254,9 @@
             "custom_components": []
         },
         {
-            "id": 75610,
+            "id": 79858,
             "name": "Vinyl1-2",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -3.468669891357422,
@@ -294,9 +294,9 @@
             "custom_components": []
         },
         {
-            "id": 76358,
+            "id": 80654,
             "name": "Vinyl1-3",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -13.468669891357422,
@@ -334,9 +334,9 @@
             "custom_components": []
         },
         {
-            "id": 75518,
+            "id": 79766,
             "name": "Vinyl1-4",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -3.468669891357422,
@@ -374,9 +374,9 @@
             "custom_components": []
         },
         {
-            "id": 75592,
+            "id": 79840,
             "name": "Box1-3",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     1.5313301086425782,
@@ -394,7 +394,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box1-3_pb_Mesh194708_75104.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box1-3_pb_Mesh194708_79322.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -414,9 +414,9 @@
             "custom_components": []
         },
         {
-            "id": 75394,
+            "id": 79632,
             "name": "Box1-4",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     6.531330108642578,
@@ -434,7 +434,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box1-4_pb_Mesh194598_76442.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box1-4_pb_Mesh194598_80738.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -454,9 +454,9 @@
             "custom_components": []
         },
         {
-            "id": 75020,
+            "id": 79236,
             "name": "Walljump1-1",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     6.531330108642578,
@@ -474,7 +474,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Walljump1-1_pb_Mesh194468_74930.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Walljump1-1_pb_Mesh245330_79228.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -491,12 +491,17 @@
                     "is_trigger": false
                 }
             ],
-            "custom_components": []
+            "custom_components": [
+                {
+                    "name": "WallJumpComponent",
+                    "properties": []
+                }
+            ]
         },
         {
-            "id": 75464,
+            "id": 79708,
             "name": "Walljump1-2",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     -5.468669891357422,
@@ -514,7 +519,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Walljump1-2_pb_Mesh194642_75650.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Walljump1-2_pb_Mesh245794_79908.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -531,17 +536,22 @@
                     "is_trigger": false
                 }
             ],
-            "custom_components": []
+            "custom_components": [
+                {
+                    "name": "WallJumpComponent",
+                    "properties": []
+                }
+            ]
         },
         {
-            "id": 75732,
+            "id": 79996,
             "name": "CameraZone1-1",
-            "parent_id": 76564,
+            "parent_id": 80860,
             "transform": {
                 "position": [
                     0.5313301086425781,
                     10.0,
-                    47.348899841308597
+                    47.338897705078128
                 ],
                 "rotation": [
                     0.0,
@@ -576,17 +586,17 @@
                     "name": "ZoneCameraTrigger",
                     "properties": [
                         {
-                            "name": "customRotationX",
+                            "name": "CustomYaw",
                             "type": "Single",
-                            "value": "0"
+                            "value": "270"
                         },
                         {
-                            "name": "customRotationY",
+                            "name": "CustomPitch",
                             "type": "Single",
                             "value": "20"
                         },
                         {
-                            "name": "customDistance",
+                            "name": "CustomDistance",
                             "type": "Single",
                             "value": "15"
                         }
@@ -595,9 +605,9 @@
             ]
         },
         {
-            "id": 75630,
+            "id": 79892,
             "name": "Section2",
-            "parent_id": 76052,
+            "parent_id": 80332,
             "transform": {
                 "position": [
                     0.0,
@@ -621,9 +631,9 @@
             "custom_components": []
         },
         {
-            "id": 75858,
+            "id": 80120,
             "name": "Box2-1",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     0.5313301086425781,
@@ -641,7 +651,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-1_pb_Mesh194792_76452.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-1_pb_Mesh194792_80748.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -661,9 +671,9 @@
             "custom_components": []
         },
         {
-            "id": -13336,
+            "id": 79702,
             "name": "Casette2-1",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     0.5313301086425781,
@@ -683,13 +693,32 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": [],
-            "custom_components": []
+            "box_colliders": [
+                {
+                    "size": [
+                        7.666623592376709,
+                        7.666664123535156,
+                        7.6666741371154789
+                    ],
+                    "offset": [
+                        0.000015894571333774365,
+                        0.0,
+                        -9.035023704747935e-20
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CasetteComponent",
+                    "properties": []
+                }
+            ]
         },
         {
-            "id": -13338,
+            "id": -22052,
             "name": "Cube",
-            "parent_id": -13336,
+            "parent_id": 79702,
             "transform": {
                 "position": [
                     0.0,
@@ -713,9 +742,9 @@
             "custom_components": []
         },
         {
-            "id": -13346,
+            "id": -22060,
             "name": "Cylinder",
-            "parent_id": -13336,
+            "parent_id": 79702,
             "transform": {
                 "position": [
                     0.2800000011920929,
@@ -739,9 +768,9 @@
             "custom_components": []
         },
         {
-            "id": -13354,
+            "id": -22068,
             "name": "Cylinder.001",
-            "parent_id": -13336,
+            "parent_id": 79702,
             "transform": {
                 "position": [
                     0.2800000011920929,
@@ -765,9 +794,9 @@
             "custom_components": []
         },
         {
-            "id": 76128,
+            "id": 80406,
             "name": "Box2-2",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     20.031330108642579,
@@ -785,7 +814,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-2_pb_Mesh194912_74754.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-2_pb_Mesh194912_78972.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -805,9 +834,9 @@
             "custom_components": []
         },
         {
-            "id": 75926,
+            "id": 80188,
             "name": "Chest2-1",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     10.53164291381836,
@@ -845,9 +874,9 @@
             "custom_components": []
         },
         {
-            "id": 76122,
+            "id": 80400,
             "name": "Chest2-2",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     10.39124870300293,
@@ -885,9 +914,9 @@
             "custom_components": []
         },
         {
-            "id": 75696,
+            "id": 79960,
             "name": "Box2-3",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     42.53133010864258,
@@ -905,7 +934,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_pb_Mesh194740_76050.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_pb_Mesh194740_80330.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -925,9 +954,9 @@
             "custom_components": []
         },
         {
-            "id": -18156,
+            "id": 80564,
             "name": "Box2-3 (4)",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     42.53133010864258,
@@ -945,7 +974,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(4)_pb_Mesh-18166_18174.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(4)_pb_Mesh-18166_79558.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -965,9 +994,9 @@
             "custom_components": []
         },
         {
-            "id": -18134,
+            "id": 79868,
             "name": "Box2-3 (3)",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     42.53133010864258,
@@ -985,7 +1014,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(3)_pb_Mesh-18144_18152.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(3)_pb_Mesh-18144_79544.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1005,9 +1034,9 @@
             "custom_components": []
         },
         {
-            "id": -18112,
+            "id": 79530,
             "name": "Box2-3 (2)",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     42.53133010864258,
@@ -1025,7 +1054,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(2)_pb_Mesh-18122_18130.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(2)_pb_Mesh-18122_80804.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1045,9 +1074,9 @@
             "custom_components": []
         },
         {
-            "id": -18090,
+            "id": 80194,
             "name": "Box2-3 (1)",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     42.53133010864258,
@@ -1065,18 +1094,18 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(1)_pb_Mesh-18100_18108.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(1)_pb_Mesh-18100_79646.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
                     "size": [
                         16.0,
-                        23.0,
+                        24.0,
                         17.0
                     ],
                     "offset": [
                         0.0,
-                        0.0,
+                        0.5,
                         0.0
                     ],
                     "is_trigger": false
@@ -1085,9 +1114,9 @@
             "custom_components": []
         },
         {
-            "id": 75056,
+            "id": 79274,
             "name": "Platform2-1",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     66.2313232421875,
@@ -1105,7 +1134,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Platform2-1_pb_Mesh194484_76304.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Platform2-1_pb_Mesh194484_80600.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -1141,9 +1170,9 @@
             ]
         },
         {
-            "id": 75894,
+            "id": 80156,
             "name": "Platform2-2",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     88.62504577636719,
@@ -1161,7 +1190,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Platform2-2_pb_Mesh194822_75274.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Platform2-2_pb_Mesh194822_79494.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -1197,9 +1226,9 @@
             ]
         },
         {
-            "id": 75340,
+            "id": 79578,
             "name": "Platform2-3",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     111.25616455078125,
@@ -1217,7 +1246,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Platform2-3_pb_Mesh194564_75512.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Platform2-3_pb_Mesh194564_79758.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -1253,9 +1282,9 @@
             ]
         },
         {
-            "id": 75488,
+            "id": 79734,
             "name": "Cylinder2-4",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     134.5313262939453,
@@ -1273,7 +1302,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Cylinder2-4_pb_Mesh194654_75272.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Cylinder2-4_pb_Mesh194654_79492.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -1309,9 +1338,9 @@
             ]
         },
         {
-            "id": 76188,
+            "id": 80470,
             "name": "Cylinder2-5",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     149.5313262939453,
@@ -1329,7 +1358,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Cylinder2-5_pb_Mesh194944_75012.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Cylinder2-5_pb_Mesh194944_79226.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -1365,9 +1394,9 @@
             ]
         },
         {
-            "id": 76222,
+            "id": 80504,
             "name": "Box2-4",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     155.5313262939453,
@@ -1385,7 +1414,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box2-4_pb_Mesh194974_75300.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-4_pb_Mesh194974_79520.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1405,9 +1434,9 @@
             "custom_components": []
         },
         {
-            "id": 76154,
+            "id": 80432,
             "name": "Chest2-3",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     155.5178680419922,
@@ -1445,9 +1474,9 @@
             "custom_components": []
         },
         {
-            "id": 75586,
+            "id": 79834,
             "name": "Chest2-4",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     155.387939453125,
@@ -1485,9 +1514,9 @@
             "custom_components": []
         },
         {
-            "id": 76444,
+            "id": 80740,
             "name": "Chest2-5",
-            "parent_id": 75630,
+            "parent_id": 79892,
             "transform": {
                 "position": [
                     157.14932250976563,
@@ -1525,9 +1554,9 @@
             "custom_components": []
         },
         {
-            "id": 76434,
+            "id": 80730,
             "name": "Section3",
-            "parent_id": 76052,
+            "parent_id": 80332,
             "transform": {
                 "position": [
                     0.0,
@@ -1551,9 +1580,9 @@
             "custom_components": []
         },
         {
-            "id": -12028,
+            "id": 80466,
             "name": "Casette3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.5313262939453,
@@ -1573,13 +1602,32 @@
             },
             "mesh_path": "",
             "texture_path": "",
-            "box_colliders": [],
-            "custom_components": []
+            "box_colliders": [
+                {
+                    "size": [
+                        7.666623592376709,
+                        7.666664123535156,
+                        7.6666741371154789
+                    ],
+                    "offset": [
+                        0.000015894571333774365,
+                        0.0,
+                        -9.035023704747935e-20
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CasetteComponent",
+                    "properties": []
+                }
+            ]
         },
         {
-            "id": -12030,
+            "id": -21648,
             "name": "Cube",
-            "parent_id": -12028,
+            "parent_id": 80466,
             "transform": {
                 "position": [
                     0.0,
@@ -1603,9 +1651,9 @@
             "custom_components": []
         },
         {
-            "id": -12038,
+            "id": -21656,
             "name": "Cylinder",
-            "parent_id": -12028,
+            "parent_id": 80466,
             "transform": {
                 "position": [
                     0.2800000011920929,
@@ -1629,9 +1677,9 @@
             "custom_components": []
         },
         {
-            "id": -12046,
+            "id": -21664,
             "name": "Cylinder.001",
-            "parent_id": -12028,
+            "parent_id": 80466,
             "transform": {
                 "position": [
                     0.2800000011920929,
@@ -1655,9 +1703,9 @@
             "custom_components": []
         },
         {
-            "id": 76344,
+            "id": 80640,
             "name": "Box3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.5313262939453,
@@ -1675,7 +1723,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box3-1_pb_Mesh195012_75422.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box3-1_pb_Mesh195012_79662.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -1695,9 +1743,9 @@
             "custom_components": []
         },
         {
-            "id": 76336,
+            "id": 80632,
             "name": "CameraZone3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     159.5313262939453,
@@ -1737,28 +1785,28 @@
                     "name": "ZoneCameraTrigger",
                     "properties": [
                         {
-                            "name": "customRotationX",
+                            "name": "CustomYaw",
                             "type": "Single",
-                            "value": "270"
+                            "value": "180"
                         },
                         {
-                            "name": "customRotationY",
+                            "name": "CustomPitch",
                             "type": "Single",
                             "value": "20"
                         },
                         {
-                            "name": "customDistance",
+                            "name": "CustomDistance",
                             "type": "Single",
-                            "value": "10"
+                            "value": "15"
                         }
                     ]
                 }
             ]
         },
         {
-            "id": 75260,
+            "id": 79478,
             "name": "DancingWall3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     163.02133178710938,
@@ -1779,12 +1827,33 @@
             "mesh_path": "",
             "texture_path": "",
             "box_colliders": [],
-            "custom_components": []
+            "custom_components": [
+                {
+                    "name": "DancingWall",
+                    "properties": [
+                        {
+                            "name": "TargetTrack",
+                            "type": "String",
+                            "value": "Bass"
+                        },
+                        {
+                            "name": "PopOutSpeed",
+                            "type": "Single",
+                            "value": "5"
+                        },
+                        {
+                            "name": "ReturnSpeed",
+                            "type": "Single",
+                            "value": "1"
+                        }
+                    ]
+                }
+            ]
         },
         {
-            "id": 76544,
+            "id": 80842,
             "name": "Group1",
-            "parent_id": 75260,
+            "parent_id": 79478,
             "transform": {
                 "position": [
                     19.0,
@@ -1805,23 +1874,12 @@
             "mesh_path": "",
             "texture_path": "",
             "box_colliders": [],
-            "custom_components": [
-                {
-                    "name": "SpikeGroup",
-                    "properties": [
-                        {
-                            "name": "spikes",
-                            "type": "List`1",
-                            "value": "System.Collections.Generic.List`1[SpikeTrap]"
-                        }
-                    ]
-                }
-            ]
+            "custom_components": []
         },
         {
-            "id": 76508,
+            "id": 80806,
             "name": "Tile1-1",
-            "parent_id": 76544,
+            "parent_id": 80842,
             "transform": {
                 "position": [
                     -36.5,
@@ -1859,9 +1917,9 @@
             "custom_components": []
         },
         {
-            "id": 76326,
+            "id": 80622,
             "name": "Tile1-2",
-            "parent_id": 76544,
+            "parent_id": 80842,
             "transform": {
                 "position": [
                     -32.5,
@@ -1899,9 +1957,9 @@
             "custom_components": []
         },
         {
-            "id": 75094,
+            "id": 79312,
             "name": "Tile1-3",
-            "parent_id": 76544,
+            "parent_id": 80842,
             "transform": {
                 "position": [
                     -28.5,
@@ -1939,9 +1997,9 @@
             "custom_components": []
         },
         {
-            "id": 75802,
+            "id": 80064,
             "name": "Tile1-4",
-            "parent_id": 76544,
+            "parent_id": 80842,
             "transform": {
                 "position": [
                     -24.5,
@@ -1979,9 +2037,9 @@
             "custom_components": []
         },
         {
-            "id": 74910,
+            "id": 79128,
             "name": "Group2",
-            "parent_id": 75260,
+            "parent_id": 79478,
             "transform": {
                 "position": [
                     34.999996185302737,
@@ -2002,23 +2060,12 @@
             "mesh_path": "",
             "texture_path": "",
             "box_colliders": [],
-            "custom_components": [
-                {
-                    "name": "SpikeGroup",
-                    "properties": [
-                        {
-                            "name": "spikes",
-                            "type": "List`1",
-                            "value": "System.Collections.Generic.List`1[SpikeTrap]"
-                        }
-                    ]
-                }
-            ]
+            "custom_components": []
         },
         {
-            "id": 76424,
+            "id": 80720,
             "name": "Tile2-1",
-            "parent_id": 74910,
+            "parent_id": 79128,
             "transform": {
                 "position": [
                     -36.5,
@@ -2056,9 +2103,9 @@
             "custom_components": []
         },
         {
-            "id": 74782,
+            "id": 79002,
             "name": "Tile2-2",
-            "parent_id": 74910,
+            "parent_id": 79128,
             "transform": {
                 "position": [
                     -32.5,
@@ -2096,9 +2143,9 @@
             "custom_components": []
         },
         {
-            "id": 76374,
+            "id": 80670,
             "name": "Tile2-3",
-            "parent_id": 74910,
+            "parent_id": 79128,
             "transform": {
                 "position": [
                     -28.5,
@@ -2136,9 +2183,9 @@
             "custom_components": []
         },
         {
-            "id": 75208,
+            "id": 79426,
             "name": "Tile2-4",
-            "parent_id": 74910,
+            "parent_id": 79128,
             "transform": {
                 "position": [
                     -24.5,
@@ -2176,9 +2223,9 @@
             "custom_components": []
         },
         {
-            "id": 74888,
+            "id": 79108,
             "name": "Group3",
-            "parent_id": 75260,
+            "parent_id": 79478,
             "transform": {
                 "position": [
                     51.0,
@@ -2199,23 +2246,12 @@
             "mesh_path": "",
             "texture_path": "",
             "box_colliders": [],
-            "custom_components": [
-                {
-                    "name": "SpikeGroup",
-                    "properties": [
-                        {
-                            "name": "spikes",
-                            "type": "List`1",
-                            "value": "System.Collections.Generic.List`1[SpikeTrap]"
-                        }
-                    ]
-                }
-            ]
+            "custom_components": []
         },
         {
-            "id": 75432,
+            "id": 79672,
             "name": "Tile3-1",
-            "parent_id": 74888,
+            "parent_id": 79108,
             "transform": {
                 "position": [
                     -36.5,
@@ -2253,9 +2289,9 @@
             "custom_components": []
         },
         {
-            "id": 76030,
+            "id": 80310,
             "name": "Tile3-2",
-            "parent_id": 74888,
+            "parent_id": 79108,
             "transform": {
                 "position": [
                     -32.5,
@@ -2293,9 +2329,9 @@
             "custom_components": []
         },
         {
-            "id": 76454,
+            "id": 80750,
             "name": "Tile3-3",
-            "parent_id": 74888,
+            "parent_id": 79108,
             "transform": {
                 "position": [
                     -28.5,
@@ -2333,9 +2369,9 @@
             "custom_components": []
         },
         {
-            "id": 76312,
+            "id": 80608,
             "name": "Tile3-4",
-            "parent_id": 74888,
+            "parent_id": 79108,
             "transform": {
                 "position": [
                     -24.5,
@@ -2373,9 +2409,9 @@
             "custom_components": []
         },
         {
-            "id": 74764,
+            "id": 78982,
             "name": "PianoBox",
-            "parent_id": 75260,
+            "parent_id": 79478,
             "transform": {
                 "position": [
                     -30.500370025634767,
@@ -2393,7 +2429,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/PianoBox_pb_Mesh194374_75786.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/PianoBox_pb_Mesh48122_79760.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -2413,9 +2449,9 @@
             "custom_components": []
         },
         {
-            "id": 74850,
+            "id": 79070,
             "name": "Chest3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.387939453125,
@@ -2453,9 +2489,9 @@
             "custom_components": []
         },
         {
-            "id": 76418,
+            "id": 80714,
             "name": "Chest3-2",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.387939453125,
@@ -2493,9 +2529,9 @@
             "custom_components": []
         },
         {
-            "id": 74980,
+            "id": 79194,
             "name": "Chest3-3",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.387939453125,
@@ -2533,9 +2569,9 @@
             "custom_components": []
         },
         {
-            "id": 76398,
+            "id": 80694,
             "name": "Box3-2",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.0313262939453,
@@ -2553,7 +2589,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box3-2_pb_Mesh195042_75254.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box3-2_pb_Mesh195042_79472.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -2573,9 +2609,9 @@
             "custom_components": []
         },
         {
-            "id": 76256,
+            "id": 80538,
             "name": "AuraPlatforms3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     203.4042510986328,
@@ -2599,9 +2635,9 @@
             "custom_components": []
         },
         {
-            "id": 75672,
+            "id": 79936,
             "name": "AuraPlatform1-1",
-            "parent_id": 76256,
+            "parent_id": 80538,
             "transform": {
                 "position": [
                     -29.8729248046875,
@@ -2619,7 +2655,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-1_pb_Mesh-300478_74928.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-1_pb_Mesh-300478_79144.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -2655,9 +2691,9 @@
             ]
         },
         {
-            "id": 74894,
+            "id": 79112,
             "name": "AuraPlatform1-2",
-            "parent_id": 76256,
+            "parent_id": 80538,
             "transform": {
                 "position": [
                     -10.8729248046875,
@@ -2675,7 +2711,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-2_pb_Mesh-300444_75800.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-2_pb_Mesh-300444_80062.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -2711,9 +2747,9 @@
             ]
         },
         {
-            "id": 76240,
+            "id": 80522,
             "name": "AuraPlatform1-3",
-            "parent_id": 76256,
+            "parent_id": 80538,
             "transform": {
                 "position": [
                     2.1270751953125,
@@ -2731,7 +2767,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-3_pb_Mesh-300492_74748.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-3_pb_Mesh-300492_78966.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -2767,9 +2803,9 @@
             ]
         },
         {
-            "id": 75368,
+            "id": 79606,
             "name": "AuraPlatform1-4",
-            "parent_id": 76256,
+            "parent_id": 80538,
             "transform": {
                 "position": [
                     -5.8729248046875,
@@ -2787,7 +2823,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-4_pb_Mesh-300458_75544.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/AuraPlatform1-4_pb_Mesh-300458_79792.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -2823,9 +2859,9 @@
             ]
         },
         {
-            "id": 74932,
+            "id": 79146,
             "name": "Box3-3",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     173.5313262939453,
@@ -2843,7 +2879,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box3-3_pb_Mesh-322434_74836.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box3-3_pb_Mesh-322434_79056.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -2863,9 +2899,9 @@
             "custom_components": []
         },
         {
-            "id": 76270,
+            "id": 80552,
             "name": "CameraZone3-2",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     160.0313262939453,
@@ -2905,17 +2941,17 @@
                     "name": "ZoneCameraTrigger",
                     "properties": [
                         {
-                            "name": "customRotationX",
+                            "name": "CustomYaw",
                             "type": "Single",
-                            "value": "90"
+                            "value": "0"
                         },
                         {
-                            "name": "customRotationY",
+                            "name": "CustomPitch",
                             "type": "Single",
                             "value": "20"
                         },
                         {
-                            "name": "customDistance",
+                            "name": "CustomDistance",
                             "type": "Single",
                             "value": "15"
                         }
@@ -2924,9 +2960,9 @@
             ]
         },
         {
-            "id": 76008,
+            "id": 80284,
             "name": "WallJump3-1",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     157.5313262939453,
@@ -2944,7 +2980,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/WallJump3-1_pb_Mesh-337202_74710.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/WallJump3-1_pb_Mesh246364_80302.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -2976,13 +3012,17 @@
                             "value": "False"
                         }
                     ]
+                },
+                {
+                    "name": "WallJumpComponent",
+                    "properties": []
                 }
             ]
         },
         {
-            "id": 75656,
+            "id": 79918,
             "name": "WallJump3-2",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     157.5313262939453,
@@ -3000,7 +3040,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/WallJump3-2_pb_Mesh-337466_76106.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/WallJump3-2_pb_Mesh245998_78996.obj",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -3032,13 +3072,17 @@
                             "value": "True"
                         }
                     ]
+                },
+                {
+                    "name": "WallJumpComponent",
+                    "properties": []
                 }
             ]
         },
         {
-            "id": 76384,
+            "id": 80680,
             "name": "Box3-4",
-            "parent_id": 76434,
+            "parent_id": 80730,
             "transform": {
                 "position": [
                     155.0313262939453,
@@ -3056,7 +3100,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Box3-4_pb_Mesh-337974_74886.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Box3-4_pb_Mesh-337974_79106.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -3076,7 +3120,7 @@
             "custom_components": []
         },
         {
-            "id": 75182,
+            "id": 79400,
             "name": "GameManager",
             "parent_id": 0,
             "transform": {
@@ -3163,7 +3207,7 @@
             ]
         },
         {
-            "id": 75076,
+            "id": 79294,
             "name": "CompositionManager",
             "parent_id": 0,
             "transform": {
@@ -3200,7 +3244,7 @@
             ]
         },
         {
-            "id": 74856,
+            "id": 79076,
             "name": "UIManager",
             "parent_id": 0,
             "transform": {
@@ -3267,7 +3311,7 @@
             ]
         },
         {
-            "id": 76464,
+            "id": 80760,
             "name": "CheckpointManager",
             "parent_id": 0,
             "transform": {
@@ -3298,7 +3342,7 @@
             ]
         },
         {
-            "id": 75756,
+            "id": 80020,
             "name": "RythmDirector",
             "parent_id": 0,
             "transform": {
@@ -3355,7 +3399,7 @@
             ]
         },
         {
-            "id": 75564,
+            "id": 79812,
             "name": "Directional Light",
             "parent_id": 0,
             "transform": {
@@ -3381,7 +3425,7 @@
             "custom_components": []
         },
         {
-            "id": -13252,
+            "id": -21210,
             "name": "Main Camera",
             "parent_id": 0,
             "transform": {
@@ -3458,7 +3502,7 @@
             ]
         },
         {
-            "id": -12614,
+            "id": -21626,
             "name": "_AuraManager",
             "parent_id": 0,
             "transform": {
@@ -3520,7 +3564,7 @@
             ]
         },
         {
-            "id": 75090,
+            "id": 79308,
             "name": "Coins",
             "parent_id": 0,
             "transform": {
@@ -3546,9 +3590,9 @@
             "custom_components": []
         },
         {
-            "id": -12374,
+            "id": -21022,
             "name": "Coin",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     2.6540794372558595,
@@ -3597,9 +3641,9 @@
             ]
         },
         {
-            "id": -12382,
+            "id": -21030,
             "name": "CoinMesh",
-            "parent_id": -12374,
+            "parent_id": -21022,
             "transform": {
                 "position": [
                     0.0,
@@ -3623,9 +3667,9 @@
             "custom_components": []
         },
         {
-            "id": -12700,
+            "id": -20614,
             "name": "Coin (5)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     8.65407943725586,
@@ -3674,9 +3718,9 @@
             ]
         },
         {
-            "id": -12708,
+            "id": -20622,
             "name": "CoinMesh",
-            "parent_id": -12700,
+            "parent_id": -20614,
             "transform": {
                 "position": [
                     0.0,
@@ -3700,9 +3744,9 @@
             "custom_components": []
         },
         {
-            "id": -12390,
+            "id": -22236,
             "name": "Coin (12)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     11.65407943725586,
@@ -3751,9 +3795,9 @@
             ]
         },
         {
-            "id": -12398,
+            "id": -22244,
             "name": "CoinMesh",
-            "parent_id": -12390,
+            "parent_id": -22236,
             "transform": {
                 "position": [
                     0.0,
@@ -3777,9 +3821,9 @@
             "custom_components": []
         },
         {
-            "id": -13148,
+            "id": -22180,
             "name": "Coin (20)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     53.65407943725586,
@@ -3828,9 +3872,9 @@
             ]
         },
         {
-            "id": -13156,
+            "id": -22188,
             "name": "CoinMesh",
-            "parent_id": -13148,
+            "parent_id": -22180,
             "transform": {
                 "position": [
                     0.0,
@@ -3854,9 +3898,9 @@
             "custom_components": []
         },
         {
-            "id": -13906,
+            "id": -21856,
             "name": "Coin (114)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     43.15407943725586,
@@ -3905,9 +3949,9 @@
             ]
         },
         {
-            "id": -13914,
+            "id": -21864,
             "name": "CoinMesh",
-            "parent_id": -13906,
+            "parent_id": -21856,
             "transform": {
                 "position": [
                     0.0,
@@ -3931,9 +3975,9 @@
             "custom_components": []
         },
         {
-            "id": -12118,
+            "id": -21374,
             "name": "Coin (115)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     36.65407943725586,
@@ -3982,9 +4026,9 @@
             ]
         },
         {
-            "id": -12126,
+            "id": -21382,
             "name": "CoinMesh",
-            "parent_id": -12118,
+            "parent_id": -21374,
             "transform": {
                 "position": [
                     0.0,
@@ -4008,9 +4052,9 @@
             "custom_components": []
         },
         {
-            "id": -13942,
+            "id": -20490,
             "name": "Coin (116)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     29.65407943725586,
@@ -4059,9 +4103,9 @@
             ]
         },
         {
-            "id": -13950,
+            "id": -20498,
             "name": "CoinMesh",
-            "parent_id": -13942,
+            "parent_id": -20490,
             "transform": {
                 "position": [
                     0.0,
@@ -4085,9 +4129,9 @@
             "custom_components": []
         },
         {
-            "id": -12198,
+            "id": -21606,
             "name": "Coin (78)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.65408325195313,
@@ -4136,9 +4180,9 @@
             ]
         },
         {
-            "id": -12206,
+            "id": -21614,
             "name": "CoinMesh",
-            "parent_id": -12198,
+            "parent_id": -21606,
             "transform": {
                 "position": [
                     0.0,
@@ -4162,9 +4206,9 @@
             "custom_components": []
         },
         {
-            "id": -11932,
+            "id": -20598,
             "name": "Coin (90)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     184.15408325195313,
@@ -4213,9 +4257,9 @@
             ]
         },
         {
-            "id": -11940,
+            "id": -20606,
             "name": "CoinMesh",
-            "parent_id": -11932,
+            "parent_id": -20598,
             "transform": {
                 "position": [
                     0.0,
@@ -4239,9 +4283,9 @@
             "custom_components": []
         },
         {
-            "id": -13032,
+            "id": -21242,
             "name": "Coin (98)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     161.15408325195313,
@@ -4290,9 +4334,9 @@
             ]
         },
         {
-            "id": -13040,
+            "id": -21250,
             "name": "CoinMesh",
-            "parent_id": -13032,
+            "parent_id": -21242,
             "transform": {
                 "position": [
                     0.0,
@@ -4316,9 +4360,9 @@
             "custom_components": []
         },
         {
-            "id": -12290,
+            "id": -21936,
             "name": "Coin (124)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     161.15408325195313,
@@ -4367,9 +4411,9 @@
             ]
         },
         {
-            "id": -12298,
+            "id": -21944,
             "name": "CoinMesh",
-            "parent_id": -12290,
+            "parent_id": -21936,
             "transform": {
                 "position": [
                     0.0,
@@ -4393,9 +4437,9 @@
             "custom_components": []
         },
         {
-            "id": -12984,
+            "id": -22328,
             "name": "Coin (51)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.65408325195313,
@@ -4444,9 +4488,9 @@
             ]
         },
         {
-            "id": -12992,
+            "id": -22336,
             "name": "CoinMesh",
-            "parent_id": -12984,
+            "parent_id": -22328,
             "transform": {
                 "position": [
                     0.0,
@@ -4470,9 +4514,9 @@
             "custom_components": []
         },
         {
-            "id": -12410,
+            "id": -22128,
             "name": "Coin (33)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     182.65408325195313,
@@ -4521,9 +4565,9 @@
             ]
         },
         {
-            "id": -12418,
+            "id": -22136,
             "name": "CoinMesh",
-            "parent_id": -12410,
+            "parent_id": -22128,
             "transform": {
                 "position": [
                     0.0,
@@ -4547,9 +4591,9 @@
             "custom_components": []
         },
         {
-            "id": -12856,
+            "id": -20222,
             "name": "Coin (41)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     182.65408325195313,
@@ -4598,9 +4642,9 @@
             ]
         },
         {
-            "id": -12864,
+            "id": -20230,
             "name": "CoinMesh",
-            "parent_id": -12856,
+            "parent_id": -20222,
             "transform": {
                 "position": [
                     0.0,
@@ -4624,9 +4668,9 @@
             "custom_components": []
         },
         {
-            "id": -13674,
+            "id": -21696,
             "name": "Coin (49)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     182.65408325195313,
@@ -4675,9 +4719,9 @@
             ]
         },
         {
-            "id": -13682,
+            "id": -21704,
             "name": "CoinMesh",
-            "parent_id": -13674,
+            "parent_id": -21696,
             "transform": {
                 "position": [
                     0.0,
@@ -4701,9 +4745,9 @@
             "custom_components": []
         },
         {
-            "id": -12166,
+            "id": -21996,
             "name": "Coin (57)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     182.65408325195313,
@@ -4752,9 +4796,9 @@
             ]
         },
         {
-            "id": -12174,
+            "id": -22004,
             "name": "CoinMesh",
-            "parent_id": -12166,
+            "parent_id": -21996,
             "transform": {
                 "position": [
                     0.0,
@@ -4778,9 +4822,9 @@
             "custom_components": []
         },
         {
-            "id": -13714,
+            "id": -22080,
             "name": "Coin (65)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     182.65408325195313,
@@ -4829,9 +4873,9 @@
             ]
         },
         {
-            "id": -13722,
+            "id": -22088,
             "name": "CoinMesh",
-            "parent_id": -13714,
+            "parent_id": -22080,
             "transform": {
                 "position": [
                     0.0,
@@ -4855,9 +4899,9 @@
             "custom_components": []
         },
         {
-            "id": -13970,
+            "id": -20922,
             "name": "Coin (13)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     17.65407943725586,
@@ -4906,9 +4950,9 @@
             ]
         },
         {
-            "id": -13978,
+            "id": -20930,
             "name": "CoinMesh",
-            "parent_id": -13970,
+            "parent_id": -20922,
             "transform": {
                 "position": [
                     0.0,
@@ -4932,9 +4976,9 @@
             "custom_components": []
         },
         {
-            "id": -11900,
+            "id": -22392,
             "name": "Coin (21)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     59.65407943725586,
@@ -4983,9 +5027,9 @@
             ]
         },
         {
-            "id": -11908,
+            "id": -22400,
             "name": "CoinMesh",
-            "parent_id": -11900,
+            "parent_id": -22392,
             "transform": {
                 "position": [
                     0.0,
@@ -5009,9 +5053,9 @@
             "custom_components": []
         },
         {
-            "id": -13386,
+            "id": -20506,
             "name": "Coin (79)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     172.65408325195313,
@@ -5060,9 +5104,9 @@
             ]
         },
         {
-            "id": -13394,
+            "id": -20514,
             "name": "CoinMesh",
-            "parent_id": -13386,
+            "parent_id": -20506,
             "transform": {
                 "position": [
                     0.0,
@@ -5086,9 +5130,9 @@
             "custom_components": []
         },
         {
-            "id": -12182,
+            "id": -20170,
             "name": "Coin (91)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     190.15408325195313,
@@ -5137,9 +5181,9 @@
             ]
         },
         {
-            "id": -12190,
+            "id": -20178,
             "name": "CoinMesh",
-            "parent_id": -12182,
+            "parent_id": -20170,
             "transform": {
                 "position": [
                     0.0,
@@ -5163,9 +5207,9 @@
             "custom_components": []
         },
         {
-            "id": -12150,
+            "id": -21792,
             "name": "Coin (99)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     167.15408325195313,
@@ -5214,9 +5258,9 @@
             ]
         },
         {
-            "id": -12158,
+            "id": -21800,
             "name": "CoinMesh",
-            "parent_id": -12150,
+            "parent_id": -21792,
             "transform": {
                 "position": [
                     0.0,
@@ -5240,9 +5284,9 @@
             "custom_components": []
         },
         {
-            "id": -13418,
+            "id": -21006,
             "name": "Coin (125)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     167.15408325195313,
@@ -5291,9 +5335,9 @@
             ]
         },
         {
-            "id": -13426,
+            "id": -21014,
             "name": "CoinMesh",
-            "parent_id": -13418,
+            "parent_id": -21006,
             "transform": {
                 "position": [
                     0.0,
@@ -5317,9 +5361,9 @@
             "custom_components": []
         },
         {
-            "id": -14062,
+            "id": -20938,
             "name": "Coin (59)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     172.65408325195313,
@@ -5368,9 +5412,9 @@
             ]
         },
         {
-            "id": -14070,
+            "id": -20946,
             "name": "CoinMesh",
-            "parent_id": -14062,
+            "parent_id": -20938,
             "transform": {
                 "position": [
                     0.0,
@@ -5394,9 +5438,9 @@
             "custom_components": []
         },
         {
-            "id": -12892,
+            "id": -20806,
             "name": "Coin (34)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     188.65408325195313,
@@ -5445,9 +5489,9 @@
             ]
         },
         {
-            "id": -12900,
+            "id": -20814,
             "name": "CoinMesh",
-            "parent_id": -12892,
+            "parent_id": -20806,
             "transform": {
                 "position": [
                     0.0,
@@ -5471,9 +5515,9 @@
             "custom_components": []
         },
         {
-            "id": -11708,
+            "id": -20106,
             "name": "Coin (42)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     188.65408325195313,
@@ -5522,9 +5566,9 @@
             ]
         },
         {
-            "id": -11716,
+            "id": -20114,
             "name": "CoinMesh",
-            "parent_id": -11708,
+            "parent_id": -20106,
             "transform": {
                 "position": [
                     0.0,
@@ -5548,9 +5592,9 @@
             "custom_components": []
         },
         {
-            "id": -14198,
+            "id": -20838,
             "name": "Coin (50)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     188.65408325195313,
@@ -5599,9 +5643,9 @@
             ]
         },
         {
-            "id": -14206,
+            "id": -20846,
             "name": "CoinMesh",
-            "parent_id": -14198,
+            "parent_id": -20838,
             "transform": {
                 "position": [
                     0.0,
@@ -5625,9 +5669,9 @@
             "custom_components": []
         },
         {
-            "id": -13016,
+            "id": -21190,
             "name": "Coin (58)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     188.65408325195313,
@@ -5676,9 +5720,9 @@
             ]
         },
         {
-            "id": -13024,
+            "id": -21198,
             "name": "CoinMesh",
-            "parent_id": -13016,
+            "parent_id": -21190,
             "transform": {
                 "position": [
                     0.0,
@@ -5702,9 +5746,9 @@
             "custom_components": []
         },
         {
-            "id": -13200,
+            "id": -21776,
             "name": "Coin (66)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     188.65408325195313,
@@ -5753,9 +5797,9 @@
             ]
         },
         {
-            "id": -13208,
+            "id": -21784,
             "name": "CoinMesh",
-            "parent_id": -13200,
+            "parent_id": -21776,
             "transform": {
                 "position": [
                     0.0,
@@ -5779,9 +5823,9 @@
             "custom_components": []
         },
         {
-            "id": -11948,
+            "id": -21106,
             "name": "Coin (14)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     14.65407943725586,
@@ -5830,9 +5874,9 @@
             ]
         },
         {
-            "id": -11956,
+            "id": -21114,
             "name": "CoinMesh",
-            "parent_id": -11948,
+            "parent_id": -21106,
             "transform": {
                 "position": [
                     0.0,
@@ -5856,9 +5900,9 @@
             "custom_components": []
         },
         {
-            "id": -12446,
+            "id": -21976,
             "name": "Coin (22)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     56.65407943725586,
@@ -5907,9 +5951,9 @@
             ]
         },
         {
-            "id": -12454,
+            "id": -21984,
             "name": "CoinMesh",
-            "parent_id": -12446,
+            "parent_id": -21976,
             "transform": {
                 "position": [
                     0.0,
@@ -5933,9 +5977,9 @@
             "custom_components": []
         },
         {
-            "id": -13922,
+            "id": -21712,
             "name": "Coin (80)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.65408325195313,
@@ -5984,9 +6028,9 @@
             ]
         },
         {
-            "id": -13930,
+            "id": -21720,
             "name": "CoinMesh",
-            "parent_id": -13922,
+            "parent_id": -21712,
             "transform": {
                 "position": [
                     0.0,
@@ -6010,9 +6054,9 @@
             "custom_components": []
         },
         {
-            "id": -12872,
+            "id": -21258,
             "name": "Coin (92)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.15408325195313,
@@ -6061,9 +6105,9 @@
             ]
         },
         {
-            "id": -12880,
+            "id": -21266,
             "name": "CoinMesh",
-            "parent_id": -12872,
+            "parent_id": -21258,
             "transform": {
                 "position": [
                     0.0,
@@ -6087,9 +6131,9 @@
             "custom_components": []
         },
         {
-            "id": -12274,
+            "id": -22196,
             "name": "Coin (100)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     164.15408325195313,
@@ -6138,9 +6182,9 @@
             ]
         },
         {
-            "id": -12282,
+            "id": -22204,
             "name": "CoinMesh",
-            "parent_id": -12274,
+            "parent_id": -22196,
             "transform": {
                 "position": [
                     0.0,
@@ -6164,9 +6208,9 @@
             "custom_components": []
         },
         {
-            "id": -12510,
+            "id": -21442,
             "name": "Coin (126)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     164.15408325195313,
@@ -6215,9 +6259,9 @@
             ]
         },
         {
-            "id": -12518,
+            "id": -21450,
             "name": "CoinMesh",
-            "parent_id": -12510,
+            "parent_id": -21442,
             "transform": {
                 "position": [
                     0.0,
@@ -6241,9 +6285,9 @@
             "custom_components": []
         },
         {
-            "id": -12254,
+            "id": -20466,
             "name": "Coin (67)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.65408325195313,
@@ -6292,9 +6336,9 @@
             ]
         },
         {
-            "id": -12262,
+            "id": -20474,
             "name": "CoinMesh",
-            "parent_id": -12254,
+            "parent_id": -20466,
             "transform": {
                 "position": [
                     0.0,
@@ -6318,9 +6362,9 @@
             "custom_components": []
         },
         {
-            "id": -13830,
+            "id": -20426,
             "name": "Coin (121)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -6369,9 +6413,9 @@
             ]
         },
         {
-            "id": -13838,
+            "id": -20434,
             "name": "CoinMesh",
-            "parent_id": -13830,
+            "parent_id": -20426,
             "transform": {
                 "position": [
                     0.0,
@@ -6395,9 +6439,9 @@
             "custom_components": []
         },
         {
-            "id": -14094,
+            "id": -20122,
             "name": "Coin (122)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -6446,9 +6490,9 @@
             ]
         },
         {
-            "id": -14102,
+            "id": -20130,
             "name": "CoinMesh",
-            "parent_id": -14094,
+            "parent_id": -20122,
             "transform": {
                 "position": [
                     0.0,
@@ -6472,9 +6516,9 @@
             "custom_components": []
         },
         {
-            "id": -12306,
+            "id": -20186,
             "name": "Coin (123)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -6523,9 +6567,9 @@
             ]
         },
         {
-            "id": -12314,
+            "id": -20194,
             "name": "CoinMesh",
-            "parent_id": -12306,
+            "parent_id": -20186,
             "transform": {
                 "position": [
                     0.0,
@@ -6549,9 +6593,9 @@
             "custom_components": []
         },
         {
-            "id": -12788,
+            "id": -20266,
             "name": "Coin (35)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.65408325195313,
@@ -6600,9 +6644,9 @@
             ]
         },
         {
-            "id": -12796,
+            "id": -20274,
             "name": "CoinMesh",
-            "parent_id": -12788,
+            "parent_id": -20266,
             "transform": {
                 "position": [
                     0.0,
@@ -6626,9 +6670,9 @@
             "custom_components": []
         },
         {
-            "id": -14174,
+            "id": -21054,
             "name": "Coin (43)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.65408325195313,
@@ -6677,9 +6721,9 @@
             ]
         },
         {
-            "id": -14182,
+            "id": -21062,
             "name": "CoinMesh",
-            "parent_id": -14174,
+            "parent_id": -21054,
             "transform": {
                 "position": [
                     0.0,
@@ -6703,9 +6747,9 @@
             "custom_components": []
         },
         {
-            "id": -13132,
+            "id": -20362,
             "name": "Coin (15)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     14.65407943725586,
@@ -6754,9 +6798,9 @@
             ]
         },
         {
-            "id": -13140,
+            "id": -20370,
             "name": "CoinMesh",
-            "parent_id": -13132,
+            "parent_id": -20362,
             "transform": {
                 "position": [
                     0.0,
@@ -6780,9 +6824,9 @@
             "custom_components": []
         },
         {
-            "id": -12494,
+            "id": -20974,
             "name": "Coin (23)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     56.65407943725586,
@@ -6831,9 +6875,9 @@
             ]
         },
         {
-            "id": -12502,
+            "id": -20982,
             "name": "CoinMesh",
-            "parent_id": -12494,
+            "parent_id": -20974,
             "transform": {
                 "position": [
                     0.0,
@@ -6857,9 +6901,9 @@
             "custom_components": []
         },
         {
-            "id": -13164,
+            "id": -20870,
             "name": "Coin (81)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.65408325195313,
@@ -6908,9 +6952,9 @@
             ]
         },
         {
-            "id": -13172,
+            "id": -20878,
             "name": "CoinMesh",
-            "parent_id": -13164,
+            "parent_id": -20870,
             "transform": {
                 "position": [
                     0.0,
@@ -6934,9 +6978,9 @@
             "custom_components": []
         },
         {
-            "id": -13216,
+            "id": -20138,
             "name": "Coin (93)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.15408325195313,
@@ -6985,9 +7029,9 @@
             ]
         },
         {
-            "id": -13224,
+            "id": -20146,
             "name": "CoinMesh",
-            "parent_id": -13216,
+            "parent_id": -20138,
             "transform": {
                 "position": [
                     0.0,
@@ -7011,9 +7055,9 @@
             "custom_components": []
         },
         {
-            "id": -13300,
+            "id": -21154,
             "name": "Coin (101)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     164.15408325195313,
@@ -7062,9 +7106,9 @@
             ]
         },
         {
-            "id": -13308,
+            "id": -21162,
             "name": "CoinMesh",
-            "parent_id": -13300,
+            "parent_id": -21154,
             "transform": {
                 "position": [
                     0.0,
@@ -7088,9 +7132,9 @@
             "custom_components": []
         },
         {
-            "id": -12684,
+            "id": -20206,
             "name": "Coin (127)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     164.15408325195313,
@@ -7139,9 +7183,9 @@
             ]
         },
         {
-            "id": -12692,
+            "id": -20214,
             "name": "CoinMesh",
-            "parent_id": -12684,
+            "parent_id": -20206,
             "transform": {
                 "position": [
                     0.0,
@@ -7165,9 +7209,9 @@
             "custom_components": []
         },
         {
-            "id": -13730,
+            "id": -20154,
             "name": "Coin (73)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.65408325195313,
@@ -7216,9 +7260,9 @@
             ]
         },
         {
-            "id": -13738,
+            "id": -20162,
             "name": "CoinMesh",
-            "parent_id": -13730,
+            "parent_id": -20154,
             "transform": {
                 "position": [
                     0.0,
@@ -7242,9 +7286,9 @@
             "custom_components": []
         },
         {
-            "id": -12542,
+            "id": -21680,
             "name": "Coin (117)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -7293,9 +7337,9 @@
             ]
         },
         {
-            "id": -12550,
+            "id": -21688,
             "name": "CoinMesh",
-            "parent_id": -12542,
+            "parent_id": -21680,
             "transform": {
                 "position": [
                     0.0,
@@ -7319,9 +7363,9 @@
             "custom_components": []
         },
         {
-            "id": -13746,
+            "id": -21960,
             "name": "Coin (118)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -7370,9 +7414,9 @@
             ]
         },
         {
-            "id": -13754,
+            "id": -21968,
             "name": "CoinMesh",
-            "parent_id": -13746,
+            "parent_id": -21960,
             "transform": {
                 "position": [
                     0.0,
@@ -7396,9 +7440,9 @@
             "custom_components": []
         },
         {
-            "id": -12594,
+            "id": -21632,
             "name": "Coin (119)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -7447,9 +7491,9 @@
             ]
         },
         {
-            "id": -12602,
+            "id": -21640,
             "name": "CoinMesh",
-            "parent_id": -12594,
+            "parent_id": -21632,
             "transform": {
                 "position": [
                     0.0,
@@ -7473,9 +7517,9 @@
             "custom_components": []
         },
         {
-            "id": -12716,
+            "id": -20346,
             "name": "Coin (120)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.15408325195313,
@@ -7524,9 +7568,9 @@
             ]
         },
         {
-            "id": -12724,
+            "id": -20354,
             "name": "CoinMesh",
-            "parent_id": -12716,
+            "parent_id": -20346,
             "transform": {
                 "position": [
                     0.0,
@@ -7550,9 +7594,9 @@
             "custom_components": []
         },
         {
-            "id": -12908,
+            "id": -21406,
             "name": "Coin (44)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.65408325195313,
@@ -7601,9 +7645,9 @@
             ]
         },
         {
-            "id": -12916,
+            "id": -21414,
             "name": "CoinMesh",
-            "parent_id": -12908,
+            "parent_id": -21406,
             "transform": {
                 "position": [
                     0.0,
@@ -7627,9 +7671,9 @@
             "custom_components": []
         },
         {
-            "id": -13642,
+            "id": -22504,
             "name": "Coin (52)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.65408325195313,
@@ -7678,9 +7722,9 @@
             ]
         },
         {
-            "id": -13650,
+            "id": -22512,
             "name": "CoinMesh",
-            "parent_id": -13642,
+            "parent_id": -22504,
             "transform": {
                 "position": [
                     0.0,
@@ -7704,9 +7748,9 @@
             "custom_components": []
         },
         {
-            "id": -12134,
+            "id": -22592,
             "name": "Coin (60)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.65408325195313,
@@ -7755,9 +7799,9 @@
             ]
         },
         {
-            "id": -12142,
+            "id": -22600,
             "name": "CoinMesh",
-            "parent_id": -12134,
+            "parent_id": -22592,
             "transform": {
                 "position": [
                     0.0,
@@ -7781,9 +7825,9 @@
             "custom_components": []
         },
         {
-            "id": -12574,
+            "id": -21122,
             "name": "Coin (68)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.65408325195313,
@@ -7832,9 +7876,9 @@
             ]
         },
         {
-            "id": -12582,
+            "id": -21130,
             "name": "CoinMesh",
-            "parent_id": -12574,
+            "parent_id": -21122,
             "transform": {
                 "position": [
                     0.0,
@@ -7858,9 +7902,9 @@
             "custom_components": []
         },
         {
-            "id": -11792,
+            "id": -21226,
             "name": "Coin (16)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     12.65407943725586,
@@ -7909,9 +7953,9 @@
             ]
         },
         {
-            "id": -11800,
+            "id": -21234,
             "name": "CoinMesh",
-            "parent_id": -11792,
+            "parent_id": -21226,
             "transform": {
                 "position": [
                     0.0,
@@ -7935,9 +7979,9 @@
             "custom_components": []
         },
         {
-            "id": -11760,
+            "id": -20394,
             "name": "Coin (24)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     54.65407943725586,
@@ -7986,9 +8030,9 @@
             ]
         },
         {
-            "id": -11768,
+            "id": -20402,
             "name": "CoinMesh",
-            "parent_id": -11760,
+            "parent_id": -20394,
             "transform": {
                 "position": [
                     0.0,
@@ -8012,9 +8056,9 @@
             "custom_components": []
         },
         {
-            "id": -13794,
+            "id": -21888,
             "name": "Coin (82)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     167.65408325195313,
@@ -8063,9 +8107,9 @@
             ]
         },
         {
-            "id": -13802,
+            "id": -21896,
             "name": "CoinMesh",
-            "parent_id": -13794,
+            "parent_id": -21888,
             "transform": {
                 "position": [
                     0.0,
@@ -8089,9 +8133,9 @@
             "custom_components": []
         },
         {
-            "id": -11840,
+            "id": -20038,
             "name": "Coin (94)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.15408325195313,
@@ -8140,9 +8184,9 @@
             ]
         },
         {
-            "id": -11848,
+            "id": -20046,
             "name": "CoinMesh",
-            "parent_id": -11840,
+            "parent_id": -20038,
             "transform": {
                 "position": [
                     0.0,
@@ -8166,9 +8210,9 @@
             "custom_components": []
         },
         {
-            "id": -11856,
+            "id": -20990,
             "name": "Coin (102)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     162.15408325195313,
@@ -8217,9 +8261,9 @@
             ]
         },
         {
-            "id": -11864,
+            "id": -20998,
             "name": "CoinMesh",
-            "parent_id": -11856,
+            "parent_id": -20990,
             "transform": {
                 "position": [
                     0.0,
@@ -8243,9 +8287,9 @@
             "custom_components": []
         },
         {
-            "id": -12732,
+            "id": -21840,
             "name": "Coin (128)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     162.15408325195313,
@@ -8294,9 +8338,9 @@
             ]
         },
         {
-            "id": -12740,
+            "id": -21848,
             "name": "CoinMesh",
-            "parent_id": -12732,
+            "parent_id": -21840,
             "transform": {
                 "position": [
                     0.0,
@@ -8320,9 +8364,9 @@
             "custom_components": []
         },
         {
-            "id": -11996,
+            "id": -20546,
             "name": "Coin (74)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     167.65408325195313,
@@ -8371,9 +8415,9 @@
             ]
         },
         {
-            "id": -12004,
+            "id": -20554,
             "name": "CoinMesh",
-            "parent_id": -11996,
+            "parent_id": -20546,
             "transform": {
                 "position": [
                     0.0,
@@ -8397,9 +8441,9 @@
             "custom_components": []
         },
         {
-            "id": -12070,
+            "id": -21558,
             "name": "Coin (37)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -8448,9 +8492,9 @@
             ]
         },
         {
-            "id": -12078,
+            "id": -21566,
             "name": "CoinMesh",
-            "parent_id": -12070,
+            "parent_id": -21558,
             "transform": {
                 "position": [
                     0.0,
@@ -8474,9 +8518,9 @@
             "custom_components": []
         },
         {
-            "id": -12668,
+            "id": -21306,
             "name": "Coin (45)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -8525,9 +8569,9 @@
             ]
         },
         {
-            "id": -12676,
+            "id": -21314,
             "name": "CoinMesh",
-            "parent_id": -12668,
+            "parent_id": -21306,
             "transform": {
                 "position": [
                     0.0,
@@ -8551,9 +8595,9 @@
             "custom_components": []
         },
         {
-            "id": -13990,
+            "id": -22272,
             "name": "Coin (53)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -8602,9 +8646,9 @@
             ]
         },
         {
-            "id": -13998,
+            "id": -22280,
             "name": "CoinMesh",
-            "parent_id": -13990,
+            "parent_id": -22272,
             "transform": {
                 "position": [
                     0.0,
@@ -8628,9 +8672,9 @@
             "custom_components": []
         },
         {
-            "id": -13052,
+            "id": -21086,
             "name": "Coin (61)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -8679,9 +8723,9 @@
             ]
         },
         {
-            "id": -13060,
+            "id": -21094,
             "name": "CoinMesh",
-            "parent_id": -13052,
+            "parent_id": -21086,
             "transform": {
                 "position": [
                     0.0,
@@ -8705,9 +8749,9 @@
             "custom_components": []
         },
         {
-            "id": -13068,
+            "id": -22164,
             "name": "Coin (69)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -8756,9 +8800,9 @@
             ]
         },
         {
-            "id": -13076,
+            "id": -22172,
             "name": "CoinMesh",
-            "parent_id": -13068,
+            "parent_id": -22164,
             "transform": {
                 "position": [
                     0.0,
@@ -8782,9 +8826,9 @@
             "custom_components": []
         },
         {
-            "id": -11740,
+            "id": -21458,
             "name": "Coin (17)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     16.65407943725586,
@@ -8833,9 +8877,9 @@
             ]
         },
         {
-            "id": -11748,
+            "id": -21466,
             "name": "CoinMesh",
-            "parent_id": -11740,
+            "parent_id": -21458,
             "transform": {
                 "position": [
                     0.0,
@@ -8859,9 +8903,9 @@
             "custom_components": []
         },
         {
-            "id": -13284,
+            "id": -21728,
             "name": "Coin (25)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     58.65407943725586,
@@ -8910,9 +8954,9 @@
             ]
         },
         {
-            "id": -13292,
+            "id": -21736,
             "name": "CoinMesh",
-            "parent_id": -13284,
+            "parent_id": -21728,
             "transform": {
                 "position": [
                     0.0,
@@ -8936,9 +8980,9 @@
             "custom_components": []
         },
         {
-            "id": -13762,
+            "id": -21038,
             "name": "Coin (83)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     171.65408325195313,
@@ -8987,9 +9031,9 @@
             ]
         },
         {
-            "id": -13770,
+            "id": -21046,
             "name": "CoinMesh",
-            "parent_id": -13762,
+            "parent_id": -21038,
             "transform": {
                 "position": [
                     0.0,
@@ -9013,9 +9057,9 @@
             "custom_components": []
         },
         {
-            "id": -12924,
+            "id": -20090,
             "name": "Coin (95)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     189.15408325195313,
@@ -9064,9 +9108,9 @@
             ]
         },
         {
-            "id": -12932,
+            "id": -20098,
             "name": "CoinMesh",
-            "parent_id": -12924,
+            "parent_id": -20090,
             "transform": {
                 "position": [
                     0.0,
@@ -9090,9 +9134,9 @@
             "custom_components": []
         },
         {
-            "id": -12840,
+            "id": -22376,
             "name": "Coin (103)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.15408325195313,
@@ -9141,9 +9185,9 @@
             ]
         },
         {
-            "id": -12848,
+            "id": -22384,
             "name": "CoinMesh",
-            "parent_id": -12840,
+            "parent_id": -22376,
             "transform": {
                 "position": [
                     0.0,
@@ -9167,9 +9211,9 @@
             "custom_components": []
         },
         {
-            "id": -13434,
+            "id": -21744,
             "name": "Coin (129)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.15408325195313,
@@ -9218,9 +9262,9 @@
             ]
         },
         {
-            "id": -13442,
+            "id": -21752,
             "name": "CoinMesh",
-            "parent_id": -13434,
+            "parent_id": -21744,
             "transform": {
                 "position": [
                     0.0,
@@ -9244,9 +9288,9 @@
             "custom_components": []
         },
         {
-            "id": -12526,
+            "id": -22360,
             "name": "Coin (86)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -9295,9 +9339,9 @@
             ]
         },
         {
-            "id": -12534,
+            "id": -22368,
             "name": "CoinMesh",
-            "parent_id": -12526,
+            "parent_id": -22360,
             "transform": {
                 "position": [
                     0.0,
@@ -9321,9 +9365,9 @@
             "custom_components": []
         },
         {
-            "id": -12426,
+            "id": -22144,
             "name": "Coin (87)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     208.15408325195313,
@@ -9372,9 +9416,9 @@
             ]
         },
         {
-            "id": -12434,
+            "id": -22152,
             "name": "CoinMesh",
-            "parent_id": -12426,
+            "parent_id": -22144,
             "transform": {
                 "position": [
                     -1.5,
@@ -9398,9 +9442,9 @@
             "custom_components": []
         },
         {
-            "id": -13232,
+            "id": -21812,
             "name": "Coin (88)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     219.65408325195313,
@@ -9449,9 +9493,9 @@
             ]
         },
         {
-            "id": -13240,
+            "id": -21820,
             "name": "CoinMesh",
-            "parent_id": -13232,
+            "parent_id": -21812,
             "transform": {
                 "position": [
                     0.0,
@@ -9475,9 +9519,9 @@
             "custom_components": []
         },
         {
-            "id": -12322,
+            "id": -22012,
             "name": "Coin (89)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     211.65408325195313,
@@ -9526,9 +9570,9 @@
             ]
         },
         {
-            "id": -12330,
+            "id": -22020,
             "name": "CoinMesh",
-            "parent_id": -12322,
+            "parent_id": -22012,
             "transform": {
                 "position": [
                     0.0,
@@ -9552,9 +9596,9 @@
             "custom_components": []
         },
         {
-            "id": -12768,
+            "id": -21390,
             "name": "Coin (75)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     171.65408325195313,
@@ -9603,9 +9647,9 @@
             ]
         },
         {
-            "id": -12776,
+            "id": -21398,
             "name": "CoinMesh",
-            "parent_id": -12768,
+            "parent_id": -21390,
             "transform": {
                 "position": [
                     0.0,
@@ -9629,9 +9673,9 @@
             "custom_components": []
         },
         {
-            "id": -12478,
+            "id": -21322,
             "name": "Coin (38)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -9680,9 +9724,9 @@
             ]
         },
         {
-            "id": -12486,
+            "id": -21330,
             "name": "CoinMesh",
-            "parent_id": -12478,
+            "parent_id": -21322,
             "transform": {
                 "position": [
                     0.0,
@@ -9706,9 +9750,9 @@
             "custom_components": []
         },
         {
-            "id": -14046,
+            "id": -20822,
             "name": "Coin (46)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -9757,9 +9801,9 @@
             ]
         },
         {
-            "id": -14054,
+            "id": -20830,
             "name": "CoinMesh",
-            "parent_id": -14046,
+            "parent_id": -20822,
             "transform": {
                 "position": [
                     0.0,
@@ -9783,9 +9827,9 @@
             "custom_components": []
         },
         {
-            "id": -12086,
+            "id": -20890,
             "name": "Coin (54)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -9834,9 +9878,9 @@
             ]
         },
         {
-            "id": -12094,
+            "id": -20898,
             "name": "CoinMesh",
-            "parent_id": -12086,
+            "parent_id": -20890,
             "transform": {
                 "position": [
                     0.0,
@@ -9860,9 +9904,9 @@
             "custom_components": []
         },
         {
-            "id": -13116,
+            "id": -21170,
             "name": "Coin (62)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -9911,9 +9955,9 @@
             ]
         },
         {
-            "id": -13124,
+            "id": -21178,
             "name": "CoinMesh",
-            "parent_id": -13116,
+            "parent_id": -21170,
             "transform": {
                 "position": [
                     0.0,
@@ -9937,9 +9981,9 @@
             "custom_components": []
         },
         {
-            "id": -13316,
+            "id": -21920,
             "name": "Coin (70)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -9988,9 +10032,9 @@
             ]
         },
         {
-            "id": -13324,
+            "id": -21928,
             "name": "CoinMesh",
-            "parent_id": -13316,
+            "parent_id": -21920,
             "transform": {
                 "position": [
                     0.0,
@@ -10014,9 +10058,9 @@
             "custom_components": []
         },
         {
-            "id": -13690,
+            "id": -21290,
             "name": "Coin (28)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     78.65408325195313,
@@ -10065,9 +10109,9 @@
             ]
         },
         {
-            "id": -13698,
+            "id": -21298,
             "name": "CoinMesh",
-            "parent_id": -13690,
+            "parent_id": -21290,
             "transform": {
                 "position": [
                     0.0,
@@ -10091,9 +10135,9 @@
             "custom_components": []
         },
         {
-            "id": -11808,
+            "id": -22472,
             "name": "Coin (109)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     90.65408325195313,
@@ -10142,9 +10186,9 @@
             ]
         },
         {
-            "id": -11816,
+            "id": -22480,
             "name": "CoinMesh",
-            "parent_id": -11808,
+            "parent_id": -22472,
             "transform": {
                 "position": [
                     0.0,
@@ -10168,9 +10212,9 @@
             "custom_components": []
         },
         {
-            "id": -14138,
+            "id": -20958,
             "name": "Coin (110)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     112.65408325195313,
@@ -10219,9 +10263,9 @@
             ]
         },
         {
-            "id": -14146,
+            "id": -20966,
             "name": "CoinMesh",
-            "parent_id": -14138,
+            "parent_id": -20958,
             "transform": {
                 "position": [
                     0.0,
@@ -10245,9 +10289,9 @@
             "custom_components": []
         },
         {
-            "id": -11692,
+            "id": -22440,
             "name": "Coin (111)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     138.65408325195313,
@@ -10296,9 +10340,9 @@
             ]
         },
         {
-            "id": -11700,
+            "id": -22448,
             "name": "CoinMesh",
-            "parent_id": -11692,
+            "parent_id": -22440,
             "transform": {
                 "position": [
                     0.0,
@@ -10322,9 +10366,9 @@
             "custom_components": []
         },
         {
-            "id": -14214,
+            "id": -22112,
             "name": "Coin (112)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     156.15408325195313,
@@ -10373,9 +10417,9 @@
             ]
         },
         {
-            "id": -14222,
+            "id": -22120,
             "name": "CoinMesh",
-            "parent_id": -14214,
+            "parent_id": -22112,
             "transform": {
                 "position": [
                     0.0,
@@ -10399,9 +10443,9 @@
             "custom_components": []
         },
         {
-            "id": -12462,
+            "id": -22252,
             "name": "Coin (113)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.65408325195313,
@@ -10450,9 +10494,9 @@
             ]
         },
         {
-            "id": -12470,
+            "id": -22260,
             "name": "CoinMesh",
-            "parent_id": -12462,
+            "parent_id": -22252,
             "transform": {
                 "position": [
                     0.0,
@@ -10476,9 +10520,9 @@
             "custom_components": []
         },
         {
-            "id": -13658,
+            "id": -20450,
             "name": "Coin (29)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     101.65408325195313,
@@ -10527,9 +10571,9 @@
             ]
         },
         {
-            "id": -13666,
+            "id": -20458,
             "name": "CoinMesh",
-            "parent_id": -13658,
+            "parent_id": -20450,
             "transform": {
                 "position": [
                     0.0,
@@ -10553,9 +10597,9 @@
             "custom_components": []
         },
         {
-            "id": -14154,
+            "id": -22424,
             "name": "Coin (30)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     126.65408325195313,
@@ -10604,9 +10648,9 @@
             ]
         },
         {
-            "id": -14162,
+            "id": -22432,
             "name": "CoinMesh",
-            "parent_id": -14154,
+            "parent_id": -22424,
             "transform": {
                 "position": [
                     0.0,
@@ -10630,9 +10674,9 @@
             "custom_components": []
         },
         {
-            "id": -13886,
+            "id": -20314,
             "name": "Coin (31)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     148.65408325195313,
@@ -10681,9 +10725,9 @@
             ]
         },
         {
-            "id": -13894,
+            "id": -20322,
             "name": "CoinMesh",
-            "parent_id": -13886,
+            "parent_id": -20314,
             "transform": {
                 "position": [
                     0.0,
@@ -10707,9 +10751,9 @@
             "custom_components": []
         },
         {
-            "id": -13100,
+            "id": -21872,
             "name": "Coin (32)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     163.15408325195313,
@@ -10758,9 +10802,9 @@
             ]
         },
         {
-            "id": -13108,
+            "id": -21880,
             "name": "CoinMesh",
-            "parent_id": -13100,
+            "parent_id": -21872,
             "transform": {
                 "position": [
                     0.0,
@@ -10784,9 +10828,9 @@
             "custom_components": []
         },
         {
-            "id": -12968,
+            "id": -21590,
             "name": "Coin (36)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     169.65408325195313,
@@ -10835,9 +10879,9 @@
             ]
         },
         {
-            "id": -12976,
+            "id": -21598,
             "name": "CoinMesh",
-            "parent_id": -12968,
+            "parent_id": -21590,
             "transform": {
                 "position": [
                     0.0,
@@ -10861,9 +10905,9 @@
             "custom_components": []
         },
         {
-            "id": -13626,
+            "id": -21342,
             "name": "Coin (18)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     16.65407943725586,
@@ -10912,9 +10956,9 @@
             ]
         },
         {
-            "id": -13634,
+            "id": -21350,
             "name": "CoinMesh",
-            "parent_id": -13626,
+            "parent_id": -21342,
             "transform": {
                 "position": [
                     0.0,
@@ -10938,9 +10982,9 @@
             "custom_components": []
         },
         {
-            "id": -12102,
+            "id": -21070,
             "name": "Coin (26)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     58.65407943725586,
@@ -10989,9 +11033,9 @@
             ]
         },
         {
-            "id": -12110,
+            "id": -21078,
             "name": "CoinMesh",
-            "parent_id": -12102,
+            "parent_id": -21070,
             "transform": {
                 "position": [
                     0.0,
@@ -11015,9 +11059,9 @@
             "custom_components": []
         },
         {
-            "id": -12948,
+            "id": -20906,
             "name": "Coin (84)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     171.65408325195313,
@@ -11066,9 +11110,9 @@
             ]
         },
         {
-            "id": -12956,
+            "id": -20914,
             "name": "CoinMesh",
-            "parent_id": -12948,
+            "parent_id": -20906,
             "transform": {
                 "position": [
                     0.0,
@@ -11092,9 +11136,9 @@
             "custom_components": []
         },
         {
-            "id": -11880,
+            "id": -22520,
             "name": "Coin (96)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     189.15408325195313,
@@ -11143,9 +11187,9 @@
             ]
         },
         {
-            "id": -11888,
+            "id": -22528,
             "name": "CoinMesh",
-            "parent_id": -11880,
+            "parent_id": -22520,
             "transform": {
                 "position": [
                     0.0,
@@ -11169,9 +11213,9 @@
             "custom_components": []
         },
         {
-            "id": -13810,
+            "id": -22456,
             "name": "Coin (104)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.15408325195313,
@@ -11220,9 +11264,9 @@
             ]
         },
         {
-            "id": -13818,
+            "id": -22464,
             "name": "CoinMesh",
-            "parent_id": -13810,
+            "parent_id": -22456,
             "transform": {
                 "position": [
                     0.0,
@@ -11246,9 +11290,9 @@
             "custom_components": []
         },
         {
-            "id": -13084,
+            "id": -21760,
             "name": "Coin (130)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     166.15408325195313,
@@ -11297,9 +11341,9 @@
             ]
         },
         {
-            "id": -13092,
+            "id": -21768,
             "name": "CoinMesh",
-            "parent_id": -13084,
+            "parent_id": -21760,
             "transform": {
                 "position": [
                     0.0,
@@ -11323,9 +11367,9 @@
             "custom_components": []
         },
         {
-            "id": -11824,
+            "id": -20070,
             "name": "Coin (76)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     171.65408325195313,
@@ -11374,9 +11418,9 @@
             ]
         },
         {
-            "id": -11832,
+            "id": -20078,
             "name": "CoinMesh",
-            "parent_id": -11824,
+            "parent_id": -20070,
             "transform": {
                 "position": [
                     0.0,
@@ -11400,9 +11444,9 @@
             "custom_components": []
         },
         {
-            "id": -12358,
+            "id": -20378,
             "name": "Coin (39)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -11451,9 +11495,9 @@
             ]
         },
         {
-            "id": -12366,
+            "id": -20386,
             "name": "CoinMesh",
-            "parent_id": -12358,
+            "parent_id": -20378,
             "transform": {
                 "position": [
                     0.0,
@@ -11477,9 +11521,9 @@
             "custom_components": []
         },
         {
-            "id": -14122,
+            "id": -22036,
             "name": "Coin (47)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -11528,9 +11572,9 @@
             ]
         },
         {
-            "id": -14130,
+            "id": -22044,
             "name": "CoinMesh",
-            "parent_id": -14122,
+            "parent_id": -22036,
             "transform": {
                 "position": [
                     0.0,
@@ -11554,9 +11598,9 @@
             "custom_components": []
         },
         {
-            "id": -13846,
+            "id": -21506,
             "name": "Coin (55)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -11605,9 +11649,9 @@
             ]
         },
         {
-            "id": -13854,
+            "id": -21514,
             "name": "CoinMesh",
-            "parent_id": -13846,
+            "parent_id": -21506,
             "transform": {
                 "position": [
                     0.0,
@@ -11631,9 +11675,9 @@
             "custom_components": []
         },
         {
-            "id": -12652,
+            "id": -21138,
             "name": "Coin (63)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -11682,9 +11726,9 @@
             ]
         },
         {
-            "id": -12660,
+            "id": -21146,
             "name": "CoinMesh",
-            "parent_id": -12652,
+            "parent_id": -21138,
             "transform": {
                 "position": [
                     0.0,
@@ -11708,9 +11752,9 @@
             "custom_components": []
         },
         {
-            "id": -12820,
+            "id": -21426,
             "name": "Coin (71)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     187.65408325195313,
@@ -11759,9 +11803,9 @@
             ]
         },
         {
-            "id": -12828,
+            "id": -21434,
             "name": "CoinMesh",
-            "parent_id": -12820,
+            "parent_id": -21426,
             "transform": {
                 "position": [
                     0.0,
@@ -11785,9 +11829,9 @@
             "custom_components": []
         },
         {
-            "id": -12636,
+            "id": -20582,
             "name": "Coin (19)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     12.65407943725586,
@@ -11836,9 +11880,9 @@
             ]
         },
         {
-            "id": -12644,
+            "id": -20590,
             "name": "CoinMesh",
-            "parent_id": -12636,
+            "parent_id": -20582,
             "transform": {
                 "position": [
                     0.0,
@@ -11862,9 +11906,9 @@
             "custom_components": []
         },
         {
-            "id": -12054,
+            "id": -20854,
             "name": "Coin (27)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     54.65407943725586,
@@ -11913,9 +11957,9 @@
             ]
         },
         {
-            "id": -12062,
+            "id": -20862,
             "name": "CoinMesh",
-            "parent_id": -12054,
+            "parent_id": -20854,
             "transform": {
                 "position": [
                     0.0,
@@ -11939,9 +11983,9 @@
             "custom_components": []
         },
         {
-            "id": -11980,
+            "id": -20250,
             "name": "Coin (85)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     167.65408325195313,
@@ -11990,9 +12034,9 @@
             ]
         },
         {
-            "id": -11988,
+            "id": -20258,
             "name": "CoinMesh",
-            "parent_id": -11980,
+            "parent_id": -20250,
             "transform": {
                 "position": [
                     0.0,
@@ -12016,9 +12060,9 @@
             "custom_components": []
         },
         {
-            "id": -12558,
+            "id": -20282,
             "name": "Coin (97)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     185.15408325195313,
@@ -12067,9 +12111,9 @@
             ]
         },
         {
-            "id": -12566,
+            "id": -20290,
             "name": "CoinMesh",
-            "parent_id": -12558,
+            "parent_id": -20282,
             "transform": {
                 "position": [
                     0.0,
@@ -12093,9 +12137,9 @@
             "custom_components": []
         },
         {
-            "id": -12012,
+            "id": -22488,
             "name": "Coin (105)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     162.15408325195313,
@@ -12144,9 +12188,9 @@
             ]
         },
         {
-            "id": -12020,
+            "id": -22496,
             "name": "CoinMesh",
-            "parent_id": -12012,
+            "parent_id": -22488,
             "transform": {
                 "position": [
                     0.0,
@@ -12170,9 +12214,9 @@
             "custom_components": []
         },
         {
-            "id": -11776,
+            "id": -21522,
             "name": "Coin (131)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     162.15408325195313,
@@ -12221,9 +12265,9 @@
             ]
         },
         {
-            "id": -11784,
+            "id": -21530,
             "name": "CoinMesh",
-            "parent_id": -11776,
+            "parent_id": -21522,
             "transform": {
                 "position": [
                     0.0,
@@ -12247,9 +12291,9 @@
             "custom_components": []
         },
         {
-            "id": -12804,
+            "id": -22560,
             "name": "Coin (77)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     167.65408325195313,
@@ -12298,9 +12342,9 @@
             ]
         },
         {
-            "id": -12812,
+            "id": -22568,
             "name": "CoinMesh",
-            "parent_id": -12804,
+            "parent_id": -22560,
             "transform": {
                 "position": [
                     0.0,
@@ -12324,9 +12368,9 @@
             "custom_components": []
         },
         {
-            "id": -11916,
+            "id": -21490,
             "name": "Coin (40)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -12375,9 +12419,9 @@
             ]
         },
         {
-            "id": -11924,
+            "id": -21498,
             "name": "CoinMesh",
-            "parent_id": -11916,
+            "parent_id": -21490,
             "transform": {
                 "position": [
                     0.0,
@@ -12401,9 +12445,9 @@
             "custom_components": []
         },
         {
-            "id": -14014,
+            "id": -22408,
             "name": "Coin (48)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -12452,9 +12496,9 @@
             ]
         },
         {
-            "id": -14022,
+            "id": -22416,
             "name": "CoinMesh",
-            "parent_id": -14014,
+            "parent_id": -22408,
             "transform": {
                 "position": [
                     0.0,
@@ -12478,9 +12522,9 @@
             "custom_components": []
         },
         {
-            "id": -11964,
+            "id": -20562,
             "name": "Coin (56)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -12529,9 +12573,9 @@
             ]
         },
         {
-            "id": -11972,
+            "id": -20570,
             "name": "CoinMesh",
-            "parent_id": -11964,
+            "parent_id": -20562,
             "transform": {
                 "position": [
                     0.0,
@@ -12555,9 +12599,9 @@
             "custom_components": []
         },
         {
-            "id": -12748,
+            "id": -22576,
             "name": "Coin (64)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -12606,9 +12650,9 @@
             ]
         },
         {
-            "id": -12756,
+            "id": -22584,
             "name": "CoinMesh",
-            "parent_id": -12748,
+            "parent_id": -22576,
             "transform": {
                 "position": [
                     0.0,
@@ -12632,9 +12676,9 @@
             "custom_components": []
         },
         {
-            "id": -13862,
+            "id": -22312,
             "name": "Coin (72)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     183.65408325195313,
@@ -12683,9 +12727,9 @@
             ]
         },
         {
-            "id": -13870,
+            "id": -22320,
             "name": "CoinMesh",
-            "parent_id": -13862,
+            "parent_id": -22312,
             "transform": {
                 "position": [
                     0.0,
@@ -12709,9 +12753,9 @@
             "custom_components": []
         },
         {
-            "id": -11660,
+            "id": -21474,
             "name": "Coin (6)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     5.654079437255859,
@@ -12760,9 +12804,9 @@
             ]
         },
         {
-            "id": -11668,
+            "id": -21482,
             "name": "CoinMesh",
-            "parent_id": -11660,
+            "parent_id": -21474,
             "transform": {
                 "position": [
                     0.0,
@@ -12786,9 +12830,9 @@
             "custom_components": []
         },
         {
-            "id": -13366,
+            "id": -21904,
             "name": "Coin (7)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     5.654079437255859,
@@ -12837,9 +12881,9 @@
             ]
         },
         {
-            "id": -13374,
+            "id": -21912,
             "name": "CoinMesh",
-            "parent_id": -13366,
+            "parent_id": -21904,
             "transform": {
                 "position": [
                     0.0,
@@ -12863,9 +12907,9 @@
             "custom_components": []
         },
         {
-            "id": -13264,
+            "id": -21358,
             "name": "Coin (8)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     3.6540794372558595,
@@ -12914,9 +12958,9 @@
             ]
         },
         {
-            "id": -13272,
+            "id": -21366,
             "name": "CoinMesh",
-            "parent_id": -13264,
+            "parent_id": -21358,
             "transform": {
                 "position": [
                     0.0,
@@ -12940,9 +12984,9 @@
             "custom_components": []
         },
         {
-            "id": -12620,
+            "id": -21538,
             "name": "Coin (9)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     7.654079437255859,
@@ -12991,9 +13035,9 @@
             ]
         },
         {
-            "id": -12628,
+            "id": -21546,
             "name": "CoinMesh",
-            "parent_id": -12620,
+            "parent_id": -21538,
             "transform": {
                 "position": [
                     0.0,
@@ -13017,9 +13061,9 @@
             "custom_components": []
         },
         {
-            "id": -11676,
+            "id": -21574,
             "name": "Coin (10)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     7.654079437255859,
@@ -13068,9 +13112,9 @@
             ]
         },
         {
-            "id": -11684,
+            "id": -21582,
             "name": "CoinMesh",
-            "parent_id": -11676,
+            "parent_id": -21574,
             "transform": {
                 "position": [
                     0.0,
@@ -13094,9 +13138,9 @@
             "custom_components": []
         },
         {
-            "id": -12214,
+            "id": -22540,
             "name": "Coin (11)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     3.6540794372558595,
@@ -13145,9 +13189,9 @@
             ]
         },
         {
-            "id": -12222,
+            "id": -22548,
             "name": "CoinMesh",
-            "parent_id": -12214,
+            "parent_id": -22540,
             "transform": {
                 "position": [
                     0.0,
@@ -13171,9 +13215,9 @@
             "custom_components": []
         },
         {
-            "id": -13402,
+            "id": -20298,
             "name": "Coin (1)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     0.6540794372558594,
@@ -13222,9 +13266,9 @@
             ]
         },
         {
-            "id": -13410,
+            "id": -20306,
             "name": "CoinMesh",
-            "parent_id": -13402,
+            "parent_id": -20298,
             "transform": {
                 "position": [
                     0.0,
@@ -13248,9 +13292,9 @@
             "custom_components": []
         },
         {
-            "id": -14030,
+            "id": -22220,
             "name": "Coin (2)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     10.65407943725586,
@@ -13299,9 +13343,9 @@
             ]
         },
         {
-            "id": -14038,
+            "id": -22228,
             "name": "CoinMesh",
-            "parent_id": -14030,
+            "parent_id": -22220,
             "transform": {
                 "position": [
                     0.0,
@@ -13325,9 +13369,9 @@
             "custom_components": []
         },
         {
-            "id": -13184,
+            "id": -20530,
             "name": "Coin (3)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     0.6540794372558594,
@@ -13376,9 +13420,9 @@
             ]
         },
         {
-            "id": -13192,
+            "id": -20538,
             "name": "CoinMesh",
-            "parent_id": -13184,
+            "parent_id": -20530,
             "transform": {
                 "position": [
                     0.0,
@@ -13402,9 +13446,9 @@
             "custom_components": []
         },
         {
-            "id": -11724,
+            "id": -21274,
             "name": "Coin (4)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     10.65407943725586,
@@ -13453,9 +13497,9 @@
             ]
         },
         {
-            "id": -11732,
+            "id": -21282,
             "name": "CoinMesh",
-            "parent_id": -11724,
+            "parent_id": -21274,
             "transform": {
                 "position": [
                     0.0,
@@ -13479,9 +13523,9 @@
             "custom_components": []
         },
         {
-            "id": -12234,
+            "id": -22344,
             "name": "Coin (106)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     5.154079437255859,
@@ -13530,9 +13574,9 @@
             ]
         },
         {
-            "id": -12242,
+            "id": -22352,
             "name": "CoinMesh",
-            "parent_id": -12234,
+            "parent_id": -22344,
             "transform": {
                 "position": [
                     0.0,
@@ -13556,9 +13600,9 @@
             "custom_components": []
         },
         {
-            "id": -13778,
+            "id": -22288,
             "name": "Coin (107)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     5.154079437255859,
@@ -13607,9 +13651,9 @@
             ]
         },
         {
-            "id": -13786,
+            "id": -22296,
             "name": "CoinMesh",
-            "parent_id": -13778,
+            "parent_id": -22288,
             "transform": {
                 "position": [
                     0.0,
@@ -13633,9 +13677,9 @@
             "custom_components": []
         },
         {
-            "id": -13000,
+            "id": -20410,
             "name": "Coin (108)",
-            "parent_id": 75090,
+            "parent_id": 79308,
             "transform": {
                 "position": [
                     5.154079437255859,
@@ -13684,9 +13728,9 @@
             ]
         },
         {
-            "id": -13008,
+            "id": -20418,
             "name": "CoinMesh",
-            "parent_id": -13000,
+            "parent_id": -20410,
             "transform": {
                 "position": [
                     0.0,
@@ -13710,7 +13754,7 @@
             "custom_components": []
         },
         {
-            "id": 76480,
+            "id": 80776,
             "name": "Cylinder",
             "parent_id": 0,
             "transform": {
@@ -13730,7 +13774,7 @@
                     1.0
                 ]
             },
-            "mesh_path": "assets/POziomix_Assets/Models/Cylinder_pb_Mesh-455232_75384.obj",
+            "mesh_path": "assets/POziomix_Assets/Models/Cylinder_pb_Mesh-455232_79622.obj",
             "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
             "box_colliders": [
                 {
@@ -13754,14 +13798,14 @@
                         {
                             "name": "BounceHeight",
                             "type": "Single",
-                            "value": "15"
+                            "value": "30"
                         }
                     ]
                 }
             ]
         },
         {
-            "id": 75652,
+            "id": 79914,
             "name": "Generative",
             "parent_id": 0,
             "transform": {
@@ -13787,9 +13831,9 @@
             "custom_components": []
         },
         {
-            "id": 75256,
+            "id": 79474,
             "name": "Speaker",
-            "parent_id": 75652,
+            "parent_id": 79914,
             "transform": {
                 "position": [
                     0.0,
@@ -13813,9 +13857,9 @@
             "custom_components": []
         },
         {
-            "id": 75886,
+            "id": 80148,
             "name": "glosnik",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     5.915760040283203,
@@ -13879,9 +13923,9 @@
             ]
         },
         {
-            "id": 76286,
+            "id": 80582,
             "name": "glosnik (2)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     -3.3524513244628908,
@@ -13945,9 +13989,9 @@
             ]
         },
         {
-            "id": 75576,
+            "id": 79824,
             "name": "glosnik (1)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     19.415760040283204,
@@ -14011,9 +14055,9 @@
             ]
         },
         {
-            "id": 76044,
+            "id": 80324,
             "name": "glosnik (4)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     61.1839714050293,
@@ -14077,9 +14121,9 @@
             ]
         },
         {
-            "id": 76522,
+            "id": 80820,
             "name": "glosnik (5)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     161.14755249023438,
@@ -14143,9 +14187,9 @@
             ]
         },
         {
-            "id": 75980,
+            "id": 80256,
             "name": "glosnik (10)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     177.16575622558595,
@@ -14209,9 +14253,9 @@
             ]
         },
         {
-            "id": 75128,
+            "id": 79346,
             "name": "glosnik (8)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     161.14755249023438,
@@ -14275,9 +14319,9 @@
             ]
         },
         {
-            "id": 76176,
+            "id": 80454,
             "name": "glosnik (7)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     174.14755249023438,
@@ -14341,9 +14385,9 @@
             ]
         },
         {
-            "id": 76090,
+            "id": 80370,
             "name": "glosnik (11)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     190.16575622558595,
@@ -14407,9 +14451,9 @@
             ]
         },
         {
-            "id": 75166,
+            "id": 79384,
             "name": "glosnik (12)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     190.16575622558595,
@@ -14473,9 +14517,9 @@
             ]
         },
         {
-            "id": 74968,
+            "id": 79182,
             "name": "glosnik (15)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     174.18397521972657,
@@ -14539,9 +14583,9 @@
             ]
         },
         {
-            "id": 75334,
+            "id": 79572,
             "name": "glosnik (14)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     176.13999938964845,
@@ -14605,9 +14649,9 @@
             ]
         },
         {
-            "id": 75110,
+            "id": 79328,
             "name": "glosnik (18)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     156.64755249023438,
@@ -14671,9 +14715,9 @@
             ]
         },
         {
-            "id": 76368,
+            "id": 80664,
             "name": "glosnik (17)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     176.13999938964845,
@@ -14737,9 +14781,9 @@
             ]
         },
         {
-            "id": 76474,
+            "id": 80770,
             "name": "glosnik (19)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     156.64755249023438,
@@ -14803,9 +14847,9 @@
             ]
         },
         {
-            "id": 74880,
+            "id": 79100,
             "name": "glosnik (16)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     161.1839599609375,
@@ -14869,9 +14913,9 @@
             ]
         },
         {
-            "id": 75998,
+            "id": 80274,
             "name": "glosnik (9)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     174.14755249023438,
@@ -14935,9 +14979,9 @@
             ]
         },
         {
-            "id": 75828,
+            "id": 80090,
             "name": "glosnik (6)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     61.1839714050293,
@@ -15001,9 +15045,9 @@
             ]
         },
         {
-            "id": 75156,
+            "id": 79374,
             "name": "glosnik (3)",
-            "parent_id": 75256,
+            "parent_id": 79474,
             "transform": {
                 "position": [
                     10.14754867553711,

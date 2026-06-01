@@ -37,10 +37,6 @@ protected:
             return;
         }
         Instance = this;
-
-        UnlockNextAura();
-
-        UnlockNextAura();
     }
 
     void OnStart() override { }

@@ -35,8 +35,9 @@ namespace NFSEngine {
                                     material->SetFloat("u_TwistStrength", std::stof(propValue));
                                 }
                             }
-                            model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
+                            model = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/glosnik.fbx");
                             generated = true;
+                            targetObj->GetTransform()->SetScale({ 1, 1, 1 });
                             break;
                         }
                     }
@@ -51,6 +52,8 @@ namespace NFSEngine {
                 rampParams.WrapT = NFSEngine::TextureWrap::Clamp;
                 rampParams.MinFilter = NFSEngine::TextureFilter::Nearest;
                 rampParams.MagFilter = NFSEngine::TextureFilter::Nearest;
+                rampParams.GenerateMipmaps = false;
+                auto map = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
 
                 std::string texPath = "assets/textures/cat.png"; // Fallback
                 if (j_obj.contains("texture_path") && j_obj["texture_path"] != "") {
@@ -58,6 +61,7 @@ namespace NFSEngine {
                 }
 
                 material->AlbedoMap = NFSEngine::Texture::Create(texPath);
+                material->RampMap = map;
                 targetObj->AddComponent<ModelComponent>(shader, material);
 
                 targetObj->GetComponent<ModelComponent>()->AddLOD(model, 1000);

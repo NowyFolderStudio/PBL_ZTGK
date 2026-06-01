@@ -3,8 +3,6 @@
 #include "SceneLoader/IComponentLoader.hpp"
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
-#include "Renderer/Shader.hpp"
-#include "Renderer/Material.hpp"
 #include "Components/CoinComponent.hpp"
 
 using namespace NFSEngine;
