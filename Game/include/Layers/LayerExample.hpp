@@ -3,6 +3,7 @@
 #include "NFSEngine.h"
 #include <memory>
 #include <vector>
+#include "Renderer/Material.hpp"
 #include "Renderer/Skybox.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
 #include "Components/AudioPatternComponent.hpp"
@@ -58,6 +59,7 @@ private:
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
     std::shared_ptr<NFSEngine::Shader> m_GoochShader;
+    std::vector<std::shared_ptr<NFSEngine::Material>> m_AnimatedMaterials;
 
     std::unique_ptr<NFSEngine::EnvironmentMap> m_EnvironmentMap;
 

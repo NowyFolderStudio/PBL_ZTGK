@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include "Components/AnimatorComponent.hpp"
@@ -32,6 +33,8 @@ namespace NFSEngine {
             }
             m_Materials[index] = material;
         }
+
+        std::shared_ptr<Material> GetMaterial(int index) { return m_Materials[index]; }
 
     protected:
         virtual void OnAwake() override;

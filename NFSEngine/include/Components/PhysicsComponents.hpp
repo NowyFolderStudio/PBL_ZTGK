@@ -67,10 +67,10 @@ namespace NFSEngine {
             Transform* t = m_Owner->GetComponent<Transform>();
             if (!t) return;
 
-            glm::mat4 positionMat = glm::translate(glm::mat4(1.0f), t->GetPosition());
+            glm::mat4 positionMat = glm::translate(glm::mat4(1.0f), t->GetWorldPosition());
             glm::mat4 offsetMat = glm::translate(glm::mat4(1.0f), Offset);
             glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), Size * t->GetWorldScale());
-            glm::mat4 rotation = glm::mat4_cast(t->GetRotation());
+            glm::mat4 rotation = glm::mat4_cast(t->GetWorldRotation());
 
             glm::mat4 debugTransform = positionMat * offsetMat * rotation * scaleMat;
 

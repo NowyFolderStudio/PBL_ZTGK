@@ -34,6 +34,7 @@
 #include "Core/GameObject.hpp"
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/AudioManager.hpp"
+#include "Core/Scene.hpp"
 #include "Renderer/Animation.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
@@ -82,7 +83,19 @@ void LayerExample::OnAttach() {
     sceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<CheckpointComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<ZoneCameraTriggerComponentLoader>());
-    sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/Level4_export.json");
+    sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/POziomix_export.json");
+
+    int gameObjectCounter = m_Scene->GetAllGameObjects().size();
+    for (int i = 0; i < gameObjectCounter; i++) {
+        GameObject* go = m_Scene->GetAllGameObjects()[i].get();
+        ModelComponent* component = go->GetComponent<ModelComponent>();
+        if (component) {
+            auto mat = component->GetMaterial(0);
+            if (mat->name == "AnimationMaterial") {
+                m_AnimatedMaterials.push_back(mat);
+            }
+        }
+    }
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert", "assets/shaders/PBRShader.frag");
@@ -293,7 +306,7 @@ void LayerExample::OnAttach() {
 
     // Gramophone
     auto gramophoneModel0 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneHIGH.obj");
-    auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneMedium.obj");
+    auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/retro_mikrofon.fbx");
     auto gramophoneModel2 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneLOW.obj");
 
     NFSEngine::GameObject* gramophoneObj = m_Scene->CreateGameObject("Gramophone");
@@ -683,6 +696,9 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         matGramophone3->SetFloat("u_MusicTime", songPos);
         matGramophone4->SetFloat("u_MusicTime", songPos);
         matGramophone5->SetFloat("u_MusicTime", songPos);
+        for (auto mat : m_AnimatedMaterials) {
+            mat->SetFloat("u_MusicTime", songPos);
+        }
     }
 }
 
