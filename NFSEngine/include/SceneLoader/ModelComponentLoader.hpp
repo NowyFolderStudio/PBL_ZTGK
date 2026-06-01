@@ -35,7 +35,7 @@ namespace NFSEngine {
                                     material->SetFloat("u_TwistStrength", std::stof(propValue));
                                 }
                             }
-                            // model = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/glosnik.fbx");
+                            model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
                             generated = true;
                             break;
                         }

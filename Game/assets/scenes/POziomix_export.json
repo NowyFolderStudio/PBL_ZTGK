@@ -911,6 +911,166 @@
                 {
                     "size": [
                         16.0,
+                        24.0,
+                        17.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.5,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": []
+        },
+        {
+            "id": -18156,
+            "name": "Box2-3 (4)",
+            "parent_id": 75630,
+            "transform": {
+                "position": [
+                    42.53133010864258,
+                    4.5,
+                    58.338897705078128
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(4)_pb_Mesh-18166_18174.obj",
+            "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        16.0,
+                        23.0,
+                        17.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": []
+        },
+        {
+            "id": -18134,
+            "name": "Box2-3 (3)",
+            "parent_id": 75630,
+            "transform": {
+                "position": [
+                    42.53133010864258,
+                    4.5,
+                    58.338897705078128
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(3)_pb_Mesh-18144_18152.obj",
+            "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        16.0,
+                        23.0,
+                        17.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": []
+        },
+        {
+            "id": -18112,
+            "name": "Box2-3 (2)",
+            "parent_id": 75630,
+            "transform": {
+                "position": [
+                    42.53133010864258,
+                    4.5,
+                    58.338897705078128
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(2)_pb_Mesh-18122_18130.obj",
+            "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        16.0,
+                        23.0,
+                        17.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": []
+        },
+        {
+            "id": -18090,
+            "name": "Box2-3 (1)",
+            "parent_id": 75630,
+            "transform": {
+                "position": [
+                    42.53133010864258,
+                    4.5,
+                    58.338897705078128
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_Assets/Models/Box2-3_(1)_pb_Mesh-18100_18108.obj",
+            "texture_path": "assets/POziomix_Assets/Textures/GridBox_Default.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        16.0,
                         23.0,
                         17.0
                     ],
@@ -14896,1418 +15056,6 @@
                             "name": "u_BendStrength",
                             "type": "Single",
                             "value": "0"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75326,
-            "name": "Microphone",
-            "parent_id": 75652,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 76502,
-            "name": "retro_mikrofon",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    18.077701568603517,
-                    14.559000015258789,
-                    66.71263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75138,
-            "name": "retro_mikrofon (2)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    74.07769775390625,
-                    14.432000160217286,
-                    86.71263885498047
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(2)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75780,
-            "name": "retro_mikrofon (4)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    80.07769775390625,
-                    14.432000160217286,
-                    102.21263885498047
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(4)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75416,
-            "name": "retro_mikrofon (3)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    95.57769775390625,
-                    14.432000160217286,
-                    98.21263885498047
-                ],
-                "rotation": [
-                    270.0,
-                    -45.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(3)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75454,
-            "name": "retro_mikrofon (5)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    103.57769775390625,
-                    14.432000160217286,
-                    111.71263885498047
-                ],
-                "rotation": [
-                    270.0,
-                    -315.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(5)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75550,
-            "name": "retro_mikrofon (6)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    120.07769775390625,
-                    14.432000160217286,
-                    115.21263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -270.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(6)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75038,
-            "name": "retro_mikrofon (7)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    129.07769775390626,
-                    14.432000160217286,
-                    101.71263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(7)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75956,
-            "name": "retro_mikrofon (8)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    139.57769775390626,
-                    14.432000160217286,
-                    95.71263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(8)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 74704,
-            "name": "retro_mikrofon (9)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    154.07769775390626,
-                    14.432000160217286,
-                    97.71263885498047
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(9)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75770,
-            "name": "retro_mikrofon (10)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    154.57769775390626,
-                    14.432000160217286,
-                    80.21263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(10)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75482,
-            "name": "retro_mikrofon (11)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    168.57769775390626,
-                    14.432000160217286,
-                    77.21263885498047
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(11)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75624,
-            "name": "retro_mikrofon (12)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    174.16635131835938,
-                    14.012999534606934,
-                    30.21263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(12)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75176,
-            "name": "retro_mikrofon (20)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    161.16635131835938,
-                    14.012999534606934,
-                    30.21263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(20)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75966,
-            "name": "retro_mikrofon (13)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    183.66700744628907,
-                    39.06999969482422,
-                    12.712638854980469
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -270.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(13)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75838,
-            "name": "retro_mikrofon (14)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    191.07769775390626,
-                    39.06999969482422,
-                    4.212638854980469
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(14)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 76076,
-            "name": "retro_mikrofon (15)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    191.07769775390626,
-                    39.06999969482422,
-                    -22.28736114501953
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(15)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 74958,
-            "name": "retro_mikrofon (17)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    156.07769775390626,
-                    68.81727600097656,
-                    -160.287353515625
-                ],
-                "rotation": [
-                    270.019775390625,
-                    0.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(17)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 76264,
-            "name": "retro_mikrofon (19)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    174.07769775390626,
-                    26.030000686645509,
-                    -55.78736114501953
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(19)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75244,
-            "name": "retro_mikrofon (18)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    161.07769775390626,
-                    26.030000686645509,
-                    -55.78736114501953
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(18)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 74998,
-            "name": "retro_mikrofon (16)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    191.07769775390626,
-                    39.06999969482422,
-                    -10.787361145019532
-                ],
-                "rotation": [
-                    270.0,
-                    -180.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(16)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
-                        },
-                        {
-                            "name": "u_TwistStrength",
-                            "type": "Single",
-                            "value": "0"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 75230,
-            "name": "retro_mikrofon (1)",
-            "parent_id": 75326,
-            "transform": {
-                "position": [
-                    7.077701568603516,
-                    14.559000015258789,
-                    77.21263885498047
-                ],
-                "rotation": [
-                    270.019775390625,
-                    -90.0,
-                    0.0
-                ],
-                "scale": [
-                    25.0,
-                    25.0,
-                    1.2999998331069947
-                ]
-            },
-            "mesh_path": "assets/POziomix_Assets/Models/retro_mikrofon_(1)_Cylinder.004_66718.obj",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.02704465575516224,
-                        0.019999995827674867,
-                        2.608809471130371
-                    ],
-                    "offset": [
-                        0.0035223281010985376,
-                        0.0,
-                        1.2944056987762452
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "GeneratywnyKomponent",
-                    "properties": [
-                        {
-                            "name": "u_ScaleStrengthY",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_ScaleStrengthXZ",
-                            "type": "Single",
-                            "value": "0"
-                        },
-                        {
-                            "name": "u_BendStrength",
-                            "type": "Single",
-                            "value": "0.1"
                         },
                         {
                             "name": "u_TwistStrength",

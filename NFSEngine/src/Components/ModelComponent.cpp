@@ -56,7 +56,8 @@ namespace NFSEngine {
                 currentMaterial = m_Materials[0];
             }
 
-            Renderer::Submit(m_Shader, meshData.VAO, currentMaterial, m_Transform->GetGlobalMatrix(), boneTransforms);
+            Renderer::Submit(m_Shader, meshData.VAO, currentMaterial, m_Transform->GetGlobalMatrix(), boneTransforms,
+                             selectedModel->GetMeshAABBMin(), selectedModel->GetMeshAABBMax());
         }
     }
 } // namespace NFSEngine

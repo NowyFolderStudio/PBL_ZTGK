@@ -70,10 +70,12 @@ namespace NFSEngine {
 
         auto& GetBoneInfoMap() { return m_BoneInfoMap; }
         int& GetBoneCount() { return m_BoneCounter; }
+        const glm::vec3& GetPivot() const { return m_Pivot; }
 
     private:
         std::vector<MeshData> m_Meshes;
         std::vector<AssimpMaterialInfo> m_MaterialInfo;
+        glm::vec3 m_Pivot;
 
         // BONES DATA
         std::map<std::string, BoneInfo> m_BoneInfoMap;

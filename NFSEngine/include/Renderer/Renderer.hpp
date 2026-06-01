@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/detail/qualifier.hpp>
+#include <glm/ext/vector_float3.hpp>
 #include <memory>
 #include <glm/glm.hpp>
 #include <Renderer/Shader.hpp>
@@ -24,6 +26,8 @@ namespace NFSEngine {
         std::shared_ptr<Shader> shader;
         std::shared_ptr<Material> material;
         glm::mat4 transform = glm::mat4(1.0f);
+        glm::vec3 bBoxMin;
+        glm::vec3 bBoxMax;
 
         std::vector<glm::mat4> boneTransforms;
     };
@@ -42,19 +46,16 @@ namespace NFSEngine {
 
         inline static RendererAPI& GetAPI() { return *s_RendererAPI; }
 
-        static void BeginScene(const glm::mat4& viewMatrix, 
-            const glm::mat4& projectionMatrix, 
-            const glm::vec3& cameraPosition,
-            DirectionalLight* dirLight,
-            const std::vector<PointLight*>& pointLights,
-            const std::vector<SpotLight*>& spotLights,
-            EnvironmentMap* envMap);
+        static void BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition,
+                               DirectionalLight* dirLight, const std::vector<PointLight*>& pointLights,
+                               const std::vector<SpotLight*>& spotLights, EnvironmentMap* envMap);
 
         static void EndScene();
 
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
                            const std::shared_ptr<Material>& material, const glm::mat4& transform,
-                           const std::vector<glm::mat4>& boneTransforms = { });
+                           const std::vector<glm::mat4>& boneTransforms = { }, const glm::vec3& bBoxMin = glm::vec3(0),
+                           const glm::vec3& bBoxMax = glm::vec3(0));
 
         // TODO: Implement static Shutdown() method
 

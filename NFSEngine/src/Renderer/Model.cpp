@@ -12,6 +12,12 @@ namespace NFSEngine {
         m_Directory = std::filesystem::path(path).parent_path().string();
         LoadModel(path);
         FinalizeBoundingSphere();
+
+        if (m_MeshAABBMin.x <= m_MeshAABBMax.x) {
+            m_Pivot = (m_MeshAABBMin + m_MeshAABBMax) * 0.5f;
+        } else {
+            m_Pivot = glm::vec3(0.0f);
+        }
     }
 
     void Model::LoadModel(const std::string& path) {
