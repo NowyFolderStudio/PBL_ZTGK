@@ -27,6 +27,7 @@
 #include "Components/HUDComponent.hpp"
 #include "Components/AuraPlatform.hpp"
 #include "Components/PusherComponent.hpp"
+#include "Components/CasetteComponent.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -422,7 +423,14 @@ void LayerExample::OnAttach() {
     makeCoin("Coin_Top", 0.0f, coinY, -23.0f);
     makeCoin("Coin_Bot", 0.0f, coinY, 23.0f);
     makeCoin("Coin_Left", -23.0f, coinY, 0.0f);
-    makeCoin("Coin_Right", 23.0f, coinY, 0.0f);
+    NFSEngine::GameObject* cassette1 = makeCoin("Coin_Right", 0.0f, coinY, 0.0f);
+    cassette1->AddComponent<CasetteComponent>();
+
+    NFSEngine::GameObject* cassette2 = makeCoin("Coin_Right", 4.0f, coinY, 0.0f);
+    cassette2->AddComponent<CasetteComponent>();
+
+    NFSEngine::GameObject* cassette3 = makeCoin("Coin_Right", 10.0f, coinY, 0.0f);
+    cassette3->AddComponent<CasetteComponent>();
 
     NFSEngine::GameObject* hazardCube = m_Scene->CreateGameObject("Hazard_Cube");
     hazardCube->GetTransform()->SetPosition(glm::vec3(15.0f, 0.0f, 0.0f));
@@ -482,8 +490,6 @@ void LayerExample::OnAttach() {
 
     NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
     NFSEngine::AudioManager::SetActivePatternInTrack("Piano", "PianoPattern1");
-
-
 
     // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");

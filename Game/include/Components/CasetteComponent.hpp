@@ -2,7 +2,7 @@
 
 #include <NFSEngine.h>
 
-#include "Components/Managers/AuraManager.hpp"
+#include "Components/Aura/AuraManager.hpp"
 
 class CasetteComponent : public NFSEngine::Component {
 public:

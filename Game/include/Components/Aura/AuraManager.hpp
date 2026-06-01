@@ -4,6 +4,7 @@
 #include "Core/AudioManager.hpp"
 
 enum class AuraType { // TODO: Rename it
+    None,
     First,
     Second,
     Third
@@ -25,7 +26,7 @@ public:
     std::string GetName() const override { return "AuraManager"; }
 
     NFSEngine::Action<AuraType> OnAuraChanged;
-    AuraType CurrentAura = AuraType::First;
+    AuraType CurrentAura = AuraType::None;
 
 private:
     std::vector<AuraType> m_UnlockedAuras;
