@@ -25,6 +25,8 @@
 #include "Components/SpotLight.hpp"
 #include "Components/RhythmPlatform.hpp"
 #include "Components/HUDComponent.hpp"
+#include "Components/AuraPlatform.hpp"
+#include "Components/PusherComponent.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -399,11 +401,22 @@ void LayerExample::OnAttach() {
 
     // Left Platforms
     makePlatform("Platform_Step_Left", -15.0f, platformY, 0.0f, stepSize, stepSize);
-    makePlatform("Platform_Left", -23.0f, platformY, 0.0f, outerSize, outerSize);
+    NFSEngine::GameObject* platLeft = makePlatform("Platform_Left", -23.0f, platformY, 0.0f, outerSize, outerSize);
+
+    auto& auraLeft = platLeft->AddComponent<AuraPlatform>();
+    auraLeft.RequiredAura = AuraType::First;
+
+    auto& pusher = platLeft->AddComponent<PusherComponent>();
+    pusher.CurrentScene = m_Scene.get();
+    pusher.PushDirection = glm::vec3(1.0f, 0.0f, 0.0f);
+    pusher.PushSpeed = 15.0f;
 
     // Right Platforms
     makePlatform("Platform_Step_Right", 15.0f, platformY, 0.0f, stepSize, stepSize);
-    makePlatform("Platform_Right", 23.0f, platformY, 0.0f, outerSize, outerSize);
+    NFSEngine::GameObject* platRight = makePlatform("Platform_Right", 23.0f, platformY, 0.0f, outerSize, outerSize);
+
+    auto& auraRight = platRight->AddComponent<AuraPlatform>();
+    auraRight.RequiredAura = AuraType::Second;
 
     // Coins
     makeCoin("Coin_Top", 0.0f, coinY, -23.0f);
