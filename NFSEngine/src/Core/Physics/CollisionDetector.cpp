@@ -56,21 +56,35 @@ namespace NFSEngine {
         CollisionInfo info;
 
         glm::vec3 closestPoint = PhysicsMath::ClampPointToAABB(sphere.Center, box);
-
         glm::vec3 diff = sphere.Center - closestPoint;
         float distance = glm::length(diff);
 
-        if (distance == 0.0f) {
+        if (distance > 0.0001f) {
+            if (distance < sphere.Radius) {
+                info.IsColliding = true;
+                info.PenetrationDepth = sphere.Radius - distance;
+                info.ContactNormal = diff / distance;
+            }
+        } else {
             info.IsColliding = true;
-            info.PenetrationDepth = sphere.Radius;
-            info.ContactNormal = glm::vec3(0.0f, 1.0f, 0.0f);
-            return info;
-        }
 
-        if (distance < sphere.Radius) {
-            info.IsColliding = true;
-            info.PenetrationDepth = sphere.Radius - distance;
-            info.ContactNormal = diff / distance;
+            float pX = std::min(sphere.Center.x - box.Min.x, box.Max.x - sphere.Center.x);
+            float pY = std::min(sphere.Center.y - box.Min.y, box.Max.y - sphere.Center.y);
+            float pZ = std::min(sphere.Center.z - box.Min.z, box.Max.z - sphere.Center.z);
+
+            if (pX < pY && pX < pZ) {
+                info.PenetrationDepth = pX + sphere.Radius;
+                info.ContactNormal
+                    = (sphere.Center.x - box.Min.x < box.Max.x - sphere.Center.x) ? glm::vec3(-1, 0, 0) : glm::vec3(1, 0, 0);
+            } else if (pY < pX && pY < pZ) {
+                info.PenetrationDepth = pY + sphere.Radius;
+                info.ContactNormal
+                    = (sphere.Center.y - box.Min.y < box.Max.y - sphere.Center.y) ? glm::vec3(0, -1, 0) : glm::vec3(0, 1, 0);
+            } else {
+                info.PenetrationDepth = pZ + sphere.Radius;
+                info.ContactNormal
+                    = (sphere.Center.z - box.Min.z < box.Max.z - sphere.Center.z) ? glm::vec3(0, 0, -1) : glm::vec3(0, 0, 1);
+            }
         }
 
         return info;
@@ -111,18 +125,35 @@ namespace NFSEngine {
         glm::vec3 closestOnSegment = PhysicsMath::ClosestPointOnSegment(capsule.PointA, capsule.PointB, aabbCenter);
         glm::vec3 closestOnAABB = PhysicsMath::ClampPointToAABB(closestOnSegment, box);
         glm::vec3 finalClosestPoint = PhysicsMath::ClosestPointOnSegment(capsule.PointA, capsule.PointB, closestOnAABB);
+
         glm::vec3 diff = finalClosestPoint - closestOnAABB;
         float distance = glm::length(diff);
 
-        if (distance < capsule.Radius) {
+        if (distance > 0.0001f) {
+            if (distance < capsule.Radius) {
+                info.IsColliding = true;
+                info.PenetrationDepth = capsule.Radius - distance;
+                info.ContactNormal = diff / distance;
+            }
+        } else {
             info.IsColliding = true;
 
-            info.PenetrationDepth = capsule.Radius - distance;
+            float pX = std::min(closestOnSegment.x - box.Min.x, box.Max.x - closestOnSegment.x);
+            float pY = std::min(closestOnSegment.y - box.Min.y, box.Max.y - closestOnSegment.y);
+            float pZ = std::min(closestOnSegment.z - box.Min.z, box.Max.z - closestOnSegment.z);
 
-            if (distance > 0.0001f) {
-                info.ContactNormal = diff / distance;
+            if (pX < pY && pX < pZ) {
+                info.PenetrationDepth = pX + capsule.Radius;
+                info.ContactNormal = (closestOnSegment.x - box.Min.x < box.Max.x - closestOnSegment.x) ? glm::vec3(-1, 0, 0)
+                                                                                                       : glm::vec3(1, 0, 0);
+            } else if (pY < pX && pY < pZ) {
+                info.PenetrationDepth = pY + capsule.Radius;
+                info.ContactNormal = (closestOnSegment.y - box.Min.y < box.Max.y - closestOnSegment.y) ? glm::vec3(0, -1, 0)
+                                                                                                       : glm::vec3(0, 1, 0);
             } else {
-                info.ContactNormal = glm::vec3(0.0f, 1.0f, 0.0f);
+                info.PenetrationDepth = pZ + capsule.Radius;
+                info.ContactNormal = (closestOnSegment.z - box.Min.z < box.Max.z - closestOnSegment.z) ? glm::vec3(0, 0, -1)
+                                                                                                       : glm::vec3(0, 0, 1);
             }
         }
 

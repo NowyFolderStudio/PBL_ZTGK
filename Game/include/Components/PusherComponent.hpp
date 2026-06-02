@@ -14,7 +14,7 @@ public:
     glm::vec3 PushDirection = glm::vec3(1.0f, 0.0f, 0.0f);
     float PushSpeed = 10.0f;
 
-    float TriggerThickness = 0.8f;
+    float TriggerThickness = 0.2f;
 
 protected:
     void OnStart() override {
@@ -37,16 +37,20 @@ protected:
 
         glm::vec3 absDir = glm::abs(PushDirection);
 
-        triggerCol.Size = physicalCollider->Size + (absDir * TriggerThickness);
+        triggerCol.Size = physicalCollider->Size * (glm::vec3(1.0f) - absDir) + (absDir * TriggerThickness);
 
-        triggerCol.Offset = physicalCollider->Offset + (PushDirection * (TriggerThickness * 0.5f));
+        triggerCol.Offset = physicalCollider->Offset + (PushDirection * (physicalCollider->Size * 0.5f))
+            + (PushDirection * (TriggerThickness * 0.5f));
 
         triggerCol.OnTriggerStay = [this](NFSEngine::GameObject* other) {
             if (other->CompareTag(NFSEngine::Tags::Player)) {
                 auto* rb = other->GetComponent<NFSEngine::RigidBody3DComponent>();
                 if (rb) {
-                    if (PushDirection.x != 0.0f) rb->Velocity.x = PushDirection.x * PushSpeed;
-                    if (PushDirection.z != 0.0f) rb->Velocity.z = PushDirection.z * PushSpeed;
+                    glm::quat wallRotation = m_Owner->GetTransform()->GetWorldRotation();
+                    glm::vec3 worldPushDirection = wallRotation * PushDirection;
+
+                    if (worldPushDirection.x != 0.0f) rb->Velocity.x = worldPushDirection.x * PushSpeed;
+                    if (worldPushDirection.z != 0.0f) rb->Velocity.z = worldPushDirection.z * PushSpeed;
                 }
             }
         };

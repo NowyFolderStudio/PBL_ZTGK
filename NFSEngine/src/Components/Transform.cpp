@@ -110,6 +110,8 @@ namespace NFSEngine {
         return glm::quat_cast(glm::mat3(right, up, forward));
     }
 
+    void Transform::SavePreviousWorldPosition() { m_PreviousWorldPosition = GetWorldPosition(); }
+
     void Transform::OnImGuiRender() {
         glm::vec3 pos = GetPosition();
         if (ImGui::DragFloat3("Position", glm::value_ptr(pos), 0.1f)) {

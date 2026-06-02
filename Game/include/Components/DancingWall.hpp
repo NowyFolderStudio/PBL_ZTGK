@@ -1,5 +1,4 @@
-#pragma once 
-
+#pragma once
 #include <NFSEngine.h>
 #include "Events/NotePlayedEvent.hpp"
 #include <vector>
@@ -12,7 +11,8 @@ enum class TileState {
 
 struct TileData {
     NFSEngine::Transform* Transform = nullptr;
-    glm::vec3 BasePosition{ 0.0f };
+    NFSEngine::RigidBody3DComponent* RigidBody = nullptr;
+    glm::vec3 BasePosition { 0.0f };
     float Extension = 0.0f;
     TileState State = TileState::Idle;
 };
@@ -25,7 +25,8 @@ public:
     float PopOutSpeed = 15.0f;
     float ReturnSpeed = 5.0f;
 
-    DancingWall(NFSEngine::GameObject* owner) : Component(owner) {}
+    DancingWall(NFSEngine::GameObject* owner)
+        : Component(owner) { }
 
     std::string GetName() const override { return "DancingWall"; }
 
@@ -43,6 +44,16 @@ public:
 
                 TileData td;
                 td.Transform = tileTransform;
+
+                td.RigidBody = tileTransform->GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
+
+                if (!td.RigidBody) {
+                    td.RigidBody = &tileTransform->GetOwner()->AddComponent<NFSEngine::RigidBody3DComponent>();
+                }
+
+                td.RigidBody->IsKinematic = true;
+                td.RigidBody->UseGravity = false;
+
                 td.BasePosition = tileTransform->GetPosition();
                 groupTiles.push_back(td);
             }
@@ -61,25 +72,36 @@ public:
         for (auto& group : m_Groups) {
             for (auto& tile : group) {
 
+                if (!tile.RigidBody) continue;
+
+                glm::vec3 popOutVelocity = PopOutOffset * PopOutSpeed;
+                glm::vec3 returnVelocity = PopOutOffset * ReturnSpeed;
+
+                glm::vec3 direction = glm::normalize(PopOutOffset);
+                glm::vec3 currentPos = tile.Transform->GetPosition();
 
                 if (tile.State == TileState::Popping) {
-                    tile.Extension += PopOutSpeed * dt;
-                    if (tile.Extension >= 1.0f) {
-                        tile.Extension = 1.0f;
+                    tile.RigidBody->Velocity = popOutVelocity;
+
+                    float currentDist = glm::length(currentPos - tile.BasePosition);
+                    float targetDist = glm::length(PopOutOffset);
+
+                    if (currentDist >= targetDist) {
                         tile.State = TileState::Returning;
                     }
-                }
-                else if (tile.State == TileState::Returning) {
-                    tile.Extension -= ReturnSpeed * dt;
-                    if (tile.Extension <= 0.0f) {
-                        tile.Extension = 0.0f;
+
+                } else if (tile.State == TileState::Returning) {
+                    tile.RigidBody->Velocity = -returnVelocity;
+
+                    glm::vec3 toBase = tile.BasePosition - currentPos;
+                    if (glm::dot(direction, toBase) > 0.0f) {
+                        tile.RigidBody->Velocity = glm::vec3(0.0f);
+                        tile.Transform->SetPosition(tile.BasePosition);
                         tile.State = TileState::Idle;
                     }
-                }
 
-                if (tile.State != TileState::Idle || tile.Extension > 0.0f) {
-                    glm::vec3 newPos = tile.BasePosition + (PopOutOffset * tile.Extension);
-                    tile.Transform->SetPosition(newPos);
+                } else if (tile.State == TileState::Idle) {
+                    tile.RigidBody->Velocity = glm::vec3(0.0f);
                 }
             }
         }

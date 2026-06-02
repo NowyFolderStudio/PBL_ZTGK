@@ -44,6 +44,7 @@ namespace NFSEngine {
 
         float Mass = 1.0f;
         bool UseGravity = true;
+        bool IsKinematic = false;
         bool IsGrounded = false;
 
         bool IsTouchingWall = false;

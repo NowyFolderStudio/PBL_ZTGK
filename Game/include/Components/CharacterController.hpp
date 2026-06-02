@@ -50,7 +50,6 @@ public:
 
     void Respawn() {
         m_Owner->GetTransform()->SetPosition(SpawnPosition);
-
         if (p_RigidBody) {
             p_RigidBody->Velocity = glm::vec3(0.0f);
             p_RigidBody->IsGrounded = false;
