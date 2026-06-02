@@ -172,10 +172,10 @@ void LayerExample::OnAttach() {
     // m_MovingCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
     // Player
-    auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Player_with_animations.fbx");
+    auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
 
     auto animationShader
-        = NFSEngine::Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
+        = NFSEngine::Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/toonShader.frag");
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(NFSEngine::Tags::Player);
     m_Player->GetTransform()->SetPosition(glm::vec3(-45.0f, 2.7f, 37.0f));
@@ -197,8 +197,8 @@ void LayerExample::OnAttach() {
 
     auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
 
-    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 1);
-    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", m, 2);
+    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations.fbx", m, 1);
+    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations.fbx", m, 2);
 
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(idleAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(runAnimation);

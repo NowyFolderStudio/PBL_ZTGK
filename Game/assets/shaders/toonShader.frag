@@ -4,14 +4,22 @@ in vec2 TexCoord;
 in vec3 Normal;
 in vec3 FragPos;
 
+// Optional for normal mapping
+// in mat3 TBN;
+
 out vec4 FragColor;
 
+// Textures and colors
 uniform sampler2D u_AlbedoMap;
 uniform bool u_HasAlbedoMap;
 uniform vec3 u_AlbedoColor;
 
 uniform sampler2D u_RampMap;
 uniform bool u_HasRampMap;
+
+// Optional normal map
+// uniform sampler2D u_NormalMap;
+// uniform bool u_HasNormalMap;
 
 uniform vec3 viewPos;
 
@@ -51,120 +59,109 @@ uniform int activePointLights;
 uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
 uniform int activeSpotLights;
 
-const float PI = 3.14159265359;
-
-float ambientValue = 0.1;      // możesz zwiększyć, jeśli scena jest za ciemna
+float ambientValue    = 0.1;
 float specularStrength = 0.1;
-float shininess = 8.0;
-float rimThreshold = 0.1;     // nieużywane w nowej formule rim
-float rimAmount = 0.71;
-
-vec3 GetRampDiffuse(float NdotL) {
-    // Przycinamy do [0,1], bo rampa jest dla światła padającego
-    float clamped = clamp(NdotL, 0.0, 1.0);
-    float diffUV = clamped * 0.5 + 0.5;
-    if (u_HasRampMap) {
-        return texture(u_RampMap, vec2(diffUV, 0.5)).rgb;
-    }
-    return diffUV > 0.5 ? vec3(1.0) : vec3(0.3);
-}
-
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, vec3 albedo) {
-    vec3 lightDir = normalize(-light.direction);
-    vec3 radiance = light.color * light.intensity;
-
-    float NdotL = dot(normal, lightDir);
-    vec3 rampDiffuse = GetRampDiffuse(NdotL);   // wewnątrz i tak clampujemy
-
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float NdotH = max(dot(normal, halfwayDir), 0.0);
-    float specIntensity = pow(NdotH, shininess);
-    float toonSpec = smoothstep(0.5, 0.5, specIntensity);
-    
-    // Poprawiony rim – świeci tam, gdzie powierzchnia jest słabo oświetlona
-    float rimDot = 1.0 - abs(dot(viewDir, normal));   // kąt między view a normalną
-    float NdotL_safe = max(NdotL, 0.0);
-    // Użyj jednej z poniższych linii (obie bezpieczne):
-    // (A) Rim zanikający przy pełnym oświetleniu
-    float rimIntensity = rimDot * (1.0 - NdotL_safe);
-    // (B) Alternatywna, pierwotna formuła z zabezpieczeniem:
-    // float rimIntensity = rimDot * pow(NdotL_safe, rimThreshold);
-    
-    float toonRim = smoothstep(rimAmount - 0.01, rimAmount + 0.01, rimIntensity);
-    
-    vec3 diffuse = (rampDiffuse / PI) * radiance * albedo;
-    vec3 specular = toonSpec * specularStrength * radiance;
-    vec3 rim = toonRim * radiance * 0.2;
-    
-    return (diffuse + specular + rim);
-}
-
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 albedo) {
-    vec3 lightDir = normalize(light.position - fragPos);
-
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / max(distance * distance, 0.0001); 
-    
-    vec3 radiance = light.color * light.intensity * attenuation;
-    
-    float NdotL = dot(normal, lightDir);
-    vec3 rampDiffuse = GetRampDiffuse(NdotL);
-    
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float NdotH = max(dot(normal, halfwayDir), 0.0);
-    float specIntensity = pow(NdotH, shininess);
-    float toonSpec = smoothstep(0.5, 0.5, specIntensity);
-    
-    vec3 diffuse = (rampDiffuse / PI) * radiance * albedo;
-    vec3 specular = toonSpec * specularStrength * radiance;
-    
-    return (diffuse + specular);
-}
-
-vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir, vec3 albedo) {
-    vec3 lightDir = normalize(light.position - fragPos);
-    
-    float distance = length(light.position - fragPos);
-    float attenuation = 1.0 / max(distance * distance, 0.0001); 
-    
-    float theta = dot(lightDir, normalize(-light.direction)); 
-    float epsilon = light.cutOff - light.outerCutOff;
-    float spotIntensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);    
-
-    vec3 radiance = light.color * light.intensity * attenuation * spotIntensity;
-
-    float NdotL = dot(normal, lightDir);
-    vec3 rampDiffuse = GetRampDiffuse(NdotL);
-    
-    vec3 halfwayDir = normalize(lightDir + viewDir);  
-    float NdotH = max(dot(normal, halfwayDir), 0.0);
-    float specIntensity = pow(NdotH, shininess);
-    float toonSpec = smoothstep(0.5, 0.5, specIntensity);
-    
-    vec3 diffuse = (rampDiffuse / PI) * radiance * albedo;
-    vec3 specular = toonSpec * specularStrength * radiance;
-    
-    return (diffuse + specular);
-}
+float shininess       = 32.0;
+float rimThreshold    = 0.75;
+float rimAmount       = 0.71;
 
 void main()
 {
     vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
 
-    vec3 norm = normalize(Normal);
-    vec3 viewDir = normalize(viewPos - FragPos);
-    
-    vec3 finalLight = vec3(ambientValue) * albedo; 
-    
-    finalLight += CalcDirLight(dirLight, norm, viewDir, albedo);
-    
-    for(int i = 0; i < activePointLights; i++) {
-        finalLight += CalcPointLight(pointLights[i], norm, FragPos, viewDir, albedo);
+    vec3 N = normalize(Normal);
+    /*
+    if (u_HasNormalMap) {
+        vec3 normalMap = texture(u_NormalMap, TexCoord).rgb * 2.0 - 1.0;
+        N = normalize(TBN * normalMap);
+    }
+    */
+
+    vec3 V = normalize(viewPos - FragPos);
+
+    vec3 diffuseTotal  = vec3(0.0);
+    vec3 specularTotal = vec3(0.0);
+
+    // --- Directional light ---
+    {
+        vec3 L = normalize(-dirLight.direction);
+        vec3 radiance = dirLight.color * dirLight.intensity;
+
+        float NdotL = max(dot(N, L), 0.0);
+
+        vec3 rampColor = u_HasRampMap
+            ? texture(u_RampMap, vec2(NdotL, 0.5)).rgb
+            : vec3(step(0.5, NdotL));
+
+        diffuseTotal += rampColor * radiance;
+
+        vec3 H = normalize(V + L);
+        float spec = pow(max(dot(N, H), 0.0), shininess);
+        float specThreshold = 0.5;
+        float toonSpec = step(specThreshold, spec) * specularStrength;
+        specularTotal += toonSpec * radiance;
     }
 
-    for(int i = 0; i < activeSpotLights; i++) {
-        finalLight += CalcSpotLight(spotLights[i], norm, FragPos, viewDir, albedo);
+    // --- Point lights ---
+    for (int i = 0; i < activePointLights; ++i)
+    {
+        vec3 L = normalize(pointLights[i].position - FragPos);
+        float distance = length(pointLights[i].position - FragPos);
+        float attenuation = 1.0 / (distance * distance);   // same as friend's PBR
+        vec3 radiance = pointLights[i].color * pointLights[i].intensity * attenuation;
+
+        float NdotL = max(dot(N, L), 0.0);
+
+        vec3 rampColor = u_HasRampMap
+            ? texture(u_RampMap, vec2(NdotL, 0.5)).rgb
+            : vec3(step(0.5, NdotL));
+
+        diffuseTotal += rampColor * radiance;
+
+        vec3 H = normalize(V + L);
+        float spec = pow(max(dot(N, H), 0.0), shininess);
+        float toonSpec = step(0.5, spec) * specularStrength;
+        specularTotal += toonSpec * radiance;
     }
+
+    // --- Spot lights ---
+    for (int i = 0; i < activeSpotLights; ++i)
+    {
+        vec3 L = normalize(spotLights[i].position - FragPos);
+        float distance = length(spotLights[i].position - FragPos);
+        float attenuation = 1.0 / (distance * distance);
+
+        float theta = dot(L, normalize(-spotLights[i].direction));
+        float epsilon = spotLights[i].cutOff - spotLights[i].outerCutOff;
+        float spotIntensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0);
+
+        vec3 radiance = spotLights[i].color * spotLights[i].intensity * attenuation * spotIntensity;
+
+        float NdotL = max(dot(N, L), 0.0);
+
+        vec3 rampColor = u_HasRampMap
+            ? texture(u_RampMap, vec2(NdotL, 0.5)).rgb
+            : vec3(step(0.5, NdotL));
+
+        diffuseTotal += rampColor * radiance;
+
+        vec3 H = normalize(V + L);
+        float spec = pow(max(dot(N, H), 0.0), shininess);
+        float toonSpec = step(0.5, spec) * specularStrength;
+        specularTotal += toonSpec * radiance;
+    }
+
+    // --- Ambient ---
+    vec3 ambient = ambientValue * albedo;
+
+    // // --- Rim light ---
+    // float rim = 1.0 - max(dot(N, V), 0.0);
+    // rim = smoothstep(rimThreshold, rimThreshold, rim);  
     
-    FragColor = vec4(finalLight, 1.0);
+    // vec3 rimLight = rim * rimAmount * albedo;
+
+    // --- Combine ---
+    vec3 finalColor = ambient + albedo * diffuseTotal + specularTotal;
+
+    FragColor = vec4(finalColor, 1.0);
 }
