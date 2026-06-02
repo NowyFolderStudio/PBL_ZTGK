@@ -54,6 +54,9 @@ namespace NFSEngine {
         glm::vec3 GetWorldScale();
         glm::quat GetWorldRotation();
 
+        const glm::vec3& GetPreviousWorldPosition() const { return m_PreviousWorldPosition; }
+
+        void SavePreviousWorldPosition();
         void Move(const glm::vec3& moveVector);
         void Rotate(const glm::vec3& rotationVector);
         void Scale(const glm::vec3& scaleVector);
@@ -70,6 +73,8 @@ namespace NFSEngine {
         glm::mat4 m_LocalMatrix = glm::mat4(1.0f);
         glm::mat4 m_GlobalMatrix = glm::mat4(1.0f);
         bool m_Dirty = true;
+
+        glm::vec3 m_PreviousWorldPosition = { 0.0f, 0.0f, 0.0f };
 
         // Scene graph
         Transform* m_Parent = nullptr;

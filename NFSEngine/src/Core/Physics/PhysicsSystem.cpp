@@ -101,6 +101,12 @@ namespace NFSEngine {
         NFS_PROFILE_FUNCTION();
         float dt = static_cast<float>(deltaTime);
 
+        for (auto* col : allColliders) {
+            if (col->GetOwner()->IsActive()) {
+                col->GetOwner()->GetTransform()->SavePreviousWorldPosition();
+            }
+        }
+
         std::set<std::pair<ColliderComponent*, ColliderComponent*>> currentFrameTriggers;
         {
             NFS_PROFILE_SCOPE("Physics: Clear Grid");
@@ -147,8 +153,14 @@ namespace NFSEngine {
                 rigidBody->WallNormal = glm::vec3(0.0f);
                 rigidBody->TouchedWallObject = nullptr;
 
-                if (rigidBody->UseGravity) {
-                    rigidBody->Acceleration += Gravity;
+                if (!rigidBody->IsKinematic) {
+                    if (rigidBody->UseGravity) {
+                        rigidBody->Acceleration += Gravity;
+                    }
+                } else {
+                    if (glm::length(rigidBody->AngularVelocity) > 0.0001f) {
+                        transform->Rotate(rigidBody->AngularVelocity * dt);
+                    }
                 }
                 rigidBody->Velocity += rigidBody->Acceleration * dt;
                 rigidBody->Acceleration = glm::vec3(0.0f);
@@ -196,11 +208,30 @@ namespace NFSEngine {
                                                 if (colB->OnTriggerStay) colB->OnTriggerStay(objA);
                                             }
                                         } else {
-                                            transform->Move(info.ContactNormal * info.PenetrationDepth);
-                                            float pushback = glm::dot(rigidBody->Velocity, info.ContactNormal);
+                                            if (!rigidBody->IsKinematic) {
+                                                transform->Move(info.ContactNormal * info.PenetrationDepth);
 
-                                            if (pushback < 0.0f) {
-                                                rigidBody->Velocity -= info.ContactNormal * pushback;
+                                                glm::vec3 velB = glm::vec3(0.0f);
+                                                if (auto* rbB = objB->GetComponent<RigidBody3DComponent>()) {
+                                                    velB = rbB->Velocity;
+                                                }
+
+                                                glm::vec3 relativeVelocity = rigidBody->Velocity - velB;
+                                                float velAlongNormal = glm::dot(relativeVelocity, info.ContactNormal);
+
+                                                if (velAlongNormal < 0.0f) {
+                                                    float restitution = 0.0f;
+                                                    float j = -(1.0f + restitution) * velAlongNormal;
+
+                                                    float maxImpulse = 50.0f;
+                                                    if (j > maxImpulse) {
+                                                        j = maxImpulse;
+                                                    }
+
+                                                    glm::vec3 impulseVector = info.ContactNormal * j;
+
+                                                    rigidBody->Velocity += impulseVector;
+                                                }
                                             }
 
                                             if (colA->OnCollisionEnter) colA->OnCollisionEnter(objB, info.ContactNormal);

@@ -29,11 +29,9 @@ public:
 
                     if (propName == "TargetTrack") {
                         wallComp.TargetTrack = propValue;
-                    }
-                    else if (propName == "PopOutSpeed") {
+                    } else if (propName == "PopOutSpeed") {
                         wallComp.PopOutSpeed = std::stof(propValue);
-                    }
-                    else if (propName == "ReturnSpeed") {
+                    } else if (propName == "ReturnSpeed") {
                         wallComp.ReturnSpeed = std::stof(propValue);
                     }
                 }

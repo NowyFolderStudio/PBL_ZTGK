@@ -42,8 +42,12 @@ namespace NFSEngine {
         glm::vec3 Acceleration = glm::vec3(0.0f);
         glm::vec3 PreviousPosition = glm::vec3(0.0f);
 
+        glm::vec3 AngularVelocity = glm::vec3(0.0f);
+
         float Mass = 1.0f;
+
         bool UseGravity = true;
+        bool IsKinematic = false;
         bool IsGrounded = false;
 
         bool IsTouchingWall = false;
