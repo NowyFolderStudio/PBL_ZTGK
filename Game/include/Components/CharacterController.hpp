@@ -151,6 +151,8 @@ protected:
 
         HandleRotation(dt);
         ApplyMovement(dt);
+
+        HandleMovingPlatforms(dt);
     }
 
 private:
@@ -393,6 +395,37 @@ private:
 
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded && p_RigidBody->Velocity.y < 0.0f) {
             p_RigidBody->Velocity.y = NFSEngine::Math::Clamp(p_RigidBody->Velocity.y, -WallSlideSpeed, 0.0f);
+        }
+    }
+
+    void HandleMovingPlatforms(float dt) {
+        if (!p_RigidBody || !p_RigidBody->IsGrounded || !p_RigidBody->TouchedFloorObject) return;
+
+        auto* floorRB = p_RigidBody->TouchedFloorObject->GetComponent<NFSEngine::RigidBody3DComponent>();
+        if (!floorRB) return;
+
+        auto* transform = m_Owner->GetTransform();
+
+        if (glm::length(floorRB->Velocity) > 0.0001f) {
+            transform->Move(floorRB->Velocity * dt);
+        }
+
+        if (glm::length(floorRB->AngularVelocity) > 0.0001f) {
+            glm::vec3 playerPos = transform->GetWorldPosition();
+            glm::vec3 floorPos = p_RigidBody->TouchedFloorObject->GetTransform()->GetWorldPosition();
+
+            glm::vec3 radius = playerPos - floorPos;
+            radius.y = 0.0f;
+
+            glm::vec3 angularVelRad = glm::radians(floorRB->AngularVelocity);
+
+            glm::vec3 tangentialVelocity = glm::cross(angularVelRad, radius);
+
+            transform->Move(tangentialVelocity * dt);
+
+            transform->Rotate(floorRB->AngularVelocity * dt);
+
+            m_CurrentYaw += floorRB->AngularVelocity.y * dt;
         }
     }
 

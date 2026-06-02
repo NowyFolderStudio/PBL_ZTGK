@@ -59,8 +59,8 @@ void GameManager::ChangeState(GameState newState) {
     case GameState::Playing: {
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
 
-        // m_CurrentLayer = new LayerZmoreq();
-        m_CurrentLayer = new LayerExample();
+        m_CurrentLayer = new LayerZmoreq();
+        // m_CurrentLayer = new LayerExample();
         app.PushLayer(m_CurrentLayer);
 
         break;

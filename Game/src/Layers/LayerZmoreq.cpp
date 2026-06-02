@@ -16,6 +16,7 @@
 #include "Components/PointLight.hpp"
 
 // --- Specyficzne dla tej sceny ---
+#include "Components/RotatingPlatform.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -142,6 +143,15 @@ void LayerZmoreq::OnAttach() {
     m_PusherWall->GetTransform()->SetScale({ 10.0f, 5.0f, 1.0f });
     m_PusherWall->AddComponent<CubeMesh>(m_Shader, matSample);
     m_PusherWall->AddComponent<BoxCollider3DComponent>();
+
+    // -- Rotująca platforma (do testowania ruchomych obiektów) ---
+    auto* gramophone = m_Scene->CreateGameObject("GramophonePlatform");
+    gramophone->GetTransform()->SetPosition({ -15.0f, -1.5f, 0.0f });
+    gramophone->GetTransform()->SetScale({ 10.0f, 0.5f, 10.0f });
+    gramophone->AddComponent<CubeMesh>(m_Shader, matSample);
+    gramophone->AddComponent<BoxCollider3DComponent>();
+    auto& rotPlatform = gramophone->AddComponent<RotatingPlatform>();
+    rotPlatform.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
 
     // --- KAMERA ---
     auto* cameraObj = m_Scene->CreateGameObject("MainCamera");

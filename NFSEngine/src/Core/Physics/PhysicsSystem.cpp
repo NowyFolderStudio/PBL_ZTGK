@@ -152,9 +152,14 @@ namespace NFSEngine {
                 rigidBody->IsTouchingWall = false;
                 rigidBody->WallNormal = glm::vec3(0.0f);
                 rigidBody->TouchedWallObject = nullptr;
+
                 if (!rigidBody->IsKinematic) {
                     if (rigidBody->UseGravity) {
                         rigidBody->Acceleration += Gravity;
+                    }
+                } else {
+                    if (glm::length(rigidBody->AngularVelocity) > 0.0001f) {
+                        transform->Rotate(rigidBody->AngularVelocity * dt);
                     }
                 }
                 rigidBody->Velocity += rigidBody->Acceleration * dt;
