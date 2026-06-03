@@ -54,6 +54,7 @@
 #include "SceneLoader/DancingWallLoader.hpp"
 #include "SceneLoader/RhythmPlatformLoader.hpp"
 #include "SceneLoader/BounceComponentLoader.hpp"
+#include "SceneLoader/AuraPlatformLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -95,6 +96,7 @@ void LayerExample::OnAttach() {
     sceneLoader.RegisterLoader(std::make_unique<WallJumpLoader>());
     sceneLoader.RegisterLoader(std::make_unique<BounceComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<CasetteComponentLoader>());
+    sceneLoader.RegisterLoader(std::make_unique<AuraPlatformLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/POziomix_export.json");
 
     int gameObjectCounter = m_Scene->GetAllGameObjects().size();

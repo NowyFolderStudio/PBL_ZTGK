@@ -19,6 +19,7 @@ class AuraPlatformLoader : public NFSEngine::IComponentLoader {
             if (comp["name"] == "AuraPlatform") {
 
                 auto& auraPlatformComp = targetObj->AddComponent<AuraPlatform>();
+                targetObj->AddComponent<ScaleAnimator>();
                 for (const auto& prop : comp["properties"]) {
                     std::string propName = prop["name"];
                     std::string propValue = prop["value"];

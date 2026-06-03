@@ -3,7 +3,8 @@
 #include "SceneLoader/IComponentLoader.hpp"
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
-#include "Components/RhythmPlatform.hpp" // Upewnij si�, �e �cie�ka jest poprawna
+#include "Components/RhythmPlatform.hpp"
+#include "Components/ScaleAnimator.hpp"
 
 #include <string>
 
@@ -21,6 +22,7 @@ public:
             if (comp["name"] == "RhythmPlatform") {
 
                 auto& platformComp = targetObj->AddComponent<RhythmPlatform>();
+                targetObj->AddComponent<ScaleAnimator>();
 
                 for (const auto& prop : comp["properties"]) {
                     std::string propName = prop["name"];
@@ -30,12 +32,10 @@ public:
 
                     if (propName == "TargetTrack") {
                         platformComp.TargetTrack = propValue;
-                    }
-                    else if (propName == "StartsActive") {
+                    } else if (propName == "StartsActive") {
                         if (propValue == "True" || propValue == "true" || propValue == "1") {
                             platformComp.StartsActive = true;
-                        }
-                        else {
+                        } else {
                             platformComp.StartsActive = false;
                         }
                     }

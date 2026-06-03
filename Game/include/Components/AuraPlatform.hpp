@@ -3,6 +3,7 @@
 #include <NFSEngine.h>
 
 #include "Components/Aura/AuraManager.hpp"
+#include "Components/ScaleAnimator.hpp"
 
 class AuraPlatform : public NFSEngine::Component {
 public:
@@ -15,11 +16,13 @@ public:
 
 protected:
     NFSEngine::ColliderComponent* m_Collider = nullptr;
+    ScaleAnimator* m_Animator = nullptr;
 
     void OnAwake() override { }
 
     void OnStart() override {
         m_Collider = GetOwner()->GetComponent<NFSEngine::ColliderComponent>();
+        m_Animator = GetOwner()->GetComponent<ScaleAnimator>();
 
         if (AuraManager::Instance) {
             UpdatePlatformState(AuraManager::Instance->CurrentAura);
@@ -37,12 +40,18 @@ protected:
 
 private:
     void UpdatePlatformState(AuraType currentAura) {
-        if (!m_Collider) return;
+        bool isActive = (currentAura == RequiredAura);
 
-        if (currentAura == RequiredAura) {
-            m_Collider->IsTrigger = false;
-        } else {
-            m_Collider->IsTrigger = true;
+        if (m_Collider) {
+            m_Collider->IsTrigger = !isActive;
+        }
+
+        if (m_Animator) {
+            if (isActive) {
+                m_Animator->SetTargetScale(glm::vec3(1.0f));
+            } else {
+                m_Animator->SetTargetScale(glm::vec3(0.1f));
+            }
         }
     };
 };

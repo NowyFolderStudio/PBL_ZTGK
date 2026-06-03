@@ -1,24 +1,20 @@
-#pragma once 
+#pragma once
 
 #include <NFSEngine.h>
-#include "Events/NotePlayedEvent.hpp"
 
-#include "Components/CubeMesh.hpp"
-#include "Components/ModelComponent.hpp"
-#include "Components/PhysicsComponents.hpp" 
+#include "Components/ScaleAnimator.hpp"
 
 class RhythmPlatform : public NFSEngine::Component {
 public:
     std::string TargetTrack = "Bass";
     bool StartsActive = true;
 
-    RhythmPlatform(NFSEngine::GameObject* owner) : Component(owner) {}
+    RhythmPlatform(NFSEngine::GameObject* owner)
+        : Component(owner) { }
 
     std::string GetName() const override { return "RhythmPlatform"; }
 
-    virtual void OnAwake() override {
-        Initialize();
-    }
+    virtual void OnAwake() override { Initialize(); }
 
     void OnEvent(NFSEngine::Event& e) {
         NFSEngine::EventDispatcher dispatcher(e);
@@ -28,10 +24,14 @@ public:
 private:
     bool m_IsActive = true;
     bool m_Initialized = false;
-    glm::vec3 m_OriginalScale{ 1.0f };
+    glm::vec3 m_OriginalScale { 1.0f };
+
+    ScaleAnimator* m_Animator = nullptr;
 
     void Initialize() {
         if (!m_Initialized) {
+            m_Animator = GetOwner()->GetComponent<ScaleAnimator>();
+
             m_OriginalScale = GetOwner()->GetTransform()->GetScale();
             m_IsActive = StartsActive;
             m_Initialized = true;
@@ -54,10 +54,9 @@ private:
         auto transform = GetOwner()->GetTransform();
 
         if (m_IsActive) {
-            transform->SetScale(m_OriginalScale);
-        }
-        else {
-            transform->SetScale(glm::vec3(0.001f));
+            m_Animator->SetTargetScale(glm::vec3(1.0f));
+        } else {
+            m_Animator->SetTargetScale(glm::vec3(0.1f));
         }
     }
 };
