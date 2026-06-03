@@ -104,7 +104,7 @@ void LayerZmoreq::OnAttach() {
 
     // --- GRACZ ---
     auto animationShader = Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
-    auto capsuleModel = std::make_shared<Model>("assets/models/Player/Player_with_animations.fbx");
+    auto capsuleModel = std::make_shared<Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
 
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(Tags::Player);
@@ -131,8 +131,8 @@ void LayerZmoreq::OnAttach() {
     playerModel->AddComponent<AnimatorComponent>();
 
     auto* rawModelData = playerComp.GetLODs()[0].ModelData.get();
-    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", rawModelData, 1);
-    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Player_with_animations.fbx", rawModelData, 2);
+    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations.fbx", rawModelData, 1);
+    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations.fbx", rawModelData, 2);
 
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(idleAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(runAnimation);
