@@ -103,6 +103,10 @@ private:
     float m_TurnSmoothVelocity = 0.0f;
 
 protected:
+
+    void OnAwake() override {
+        SpawnPosition = m_Owner->GetTransform()->GetPosition();
+    }
     virtual void OnStart() override {
         p_RigidBody = m_Owner->GetComponent<NFSEngine::RigidBody3DComponent>();
         if (!p_RigidBody) {
