@@ -8,7 +8,7 @@
 class CharacterController : public NFSEngine::Component {
 public:
     CharacterController(NFSEngine::GameObject* owner)
-        : NFSEngine::Component(owner) { };
+        : NFSEngine::Component(owner) {};
 
     std::string GetName() const override { return "CharacterController"; };
 
@@ -49,7 +49,18 @@ public:
     glm::vec3 SpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);
 
     void Respawn() {
+        SpawnPosition.x, SpawnPosition.y, SpawnPosition.z,
+            m_Owner->GetTransform()->GetPosition().x, m_Owner->GetTransform()->GetPosition().y, m_Owner->GetTransform()->
+            GetPosition().z
+        )
+        ;
         m_Owner->GetTransform()->SetPosition(SpawnPosition);
+        m_Owner->GetTransform()->GetPosition().x, m_Owner->GetTransform()->GetPosition().y, m_Owner->GetTransform()->GetPosition()
+            .z,
+            m_Owner->GetTransform()->GetWorldPosition().x, m_Owner->GetTransform()->GetWorldPosition().y, m_Owner->GetTransform()
+            ->GetWorldPosition().z
+        )
+        ;
         if (p_RigidBody) {
             p_RigidBody->Velocity = glm::vec3(0.0f);
             p_RigidBody->IsGrounded = false;
@@ -103,10 +114,10 @@ private:
     float m_TurnSmoothVelocity = 0.0f;
 
 protected:
-
     void OnAwake() override {
         SpawnPosition = m_Owner->GetTransform()->GetPosition();
     }
+
     virtual void OnStart() override {
         p_RigidBody = m_Owner->GetComponent<NFSEngine::RigidBody3DComponent>();
         if (!p_RigidBody) {
@@ -375,8 +386,7 @@ private:
 
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
 
-            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {
-            } else {
+            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {} else {
                 glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
 
                 float dotProduct = glm::dot(currentXZ, m_LastWallNormal);
