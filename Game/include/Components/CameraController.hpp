@@ -169,40 +169,11 @@ namespace NFSEngine {
                 auto* collider = go->GetComponent<ColliderComponent>();
                 if (!collider || collider->IsTrigger) continue;
 
-                int steps = 8;
-                for (int i = 1; i <= steps; ++i) {
-                    float t = static_cast<float>(i) / static_cast<float>(steps);
-                    float testDist = m_Distance * t;
-                    glm::vec3 testPoint = targetPos + direction * testDist;
-
-                    float sphereRadius = 0.4f;
-                    NFSEngine::Sphere cameraSphere;
-                    cameraSphere.Center = testPoint;
-                    cameraSphere.Radius = sphereRadius;
-
-                    bool hit = false;
-                    Transform* otherTransform = go->GetTransform();
-
-                    if (collider->Type == ColliderType::Box) {
-                        auto* box = static_cast<BoxCollider3DComponent*>(collider);
-                        hit = CollisionDetector::CheckAABBSphere(PhysicsSystem::GetAABB(otherTransform, box), cameraSphere)
-                            .IsColliding;
-                    } else if (collider->Type == ColliderType::Sphere) {
-                        auto* sphere = static_cast<SphereCollider3DComponent*>(collider);
-                        hit = CollisionDetector::CheckSphere(PhysicsSystem::GetSphere(otherTransform, sphere), cameraSphere)
-                            .IsColliding;
-                    } else if (collider->Type == ColliderType::Capsule) {
-                        auto* capsule = static_cast<CapsuleCollider3DComponent*>(collider);
-                        hit = CollisionDetector::CheckCapsuleSphere(PhysicsSystem::GetCapsule(otherTransform, capsule),
-                                                                    cameraSphere)
-                            .IsColliding;
-                    }
-
-                    if (hit) {
-                        float safeDist = std::max(0.5f, testDist - 0.2f);
-                        minHitDist = std::min(safeDist, minHitDist);
-                        break;
-                    }
+                Ray ray{ targetPos, direction };
+                RaycastResult hit;
+                if (PhysicsSystem::RaycastCollider(ray, m_Distance, collider, goTransform, hit)) {
+                    float safeDist = std::max(0.5f, hit.Distance - 0.2f);
+                    minHitDist = std::min(safeDist, minHitDist);
                 }
             }
 

@@ -41,6 +41,9 @@ namespace NFSEngine {
         static Cylinder GetCylinder(Transform* transform, CylinderCollider3DComponent* collider);
         static AABB GetColliderBounds(ColliderComponent* col);
 
+        static bool RaycastCollider(const Ray& ray, float maxDistance, ColliderComponent* collider, Transform* transform,
+                                    RaycastResult& outResult);
+
     private:
         static constexpr float CELL_SIZE = 20.0f;
 

@@ -28,6 +28,18 @@ namespace NFSEngine {
         float Radius;
     };
 
+    struct Ray {
+        glm::vec3 Origin;
+        glm::vec3 Direction;
+    };
+
+    struct RaycastResult {
+        bool Hit = false;
+        float Distance = 0.0f;
+        glm::vec3 Point;
+        glm::vec3 Normal;
+    };
+
     struct CollisionInfo {
         bool IsColliding = false;
         glm::vec3 ContactNormal = glm::vec3(0.0f);

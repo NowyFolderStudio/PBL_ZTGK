@@ -271,4 +271,98 @@ namespace NFSEngine {
 
         return info;
     }
+
+    bool CollisionDetector::CheckRayAABB(const Ray& ray, const AABB& aabb, float& outDistance) {
+        glm::vec3 invDir = 1.0f / ray.Direction;
+        glm::vec3 t1 = (aabb.Min - ray.Origin) * invDir;
+        glm::vec3 t2 = (aabb.Max - ray.Origin) * invDir;
+        glm::vec3 tMin = glm::min(t1, t2);
+        glm::vec3 tMax = glm::max(t1, t2);
+        float tNear = glm::max(glm::max(tMin.x, tMin.y), tMin.z);
+        float tFar = glm::min(glm::min(tMax.x, tMax.y), tMax.z);
+        if (tNear > tFar || tFar < 0.0f) return false;
+        outDistance = glm::max(0.0f, tNear);
+        return true;
+    }
+
+    bool CollisionDetector::CheckRayOBB(const Ray& ray, const OBB& obb, float& outDistance) {
+        glm::mat3 rot = glm::mat3_cast(obb.Rotation);
+        glm::vec3 localOrigin = glm::transpose(rot) * (ray.Origin - obb.Center);
+        glm::vec3 localDir = glm::transpose(rot) * ray.Direction;
+        AABB localAABB{ -obb.HalfSize, obb.HalfSize };
+        Ray localRay{ localOrigin, localDir };
+        return CheckRayAABB(localRay, localAABB, outDistance);
+    }
+
+    bool CollisionDetector::CheckRaySphere(const Ray& ray, const Sphere& sphere, float& outDistance) {
+        glm::vec3 oc = ray.Origin - sphere.Center;
+        float a = glm::dot(ray.Direction, ray.Direction);
+        float b = 2.0f * glm::dot(oc, ray.Direction);
+        float c = glm::dot(oc, oc) - sphere.Radius * sphere.Radius;
+        float discriminant = b * b - 4.0f * a * c;
+        if (discriminant < 0.0f) return false;
+        float sqrtD = glm::sqrt(discriminant);
+        float t = (-b - sqrtD) / (2.0f * a);
+        if (t < 0.0f) t = (-b + sqrtD) / (2.0f * a);
+        if (t < 0.0f) return false;
+        outDistance = t;
+        return true;
+    }
+
+    bool CollisionDetector::CheckRayCapsule(const Ray& ray, const Capsule& capsule, float& outDistance) {
+        glm::vec3 axis = capsule.PointB - capsule.PointA;
+        float height = glm::length(axis);
+        if (height < 0.0001f) {
+            return CheckRaySphere(ray, Sphere{ capsule.PointA, capsule.Radius }, outDistance);
+        }
+        axis /= height;
+
+        glm::vec3 ro = ray.Origin - capsule.PointA;
+        float dotDirAxis = glm::dot(ray.Direction, axis);
+        float dotRoAxis = glm::dot(ro, axis);
+
+        glm::vec3 d = ray.Direction - axis * dotDirAxis;
+        glm::vec3 o = ro - axis * dotRoAxis;
+        float a = glm::dot(d, d);
+        float b = 2.0f * glm::dot(o, d);
+        float c = glm::dot(o, o) - capsule.Radius * capsule.Radius;
+
+        float discriminant = b * b - 4.0f * a * c;
+        float tCyl = -1.0f;
+        if (discriminant >= 0.0f && a > 0.0001f) {
+            float sqrtD = glm::sqrt(discriminant);
+            float t1 = (-b - sqrtD) / (2.0f * a);
+            float hitHeight1 = dotRoAxis + t1 * dotDirAxis;
+            if (t1 >= 0.0f && hitHeight1 >= 0.0f && hitHeight1 <= height) {
+                tCyl = t1;
+            }
+            if (tCyl < 0.0f) {
+                float t2 = (-b + sqrtD) / (2.0f * a);
+                float hitHeight2 = dotRoAxis + t2 * dotDirAxis;
+                if (t2 >= 0.0f && hitHeight2 >= 0.0f && hitHeight2 <= height) {
+                    tCyl = t2;
+                }
+            }
+        }
+
+        float tA, tB;
+        bool hitA = CheckRaySphere(ray, Sphere{ capsule.PointA, capsule.Radius }, tA);
+        bool hitB = CheckRaySphere(ray, Sphere{ capsule.PointB, capsule.Radius }, tB);
+
+        float tSphere = -1.0f;
+        if (hitA && hitB) tSphere = glm::min(tA, tB);
+        else if (hitA) tSphere = tA;
+        else if (hitB) tSphere = tB;
+
+        if (tCyl < 0.0f && tSphere < 0.0f) return false;
+
+        if (tCyl >= 0.0f && tSphere >= 0.0f) {
+            outDistance = glm::min(tCyl, tSphere);
+        } else if (tCyl >= 0.0f) {
+            outDistance = tCyl;
+        } else {
+            outDistance = tSphere;
+        }
+        return true;
+    }
 } // namespace NFSEngine

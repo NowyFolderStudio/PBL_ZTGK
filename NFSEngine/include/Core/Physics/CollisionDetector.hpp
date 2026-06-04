@@ -15,5 +15,10 @@ namespace NFSEngine {
         static CollisionInfo CheckCapsuleOBB(const Capsule& capsule, const OBB& obb);
         static CollisionInfo CheckCapsuleSphere(const Capsule& capsule, const Sphere& sphere);
         static CollisionInfo CheckCapsuleCylinder(const Capsule& capsule, const Cylinder& cylinder);
+
+        static bool CheckRayAABB(const Ray& ray, const AABB& aabb, float& outDistance);
+        static bool CheckRayOBB(const Ray& ray, const OBB& obb, float& outDistance);
+        static bool CheckRaySphere(const Ray& ray, const Sphere& sphere, float& outDistance);
+        static bool CheckRayCapsule(const Ray& ray, const Capsule& capsule, float& outDistance);
     };
 } // namespace NFSEngine

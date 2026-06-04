@@ -405,4 +405,58 @@ namespace NFSEngine {
         return { glm::vec3(0.0f), glm::vec3(0.0f) };
     }
 
+    bool PhysicsSystem::RaycastCollider(const Ray& ray, float maxDistance, ColliderComponent* collider, Transform* transform,
+                                        RaycastResult& outResult) {
+        float hitDist;
+
+        switch (collider->Type) {
+        case ColliderType::Box: {
+            auto* box = static_cast<BoxCollider3DComponent*>(collider);
+            if (CollisionDetector::CheckRayOBB(ray, GetOBB(transform, box), hitDist)) {
+                if (hitDist <= maxDistance) {
+                    outResult.Hit = true;
+                    outResult.Distance = hitDist;
+                    outResult.Point = ray.Origin + ray.Direction * hitDist;
+                    outResult.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+                    return true;
+                }
+            }
+            break;
+        }
+        case ColliderType::Sphere: {
+            auto* sphereCollider = static_cast<SphereCollider3DComponent*>(collider);
+            if (CollisionDetector::CheckRaySphere(ray, GetSphere(transform, sphereCollider), hitDist)) {
+                if (hitDist <= maxDistance) {
+                    outResult.Hit = true;
+                    outResult.Distance = hitDist;
+                    outResult.Point = ray.Origin + ray.Direction * hitDist;
+                    glm::vec3 sphereCenter = GetSphere(transform, sphereCollider).Center;
+                    outResult.Normal = glm::normalize(outResult.Point - sphereCenter);
+                    return true;
+                }
+            }
+            break;
+        }
+        case ColliderType::Capsule: {
+            auto* capsuleCollider = static_cast<CapsuleCollider3DComponent*>(collider);
+            if (CollisionDetector::CheckRayCapsule(ray, GetCapsule(transform, capsuleCollider), hitDist)) {
+                if (hitDist <= maxDistance) {
+                    outResult.Hit = true;
+                    outResult.Distance = hitDist;
+                    outResult.Point = ray.Origin + ray.Direction * hitDist;
+                    glm::vec3 capsuleCenter = (GetCapsule(transform, capsuleCollider).PointA
+                                               + GetCapsule(transform, capsuleCollider).PointB) * 0.5f;
+                    outResult.Normal = glm::normalize(outResult.Point - capsuleCenter);
+                    return true;
+                }
+            }
+            break;
+        }
+        default:
+            break;
+        }
+
+        return false;
+    }
+
 } // namespace NFSEngine
