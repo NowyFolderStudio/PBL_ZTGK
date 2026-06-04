@@ -15,7 +15,7 @@ namespace NFSEngine {
     class CameraController : public Component {
     public:
         explicit CameraController(GameObject* owner)
-            : Component(owner) { }
+            : Component(owner) {}
 
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
@@ -129,7 +129,7 @@ namespace NFSEngine {
             float yawRad = glm::radians(m_Yaw);
             float pitchRad = glm::radians(m_Pitch);
 
-            glm::vec3 direction = { cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad) };
+            glm::vec3 direction = {cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad)};
 
             float collisionDistance = CheckCameraCollision(m_Target->GetPosition(), direction);
             m_CurrentDistance = glm::mix(m_CurrentDistance, collisionDistance, 15.0f * static_cast<float>(dt));
@@ -137,11 +137,13 @@ namespace NFSEngine {
             auto* pTransform = m_Owner->GetTransform();
             pTransform->SetPosition(m_Target->GetPosition() + direction * m_CurrentDistance);
 
-            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), { 0, 1, 0 });
+            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), {0, 1, 0});
             pTransform->SetRotation(glm::degrees(glm::eulerAngles(glm::quat_cast(glm::inverse(lookAt)))));
         }
 
         [[nodiscard]] float CheckCameraCollision(const glm::vec3& targetPos, const glm::vec3& direction) const {
+            if (m_OverrideActive) return m_Distance;
+
             float minHitDist = m_Distance;
 
             Scene* scene = m_Owner->GetScene();
@@ -149,6 +151,20 @@ namespace NFSEngine {
 
             for (const auto& go : scene->GetAllGameObjects()) {
                 if (go.get() == m_Owner || go->GetTransform() == m_Target) continue;
+
+                Transform* goTransform = go->GetTransform();
+                {
+                    Transform* ancestor = goTransform;
+                    bool isPlayerOrDescendant = false;
+                    while (ancestor) {
+                        if (ancestor == m_Target) {
+                            isPlayerOrDescendant = true;
+                            break;
+                        }
+                        ancestor = ancestor->GetParent();
+                    }
+                    if (isPlayerOrDescendant) continue;
+                }
 
                 auto* collider = go->GetComponent<ColliderComponent>();
                 if (!collider || collider->IsTrigger) continue;
@@ -170,16 +186,16 @@ namespace NFSEngine {
                     if (collider->Type == ColliderType::Box) {
                         auto* box = static_cast<BoxCollider3DComponent*>(collider);
                         hit = CollisionDetector::CheckAABBSphere(PhysicsSystem::GetAABB(otherTransform, box), cameraSphere)
-                                  .IsColliding;
+                            .IsColliding;
                     } else if (collider->Type == ColliderType::Sphere) {
                         auto* sphere = static_cast<SphereCollider3DComponent*>(collider);
                         hit = CollisionDetector::CheckSphere(PhysicsSystem::GetSphere(otherTransform, sphere), cameraSphere)
-                                  .IsColliding;
+                            .IsColliding;
                     } else if (collider->Type == ColliderType::Capsule) {
                         auto* capsule = static_cast<CapsuleCollider3DComponent*>(collider);
                         hit = CollisionDetector::CheckCapsuleSphere(PhysicsSystem::GetCapsule(otherTransform, capsule),
                                                                     cameraSphere)
-                                  .IsColliding;
+                            .IsColliding;
                     }
 
                     if (hit) {

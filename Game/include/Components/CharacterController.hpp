@@ -49,18 +49,7 @@ public:
     glm::vec3 SpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);
 
     void Respawn() {
-        SpawnPosition.x, SpawnPosition.y, SpawnPosition.z,
-            m_Owner->GetTransform()->GetPosition().x, m_Owner->GetTransform()->GetPosition().y, m_Owner->GetTransform()->
-            GetPosition().z
-        )
-        ;
         m_Owner->GetTransform()->SetPosition(SpawnPosition);
-        m_Owner->GetTransform()->GetPosition().x, m_Owner->GetTransform()->GetPosition().y, m_Owner->GetTransform()->GetPosition()
-            .z,
-            m_Owner->GetTransform()->GetWorldPosition().x, m_Owner->GetTransform()->GetWorldPosition().y, m_Owner->GetTransform()
-            ->GetWorldPosition().z
-        )
-        ;
         if (p_RigidBody) {
             p_RigidBody->Velocity = glm::vec3(0.0f);
             p_RigidBody->IsGrounded = false;
