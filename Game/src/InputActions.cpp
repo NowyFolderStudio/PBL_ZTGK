@@ -15,9 +15,7 @@ namespace NFSEngine {
 
         actions.Create("Jump", InputAction::Type::Button).BindKey(Key::Space).BindControllerButton(ControllerButtons::A);
 
-        actions.Create("Dash", InputAction::Type::Button)
-            .BindKey(Key::LeftShift)
-            .BindControllerButton(ControllerButtons::RightBumper);
+        actions.Create("Dash", InputAction::Type::Button).BindKey(Key::LeftShift).BindControllerButton(ControllerButtons::X);
 
         actions.Create("ToggleCursor", InputAction::Type::Button).BindKey(Key::Tab);
 
@@ -25,8 +23,12 @@ namespace NFSEngine {
 
         actions.Create("LookY", InputAction::Type::Axis1D).BindControllerAxis(ControllerAxes::RightY, 0, 1.0f, 0.15f);
 
-        actions.Create("NextAura", InputAction::Type::Button).BindKey(Key::E);
+        actions.Create("NextAura", InputAction::Type::Button)
+            .BindKey(Key::E)
+            .BindControllerButton(ControllerButtons::RightBumper);
 
-        actions.Create("PreviousAura", InputAction::Type::Button).BindKey(Key::Q);
+        actions.Create("PreviousAura", InputAction::Type::Button)
+            .BindKey(Key::Q)
+            .BindControllerButton(ControllerButtons::LeftBumper);
     }
 } // namespace NFSEngine

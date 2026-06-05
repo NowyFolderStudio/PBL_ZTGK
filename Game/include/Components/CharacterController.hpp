@@ -4,11 +4,12 @@
 #include "Components/Camera.hpp"
 #include "BounceComponent.hpp"
 #include "Core/MathUtils.hpp"
+#include "Aura/AuraManager.hpp"
 
 class CharacterController : public NFSEngine::Component {
 public:
     CharacterController(NFSEngine::GameObject* owner)
-        : NFSEngine::Component(owner) {};
+        : NFSEngine::Component(owner) { };
 
     std::string GetName() const override { return "CharacterController"; };
 
@@ -77,6 +78,9 @@ private:
     NFSEngine::Transform* m_CameraTransform = nullptr;
     NFSEngine::AnimatorComponent* m_Animator = nullptr;
 
+    size_t m_AuraEventId = 0;
+    bool m_IsDashUnlocked = false;
+
     glm::vec3 m_InputDirection = glm::vec3(0.0f);
 
     bool m_IsJumpPressed = false;
@@ -103,9 +107,7 @@ private:
     float m_TurnSmoothVelocity = 0.0f;
 
 protected:
-    void OnAwake() override {
-        SpawnPosition = m_Owner->GetTransform()->GetPosition();
-    }
+    void OnAwake() override { SpawnPosition = m_Owner->GetTransform()->GetPosition(); }
 
     virtual void OnStart() override {
         p_RigidBody = m_Owner->GetComponent<NFSEngine::RigidBody3DComponent>();
@@ -121,6 +123,20 @@ protected:
             }
         }
         m_Animator = m_Owner->GetTransform()->GetChild(0)->GetOwner()->GetComponent<NFSEngine::AnimatorComponent>();
+
+        if (AuraManager::Instance) {
+            UpdateAbilities(AuraManager::Instance->CurrentAura);
+
+            m_AuraEventId
+                = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) { this->UpdateAbilities(newAura); });
+        }
+    }
+
+    virtual void OnDisable() override {
+        if (AuraManager::Instance && m_AuraEventId != 0) {
+            AuraManager::Instance->OnAuraChanged.RemoveListener(m_AuraEventId);
+            m_AuraEventId = 0;
+        }
     }
 
     virtual void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
@@ -303,6 +319,8 @@ private:
     }
 
     void Dash() {
+        if (!m_IsDashUnlocked) return;
+
         if (m_IsDashPressed && m_CanDash && !m_IsDashing) {
 
             m_IsDashing = true;
@@ -375,7 +393,8 @@ private:
 
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
 
-            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {} else {
+            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {
+            } else {
                 glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
 
                 float dotProduct = glm::dot(currentXZ, m_LastWallNormal);
@@ -435,5 +454,19 @@ private:
     bool IsTouchingJumpableWall() const {
         return p_RigidBody->IsTouchingWall && p_RigidBody->TouchedWallObject != nullptr
             && p_RigidBody->TouchedWallObject->CompareTag(NFSEngine::Tags::WallJumpSurface);
+    }
+
+    void UpdateAbilities(AuraType currentAura) {
+        if (currentAura == AuraType::First) {
+            MaxJumps = 2;
+        } else {
+            MaxJumps = 1;
+        }
+
+        if (currentAura == AuraType::Second) {
+            m_IsDashUnlocked = true;
+        } else {
+            m_IsDashUnlocked = false;
+        }
     }
 };

@@ -39,7 +39,13 @@ protected:
         Instance = this;
     }
 
-    void OnStart() override { }
+    void OnStart() override {
+
+        // For testing purposes
+        UnlockAura(AuraType::First);
+        UnlockAura(AuraType::Second);
+        UnlockAura(AuraType::Third);
+    }
 
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
 
