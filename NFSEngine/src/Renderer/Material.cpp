@@ -61,5 +61,17 @@ namespace NFSEngine {
         else {
             shader->SetBool("u_HasRampMap", false);
         }
+
+        if (EmissiveMap) {
+            EmissiveMap->Bind(6);
+            shader->SetInt("u_EmissiveMap", 6);
+            shader->SetBool("u_HasEmissiveMap", true);
+        }
+        else {
+            shader->SetBool("u_HasEmissiveMap", false);
+        }
+
+        shader->SetVec3("u_EmissiveColor", EmissiveColor);
+        shader->SetFloat("u_EmissiveStrength", EmissiveStrength);
 	}
 }

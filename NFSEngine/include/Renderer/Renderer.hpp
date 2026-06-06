@@ -109,6 +109,9 @@ namespace NFSEngine {
         static std::shared_ptr<Shader> s_PostProcessShader;
         static float s_Exposure;
 
+        static std::shared_ptr<Framebuffer> s_PingPongFBO[2];
+        static std::shared_ptr<Shader> s_BlurShader;
+
         struct DebugBox {
             glm::mat4 transform;
             glm::vec4 color;

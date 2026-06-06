@@ -43,7 +43,7 @@ namespace NFSEngine {
                     }
                 }
                 if (!generated) {
-                    shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
+                    shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
                     material = std::make_shared<NFSEngine::Material>();
                     model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
                 }
