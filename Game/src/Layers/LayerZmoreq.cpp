@@ -17,6 +17,8 @@
 
 // --- Specyficzne dla tej sceny ---
 #include "Components/RotatingPlatform.hpp"
+#include "Components/BasicEnemy.hpp"
+#include "Components/PlayerAttackComponent.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -118,6 +120,11 @@ void LayerZmoreq::OnAttach() {
 
     m_Player->AddComponent<AuraInputController>();
 
+    auto* playerAoE = m_Scene->CreateGameObject("PlayerAttackZone");
+    playerAoE->GetTransform()->SetParent(m_Player->GetTransform(), false);
+
+    playerAoE->AddComponent<PlayerAttackComponent>();
+
     auto* playerModel = m_Scene->CreateGameObject("PlayerModel");
     playerModel->GetTransform()->SetParent(m_Player->GetTransform());
     playerModel->GetTransform()->SetPosition({ 0, -1.5f, 0 });
@@ -152,6 +159,23 @@ void LayerZmoreq::OnAttach() {
     gramophone->AddComponent<BoxCollider3DComponent>();
     auto& rotPlatform = gramophone->AddComponent<RotatingPlatform>();
     rotPlatform.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
+
+    // --- Przykładowy przeciwnik (do testowania AI i kolizji) ---
+
+    auto* enemy = m_Scene->CreateGameObject("BasicEnemy");
+    enemy->GetTransform()->SetPosition({ 5.0f, 0.0f, 5.0f });
+    enemy->AddComponent<CubeMesh>(m_Shader, matSample);
+    enemy->AddComponent<BoxCollider3DComponent>();
+    enemy->AddComponent<RigidBody3DComponent>();
+
+    enemy->AddTag(Tags::Enemy);
+    auto& basicEnemyComp = enemy->AddComponent<BasicEnemy>();
+    basicEnemyComp.PatrolPointA = glm::vec3(5.0f, 0.0f, 5.0f);
+    basicEnemyComp.PatrolPointB = glm::vec3(15.0f, 0.0f, 5.0f);
+
+    basicEnemyComp.MovementSpeed = 2.0f;
+    basicEnemyComp.ChaseSpeed = 6.0f;
+    basicEnemyComp.DetectionRadius = 7.0f;
 
     // --- KAMERA ---
     auto* cameraObj = m_Scene->CreateGameObject("MainCamera");

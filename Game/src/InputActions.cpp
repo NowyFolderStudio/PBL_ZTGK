@@ -23,6 +23,8 @@ namespace NFSEngine {
 
         actions.Create("LookY", InputAction::Type::Axis1D).BindControllerAxis(ControllerAxes::RightY, 0, 1.0f, 0.15f);
 
+        actions.Create("Attack", InputAction::Type::Button).BindKey(Key::F);
+
         actions.Create("NextAura", InputAction::Type::Button)
             .BindKey(Key::E)
             .BindControllerButton(ControllerButtons::RightBumper);

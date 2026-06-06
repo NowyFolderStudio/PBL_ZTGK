@@ -122,11 +122,19 @@ protected:
                 break;
             }
         }
-        m_Animator = m_Owner->GetTransform()->GetChild(0)->GetOwner()->GetComponent<NFSEngine::AnimatorComponent>();
+
+        int childCount = m_Owner->GetTransform()->GetChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            auto* childTransform = m_Owner->GetTransform()->GetChild(i);
+
+            if (auto* animator = childTransform->GetOwner()->GetComponent<NFSEngine::AnimatorComponent>()) {
+                m_Animator = animator;
+                break;
+            }
+        }
 
         if (AuraManager::Instance) {
             UpdateAbilities(AuraManager::Instance->CurrentAura);
-
             m_AuraEventId
                 = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) { this->UpdateAbilities(newAura); });
         }

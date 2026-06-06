@@ -31,7 +31,7 @@ protected:
 
     void OnAwake() override { }
 
-    void OnStart() override { 
+    void OnStart() override {
         m_RigidBody = GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
         m_Collider = GetOwner()->GetComponent<NFSEngine::ColliderComponent>();
 
@@ -45,7 +45,8 @@ protected:
 
         if (m_Collider) {
             m_Collider->OnCollisionEnter = [this](NFSEngine::GameObject* other, glm::vec3 contactNormal) {
-                if (other == m_Player && m_LastDamageTime <= 0.0f) {
+                if (other == m_Player
+                    && m_LastDamageTime <= 0.0f) { // Here we can refactor it to use new method like DealDamage() or smth
                     if (LivesManager::Instance) {
                         LivesManager::Instance->LoseHeart();
                         m_LastDamageTime = DamageCooldown;
@@ -58,7 +59,42 @@ protected:
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
         if (!m_Player || !m_RigidBody) return;
 
-		glm::vec3 myPos = GetOwner()->GetTransform()->GetPosition();
+        glm::vec3 myPos = GetOwner()->GetTransform()->GetWorldPosition();
+        glm::vec3 playerPos = m_Player->GetTransform()->GetWorldPosition();
+
+        glm::vec3 myPosFlat = glm::vec3(myPos.x, 0.0f, myPos.z);
+        glm::vec3 playerPosFlat = glm::vec3(playerPos.x, 0.0f, playerPos.z);
+
+        float distanceToPlayer = glm::distance(myPosFlat, playerPosFlat);
+
+        glm::vec3 targetPosFlat;
+        float currentSpeed;
+
+        if (distanceToPlayer <= DetectionRadius) {
+            targetPosFlat = playerPosFlat;
+            currentSpeed = ChaseSpeed;
+        } else {
+            glm::vec3 currentTarget = m_MovingToB ? PatrolPointB : PatrolPointA;
+            glm::vec3 targetFlat = glm::vec3(currentTarget.x, 0.0f, currentTarget.z);
+
+            if (glm::distance(myPosFlat, targetFlat) < 0.4f) {
+                m_MovingToB = !m_MovingToB;
+            }
+
+            targetPosFlat = targetFlat;
+            currentSpeed = MovementSpeed;
+        }
+
+        glm::vec3 direction = targetPosFlat - myPosFlat;
+        if (glm::length(direction) > 0.01f) {
+            direction = glm::normalize(direction);
+
+            m_RigidBody->Velocity.x = direction.x * currentSpeed;
+            m_RigidBody->Velocity.z = direction.z * currentSpeed;
+
+            float targetAngle = atan2(direction.x, direction.z);
+            GetOwner()->GetTransform()->SetRotation(glm::vec3(0.0f, targetAngle, 0.0f));
+        }
     }
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
