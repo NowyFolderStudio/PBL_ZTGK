@@ -1,9 +1,10 @@
 #include "Components/CharacterAnimationController.hpp"
-#include "Core/Log.hpp"
+#include "Components/CharacterController.hpp"
 
 void CharacterAnimationController::OnStart() {
     m_Rigidbody = m_Owner->GetTransform()->GetParent()->GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
     m_Animator = m_Owner->GetComponent<NFSEngine::AnimatorComponent>();
+    m_MaxSpeed = m_Owner->GetTransform()->GetParent()->GetOwner()->GetComponent<CharacterController>()->MaxSpeed;
 }
 
 void CharacterAnimationController::OnUpdate(NFSEngine::DeltaTime deltaTime) {
@@ -23,11 +24,14 @@ void CharacterAnimationController::ChangeAnimation() {
     // 1 - run
     // 2 - jump
     // 3 - fall
+    m_Animator->SetAnimationSpeed(1);
     if (m_OnGround) {
-        if (m_InMotion)
+        if (m_InMotion) {
             m_Animator->PlayAnimation(1);
-        else
+            m_Animator->SetAnimationSpeed(m_VerticalSpeed / m_MaxSpeed);
+        } else {
             m_Animator->PlayAnimation(0);
+        }
     } else {
         if (m_HorizontalSpeed > 0)
             m_Animator->PlayAnimation(2, false);

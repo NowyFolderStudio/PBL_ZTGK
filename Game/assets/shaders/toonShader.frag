@@ -7,7 +7,8 @@ in vec3 FragPos;
 // Optional for normal mapping
 // in mat3 TBN;
 
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 BrightColor;
 
 // Textures and colors
 uniform sampler2D u_AlbedoMap;
@@ -164,4 +165,5 @@ void main()
     vec3 finalColor = ambient + albedo * diffuseTotal + specularTotal;
 
     FragColor = vec4(finalColor, 1.0);
+    BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 }

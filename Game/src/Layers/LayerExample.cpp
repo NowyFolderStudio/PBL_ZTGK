@@ -647,6 +647,26 @@ void LayerExample::OnAttach() {
 
     wallLogic.OnAwake();
     */
+
+    auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneMedium.obj");
+
+    auto matNeonRed = std::make_shared<NFSEngine::Material>();
+    matNeonRed->AlbedoColor = glm::vec3(0.1f, 0.0f, 0.0f);
+    matNeonRed->Roughness = 0.8f;
+    matNeonRed->Metallic = 0.0f;
+    matNeonRed->EmissiveColor = glm::vec3(1.0f, 0.0f, 0.0f);
+    matNeonRed->EmissiveStrength = 15.0f;
+
+    NFSEngine::GameObject* neonGramophoneObj = m_Scene->CreateGameObject("NeonGramophone");
+    neonGramophoneObj->GetTransform()->SetPosition(glm::vec3(-44.0f, 13.0f, 55.0f));
+    neonGramophoneObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+
+    auto gramophoneShader = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    auto& neonGramophoneComp = neonGramophoneObj->AddComponent<NFSEngine::ModelComponent>(gramophoneShader, matNeonRed);
+    neonGramophoneComp.AddLOD(gramophoneModel1, 10000.0f);
+
+
+
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
         if (auto* camCtrl = go->GetComponent<NFSEngine::CameraController>()) m_CachedCameraController = camCtrl;

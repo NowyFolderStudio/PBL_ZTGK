@@ -24,12 +24,15 @@ namespace NFSEngine {
         std::shared_ptr<Texture> RoughnessMap = nullptr;
         std::shared_ptr<Texture> AOMap = nullptr;
         std::shared_ptr<Texture> RampMap = nullptr;
+        std::shared_ptr<Texture> EmissiveMap = nullptr;
 
         std::unordered_map<std::string, MaterialValue> Properties;
 
         glm::vec3 AlbedoColor = glm::vec3(1.0f);
+        glm::vec3 EmissiveColor = glm::vec3(0.0f);
         float Metallic = 0.0f;
         float Roughness = 1.0f;
+        float EmissiveStrength = 1.0f;
 
         void Bind(const std::shared_ptr<Shader>& shader) const;
 

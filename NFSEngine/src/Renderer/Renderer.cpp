@@ -30,6 +30,9 @@ namespace NFSEngine {
     std::shared_ptr<Shader> Renderer::s_PostProcessShader = nullptr;
     float Renderer::s_Exposure = 1.0f;
 
+    std::shared_ptr<Framebuffer> Renderer::s_PingPongFBO[2] = { nullptr, nullptr };
+    std::shared_ptr<Shader> Renderer::s_BlurShader = nullptr;
+
     std::vector<Renderer::DebugBox> Renderer::s_DebugQueue;
     std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
     std::shared_ptr<Shader> Renderer::s_DebugShader;
@@ -45,9 +48,18 @@ namespace NFSEngine {
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetConfig().WindowWidth;
         fbSpec.height = Application::Get().GetConfig().WindowHeight;
-        fbSpec.attachments = { FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::DEPTH24STENCIL8 };
+        fbSpec.attachments = { FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::DEPTH24STENCIL8 };
 
         s_HDRFramebuffer = Framebuffer::Create(fbSpec);
+
+        FramebufferSpecification pingPongSpec;
+        pingPongSpec.width = Application::Get().GetConfig().WindowWidth;
+        pingPongSpec.height = Application::Get().GetConfig().WindowHeight;
+        pingPongSpec.attachments = { FramebufferTextureFormat::RGBA16F };
+        s_PingPongFBO[0] = Framebuffer::Create(pingPongSpec);
+        s_PingPongFBO[1] = Framebuffer::Create(pingPongSpec);
+
+        s_BlurShader = Shader::Create("Blur", "assets/shaders/postprocess.vert", "assets/shaders/blur.frag");
 
         s_PostProcessShader = Shader::Create("PostProcess", "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag");
 
@@ -94,6 +106,11 @@ namespace NFSEngine {
     void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
         if (s_HDRFramebuffer) {
             s_HDRFramebuffer->Resize(width, height);
+        }
+
+        if (s_PingPongFBO[0] && s_PingPongFBO[1]) {
+            s_PingPongFBO[0]->Resize(width, height);
+            s_PingPongFBO[1]->Resize(width, height);
         }
     }
 
@@ -260,12 +277,33 @@ namespace NFSEngine {
 
         s_RendererAPI->SetDepthTest(false);
 
+        bool horizontal = true, first_iteration = true;
+        int amount = 10;
+        s_BlurShader->Bind();
+
+        for (unsigned int i = 0; i < amount; i++) {
+            s_PingPongFBO[horizontal]->Bind();
+            s_BlurShader->SetBool("u_Horizontal", horizontal);
+
+            uint32_t textureToBlur = first_iteration ? s_HDRFramebuffer->GetColorAttachmentRendererID(1) : s_PingPongFBO[!horizontal]->GetColorAttachmentRendererID(0);
+
+            s_RendererAPI->BindTexture(textureToBlur, 0);
+            s_BlurShader->SetInt("image", 0);
+            s_RendererAPI->DrawFullscreenTriangle();
+
+            horizontal = !horizontal;
+            if (first_iteration) first_iteration = false;
+        }
+        s_PingPongFBO[!horizontal]->Unbind();
+
         s_PostProcessShader->Bind();
         s_PostProcessShader->SetFloat("exposure", s_Exposure);
+
+        s_RendererAPI->BindTexture(s_HDRFramebuffer->GetColorAttachmentRendererID(0), 0);
         s_PostProcessShader->SetInt("screenTexture", 0);
 
-        uint32_t colorTextureID = s_HDRFramebuffer->GetColorAttachmentRendererID(0);
-        s_RendererAPI->BindTexture(colorTextureID, 0);
+        s_RendererAPI->BindTexture(s_PingPongFBO[!horizontal]->GetColorAttachmentRendererID(0), 1);
+        s_PostProcessShader->SetInt("bloomBlurTexture", 1);
 
         s_RendererAPI->DrawFullscreenTriangle();
 
