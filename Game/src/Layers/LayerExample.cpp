@@ -35,7 +35,6 @@
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
-#include "Core/Audio/AudioEngine.hpp"
 #include "Core/AudioManager.hpp"
 #include "Core/Scene.hpp"
 #include "Renderer/Animation.hpp"
@@ -69,7 +68,7 @@ LayerExample::LayerExample() {
     m_Scene = nullptr;
 }
 
-LayerExample::~LayerExample() { NFSEngine::AudioEngine::Shutdown(); }
+LayerExample::~LayerExample() {}
 
 void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
@@ -489,9 +488,7 @@ void LayerExample::OnAttach() {
     camTrigger.CustomDistance = 15.0f;
 
     // Audio
-    NFSEngine::AudioEngine::Init();
 
-    NFSEngine::AudioManager::Init();
     m_Sequencer.Start(120.0f);
 
     NFSEngine::GameObject* bassObj1 = m_Scene->CreateGameObject("BassMusicPlayer1");
@@ -709,7 +706,9 @@ void LayerExample::OnAttach() {
     NFSEngine::Renderer::OnWindowResize(width, height);
 }
 
-void LayerExample::OnDetach() { }
+void LayerExample::OnDetach() { 
+    m_Scene.reset();
+}
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     NFS_PROFILE_FUNCTION();

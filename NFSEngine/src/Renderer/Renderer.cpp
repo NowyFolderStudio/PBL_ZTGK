@@ -320,7 +320,7 @@ namespace NFSEngine {
 
         uint32_t screenWidth = s_HDRFramebuffer->GetSpecification().width;
         uint32_t screenHeight = s_HDRFramebuffer->GetSpecification().height;
-        glViewport(0, 0, screenWidth, screenHeight);
+        s_RendererAPI->SetViewport(0, 0, screenWidth, screenHeight);
 
         s_PostProcessShader->Bind();
         s_PostProcessShader->SetFloat("exposure", s_Exposure);

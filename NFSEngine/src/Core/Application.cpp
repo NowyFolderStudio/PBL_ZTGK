@@ -9,6 +9,8 @@
 #include <GLFW/glfw3.h>
 #include "Renderer/Renderer.hpp"
 #include "Debug/DebugCamera.hpp"
+#include "Core/Audio/AudioEngine.hpp"
+#include "Core/AudioManager.hpp"
 
 namespace NFSEngine {
 
@@ -31,13 +33,24 @@ namespace NFSEngine {
 
         Renderer::Init();
 
+        AudioEngine::Init();
+        AudioManager::Init();
+
         DebugCamera::Init(45.0f, (float)width / (float)height, 0.1f, 1000.0f);
 
         m_ImGuiLayer = new ImGuiLayer();
         PushLayer(m_ImGuiLayer);
     }
 
-    Application::~Application() { NFS_PROFILE_FUNCTION(); }
+    Application::~Application() { 
+        NFS_PROFILE_FUNCTION();
+
+        m_LayerStack.Clear();
+
+        AudioManager::Shutdown();
+        AudioEngine::Shutdown();
+
+    }
 
     void Application::PushLayer(Layer* layer) {
         NFS_PROFILE_FUNCTION();

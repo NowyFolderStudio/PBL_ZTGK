@@ -15,6 +15,7 @@ namespace NFSEngine {
         void PushOverlay(Layer* overlay);
         void PopLayer(Layer* layer);
         void PopOverlay(Layer* overlay);
+        void Clear();
 
         size_t size() const { return m_Layers.size(); }
         Layer* operator[](size_t index) { return m_Layers[index]; }
