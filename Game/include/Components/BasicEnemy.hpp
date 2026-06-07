@@ -21,6 +21,8 @@ public:
 
     float DamageCooldown = 2.0f;
 
+    float KnockBackStrength = 25.0f;
+
 protected:
     NFSEngine::RigidBody3DComponent* m_RigidBody = nullptr;
     NFSEngine::GameObject* m_Player = nullptr;
@@ -44,15 +46,8 @@ protected:
         }
 
         if (m_Collider) {
-            m_Collider->OnCollisionEnter = [this](NFSEngine::GameObject* other, glm::vec3 contactNormal) {
-                if (other == m_Player
-                    && m_LastDamageTime <= 0.0f) { // Here we can refactor it to use new method like DealDamage() or smth
-                    if (LivesManager::Instance) {
-                        LivesManager::Instance->LoseHeart();
-                        m_LastDamageTime = DamageCooldown;
-                    }
-                }
-            };
+            m_Collider->OnCollisionEnter
+                = [this](NFSEngine::GameObject* other, glm::vec3 contactNormal) { DealDamage(other, contactNormal); };
         }
     }
 
@@ -106,4 +101,22 @@ protected:
     void OnEnable() override { }
 
     void OnDisable() override { }
+
+    void DealDamage(NFSEngine::GameObject* other, glm::vec3 contactNormal) {
+        if (other == m_Player && m_LastDamageTime <= 0.0f) {
+            if (auto* playerController = m_Player->GetComponent<CharacterController>()) {
+                glm::vec3 myPos = GetOwner()->GetTransform()->GetWorldPosition();
+
+                bool damageDealt = playerController->TakeDamage(myPos, KnockBackStrength);
+
+                if (damageDealt) {
+                    m_LastDamageTime = DamageCooldown;
+                }
+            }
+        }
+    }
+
+    void TakeDamage() {
+        // TODO: Add health and damage logic for the enemy
+    }
 };

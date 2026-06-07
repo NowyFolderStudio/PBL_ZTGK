@@ -5,6 +5,7 @@
 #include "BounceComponent.hpp"
 #include "Core/MathUtils.hpp"
 #include "Aura/AuraManager.hpp"
+#include "Managers/LivesManager.hpp"
 
 class CharacterController : public NFSEngine::Component {
 public:
@@ -72,6 +73,30 @@ public:
     }
 
     bool IsInvulnerable() const { return m_IsInvulnerable; }
+
+    bool TakeDamage(glm::vec3 damageSourcePosition, float knockbackStrength) {
+        if (m_IsInvulnerable) return false;
+
+        if (LivesManager::Instance) {
+            LivesManager::Instance->LoseHeart();
+        }
+
+        m_IsInvulnerable = true;
+        m_InvulnerabilityTimer = InvulnerabilityDuration;
+
+        if (p_RigidBody) {
+            glm::vec3 myPos = m_Owner->GetTransform()->GetWorldPosition();
+
+            glm::vec3 knockbackDir = glm::normalize(myPos - damageSourcePosition);
+            knockbackDir.y = 0.5f;
+
+            p_RigidBody->Velocity = knockbackDir * knockbackStrength;
+
+            m_IsDashing = false;
+        }
+
+        return true;
+    }
 
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
@@ -245,7 +270,7 @@ private:
         }
     }
 
-    glm::vec3 GetMovementDirection() {
+    glm::vec3 GetMovementVector() {
         if (m_InputDirection.x == 0.0f && m_InputDirection.z == 0.0f) {
             return glm::vec3(0.0f);
         }
@@ -258,16 +283,20 @@ private:
         forward = glm::normalize(forward);
         glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
 
-        glm::vec3 targetDir = (forward * m_InputDirection.z) + (right * m_InputDirection.x);
+        glm::vec3 rawInput = (forward * m_InputDirection.z) + (right * m_InputDirection.x);
 
-        if (glm::length(targetDir) > 0.001f) {
-            targetDir = glm::normalize(targetDir);
+        float inputMagnitude = glm::length(m_InputDirection);
+
+        inputMagnitude = glm::clamp(inputMagnitude, 0.0f, 1.0f);
+
+        if (glm::length(rawInput) > 0.001f) {
+            return glm::normalize(rawInput) * inputMagnitude;
         }
-        return targetDir;
+        return glm::vec3(0.0f);
     }
 
     void HandleRotation(float dt) {
-        glm::vec3 moveDir = GetMovementDirection();
+        glm::vec3 moveDir = GetMovementVector();
 
         if (m_WallJumpLockCounter > 0.0f) {
             moveDir = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
@@ -335,7 +364,7 @@ private:
             m_CanDash = false;
             m_DashTimeCounter = DashDuration;
 
-            glm::vec3 dashDirection = GetMovementDirection();
+            glm::vec3 dashDirection = GetMovementVector();
 
             if (glm::length(dashDirection) < 0.1f) {
                 dashDirection = glm::vec3(
@@ -361,7 +390,7 @@ private:
             return;
         }
 
-        glm::vec3 targetDir = GetMovementDirection();
+        glm::vec3 moveVector = GetMovementVector();
 
         float currentMaxSpeed = m_IsDashing ? DashSpeed : MaxSpeed;
         float currentAcc;
@@ -378,10 +407,13 @@ private:
         }
 
         if (glm::length(m_InputDirection) > 0.1f) {
-            glm::vec3 targetVel = targetDir * currentMaxSpeed;
+            glm::vec3 targetVel = moveVector * currentMaxSpeed;
+
             p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, targetVel.x, currentAcc * dt);
             p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, targetVel.z, currentAcc * dt);
+
             m_Animator->PlayAnimation(1);
+            m_Animator->SetAnimationSpeed(glm::length(m_InputDirection));
 
         } else {
             m_Animator->PlayAnimation(0);
@@ -401,7 +433,7 @@ private:
 
         if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
 
-            if (glm::dot(targetDir, m_LastWallNormal) > 0.1f) {
+            if (glm::dot(moveVector, m_LastWallNormal) > 0.1f) {
             } else {
                 glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
 
@@ -465,10 +497,21 @@ private:
     }
 
     void UpdateAbilities(AuraType currentAura) {
+        int oldMaxJumps = MaxJumps;
+
         if (currentAura == AuraType::First) {
             MaxJumps = 2;
         } else {
             MaxJumps = 1;
+        }
+
+        m_JumpsRemaining += (MaxJumps - oldMaxJumps);
+
+        if (m_JumpsRemaining < 0) {
+            m_JumpsRemaining = 0;
+        }
+        if (m_JumpsRemaining > MaxJumps) {
+            m_JumpsRemaining = MaxJumps;
         }
 
         if (currentAura == AuraType::Second) {
