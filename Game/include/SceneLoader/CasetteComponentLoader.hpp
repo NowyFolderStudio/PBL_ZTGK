@@ -16,7 +16,6 @@ class CasetteComponentLoader : public NFSEngine::IComponentLoader {
         for (const auto& comp : j_obj["custom_components"]) {
             if (comp["name"] == "CasetteComponent") {
                 targetObj->AddComponent<CasetteComponent>();
-                NFS_INFO("JEST KASETA :)");
                 break;
             }
         }

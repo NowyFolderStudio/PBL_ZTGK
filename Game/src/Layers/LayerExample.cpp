@@ -12,6 +12,7 @@
 #include "Components/Managers/LivesManager.hpp"
 #include "Components/Aura/AuraManager.hpp"
 #include "Components/CharacterController.hpp"
+#include "Components/CharacterAnimationController.hpp"
 #include "Components/Controllers/AuraInputController.hpp"
 #include "Core/Log.hpp"
 #include "Components/ModelComponent.hpp"
@@ -187,7 +188,7 @@ void LayerExample::OnAttach() {
     playerModel->GetTransform()->SetParent(m_Player->GetTransform());
     playerModel->GetTransform()->SetPosition({ 0, -1.5f, 0 });
     playerModel->GetTransform()->SetScale({ 0.03, 0.03, 0.03 });
-    playerMaterial->AlbedoMap = NFSEngine::Texture::Create("assets/models/Player/Tekstura_postac_tshirt.png");
+    playerMaterial->AlbedoMap = NFSEngine::Texture::Create("assets/models/Player/Tekstura_postac_tshirt_with_padding.jpg");
     auto& playerComp = playerModel->AddComponent<NFSEngine::ModelComponent>(animationShader, playerMaterial);
     playerComp.AddLOD(capsuleModel, 10000.0f);
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
@@ -195,16 +196,21 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<CharacterController>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     playerModel->AddComponent<AnimatorComponent>();
+    playerModel->AddComponent<CharacterAnimationController>();
 
     m_Player->AddComponent<AuraInputController>();
 
     auto* m = playerModel->GetComponent<ModelComponent>()->GetLODs()[0].ModelData.get();
 
-    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations.fbx", m, 1);
-    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations.fbx", m, 2);
+    auto idleAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 5);
+    auto runAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 10);
+    auto jumpAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 9);
+    auto fallAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 6);
 
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(idleAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(runAnimation);
+    playerModel->GetComponent<AnimatorComponent>()->AddAnimation(jumpAnimation);
+    playerModel->GetComponent<AnimatorComponent>()->AddAnimation(fallAnimation);
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;

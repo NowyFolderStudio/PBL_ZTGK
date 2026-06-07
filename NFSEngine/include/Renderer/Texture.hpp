@@ -21,7 +21,7 @@ namespace NFSEngine {
         TextureWrap WrapT = TextureWrap::Repeat;
         TextureFilter MinFilter = TextureFilter::Linear;
         TextureFilter MagFilter = TextureFilter::Linear;
-        bool GenerateMipmaps = false;
+        bool GenerateMipmaps = true;
         bool sRGB = true;
     };
 

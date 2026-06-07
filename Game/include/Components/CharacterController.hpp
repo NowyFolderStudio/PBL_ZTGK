@@ -14,7 +14,7 @@ public:
     std::string GetName() const override { return "CharacterController"; };
 
     // Run settings
-    float MaxSpeed = 12.0f;
+    float MaxSpeed = 15.0f;
     float Acceleration = 80.0f;
     float Deceleration = 80.0f;
     float AirControl = 0.5f;
@@ -76,7 +76,6 @@ public:
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
     NFSEngine::Transform* m_CameraTransform = nullptr;
-    NFSEngine::AnimatorComponent* m_Animator = nullptr;
 
     size_t m_AuraEventId = 0;
     bool m_IsDashUnlocked = false;
@@ -122,7 +121,6 @@ protected:
                 break;
             }
         }
-        m_Animator = m_Owner->GetTransform()->GetChild(0)->GetOwner()->GetComponent<NFSEngine::AnimatorComponent>();
 
         if (AuraManager::Instance) {
             UpdateAbilities(AuraManager::Instance->CurrentAura);
@@ -362,21 +360,17 @@ private:
         if (p_RigidBody->IsGrounded) {
             currentAcc = Acceleration;
             currentDec = Deceleration;
-            m_Animator->SetAnimationSpeed(1);
         } else {
             currentAcc = m_IsDashing ? DashAirControl * Acceleration : AirControl * Acceleration;
             currentDec = m_IsDashing ? 0 : AirControl * Deceleration;
-            m_Animator->SetAnimationSpeed(0);
         }
 
         if (glm::length(m_InputDirection) > 0.1f) {
             glm::vec3 targetVel = targetDir * currentMaxSpeed;
             p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, targetVel.x, currentAcc * dt);
             p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, targetVel.z, currentAcc * dt);
-            m_Animator->PlayAnimation(1);
 
         } else {
-            m_Animator->PlayAnimation(0);
             if (p_RigidBody->IsGrounded) {
 
                 p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, 0.0f, currentDec * dt);

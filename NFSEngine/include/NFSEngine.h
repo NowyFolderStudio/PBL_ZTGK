@@ -15,6 +15,7 @@
 #include "Core/Scene.hpp"
 #include "Core/Tags.hpp"
 #include "Core/Action.hpp"
+#include "Core/Log.hpp"
 
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
@@ -40,6 +41,7 @@
 #include "Components/CubeMesh.hpp"
 #include "Components/Transform.hpp"
 #include "Components/AudioPatternComponent.hpp"
+#include "Components/AnimatorComponent.hpp"
 
 #include "ImGui/ImGuiLayer.hpp"
 #include "ImGui/SceneHierarchyPanel.hpp"
