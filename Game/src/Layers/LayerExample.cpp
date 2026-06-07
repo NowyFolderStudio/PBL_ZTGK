@@ -74,7 +74,7 @@ LayerExample::~LayerExample() { NFSEngine::AudioEngine::Shutdown(); }
 void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
-
+    
     NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
     livesManager->SetTag(NFSEngine::Tags::LivesManager);
     livesManager->AddComponent<LivesManager>();
@@ -648,8 +648,29 @@ void LayerExample::OnAttach() {
     wallLogic.OnAwake();
     */
 
-    auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneMedium.obj");
+    auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneLOW.obj");
+    auto gramophoneShader = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    for (int j = 0; j < 1; j++) {
+        for (int i = 0; i < 1; i++) {
+            auto testMat = std::make_shared<NFSEngine::Material>();
 
+            testMat->AlbedoColor = glm::vec3(0.1f, 0.0f, 0.0f);
+            testMat->Roughness = 0.8f;
+            testMat->Metallic = 0.0f;
+            testMat->EmissiveColor = glm::vec3(0.8f + (i * 0.01), 0.0f, 0.0f + (i * 0.05));
+            testMat->EmissiveStrength = 6.5f + i;
+
+            NFSEngine::GameObject* testObj = m_Scene->CreateGameObject("testGramophone" + std::to_string(i));
+            testObj->GetTransform()->SetPosition(glm::vec3(-55.0f + (i * 3.0), 13.0f + (j * 3.0f), 55.0f));
+            testObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+
+            auto& testComp = testObj->AddComponent<NFSEngine::ModelComponent>(gramophoneShader, testMat);
+            testComp.AddLOD(gramophoneModel1, 10000.0f);
+        }
+    }
+
+    
+    /*
     auto matNeonRed = std::make_shared<NFSEngine::Material>();
     matNeonRed->AlbedoColor = glm::vec3(0.1f, 0.0f, 0.0f);
     matNeonRed->Roughness = 0.8f;
@@ -661,10 +682,9 @@ void LayerExample::OnAttach() {
     neonGramophoneObj->GetTransform()->SetPosition(glm::vec3(-44.0f, 13.0f, 55.0f));
     neonGramophoneObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
 
-    auto gramophoneShader = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     auto& neonGramophoneComp = neonGramophoneObj->AddComponent<NFSEngine::ModelComponent>(gramophoneShader, matNeonRed);
     neonGramophoneComp.AddLOD(gramophoneModel1, 10000.0f);
-
+    */
 
 
     for (const auto& go : m_Scene->GetAllGameObjects()) {

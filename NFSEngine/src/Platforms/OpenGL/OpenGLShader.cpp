@@ -64,6 +64,10 @@ namespace NFSEngine {
         glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
     }
 
+    void OpenGLShader::SetVec2(const std::string& name, const glm::vec2& value) {
+        glUniform2fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+    }
+
     void OpenGLShader::SetVec3(const std::string& name, const glm::vec3& value) {
         glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
     }

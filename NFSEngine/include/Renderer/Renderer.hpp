@@ -81,6 +81,9 @@ namespace NFSEngine {
         static void DrawDebug();
 
     private:
+        static void SetupBloomChain(uint32_t width, uint32_t height);
+
+    private:
         struct SceneData {
             glm::mat4 ViewMatrix = glm::mat4(1.0f);
             glm::mat4 ProjectionMatrix = glm::mat4(1.0f);
@@ -109,8 +112,10 @@ namespace NFSEngine {
         static std::shared_ptr<Shader> s_PostProcessShader;
         static float s_Exposure;
 
-        static std::shared_ptr<Framebuffer> s_PingPongFBO[2];
-        static std::shared_ptr<Shader> s_BlurShader;
+        // Bloom things
+        static std::vector<std::shared_ptr<Framebuffer>> s_BloomFBOs;
+        static std::shared_ptr<Shader> s_DownsampleShader;
+        static std::shared_ptr<Shader> s_UpsampleShader;
 
         struct DebugBox {
             glm::mat4 transform;
