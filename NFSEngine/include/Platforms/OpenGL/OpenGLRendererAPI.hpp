@@ -4,18 +4,19 @@
 namespace NFSEngine {
     class OpenGLRendererAPI : public RendererAPI {
     public:
-        virtual void Init() override;
-        virtual void SetClearColor(const glm::vec4& color) override;
-        virtual void Clear() override;
-        virtual void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
-        virtual void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount) override;
-        virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
-        virtual void SetDepthTest(bool enabled) override;
-        virtual void BindTexture(uint32_t textureID, uint32_t slot) override;
-        virtual void DrawFullscreenTriangle() override;
-        virtual void SetDepthFunction(DepthFunction func) override;
-        virtual void SetWireframeMode(bool value) override;
-        virtual void SetBlendEnabled(bool enabled) override;
-        virtual void SetBlendFunction(BlendFunction func) override;
+        void Init() override;
+        void SetClearColor(const glm::vec4& color) override;
+        void Clear() override;
+        void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
+        void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, uint32_t instanceCount) override;
+        void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount) override;
+        void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) override;
+        void SetDepthTest(bool enabled) override;
+        void BindTexture(uint32_t textureID, uint32_t slot) override;
+        void DrawFullscreenTriangle() override;
+        void SetDepthFunction(DepthFunction func) override;
+        void SetWireframeMode(bool value) override;
+        void SetBlendEnabled(bool enabled) override;
+        void SetBlendFunction(BlendFunction func) override;
     };
 } // namespace NFSEngine

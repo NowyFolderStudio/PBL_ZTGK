@@ -44,21 +44,48 @@ namespace NFSEngine {
         glBindVertexArray(m_RendererID);
         vertexBuffer->Bind();
 
-        uint32_t index = 0;
         const auto& layout = vertexBuffer->GetLayout();
         for (const auto& element : layout) {
-            glEnableVertexAttribArray(index);
+            glEnableVertexAttribArray(m_VertexBufferIndex);
 
             if (element.Type == ShaderDataType::Int || element.Type == ShaderDataType::Int2
                 || element.Type == ShaderDataType::Int3 || element.Type == ShaderDataType::Int4) {
-                glVertexAttribIPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
-                                       layout.GetStride(), (const void*)(uintptr_t)element.Offset);
+                glVertexAttribIPointer(m_VertexBufferIndex, element.GetComponentCount(),
+                                       ShaderDataTypeToOpenGLBaseType(element.Type), layout.GetStride(),
+                                       (const void*)(uintptr_t)element.Offset);
             } else {
-                glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
-                                      element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
-                                      (const void*)(uintptr_t)element.Offset);
+                glVertexAttribPointer(m_VertexBufferIndex, element.GetComponentCount(),
+                                      ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized ? GL_TRUE : GL_FALSE,
+                                      layout.GetStride(), (const void*)(uintptr_t)element.Offset);
             }
-            index++;
+            m_VertexBufferIndex++;
+        }
+
+        m_VertexBuffers.push_back(vertexBuffer);
+    }
+
+    void OpenGLVertexArray::AddInstancedVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer) {
+        glBindVertexArray(m_RendererID);
+        vertexBuffer->Bind();
+
+        const auto& layout = vertexBuffer->GetLayout();
+        for (const auto& element : layout) {
+            glEnableVertexAttribArray(m_VertexBufferIndex);
+
+            if (element.Type == ShaderDataType::Int || element.Type == ShaderDataType::Int2
+                || element.Type == ShaderDataType::Int3 || element.Type == ShaderDataType::Int4) {
+                glVertexAttribIPointer(m_VertexBufferIndex, element.GetComponentCount(),
+                                       ShaderDataTypeToOpenGLBaseType(element.Type), layout.GetStride(),
+                                       (const void*)(uintptr_t)element.Offset);
+            } else {
+                glVertexAttribPointer(m_VertexBufferIndex, element.GetComponentCount(),
+                                      ShaderDataTypeToOpenGLBaseType(element.Type), element.Normalized ? GL_TRUE : GL_FALSE,
+                                      layout.GetStride(), (const void*)(uintptr_t)element.Offset);
+            }
+
+            glVertexAttribDivisor(m_VertexBufferIndex, 1);
+
+            m_VertexBufferIndex++;
         }
 
         m_VertexBuffers.push_back(vertexBuffer);
@@ -67,7 +94,6 @@ namespace NFSEngine {
     void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffer) {
         glBindVertexArray(m_RendererID);
         indexBuffer->Bind();
-
         m_IndexBuffer = indexBuffer;
     }
 } // namespace NFSEngine

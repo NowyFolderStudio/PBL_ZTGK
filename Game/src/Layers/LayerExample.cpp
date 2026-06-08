@@ -7,6 +7,7 @@
 #include "Components/CoinComponent.hpp"
 #include "Components/HazardComponent.hpp"
 #include "Components/CheckpointComponent.hpp"
+#include "Components/ParticleEmitterComponent.hpp"
 #include "Components/ZoneCameraTriggerComponent.hpp"
 #include "Components/Managers/ScoreManager.hpp"
 #include "Components/Managers/LivesManager.hpp"
@@ -68,12 +69,12 @@ LayerExample::LayerExample() {
     m_Scene = nullptr;
 }
 
-LayerExample::~LayerExample() {}
+LayerExample::~LayerExample() { }
 
 void LayerExample::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
-    
+
     NFSEngine::GameObject* livesManager = m_Scene->CreateGameObject("LivesManager");
     livesManager->SetTag(NFSEngine::Tags::LivesManager);
     livesManager->AddComponent<LivesManager>();
@@ -196,6 +197,12 @@ void LayerExample::OnAttach() {
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     playerModel->AddComponent<AnimatorComponent>();
     playerModel->AddComponent<CharacterAnimationController>();
+    auto particleMaterial = std::make_shared<Material>();
+    auto texture = Texture::Create("assets/textures/particles/cloud.png");
+    particleMaterial->AlbedoMap = texture;
+
+    auto particleShader = Shader::Create("particleShader", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
+    playerModel->AddComponent<ParticleEmitterComponent>(2000, particleShader, particleMaterial);
 
     m_Player->AddComponent<AuraInputController>();
 
@@ -646,7 +653,8 @@ void LayerExample::OnAttach() {
     */
 
     auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneLOW.obj");
-    auto gramophoneShader = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    auto gramophoneShader
+        = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     for (int j = 0; j < 1; j++) {
         for (int i = 0; i < 1; i++) {
             auto testMat = std::make_shared<NFSEngine::Material>();
@@ -666,7 +674,6 @@ void LayerExample::OnAttach() {
         }
     }
 
-    
     /*
     auto matNeonRed = std::make_shared<NFSEngine::Material>();
     matNeonRed->AlbedoColor = glm::vec3(0.1f, 0.0f, 0.0f);
@@ -682,7 +689,6 @@ void LayerExample::OnAttach() {
     auto& neonGramophoneComp = neonGramophoneObj->AddComponent<NFSEngine::ModelComponent>(gramophoneShader, matNeonRed);
     neonGramophoneComp.AddLOD(gramophoneModel1, 10000.0f);
     */
-
 
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
@@ -706,9 +712,7 @@ void LayerExample::OnAttach() {
     NFSEngine::Renderer::OnWindowResize(width, height);
 }
 
-void LayerExample::OnDetach() { 
-    m_Scene.reset();
-}
+void LayerExample::OnDetach() { m_Scene.reset(); }
 
 void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     NFS_PROFILE_FUNCTION();

@@ -9,6 +9,11 @@ namespace NFSEngine {
         return new OpenGLVertexBuffer(vertices, size);
     }
 
+    VertexBuffer* VertexBuffer::Create(uint32_t size) {
+        // this should use some RendererApi to determine which Api to use
+        return new OpenGLVertexBuffer(size);
+    }
+
     IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t size) {
         // this should use some RendererApi to determine which Api to use
         return new OpenGLIndexBuffer(indices, size);

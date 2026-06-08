@@ -28,6 +28,15 @@ namespace NFSEngine {
         std::vector<glm::mat4> boneTransforms;
     };
 
+    struct InstancedRenderPacket {
+        uint64_t sortKey = 0;
+        std::shared_ptr<VertexArray> vao;
+        std::shared_ptr<Shader> shader;
+        std::shared_ptr<Material> material;
+
+        uint32_t instanceCount = 0;
+    };
+
     struct RendererStats {
         uint32_t drawCalls = 0;
         uint32_t triangleCount = 0;
@@ -51,6 +60,9 @@ namespace NFSEngine {
         static void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
                            const std::shared_ptr<Material>& material, const glm::mat4& transform,
                            const std::vector<glm::mat4>& boneTransforms = { });
+
+        static void SubmitInstanced(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
+                                    const std::shared_ptr<Material>& material, uint32_t instanceCount);
 
         // TODO: Implement static Shutdown() method
 
@@ -101,6 +113,7 @@ namespace NFSEngine {
 
         static std::unique_ptr<GPUTimer> s_GPUTimer;
         static std::vector<RenderPacket> s_RendererQueue;
+        static std::vector<InstancedRenderPacket> s_InstancedQueue;
         static std::unique_ptr<RendererAPI> s_RendererAPI;
 
         static std::shared_ptr<VertexArray> s_SkyboxVAO;

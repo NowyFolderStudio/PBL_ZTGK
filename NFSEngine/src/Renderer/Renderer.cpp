@@ -14,6 +14,7 @@
 namespace NFSEngine {
 
     std::vector<RenderPacket> Renderer::s_RendererQueue;
+    std::vector<InstancedRenderPacket> Renderer::s_InstancedQueue;
     std::unique_ptr<RendererAPI> Renderer::s_RendererAPI = nullptr;
     Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData;
 
@@ -49,7 +50,8 @@ namespace NFSEngine {
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetConfig().WindowWidth;
         fbSpec.height = Application::Get().GetConfig().WindowHeight;
-        fbSpec.attachments = { FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::DEPTH24STENCIL8 };
+        fbSpec.attachments
+            = { FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::DEPTH24STENCIL8 };
 
         s_HDRFramebuffer = Framebuffer::Create(fbSpec);
 
@@ -149,6 +151,20 @@ namespace NFSEngine {
         s_RendererQueue.push_back(packet);
     }
 
+    void Renderer::SubmitInstanced(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
+                                   const std::shared_ptr<Material>& material, uint32_t instanceCount) {
+        if (instanceCount == 0) return;
+
+        InstancedRenderPacket packet;
+        packet.vao = vao;
+        packet.shader = shader;
+        packet.material = material;
+        packet.instanceCount = instanceCount;
+        packet.sortKey = shader->GetRendererID();
+
+        s_InstancedQueue.push_back(packet);
+    }
+
     void Renderer::EndScene() {
         NFS_PROFILE_FUNCTION();
 
@@ -156,121 +172,225 @@ namespace NFSEngine {
         s_Stats.triangleCount = 0;
         s_Stats.stateChanges = 0;
 
+        s_GPUTimer->Begin();
+
         std::sort(s_RendererQueue.begin(), s_RendererQueue.end(),
                   [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
 
         uint32_t lastShaderID = 0;
         uint32_t lastTextureID = 0;
 
-        s_GPUTimer->Begin();
+        {
+            NFS_PROFILE_SCOPE("Render Queue");
+            for (const auto& packet : s_RendererQueue) {
+                if (packet.shader->GetRendererID() != lastShaderID) {
+                    packet.shader->Bind();
+                    lastShaderID = packet.shader->GetRendererID();
 
-        for (const auto& packet : s_RendererQueue) {
+                    s_Stats.stateChanges++;
 
-            if (packet.shader->GetRendererID() != lastShaderID) {
-                packet.shader->Bind();
-                lastShaderID = packet.shader->GetRendererID();
+                    packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
+                    packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
 
+                    packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
+
+                    if (s_SceneData->EnvMap) {
+                        s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
+                        packet.shader->SetInt("irradianceMap", 30);
+                        packet.shader->SetInt("prefilterMap", 29);
+                        packet.shader->SetInt("brdfLUT", 28);
+                    }
+
+                    if (s_SceneData->DirLight) {
+                        packet.shader->SetVec3("dirLight.direction", s_SceneData->DirLight->Direction);
+                        packet.shader->SetVec3("dirLight.color", s_SceneData->DirLight->Color);
+                        packet.shader->SetFloat("dirLight.intensity", s_SceneData->DirLight->Intensity);
+                    }
+
+                    if (s_SceneData->PointLights) {
+                        int lightIndex = 0;
+                        for (auto* light : *s_SceneData->PointLights) {
+                            if (lightIndex >= 16) break;
+                            std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+                            packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                            packet.shader->SetVec3(base + "color", light->Color);
+                            packet.shader->SetFloat(base + "intensity", light->Intensity);
+                            packet.shader->SetFloat(base + "constant", light->Constant);
+                            packet.shader->SetFloat(base + "linear", light->Linear);
+                            packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                            lightIndex++;
+                        }
+                        packet.shader->SetInt("activePointLights", lightIndex);
+                    }
+
+                    if (s_SceneData->SpotLights) {
+                        int spotIndex = 0;
+                        for (auto* light : *s_SceneData->SpotLights) {
+                            if (spotIndex >= 4) break;
+                            std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
+                            packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                            packet.shader->SetVec3(base + "direction", light->Direction);
+                            packet.shader->SetVec3(base + "color", light->Color);
+                            packet.shader->SetFloat(base + "intensity", light->Intensity);
+                            packet.shader->SetFloat(base + "cutOff", light->CutOff);
+                            packet.shader->SetFloat(base + "outerCutOff", light->OuterCutOff);
+                            packet.shader->SetFloat(base + "constant", light->Constant);
+                            packet.shader->SetFloat(base + "linear", light->Linear);
+                            packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                            spotIndex++;
+                        }
+                        packet.shader->SetInt("activeSpotLights", spotIndex);
+                    }
+                }
+
+                packet.shader->SetMat4("model", packet.transform);
+
+                if (!packet.boneTransforms.empty()) {
+                    for (int i = 0; i < packet.boneTransforms.size(); i++) {
+                        packet.shader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                    }
+                }
+
+                if (packet.material) {
+                    packet.material->Bind(packet.shader);
+
+                    for (const auto& [name, value] : packet.material->Properties) {
+                        std::visit(
+                            [&](auto&& arg) {
+                                using T = std::decay_t<decltype(arg)>;
+                                if constexpr (std::is_same_v<T, float>)
+                                    packet.shader->SetFloat(name, arg);
+                                else if constexpr (std::is_same_v<T, int>)
+                                    packet.shader->SetInt(name, arg);
+                                else if constexpr (std::is_same_v<T, glm::vec3>)
+                                    packet.shader->SetVec3(name, arg);
+                                else if constexpr (std::is_same_v<T, glm::vec4>)
+                                    packet.shader->SetVec4(name, arg);
+                            },
+                            value);
+                    }
+
+                    s_Stats.stateChanges++;
+                }
+
+                packet.vao->Bind();
                 s_Stats.stateChanges++;
 
-                packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
-                packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
+                s_RendererAPI->DrawIndexed(packet.vao);
+                s_Stats.drawCalls++;
 
-                packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
-
-                if (s_SceneData->EnvMap) {
-                    s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
-                    packet.shader->SetInt("irradianceMap", 30);
-                    packet.shader->SetInt("prefilterMap", 29);
-                    packet.shader->SetInt("brdfLUT", 28);
-                }
-
-                if (s_SceneData->DirLight) {
-                    packet.shader->SetVec3("dirLight.direction", s_SceneData->DirLight->Direction);
-                    packet.shader->SetVec3("dirLight.color", s_SceneData->DirLight->Color);
-                    packet.shader->SetFloat("dirLight.intensity", s_SceneData->DirLight->Intensity);
-                }
-
-                if (s_SceneData->PointLights) {
-                    int lightIndex = 0;
-                    for (auto* light : *s_SceneData->PointLights) {
-                        if (lightIndex >= 16) break;
-                        std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
-                        packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
-                        packet.shader->SetVec3(base + "color", light->Color);
-                        packet.shader->SetFloat(base + "intensity", light->Intensity);
-                        packet.shader->SetFloat(base + "constant", light->Constant);
-                        packet.shader->SetFloat(base + "linear", light->Linear);
-                        packet.shader->SetFloat(base + "quadratic", light->Quadratic);
-                        lightIndex++;
-                    }
-                    packet.shader->SetInt("activePointLights", lightIndex);
-                }
-
-                if (s_SceneData->SpotLights) {
-                    int spotIndex = 0;
-                    for (auto* light : *s_SceneData->SpotLights) {
-                        if (spotIndex >= 4) break;
-                        std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
-                        packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
-                        packet.shader->SetVec3(base + "direction", light->Direction);
-                        packet.shader->SetVec3(base + "color", light->Color);
-                        packet.shader->SetFloat(base + "intensity", light->Intensity);
-                        packet.shader->SetFloat(base + "cutOff", light->CutOff);
-                        packet.shader->SetFloat(base + "outerCutOff", light->OuterCutOff);
-                        packet.shader->SetFloat(base + "constant", light->Constant);
-                        packet.shader->SetFloat(base + "linear", light->Linear);
-                        packet.shader->SetFloat(base + "quadratic", light->Quadratic);
-                        spotIndex++;
-                    }
-                    packet.shader->SetInt("activeSpotLights", spotIndex);
+                if (packet.vao->GetIndexBuffer()) {
+                    s_Stats.triangleCount += packet.vao->GetIndexBuffer()->GetCount() / 3;
                 }
             }
+        }
 
-            packet.shader->SetMat4("model", packet.transform);
+        std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
+                  [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
+        {
+            NFS_PROFILE_SCOPE("Instanced Render Queue");
+            s_RendererAPI->SetBlendEnabled(true);
+            s_RendererAPI->SetBlendFunction(BlendFunction::Alpha);
+            for (const auto& packet : s_InstancedQueue) {
 
-            if (!packet.boneTransforms.empty()) {
-                for (int i = 0; i < packet.boneTransforms.size(); i++) {
-                    packet.shader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                if (packet.shader->GetRendererID() != lastShaderID) {
+                    packet.shader->Bind();
+                    lastShaderID = packet.shader->GetRendererID();
+                    s_Stats.stateChanges++;
+
+                    packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
+                    packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
+                    packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
+
+                    if (s_SceneData->EnvMap) {
+                        s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
+                        packet.shader->SetInt("irradianceMap", 30);
+                        packet.shader->SetInt("prefilterMap", 29);
+                        packet.shader->SetInt("brdfLUT", 28);
+                    }
+
+                    if (s_SceneData->DirLight) {
+                        packet.shader->SetVec3("dirLight.direction", s_SceneData->DirLight->Direction);
+                        packet.shader->SetVec3("dirLight.color", s_SceneData->DirLight->Color);
+                        packet.shader->SetFloat("dirLight.intensity", s_SceneData->DirLight->Intensity);
+                    }
+
+                    if (s_SceneData->PointLights) {
+                        int lightIndex = 0;
+                        for (auto* light : *s_SceneData->PointLights) {
+                            if (lightIndex >= 16) break;
+                            std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+                            packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                            packet.shader->SetVec3(base + "color", light->Color);
+                            packet.shader->SetFloat(base + "intensity", light->Intensity);
+                            packet.shader->SetFloat(base + "constant", light->Constant);
+                            packet.shader->SetFloat(base + "linear", light->Linear);
+                            packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                            lightIndex++;
+                        }
+                        packet.shader->SetInt("activePointLights", lightIndex);
+                    }
+
+                    if (s_SceneData->SpotLights) {
+                        int spotIndex = 0;
+                        for (auto* light : *s_SceneData->SpotLights) {
+                            if (spotIndex >= 4) break;
+                            std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
+                            packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                            packet.shader->SetVec3(base + "direction", light->Direction);
+                            packet.shader->SetVec3(base + "color", light->Color);
+                            packet.shader->SetFloat(base + "intensity", light->Intensity);
+                            packet.shader->SetFloat(base + "cutOff", light->CutOff);
+                            packet.shader->SetFloat(base + "outerCutOff", light->OuterCutOff);
+                            packet.shader->SetFloat(base + "constant", light->Constant);
+                            packet.shader->SetFloat(base + "linear", light->Linear);
+                            packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                            spotIndex++;
+                        }
+                        packet.shader->SetInt("activeSpotLights", spotIndex);
+                    }
                 }
-            }
 
-            if (packet.material) {
-                packet.material->Bind(packet.shader);
+                if (packet.material) {
+                    packet.material->Bind(packet.shader);
 
-                for (const auto& [name, value] : packet.material->Properties) {
-                    std::visit(
-                        [&](auto&& arg) {
-                            using T = std::decay_t<decltype(arg)>;
-                            if constexpr (std::is_same_v<T, float>)
-                                packet.shader->SetFloat(name, arg);
-                            else if constexpr (std::is_same_v<T, int>)
-                                packet.shader->SetInt(name, arg);
-                            else if constexpr (std::is_same_v<T, glm::vec3>)
-                                packet.shader->SetVec3(name, arg);
-                            else if constexpr (std::is_same_v<T, glm::vec4>)
-                                packet.shader->SetVec4(name, arg);
-                        },
-                        value);
+                    for (const auto& [name, value] : packet.material->Properties) {
+                        std::visit(
+                            [&](auto&& arg) {
+                                using T = std::decay_t<decltype(arg)>;
+                                if constexpr (std::is_same_v<T, float>)
+                                    packet.shader->SetFloat(name, arg);
+                                else if constexpr (std::is_same_v<T, int>)
+                                    packet.shader->SetInt(name, arg);
+                                else if constexpr (std::is_same_v<T, glm::vec3>)
+                                    packet.shader->SetVec3(name, arg);
+                                else if constexpr (std::is_same_v<T, glm::vec4>)
+                                    packet.shader->SetVec4(name, arg);
+                            },
+                            value);
+                    }
+
+                    s_Stats.stateChanges++;
                 }
 
+                packet.vao->Bind();
                 s_Stats.stateChanges++;
+
+                s_RendererAPI->DrawIndexedInstanced(packet.vao, packet.instanceCount);
+                s_Stats.drawCalls++;
+
+                if (packet.vao->GetIndexBuffer()) {
+                    s_Stats.triangleCount += (packet.vao->GetIndexBuffer()->GetCount() / 3) * packet.instanceCount;
+                }
             }
-
-            packet.vao->Bind();
-            s_Stats.stateChanges++;
-
-            s_RendererAPI->DrawIndexed(packet.vao);
-            s_Stats.drawCalls++;
-
-            if (packet.vao->GetIndexBuffer()) {
-                s_Stats.triangleCount += packet.vao->GetIndexBuffer()->GetCount() / 3;
-            }
+            s_RendererAPI->SetBlendEnabled(false);
         }
 
         DrawDebug();
 
         s_GPUTimer->End();
         s_RendererQueue.clear();
+        s_InstancedQueue.clear();
 
         s_HDRFramebuffer->Unbind();
 
@@ -285,8 +405,10 @@ namespace NFSEngine {
             glm::vec2 mipSize = { s_BloomFBOs[i]->GetSpecification().width, s_BloomFBOs[i]->GetSpecification().height };
 
             glm::vec2 srcRes;
-            if (i == 0) srcRes = { s_HDRFramebuffer->GetSpecification().width, s_HDRFramebuffer->GetSpecification().height };
-            else srcRes = { s_BloomFBOs[i - 1]->GetSpecification().width, s_BloomFBOs[i - 1]->GetSpecification().height };
+            if (i == 0)
+                srcRes = { s_HDRFramebuffer->GetSpecification().width, s_HDRFramebuffer->GetSpecification().height };
+            else
+                srcRes = { s_BloomFBOs[i - 1]->GetSpecification().width, s_BloomFBOs[i - 1]->GetSpecification().height };
 
             s_DownsampleShader->SetVec2("srcResolution", srcRes);
 

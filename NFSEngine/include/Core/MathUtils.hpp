@@ -2,6 +2,7 @@
 #include <cmath>
 #include <algorithm>
 #include <glm/glm.hpp>
+#include <random>
 
 namespace NFSEngine {
 
@@ -67,6 +68,22 @@ namespace NFSEngine {
                                      float maxSpeed = INFINITY) {
             target = current + DeltaAngle(current, target);
             return SmoothDamp(current, target, currentVelocity, smoothTime, deltaTime, maxSpeed);
+        }
+
+        static float RandomFloat(float min = 0.0f, float max = 1.0f) {
+            static std::random_device rd;
+            static std::mt19937 generator(rd());
+
+            std::uniform_real_distribution<float> distribution(min, max);
+            return distribution(generator);
+        }
+
+        static int RandomInt(int min, int max) {
+            static std::random_device rd;
+            static std::mt19937 generator(rd());
+
+            std::uniform_int_distribution<int> distribution(min, max);
+            return distribution(generator);
         }
     };
 

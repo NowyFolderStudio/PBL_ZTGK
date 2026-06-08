@@ -25,6 +25,7 @@
 #include "Renderer/Renderer.hpp"
 #include "Renderer/Model.hpp"
 #include "Renderer/Frustum.hpp"
+#include "Renderer/Particle.hpp"
 #include "Debug/DebugCamera.hpp"
 
 #include "Platforms/Window.hpp"
@@ -42,6 +43,7 @@
 #include "Components/Transform.hpp"
 #include "Components/AudioPatternComponent.hpp"
 #include "Components/AnimatorComponent.hpp"
+#include "Components/ParticleEmitterComponent.hpp"
 
 #include "ImGui/ImGuiLayer.hpp"
 #include "ImGui/SceneHierarchyPanel.hpp"

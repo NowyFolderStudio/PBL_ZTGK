@@ -20,6 +20,11 @@ namespace NFSEngine {
         glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 
+    void OpenGLRendererAPI::DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, uint32_t instanceCount) {
+        uint32_t count = vertexArray->GetIndexBuffer()->GetCount();
+        glDrawElementsInstanced(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr, instanceCount);
+    }
+
     void OpenGLRendererAPI::DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount) {
         glDrawArrays(GL_TRIANGLES, 0, vertexCount);
     }
@@ -72,8 +77,7 @@ namespace NFSEngine {
     void OpenGLRendererAPI::SetBlendEnabled(bool enabled) {
         if (enabled) {
             glEnable(GL_BLEND);
-        }
-        else {
+        } else {
             glDisable(GL_BLEND);
         }
     }
