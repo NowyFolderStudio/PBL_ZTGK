@@ -40,7 +40,7 @@ namespace NFSEngine {
         for (auto* comp : m_TrackGroups[trackName]) {
             if (comp->GetPatternName() == patternName) {
                 comp->IsActive = true;
-                std::cout << "[AudioManager] Wlaczono: " << patternName << " na kanale " << trackName << std::endl;
+                NFS_CORE_INFO("[AudioManager] {} set to active on channel {}", patternName, trackName);
             } else {
                 comp->IsActive = false;
             }

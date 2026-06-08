@@ -17,7 +17,7 @@ namespace NFSEngine {
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
                 stbi_image_free(data);
             } else {
-                std::cout << "Skybox Texture failed to load at path: " << facePaths[i] << std::endl;
+                NFS_CORE_WARN("Skybox Texture failed to load at path: {}", facePaths[i]);
             }
         }
 
@@ -26,13 +26,11 @@ namespace NFSEngine {
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-        
+
         glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
     }
 
-    OpenGLSkybox::~OpenGLSkybox() {
-        glDeleteTextures(1, &m_RendererID);
-    }
+    OpenGLSkybox::~OpenGLSkybox() { glDeleteTextures(1, &m_RendererID); }
 
     void OpenGLSkybox::Bind(uint32_t slot) const {
         glActiveTexture(GL_TEXTURE0 + slot);
@@ -42,4 +40,4 @@ namespace NFSEngine {
     std::shared_ptr<Skybox> Skybox::Create(const std::vector<std::string>& facePaths) {
         return std::make_shared<OpenGLSkybox>(facePaths);
     }
-}
+} // namespace NFSEngine

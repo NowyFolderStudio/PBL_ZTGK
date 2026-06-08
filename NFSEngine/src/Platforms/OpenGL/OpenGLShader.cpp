@@ -45,7 +45,7 @@ namespace NFSEngine {
             contents << in.rdbuf();
             result = contents.str();
         } else {
-            std::cout << "Could not open file: " << filepath << std::endl;
+            NFS_CORE_ERROR("Could not open file: {}", filepath);
         }
         return result;
     }
@@ -87,13 +87,13 @@ namespace NFSEngine {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
             if (!success) {
                 glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::SHADER::" << m_Name << "::COMPILATION_ERROR: " << infoLog << std::endl;
+                NFS_CORE_ERROR("ERROR::SHADER::{}::COMPILATION ERROR: {}", m_Name, infoLog);
             }
         } else {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
             if (!success) {
                 glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                std::cout << "ERROR::PROGRAM::" << m_Name << "::LINKING_ERROR: " << infoLog << std::endl;
+                NFS_CORE_ERROR("ERROR::PROGRAM::{}::LINKING ERROR: {}", m_Name, infoLog);
             }
         }
     }

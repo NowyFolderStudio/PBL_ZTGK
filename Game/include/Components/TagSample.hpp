@@ -11,7 +11,7 @@ namespace NFSEngine {
     class TagSample : public Component {
     public:
         explicit TagSample(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         std::string GetName() const override { return "TagSample"; }
 
@@ -35,7 +35,6 @@ namespace NFSEngine {
             collider->IsTrigger = true;
 
             collider->OnTriggerEnter = [this](GameObject* other) {
-
                 if (other->CompareTag(Tags::Player)) {
                     std::cout << "[TagSample] Gracz dotknal obiektu\n";
                 }

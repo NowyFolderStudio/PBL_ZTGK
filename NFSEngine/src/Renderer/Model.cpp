@@ -22,7 +22,7 @@ namespace NFSEngine {
                                                    | aiProcess_JoinIdenticalVertices | aiProcess_LimitBoneWeights);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-            std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+            NFS_CORE_ERROR("ERROR::ASSIMP::{}", import.GetErrorString());
             return;
         }
 
