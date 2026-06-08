@@ -30,8 +30,9 @@ namespace NFSEngine {
     std::shared_ptr<Shader> Renderer::s_PostProcessShader = nullptr;
     float Renderer::s_Exposure = 1.0f;
 
-    std::shared_ptr<Framebuffer> Renderer::s_PingPongFBO[2] = { nullptr, nullptr };
-    std::shared_ptr<Shader> Renderer::s_BlurShader = nullptr;
+    std::vector<std::shared_ptr<Framebuffer>> Renderer::s_BloomFBOs;
+    std::shared_ptr<Shader> Renderer::s_DownsampleShader = nullptr;
+    std::shared_ptr<Shader> Renderer::s_UpsampleShader = nullptr;
 
     std::vector<Renderer::DebugBox> Renderer::s_DebugQueue;
     std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
@@ -56,10 +57,11 @@ namespace NFSEngine {
         pingPongSpec.width = Application::Get().GetConfig().WindowWidth;
         pingPongSpec.height = Application::Get().GetConfig().WindowHeight;
         pingPongSpec.attachments = { FramebufferTextureFormat::RGBA16F };
-        s_PingPongFBO[0] = Framebuffer::Create(pingPongSpec);
-        s_PingPongFBO[1] = Framebuffer::Create(pingPongSpec);
 
-        s_BlurShader = Shader::Create("Blur", "assets/shaders/postprocess.vert", "assets/shaders/blur.frag");
+        s_DownsampleShader = Shader::Create("Downsample", "assets/shaders/postprocess.vert", "assets/shaders/downsample.frag");
+        s_UpsampleShader = Shader::Create("Upsample", "assets/shaders/postprocess.vert", "assets/shaders/upsample.frag");
+
+        SetupBloomChain(Application::Get().GetConfig().WindowWidth, Application::Get().GetConfig().WindowHeight);
 
         s_PostProcessShader = Shader::Create("PostProcess", "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag");
 
@@ -108,10 +110,7 @@ namespace NFSEngine {
             s_HDRFramebuffer->Resize(width, height);
         }
 
-        if (s_PingPongFBO[0] && s_PingPongFBO[1]) {
-            s_PingPongFBO[0]->Resize(width, height);
-            s_PingPongFBO[1]->Resize(width, height);
-        }
+        SetupBloomChain(width, height);
     }
 
     void Renderer::BeginScene(const glm::mat4& viewMatrix, const glm::mat4& projectionMatrix, const glm::vec3& cameraPosition,
@@ -277,24 +276,51 @@ namespace NFSEngine {
 
         s_RendererAPI->SetDepthTest(false);
 
-        bool horizontal = true, first_iteration = true;
-        int amount = 10;
-        s_BlurShader->Bind();
+        s_DownsampleShader->Bind();
+        uint32_t currentTexture = s_HDRFramebuffer->GetColorAttachmentRendererID(1);
 
-        for (unsigned int i = 0; i < amount; i++) {
-            s_PingPongFBO[horizontal]->Bind();
-            s_BlurShader->SetBool("u_Horizontal", horizontal);
+        for (size_t i = 0; i < s_BloomFBOs.size(); i++) {
+            s_BloomFBOs[i]->Bind();
 
-            uint32_t textureToBlur = first_iteration ? s_HDRFramebuffer->GetColorAttachmentRendererID(1) : s_PingPongFBO[!horizontal]->GetColorAttachmentRendererID(0);
+            glm::vec2 mipSize = { s_BloomFBOs[i]->GetSpecification().width, s_BloomFBOs[i]->GetSpecification().height };
 
-            s_RendererAPI->BindTexture(textureToBlur, 0);
-            s_BlurShader->SetInt("image", 0);
+            glm::vec2 srcRes;
+            if (i == 0) srcRes = { s_HDRFramebuffer->GetSpecification().width, s_HDRFramebuffer->GetSpecification().height };
+            else srcRes = { s_BloomFBOs[i - 1]->GetSpecification().width, s_BloomFBOs[i - 1]->GetSpecification().height };
+
+            s_DownsampleShader->SetVec2("srcResolution", srcRes);
+
+            s_RendererAPI->BindTexture(currentTexture, 0);
+            s_DownsampleShader->SetInt("srcTexture", 0);
+
             s_RendererAPI->DrawFullscreenTriangle();
 
-            horizontal = !horizontal;
-            if (first_iteration) first_iteration = false;
+            currentTexture = s_BloomFBOs[i]->GetColorAttachmentRendererID(0);
         }
-        s_PingPongFBO[!horizontal]->Unbind();
+
+        s_UpsampleShader->Bind();
+        s_UpsampleShader->SetFloat("filterRadius", 0.005f);
+
+        s_RendererAPI->SetBlendEnabled(true);
+        s_RendererAPI->SetBlendFunction(BlendFunction::Additive);
+
+        for (int i = s_BloomFBOs.size() - 2; i >= 0; i--) {
+            s_BloomFBOs[i]->Bind();
+
+            uint32_t textureToUpsample = s_BloomFBOs[i + 1]->GetColorAttachmentRendererID(0);
+
+            s_RendererAPI->BindTexture(textureToUpsample, 0);
+            s_UpsampleShader->SetInt("srcTexture", 0);
+
+            s_RendererAPI->DrawFullscreenTriangle();
+        }
+
+        s_RendererAPI->SetBlendFunction(BlendFunction::Alpha);
+        s_BloomFBOs[0]->Unbind();
+
+        uint32_t screenWidth = s_HDRFramebuffer->GetSpecification().width;
+        uint32_t screenHeight = s_HDRFramebuffer->GetSpecification().height;
+        s_RendererAPI->SetViewport(0, 0, screenWidth, screenHeight);
 
         s_PostProcessShader->Bind();
         s_PostProcessShader->SetFloat("exposure", s_Exposure);
@@ -302,12 +328,31 @@ namespace NFSEngine {
         s_RendererAPI->BindTexture(s_HDRFramebuffer->GetColorAttachmentRendererID(0), 0);
         s_PostProcessShader->SetInt("screenTexture", 0);
 
-        s_RendererAPI->BindTexture(s_PingPongFBO[!horizontal]->GetColorAttachmentRendererID(0), 1);
+        s_RendererAPI->BindTexture(s_BloomFBOs[0]->GetColorAttachmentRendererID(0), 1);
         s_PostProcessShader->SetInt("bloomBlurTexture", 1);
 
         s_RendererAPI->DrawFullscreenTriangle();
 
         s_RendererAPI->SetDepthTest(true);
+    }
+
+    void Renderer::SetupBloomChain(uint32_t width, uint32_t height) {
+        s_BloomFBOs.clear();
+
+        glm::vec2 mipSize(width, height);
+        for (int i = 0; i < 6; i++) {
+            mipSize *= 0.5f;
+
+            if (mipSize.x < 1.0f) mipSize.x = 1.0f;
+            if (mipSize.y < 1.0f) mipSize.y = 1.0f;
+
+            FramebufferSpecification spec;
+            spec.width = (uint32_t)mipSize.x;
+            spec.height = (uint32_t)mipSize.y;
+            spec.attachments = { FramebufferTextureFormat::RGBA16F };
+
+            s_BloomFBOs.push_back(Framebuffer::Create(spec));
+        }
     }
 
     float Renderer::GetGPUTime() { return s_GPUTimer ? s_GPUTimer->GetTimeMS() : 0.0f; }

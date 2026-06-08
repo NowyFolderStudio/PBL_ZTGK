@@ -15,5 +15,7 @@ namespace NFSEngine {
         virtual void DrawFullscreenTriangle() override;
         virtual void SetDepthFunction(DepthFunction func) override;
         virtual void SetWireframeMode(bool value) override;
+        virtual void SetBlendEnabled(bool enabled) override;
+        virtual void SetBlendFunction(BlendFunction func) override;
     };
 } // namespace NFSEngine

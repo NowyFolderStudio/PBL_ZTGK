@@ -9,6 +9,11 @@ namespace NFSEngine {
         LEqual
     };
 
+    enum class BlendFunction {
+        Alpha,
+        Additive
+    };
+
     class RendererAPI {
     public:
         virtual ~RendererAPI() = default;
@@ -24,6 +29,8 @@ namespace NFSEngine {
         virtual void DrawFullscreenTriangle() = 0;
         virtual void SetDepthFunction(DepthFunction func) = 0;
         virtual void SetWireframeMode(bool value) = 0;
+        virtual void SetBlendEnabled(bool enabled) = 0;
+        virtual void SetBlendFunction(BlendFunction func) = 0;
 
         static std::unique_ptr<RendererAPI> Create();
     };

@@ -68,4 +68,24 @@ namespace NFSEngine {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
+
+    void OpenGLRendererAPI::SetBlendEnabled(bool enabled) {
+        if (enabled) {
+            glEnable(GL_BLEND);
+        }
+        else {
+            glDisable(GL_BLEND);
+        }
+    }
+
+    void OpenGLRendererAPI::SetBlendFunction(BlendFunction func) {
+        switch (func) {
+        case BlendFunction::Alpha:
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            break;
+        case BlendFunction::Additive:
+            glBlendFunc(GL_ONE, GL_ONE);
+            break;
+        }
+    }
 } // namespace NFSEngine
