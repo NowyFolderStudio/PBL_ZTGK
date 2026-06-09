@@ -363,7 +363,7 @@ void LayerExample::OnAttach() {
 
     // Lighting
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
+    lightObj->GetTransform()->SetPosition({ -55.0f, 13.0f, 55.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
     lightComp.Color = { 1.0f, 0.3f, 0.3f };
     lightComp.Intensity = 120.0f;
@@ -651,6 +651,7 @@ void LayerExample::OnAttach() {
     wallLogic.OnAwake();
     */
 
+    /*
     auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneLOW.obj");
     auto gramophoneShader
         = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -672,7 +673,7 @@ void LayerExample::OnAttach() {
             testComp.AddLOD(gramophoneModel1, 10000.0f);
         }
     }
-
+    */
     /*
     auto matNeonRed = std::make_shared<NFSEngine::Material>();
     matNeonRed->AlbedoColor = glm::vec3(0.1f, 0.0f, 0.0f);

@@ -12,6 +12,9 @@ in mat3 TBN;
 in vec4 FragPosLightSpace;
 uniform sampler2D shadowMap;
 
+uniform samplerCube pointShadowMap;
+uniform float pointShadowFarPlane;
+
 uniform vec3 viewPos;
 
 uniform sampler2D u_AlbedoMap;
@@ -151,6 +154,45 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
     return shadow;
 }
 
+vec3 gridSamplingDisk[20] = vec3[]
+(
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
+float PointShadowCalculation(vec3 fragPos, vec3 lightPos)
+{
+    vec3 fragToLight = fragPos - lightPos;
+    
+    float currentDepth = length(fragToLight);
+
+    if(currentDepth >= pointShadowFarPlane)
+        return 0.0;
+    
+    float shadow = 0.0;
+    float bias = 0.15;
+    int samples = 20;
+    
+    float viewDistance = length(viewPos - fragPos);
+    float diskRadius = (1.0 + (viewDistance / pointShadowFarPlane)) / 25.0;
+    
+    for(int i = 0; i < samples; ++i)
+    {
+        float closestDepth = texture(pointShadowMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
+        
+        closestDepth *= pointShadowFarPlane;
+        
+        if(currentDepth - bias > closestDepth)
+            shadow += 1.0;
+    }
+    shadow /= float(samples);
+        
+    return shadow;
+}
+
 void main() {
 	vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
 
@@ -222,7 +264,12 @@ void main() {
 
         float NdotL = max(dot(N, L), 0.0);
 
-        Lo += (kD * albedo / PI + specular) * radiance * NdotL;
+        float shadow = 0.0;
+        if (i == 0) {
+            shadow = PointShadowCalculation(FragPos, pointLights[i].position);
+        }
+
+        Lo += (1.0 - shadow) * (kD * albedo / PI + specular) * radiance * NdotL;
     }
 
     // SpotLights

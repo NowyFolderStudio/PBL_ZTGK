@@ -34,6 +34,7 @@ namespace NFSEngine {
         virtual void SetBlendEnabled(bool enabled) = 0;
         virtual void SetBlendFunction(BlendFunction func) = 0;
         virtual void SetCullFace(bool value) = 0;
+        virtual void BindCubeTexture(uint32_t rendererID, uint32_t slot = 0) = 0;
 
         static std::unique_ptr<RendererAPI> Create();
     };

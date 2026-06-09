@@ -37,7 +37,12 @@ namespace NFSEngine {
 
     std::shared_ptr<Framebuffer> Renderer::s_ShadowMapFBO = nullptr;
     std::shared_ptr<Shader> Renderer::s_ShadowShader = nullptr;
+    std::shared_ptr<Shader> Renderer::s_AnimatedShadowShader = nullptr;
     glm::mat4 Renderer::s_LightSpaceMatrix = glm::mat4(1.0f);
+
+    std::shared_ptr<Framebuffer> Renderer::s_PointShadowMapFBO = nullptr;
+    std::shared_ptr<Shader> Renderer::s_PointShadowShader = nullptr;
+    std::shared_ptr<Shader> Renderer::s_PointShadowShaderAnim = nullptr;
 
     std::vector<Renderer::DebugBox> Renderer::s_DebugQueue;
     std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
@@ -78,6 +83,24 @@ namespace NFSEngine {
 
         s_ShadowMapFBO = Framebuffer::Create(shadowSpec);
         s_ShadowShader = Shader::Create("ShadowShader", "assets/shaders/shadowMap.vert", "assets/shaders/shadowMap.frag");
+        s_AnimatedShadowShader = Shader::Create("AnimShadowShader", "assets/shaders/shadowMapAnimated.vert", "assets/shaders/shadowMap.frag");
+
+        FramebufferSpecification pointShadowSpec;
+        pointShadowSpec.width = 2048;
+        pointShadowSpec.height = 2048;
+        pointShadowSpec.attachments = { FramebufferTextureFormat::DEPTH_CUBEMAP };
+
+        s_PointShadowMapFBO = Framebuffer::Create(pointShadowSpec);
+
+        s_PointShadowShader = Shader::Create("PointShadowShader",
+            "assets/shaders/pointShadow.vert",
+            "assets/shaders/pointShadow.frag",
+            "assets/shaders/pointShadow.geom");
+
+        s_PointShadowShaderAnim = Shader::Create("PointShadowShaderAnim",
+            "assets/shaders/pointShadowAnimated.vert",
+            "assets/shaders/pointShadow.frag",
+            "assets/shaders/pointShadow.geom");
 
         float skyboxVertices[] = { -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
@@ -206,17 +229,23 @@ namespace NFSEngine {
 
             //s_RendererAPI->SetCullFace(1);// Fix for peter panning // Not working properly, requires further investigation
 
-            s_ShadowShader->Bind();
-            s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
-
+            
+            // Check optimization of this function //TODOgugapl
             for (const auto& packet : s_RendererQueue) {
-                s_ShadowShader->SetMat4("model", packet.transform);
-                /*
                 if (!packet.boneTransforms.empty()) {
+                    s_AnimatedShadowShader->Bind();
+                    s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    s_AnimatedShadowShader->SetMat4("model", packet.transform);
+
                     for (int i = 0; i < packet.boneTransforms.size(); i++) {
-                        s_ShadowShader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                        s_AnimatedShadowShader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
                     }
-                }*/
+                }
+                else {
+                    s_ShadowShader->Bind();
+                    s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    s_ShadowShader->SetMat4("model", packet.transform);
+                }
 
                 packet.vao->Bind();
                 s_RendererAPI->DrawIndexed(packet.vao);
@@ -230,6 +259,62 @@ namespace NFSEngine {
             //s_RendererAPI->SetCullFace(0);
 
             s_ShadowMapFBO->Unbind();
+        }
+
+        if (s_SceneData->PointLights && !s_SceneData->PointLights->empty()) {
+            auto* light = (*s_SceneData->PointLights)[0];
+            glm::vec3 lightPos = light->GetOwner()->GetTransform()->GetPosition();
+
+            // Change this parameter to work with point light //TODOgugapl
+            float farPlane = 25.0f;
+
+            glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane);
+
+            std::vector<glm::mat4> shadowTransforms;
+            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+
+            s_PointShadowMapFBO->Bind();
+            s_RendererAPI->SetViewport(0, 0, s_PointShadowMapFBO->GetSpecification().width, s_PointShadowMapFBO->GetSpecification().height);
+            s_RendererAPI->ClearDepth();
+            s_RendererAPI->SetDepthTest(true);
+
+            s_PointShadowShader->Bind();
+            s_PointShadowShader->SetMat4Array("shadowMatrices", shadowTransforms);
+            s_PointShadowShader->SetVec3("lightPos", lightPos);
+            s_PointShadowShader->SetFloat("far_plane", farPlane);
+
+            // Check optimization of this function //TODOgugapl
+
+            for (const auto& packet : s_RendererQueue) {
+                if (!packet.boneTransforms.empty()) continue;
+
+                s_PointShadowShader->SetMat4("model", packet.transform);
+                packet.vao->Bind();
+                s_RendererAPI->DrawIndexed(packet.vao);
+            }
+
+            s_PointShadowShaderAnim->Bind();
+            s_PointShadowShaderAnim->SetMat4Array("shadowMatrices", shadowTransforms);
+            s_PointShadowShaderAnim->SetVec3("lightPos", lightPos);
+            s_PointShadowShaderAnim->SetFloat("far_plane", farPlane);
+
+            for (const auto& packet : s_RendererQueue) {
+                if (packet.boneTransforms.empty()) continue;
+
+                s_PointShadowShaderAnim->SetMat4("model", packet.transform);
+                for (int i = 0; i < packet.boneTransforms.size(); i++) {
+                    s_PointShadowShaderAnim->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                }
+                packet.vao->Bind();
+                s_RendererAPI->DrawIndexed(packet.vao);
+            }
+
+            s_PointShadowMapFBO->Unbind();
         }
 
         if (s_HDRFramebuffer->GetSpecification().width > 0 && s_HDRFramebuffer->GetSpecification().height > 0) {
@@ -256,6 +341,10 @@ namespace NFSEngine {
                     packet.shader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
                     s_RendererAPI->BindTexture(s_ShadowMapFBO->GetDepthAttachmentRendererID(), 7);
                     packet.shader->SetInt("shadowMap", 7);
+
+                    s_RendererAPI->BindCubeTexture(s_PointShadowMapFBO->GetDepthAttachmentRendererID(), 8);
+                    packet.shader->SetInt("pointShadowMap", 8);
+                    packet.shader->SetFloat("pointShadowFarPlane", 25.0f);
 
                     if (s_SceneData->EnvMap) {
                         s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
@@ -366,6 +455,10 @@ namespace NFSEngine {
                     packet.shader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
                     s_RendererAPI->BindTexture(s_ShadowMapFBO->GetDepthAttachmentRendererID(), 7);
                     packet.shader->SetInt("shadowMap", 7);
+
+                    s_RendererAPI->BindCubeTexture(s_PointShadowMapFBO->GetDepthAttachmentRendererID(), 8);
+                    packet.shader->SetInt("pointShadowMap", 8);
+                    packet.shader->SetFloat("pointShadowFarPlane", 25.0f);
 
                     if (s_SceneData->EnvMap) {
                         s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);

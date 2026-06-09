@@ -133,7 +133,13 @@ namespace NFSEngine {
         // Shadow mapping things
         static std::shared_ptr<Framebuffer> s_ShadowMapFBO;
         static std::shared_ptr<Shader> s_ShadowShader;
+        static std::shared_ptr<Shader> s_AnimatedShadowShader;
         static glm::mat4 s_LightSpaceMatrix;
+
+        // Point Light Shadows
+        static std::shared_ptr<Framebuffer> s_PointShadowMapFBO;
+        static std::shared_ptr<Shader> s_PointShadowShader;
+        static std::shared_ptr<Shader> s_PointShadowShaderAnim;
 
         struct DebugBox {
             glm::mat4 transform;

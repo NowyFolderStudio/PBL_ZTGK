@@ -28,6 +28,6 @@ namespace NFSEngine {
         virtual void SetMat4Array(const std::string& name, const std::vector<glm::mat4>& value) = 0;
 
         static std::shared_ptr<Shader> Create(const std::string& name, const std::string& vertexPath,
-                                              const std::string& fragmentPath);
+                                const std::string& fragmentPath, const std::string& geometryPath = "");
     };
 } // namespace NFSEngine

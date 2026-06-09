@@ -65,11 +65,30 @@ namespace NFSEngine {
             glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, TextureTarget(multisampled), id, 0);
         }
 
+        static void AttachDepthCubemap(uint32_t id, uint32_t width, uint32_t height) {
+            glBindTexture(GL_TEXTURE_CUBE_MAP, id);
+
+            for (unsigned int i = 0; i < 6; ++i) {
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
+                    width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+            }
+
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+            glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, id, 0);
+        }
+
         static bool IsDepthFormat(FramebufferTextureFormat format) {
             switch (format) {
             case FramebufferTextureFormat::DEPTH24STENCIL8:
                 return true;
             case FramebufferTextureFormat::DEPTH_COMPONENT:
+                return true;
+            case FramebufferTextureFormat::DEPTH_CUBEMAP:
                 return true;
             }
             
@@ -150,16 +169,27 @@ namespace NFSEngine {
         }
 
         if (m_DepthAttachmentSpecification.textureFormat != FramebufferTextureFormat::None) {
-            Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
-            Utils::BindTexture(multisample, m_DepthAttachment);
+
+            if (m_DepthAttachmentSpecification.textureFormat == FramebufferTextureFormat::DEPTH_CUBEMAP) {
+                glGenTextures(1, &m_DepthAttachment);
+                glBindTexture(GL_TEXTURE_CUBE_MAP, m_DepthAttachment);
+            }
+            else {
+                Utils::CreateTextures(multisample, &m_DepthAttachment, 1);
+                Utils::BindTexture(multisample, m_DepthAttachment);
+            }
+
             switch (m_DepthAttachmentSpecification.textureFormat) {
             case FramebufferTextureFormat::DEPTH24STENCIL8:
                 Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.samples, GL_DEPTH24_STENCIL8,
-                                          GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.width, m_Specification.height);
+                    GL_DEPTH_STENCIL_ATTACHMENT, m_Specification.width, m_Specification.height);
                 break;
             case FramebufferTextureFormat::DEPTH_COMPONENT:
                 Utils::AttachDepthTexture(m_DepthAttachment, m_Specification.samples, GL_DEPTH_COMPONENT,
-                                          GL_DEPTH_ATTACHMENT, m_Specification.width, m_Specification.height);
+                    GL_DEPTH_ATTACHMENT, m_Specification.width, m_Specification.height);
+                break;
+            case FramebufferTextureFormat::DEPTH_CUBEMAP:
+                Utils::AttachDepthCubemap(m_DepthAttachment, m_Specification.width, m_Specification.height);
                 break;
             }
         }

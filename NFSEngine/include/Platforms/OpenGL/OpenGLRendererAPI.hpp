@@ -20,5 +20,6 @@ namespace NFSEngine {
         void SetBlendEnabled(bool enabled) override;
         void SetBlendFunction(BlendFunction func) override;
         void SetCullFace(bool value) override;
+        void BindCubeTexture(uint32_t rendererID, uint32_t slot) override;
     };
 } // namespace NFSEngine

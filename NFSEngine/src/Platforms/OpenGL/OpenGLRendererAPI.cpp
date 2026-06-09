@@ -105,4 +105,9 @@ namespace NFSEngine {
             glCullFace(GL_BACK);
         }
     }
+
+    void OpenGLRendererAPI::BindCubeTexture(uint32_t rendererID, uint32_t slot) {
+        glActiveTexture(GL_TEXTURE0 + slot);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, rendererID); // <-- Magiczna ró¿nica!
+    }
 } // namespace NFSEngine
