@@ -11,6 +11,8 @@
 #include "Renderer/Texture.hpp"
 #include "UI/UIComponents.hpp"
 #include "UI/UIFactory.hpp"
+#include <vector>
+#include <string>
 
 class HUDComponent : public NFSEngine::Component {
 public:
@@ -37,7 +39,18 @@ private:
     NFSEngine::Canvas* m_Canvas = nullptr;
 
     NFSEngine::UIObject* m_ScoreLabel = nullptr;
-    NFSEngine::UIObject* m_AuraLabel = nullptr;
+
+    NFSEngine::UIObject* m_CenterNameLabel = nullptr;
+    NFSEngine::UIObject* m_CenterSkillLabel = nullptr;
+
+    NFSEngine::UIObject* m_LeftKeyLabel = nullptr;
+    NFSEngine::UIObject* m_LeftNameLabel = nullptr;
+    NFSEngine::UIObject* m_LeftSkillLabel = nullptr;
+
+    NFSEngine::UIObject* m_RightKeyLabel = nullptr;
+    NFSEngine::UIObject* m_RightNameLabel = nullptr;
+    NFSEngine::UIObject* m_RightSkillLabel = nullptr;
+
     std::vector<NFSEngine::UIObject*> m_Hearts;
     std::vector<NFSEngine::UIObject*> m_FullNotes;
     size_t m_NumberOfNotes = 9;
@@ -45,6 +58,8 @@ private:
     size_t m_AuraEventId = 0;
     size_t m_ScoreEventId = 0;
     size_t m_LivesEventId = 0;
+
+    const std::vector<AuraType> m_AuraOrder = { AuraType::First, AuraType::Second, AuraType::Third };
 
 protected:
     void OnAwake() override {
@@ -54,7 +69,6 @@ protected:
     }
 
     void OnStart() override {
-
         InitScoreUI();
         InitHeartsUI();
         InitAuraUI();
@@ -125,7 +139,7 @@ private:
         float noteHeight = 100;
         float noteWidth = noteHeight * aspectRatio;
         float targetWidth = 500;
-        glm::vec3 firstPosition = { (1920 - targetWidth) / 2.0f, 75.0f, 1.0f };
+        glm::vec3 firstPosition = { (1920 - targetWidth) / 2.0f, 1000.0f, 1.0f };
 
         float stepX = (targetWidth - noteWidth) / (m_NumberOfNotes - 1);
         NFSEngine::TextureParameters texParam;
@@ -183,18 +197,20 @@ private:
             m_FullNotes.push_back(&NFSEngine::UI::Image(*m_Canvas, noteParameters));
         }
     }
+
     void InitHeartsUI() {
-        constexpr int k_MaxLives = 3; // XD?
+        constexpr int k_MaxLives = 3;
+
         NFSEngine::UI::ImageParameters heartBgParams;
-        heartBgParams.position = glm::vec3(300, 100, 0.8f);
-        heartBgParams.width = 400;
+        heartBgParams.position = glm::vec3(220, 100, 0.8f);
+        heartBgParams.width = 360;
         heartBgParams.height = 100;
         heartBgParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.45f);
         NFSEngine::UI::Image(*m_Canvas, heartBgParams);
 
         const float heartSize = 60.0f;
-        const float heartSpacing = 120.0f;
-        const float heartStartX = 195.0f;
+        const float heartSpacing = 100.0f;
+        const float heartStartX = 120.0f;
         const float heartY = 100.0f;
 
         m_Hearts.reserve(k_MaxLives);
@@ -208,18 +224,83 @@ private:
         }
     }
     void InitAuraUI() {
-        NFSEngine::UI::ImageParameters auraBgParams;
-        auraBgParams.position = glm::vec3(960, 1000, 1.0f);
-        auraBgParams.width = 400;
-        auraBgParams.height = 100;
-        auraBgParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.5f);
-        NFSEngine::UI::Image(*m_Canvas, auraBgParams);
+        const float centerX = 960.0f;
+        const float sideOffset = 340.0f;
+        const float spacing = 35.0f;
 
-        NFSEngine::UI::LabelParameters labelParams;
-        labelParams.position = glm::vec3(960, 1000, 2.0f);
-        labelParams.text = "AURA: NONE";
-        labelParams.color = glm::vec4(1.0f);
-        m_AuraLabel = &NFSEngine::UI::Label(*m_Canvas, labelParams);
+        auto SetupSideBlock = [&](float x, std::string keyText, NFSEngine::UIObject*& key, NFSEngine::UIObject*& name,
+                                  NFSEngine::UIObject*& skill) {
+            NFSEngine::UI::ImageParameters bg;
+            bg.position = glm::vec3(x, 80.0f, 1.0f);
+            bg.width = 240;
+            bg.height = 120;
+            bg.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.4f);
+            NFSEngine::UI::Image(*m_Canvas, bg);
+
+            NFSEngine::UI::LabelParameters pKey;
+            pKey.position = glm::vec3(x, 80.0f + spacing, 2.0f);
+            pKey.text = keyText;
+            pKey.scale = 0.6f;
+            pKey.color = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
+            key = &NFSEngine::UI::Label(*m_Canvas, pKey);
+
+            NFSEngine::UI::LabelParameters pName;
+            pName.position = glm::vec3(x, 80.0f, 2.0f);
+            pName.text = "NONE";
+            name = &NFSEngine::UI::Label(*m_Canvas, pName);
+
+            NFSEngine::UI::LabelParameters pSkill;
+            pSkill.position = glm::vec3(x, 80.0f - spacing, 2.0f);
+            pSkill.text = "(NONE)";
+            pSkill.scale = 0.6f;
+            skill = &NFSEngine::UI::Label(*m_Canvas, pSkill);
+        };
+
+        SetupSideBlock(centerX - sideOffset, "[Q]", m_LeftKeyLabel, m_LeftNameLabel, m_LeftSkillLabel);
+        SetupSideBlock(centerX + sideOffset, "[E]", m_RightKeyLabel, m_RightNameLabel, m_RightSkillLabel);
+
+        NFSEngine::UI::ImageParameters centerBg;
+        centerBg.position = glm::vec3(centerX, 110.0f, 1.1f);
+        centerBg.width = 320;
+        centerBg.height = 120;
+        centerBg.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.8f);
+        NFSEngine::UI::Image(*m_Canvas, centerBg);
+
+        NFSEngine::UI::LabelParameters pName;
+        pName.position = glm::vec3(centerX, 125.0f, 2.0f);
+        pName.text = "NONE";
+        m_CenterNameLabel = &NFSEngine::UI::Label(*m_Canvas, pName);
+
+        NFSEngine::UI::LabelParameters pSkill;
+        pSkill.position = glm::vec3(centerX, 95.0f, 2.0f);
+        pSkill.text = "(NONE)";
+        pSkill.scale = 0.7f;
+        m_CenterSkillLabel = &NFSEngine::UI::Label(*m_Canvas, pSkill);
+    }
+    std::string GetAuraName(AuraType aura) {
+        switch (aura) {
+        case AuraType::First:
+            return "PIANO";
+        case AuraType::Second:
+            return "BASS";
+        case AuraType::Third:
+            return "GUITAR";
+        default:
+            return "UNKNOWN";
+        }
+    }
+
+    std::string GetAuraSkill(AuraType aura) {
+        switch (aura) {
+        case AuraType::First:
+            return "(DOUBLE JUMP)";
+        case AuraType::Second:
+            return "(DASH)";
+        case AuraType::Third:
+            return "(ATTACK)";
+        default:
+            return "";
+        }
     }
 
     void UpdateScoreText(int newScore) {
@@ -245,6 +326,7 @@ private:
             }
         }
     }
+
     void UpdateHeartVisuals(int currentLives) {
         for (size_t i = 0; i < m_Hearts.size(); ++i) {
             if (!m_Hearts[i]) continue;
@@ -259,24 +341,37 @@ private:
             }
         }
     }
-    void UpdateAuraText(AuraType newAura) {
-        if (!m_AuraLabel || !m_AuraLabel->HasComponent<NFSEngine::TextComponent>()) return;
 
-        std::string auraText = "AURA: ";
-        switch (newAura) {
-        case AuraType::First:
-            auraText += "PIANO";
-            break;
-        case AuraType::Second:
-            auraText += "BASS";
-            break;
-        case AuraType::Third:
-            auraText += "GUITAR";
-            break;
-        default:
-            auraText += "UNKNOWN";
-            break;
+    void UpdateAuraText(AuraType newAura) {
+        int currentIndex = 0;
+        int totalAuras = static_cast<int>(m_AuraOrder.size());
+
+        for (int i = 0; i < totalAuras; ++i) {
+            if (m_AuraOrder[i] == newAura) {
+                currentIndex = i;
+                break;
+            }
         }
-        m_AuraLabel->GetComponent<NFSEngine::TextComponent>()->TextString = auraText;
+
+        int leftIndex = (currentIndex - 1 + totalAuras) % totalAuras;
+        int rightIndex = (currentIndex + 1) % totalAuras;
+
+        auto SetText = [&](NFSEngine::UIObject* obj, std::string text, float scale) {
+            if (obj && obj->HasComponent<NFSEngine::TextComponent>()) {
+                auto* tc = obj->GetComponent<NFSEngine::TextComponent>();
+                tc->Color = glm::vec4(1.0f);
+                tc->TextString = text;
+                tc->Scale = scale;
+            }
+        };
+
+        SetText(m_CenterNameLabel, GetAuraName(m_AuraOrder[currentIndex]), 1.0f);
+        SetText(m_CenterSkillLabel, GetAuraSkill(m_AuraOrder[currentIndex]), 0.7f);
+
+        SetText(m_LeftNameLabel, GetAuraName(m_AuraOrder[leftIndex]), 0.8f);
+        SetText(m_LeftSkillLabel, GetAuraSkill(m_AuraOrder[leftIndex]), 0.6f);
+
+        SetText(m_RightNameLabel, GetAuraName(m_AuraOrder[rightIndex]), 0.8f);
+        SetText(m_RightSkillLabel, GetAuraSkill(m_AuraOrder[rightIndex]), 0.6f);
     }
 };

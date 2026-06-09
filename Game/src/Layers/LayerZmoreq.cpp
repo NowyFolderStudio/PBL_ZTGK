@@ -38,7 +38,6 @@
 #include <imgui.h>
 #include <string>
 
-// TO ROZWIĄZUJE PROBLEM 90% BŁĘDÓW "Undeclared Identifier":
 using namespace NFSEngine;
 
 LayerZmoreq::LayerZmoreq() {
@@ -69,7 +68,7 @@ void LayerZmoreq::OnAttach() {
     m_HUD = &uiObj->AddComponent<HUDComponent>();
 
     // --- Shadery i Materiały ---
-    m_Shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    m_Shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/DissolveShader.frag");
 
     auto matSample = std::make_shared<Material>();
     matSample->AlbedoMap = Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Color.png");
@@ -231,6 +230,15 @@ void LayerZmoreq::OnUpdate(DeltaTime deltaTime) {
         glm::vec3 euler = glm::degrees(glm::eulerAngles(DebugCamera::GetOrientation()));
         camTransform->SetRotation(euler);
     }
+
+    static float timePassed = 0.0f;
+    timePassed += deltaTime.GetSeconds();
+
+    float dissolveValue = (std::sin(timePassed * 2.0f) + 1.0f) / 2.0f;
+
+    m_Shader->Bind();
+    m_Shader->SetFloat("u_Time", timePassed);
+    m_Shader->SetFloat("u_DissolveAmount", dissolveValue);
 }
 
 void LayerZmoreq::OnRender() {
