@@ -17,7 +17,7 @@ void CharacterAnimationController::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 void CharacterAnimationController::UpdateStates() {
     bool onGround = m_OnGround;
     m_OnGround = m_Rigidbody->IsGrounded;
-    m_InMotion = (glm::length(m_Rigidbody->Velocity) > 0.01f);
+    m_InMotion = (glm::length(m_Rigidbody->Velocity) > 1.0f);
     m_VerticalSpeed = glm::length(glm::vec2(m_Rigidbody->Velocity.x, m_Rigidbody->Velocity.z));
     float horizontalSpeed = m_HorizontalSpeed;
     m_HorizontalSpeed = m_Rigidbody->Velocity.y;

@@ -9,6 +9,9 @@ in vec3 FragPos;
 
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
+layout (location = 2) out vec4 OutlineColor;
+layout (location = 3) out vec4 OutNormal;
+layout (location = 4) out vec4 OutOutlineParams;
 
 // Textures and colors
 uniform sampler2D u_AlbedoMap;
@@ -17,6 +20,11 @@ uniform vec3 u_AlbedoColor;
 
 uniform sampler2D u_RampMap;
 uniform bool u_HasRampMap;
+
+uniform vec3 u_OutlineColor = vec3(0, 0, 0);
+uniform float u_OutlineSize = 0.08;
+uniform float u_OutlineDepthThreshold = 1.1;
+uniform float u_OutlineNormalThreshold = 0.23;
 
 // Optional normal map
 // uniform sampler2D u_NormalMap;
@@ -166,4 +174,7 @@ void main()
 
     FragColor = vec4(finalColor, 1.0);
     BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    OutNormal = vec4(normalize(Normal), 1.0);
+    OutlineColor = vec4(u_OutlineColor, 1);
+    OutOutlineParams = vec4(u_OutlineSize, u_OutlineDepthThreshold, u_OutlineNormalThreshold, 1.0);
 }

@@ -10,6 +10,7 @@
 #include "Components/DirectionalLight.hpp"
 #include "Components/PointLight.hpp"
 #include "Components/SpotLight.hpp"
+#include "Renderer/Framebuffer.hpp"
 
 namespace NFSEngine {
 
@@ -50,8 +51,17 @@ namespace NFSEngine {
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetConfig().WindowWidth;
         fbSpec.height = Application::Get().GetConfig().WindowHeight;
-        fbSpec.attachments
-            = { FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::RGBA16F, FramebufferTextureFormat::DEPTH24STENCIL8 };
+
+        // clang-format off
+        fbSpec.attachments = {
+            FramebufferTextureFormat::RGBA16F,          // Main colors
+            FramebufferTextureFormat::RGBA16F,          // Bloom
+            FramebufferTextureFormat::RGBA8,            // Outline colors
+            FramebufferTextureFormat::RGBA16F,          // Normal vectors
+            FramebufferTextureFormat::RGBA16F,          // Outline parameters
+            FramebufferTextureFormat::DEPTH24STENCIL8   // Depth
+        };
+        // clang-format on
 
         s_HDRFramebuffer = Framebuffer::Create(fbSpec);
 
@@ -452,6 +462,18 @@ namespace NFSEngine {
 
         s_RendererAPI->BindTexture(s_BloomFBOs[0]->GetColorAttachmentRendererID(0), 1);
         s_PostProcessShader->SetInt("bloomBlurTexture", 1);
+
+        s_RendererAPI->BindTexture(s_HDRFramebuffer->GetColorAttachmentRendererID(2), 2);
+        s_PostProcessShader->SetInt("outlineColorTexture", 2);
+
+        s_RendererAPI->BindTexture(s_HDRFramebuffer->GetDepthAttachmentRendererID(), 3);
+        s_PostProcessShader->SetInt("depthTexture", 3);
+
+        s_RendererAPI->BindTexture(s_HDRFramebuffer->GetColorAttachmentRendererID(3), 4);
+        s_PostProcessShader->SetInt("normalTexture", 4);
+
+        s_RendererAPI->BindTexture(s_HDRFramebuffer->GetColorAttachmentRendererID(4), 5);
+        s_PostProcessShader->SetInt("outlineParamsTexture", 5);
 
         s_RendererAPI->DrawFullscreenTriangle();
 

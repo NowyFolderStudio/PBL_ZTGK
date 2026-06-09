@@ -20,6 +20,7 @@ namespace NFSEngine {
         void ClearAttachment(uint32_t attachmentIndex, int value) override;
 
         uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const override { return m_ColorAttachments[index]; }
+        uint32_t GetDepthAttachmentRendererID() const override { return m_DepthAttachment; }
         const FramebufferSpecification& GetSpecification() const override { return m_Specification; }
 
     private:

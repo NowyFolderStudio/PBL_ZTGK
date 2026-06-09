@@ -10,14 +10,12 @@ namespace NFSEngine {
 
         static GLenum TextureTarget(bool multisampled) { return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D; }
 
-        static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count) {
-            glGenTextures(count, outID);
-        }
+        static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count) { glGenTextures(count, outID); }
 
         static void BindTexture(bool multisampled, uint32_t id) { glBindTexture(TextureTarget(multisampled), id); }
 
-        static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, GLenum dataType, uint32_t width,
-                                       uint32_t height, int index) {
+        static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, GLenum dataType,
+                                       uint32_t width, uint32_t height, int index) {
             bool multisampled = samples > 1;
             if (multisampled) {
                 glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, samples, internalFormat, width, height, GL_FALSE);
@@ -127,8 +125,8 @@ namespace NFSEngine {
                                               m_Specification.width, m_Specification.height, i);
                     break;
                 case FramebufferTextureFormat::RED_INTEGER:
-                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_R32I, GL_RED_INTEGER, GL_UNSIGNED_BYTE,
-                                              m_Specification.width, m_Specification.height, i);
+                    Utils::AttachColorTexture(m_ColorAttachments[i], m_Specification.samples, GL_R32I, GL_RED_INTEGER,
+                                              GL_UNSIGNED_BYTE, m_Specification.width, m_Specification.height, i);
                     break;
                 }
             }
@@ -146,8 +144,19 @@ namespace NFSEngine {
         }
 
         if (m_ColorAttachments.size() > 1) {
-            NFS_CORE_ASSERT(m_ColorAttachments.size() <= 4);
-            GLenum buffers[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+            NFS_CORE_ASSERT(m_ColorAttachments.size() <= 8);
+            // clang-format off
+            GLenum buffers[8] = { 
+                GL_COLOR_ATTACHMENT0,
+                GL_COLOR_ATTACHMENT1,
+                GL_COLOR_ATTACHMENT2,
+                GL_COLOR_ATTACHMENT3,
+                GL_COLOR_ATTACHMENT4,
+                GL_COLOR_ATTACHMENT5,
+                GL_COLOR_ATTACHMENT6,
+                GL_COLOR_ATTACHMENT7
+            };
+            // clang-format on
             glDrawBuffers(m_ColorAttachments.size(), buffers);
         } else if (m_ColorAttachments.empty()) {
             // Only depth-pass
