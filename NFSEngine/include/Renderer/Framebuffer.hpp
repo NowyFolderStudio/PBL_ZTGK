@@ -11,6 +11,8 @@ namespace NFSEngine {
         RGBA16F,
         RED_INTEGER,
         DEPTH24STENCIL8,
+        DEPTH_COMPONENT,
+        DEPTH_CUBEMAP,
         Depth = DEPTH24STENCIL8
     };
 

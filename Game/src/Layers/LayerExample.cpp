@@ -363,14 +363,14 @@ void LayerExample::OnAttach() {
 
     // Lighting
     NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({ 0.0f, 2.0f, 2.0f });
+    lightObj->GetTransform()->SetPosition({ -55.0f, 13.0f, 55.0f });
     auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
     lightComp.Color = { 1.0f, 0.3f, 0.3f };
     lightComp.Intensity = 120.0f;
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
-    sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
+    sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.6f);
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
     sunComp.Intensity = 1.0f;
 
@@ -495,7 +495,6 @@ void LayerExample::OnAttach() {
     camTrigger.CustomDistance = 15.0f;
 
     // Audio
-
     m_Sequencer.Start(120.0f);
 
     NFSEngine::GameObject* bassObj1 = m_Scene->CreateGameObject("BassMusicPlayer1");
@@ -652,6 +651,7 @@ void LayerExample::OnAttach() {
     wallLogic.OnAwake();
     */
 
+    /*
     auto gramophoneModel1 = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/GramophoneLOW.obj");
     auto gramophoneShader
         = NFSEngine::Shader::Create("GramophoneShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -673,7 +673,7 @@ void LayerExample::OnAttach() {
             testComp.AddLOD(gramophoneModel1, 10000.0f);
         }
     }
-
+    */
     /*
     auto matNeonRed = std::make_shared<NFSEngine::Material>();
     matNeonRed->AlbedoColor = glm::vec3(0.1f, 0.0f, 0.0f);

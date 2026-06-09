@@ -6,7 +6,7 @@
 
 namespace NFSEngine {
 
-    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
+    OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath)
         : m_Name(name) {
 
         std::string vertexCode = ReadFile(vertexPath);
@@ -25,14 +25,35 @@ namespace NFSEngine {
         glCompileShader(fragment);
         CheckCompileErrors(fragment, "FRAGMENT");
 
+        uint32_t geometry = 0;
+        bool hasGeometry = !geometryPath.empty();
+
+        if (hasGeometry) {
+            std::string geometryCode = ReadFile(geometryPath);
+            const char* gShaderCode = geometryCode.c_str();
+
+            geometry = glCreateShader(GL_GEOMETRY_SHADER);
+            glShaderSource(geometry, 1, &gShaderCode, NULL);
+            glCompileShader(geometry);
+            CheckCompileErrors(geometry, "GEOMETRY");
+        }
+
         m_RendererID = glCreateProgram();
         glAttachShader(m_RendererID, vertex);
         glAttachShader(m_RendererID, fragment);
+
+        if (hasGeometry) {
+            glAttachShader(m_RendererID, geometry);
+        }
+
         glLinkProgram(m_RendererID);
         CheckCompileErrors(m_RendererID, "PROGRAM");
 
         glDeleteShader(vertex);
         glDeleteShader(fragment);
+        if (hasGeometry) {
+            glDeleteShader(geometry);
+        }
     }
 
     OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererID); }

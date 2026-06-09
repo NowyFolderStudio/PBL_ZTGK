@@ -19,6 +19,10 @@ out vec3 FragPos;
 out vec3 Normal;
 out mat3 TBN;
 
+// shadow things
+out vec4 FragPosLightSpace;
+uniform mat4 lightSpaceMatrix;
+
 void main()
 {
     mat4 boneTransform = mat4(0.0);
@@ -62,4 +66,6 @@ void main()
 
     Normal = N;
     TBN = mat3(T, B, N);
+
+    FragPosLightSpace = lightSpaceMatrix * worldPosition;
 }

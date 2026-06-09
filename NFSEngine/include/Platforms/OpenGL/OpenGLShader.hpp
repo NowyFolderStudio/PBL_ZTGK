@@ -7,7 +7,7 @@ namespace NFSEngine {
 
     class OpenGLShader : public Shader {
     public:
-        OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath);
+        OpenGLShader(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath, const std::string& geometryPath = "");
         virtual ~OpenGLShader();
 
         void Bind() const override;
