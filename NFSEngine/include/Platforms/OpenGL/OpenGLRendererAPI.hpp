@@ -7,6 +7,7 @@ namespace NFSEngine {
         void Init() override;
         void SetClearColor(const glm::vec4& color) override;
         void Clear() override;
+        void ClearDepth() override;
         void DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) override;
         void DrawIndexedInstanced(const std::shared_ptr<VertexArray>& vertexArray, uint32_t instanceCount) override;
         void DrawArrays(const std::shared_ptr<VertexArray>& vertexArray, uint32_t vertexCount) override;
@@ -18,5 +19,6 @@ namespace NFSEngine {
         void SetWireframeMode(bool value) override;
         void SetBlendEnabled(bool enabled) override;
         void SetBlendFunction(BlendFunction func) override;
+        void SetCullFace(bool value) override;
     };
 } // namespace NFSEngine

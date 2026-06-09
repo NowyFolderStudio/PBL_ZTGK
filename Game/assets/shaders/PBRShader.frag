@@ -9,6 +9,9 @@ in vec3 Normal;
 
 in mat3 TBN;
 
+in vec4 FragPosLightSpace;
+uniform sampler2D shadowMap;
+
 uniform vec3 viewPos;
 
 uniform sampler2D u_AlbedoMap;
@@ -123,6 +126,31 @@ vec3 fresnelSchlickRoughness(float cosTheta, vec3 F0, float roughness) {
     return F0 + (max(vec3(1.0 - roughness), F0) - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
+float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal, vec3 lightDir) {
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    
+    projCoords = projCoords * 0.5 + 0.5;
+
+    if(projCoords.z > 1.0)
+        return 0.0;
+
+    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.0005);
+
+    float shadow = 0.0;
+    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    float currentDepth = projCoords.z;
+    
+    for(int x = -1; x <= 1; ++x) {
+        for(int y = -1; y <= 1; ++y) {
+            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            shadow += (currentDepth - bias > pcfDepth) ? 1.0 : 0.0;        
+        }    
+    }
+    shadow /= 9.0;
+    
+    return shadow;
+}
+
 void main() {
 	vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
 
@@ -165,7 +193,10 @@ void main() {
     kD_dir *= 1.0 - metallic;     
 
     float NdotL_dir = max(dot(N, L_dir), 0.0);
-    Lo += (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir;
+
+    float shadow = ShadowCalculation(FragPosLightSpace, N, L_dir);
+
+    Lo += (1.0 - shadow) * (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir;
 
     // Point light
 

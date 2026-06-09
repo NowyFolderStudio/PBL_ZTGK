@@ -11,6 +11,7 @@ namespace NFSEngine {
         RGBA16F,
         RED_INTEGER,
         DEPTH24STENCIL8,
+        DEPTH_COMPONENT,
         Depth = DEPTH24STENCIL8
     };
 
@@ -51,6 +52,7 @@ namespace NFSEngine {
         virtual void ClearAttachment(uint32_t attachmentIndex, int value) = 0;
 
         virtual uint32_t GetColorAttachmentRendererID(uint32_t index = 0) const = 0;
+        virtual uint32_t GetDepthAttachmentRendererID() const = 0;
         virtual const FramebufferSpecification& GetSpecification() const = 0;
 
         static std::shared_ptr<Framebuffer> Create(const FramebufferSpecification& spec);

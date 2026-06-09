@@ -370,7 +370,7 @@ void LayerExample::OnAttach() {
 
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
-    sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
+    sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.6f);
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
     sunComp.Intensity = 1.0f;
 
@@ -495,7 +495,6 @@ void LayerExample::OnAttach() {
     camTrigger.CustomDistance = 15.0f;
 
     // Audio
-
     m_Sequencer.Start(120.0f);
 
     NFSEngine::GameObject* bassObj1 = m_Scene->CreateGameObject("BassMusicPlayer1");

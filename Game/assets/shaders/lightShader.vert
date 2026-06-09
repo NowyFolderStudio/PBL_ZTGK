@@ -14,6 +14,10 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
+// for shadow mapping
+out vec4 FragPosLightSpace;
+uniform mat4 lightSpaceMatrix;
+
 void main() {
 	gl_Position = projection * view * model * vec4(a_Pos, 1.0);
     FragPos = vec3(model * vec4(a_Pos, 1.0));
@@ -30,4 +34,6 @@ void main() {
     vec3 B = cross(N, T);
     
     TBN = mat3(T, B, N);
+
+    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 }

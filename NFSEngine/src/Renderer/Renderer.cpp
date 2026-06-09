@@ -35,6 +35,10 @@ namespace NFSEngine {
     std::shared_ptr<Shader> Renderer::s_DownsampleShader = nullptr;
     std::shared_ptr<Shader> Renderer::s_UpsampleShader = nullptr;
 
+    std::shared_ptr<Framebuffer> Renderer::s_ShadowMapFBO = nullptr;
+    std::shared_ptr<Shader> Renderer::s_ShadowShader = nullptr;
+    glm::mat4 Renderer::s_LightSpaceMatrix = glm::mat4(1.0f);
+
     std::vector<Renderer::DebugBox> Renderer::s_DebugQueue;
     std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
     std::shared_ptr<Shader> Renderer::s_DebugShader;
@@ -66,6 +70,14 @@ namespace NFSEngine {
         SetupBloomChain(Application::Get().GetConfig().WindowWidth, Application::Get().GetConfig().WindowHeight);
 
         s_PostProcessShader = Shader::Create("PostProcess", "assets/shaders/postprocess.vert", "assets/shaders/postprocess.frag");
+
+        FramebufferSpecification shadowSpec;
+        shadowSpec.width = 4096;
+        shadowSpec.height = 4096;
+        shadowSpec.attachments = { FramebufferTextureFormat::DEPTH_COMPONENT };
+
+        s_ShadowMapFBO = Framebuffer::Create(shadowSpec);
+        s_ShadowShader = Shader::Create("ShadowShader", "assets/shaders/shadowMap.vert", "assets/shaders/shadowMap.frag");
 
         float skyboxVertices[] = { -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
@@ -177,6 +189,54 @@ namespace NFSEngine {
         std::sort(s_RendererQueue.begin(), s_RendererQueue.end(),
                   [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
 
+        std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
+            [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
+
+        if (s_SceneData->DirLight) {
+            glm::vec3 lightPos = glm::vec3(0.0f) - (s_SceneData->DirLight->Direction * 50.0f);
+            glm::mat4 lightProjection = glm::ortho(-120.0f, 120.0f, -120.0f, 120.0f, 1.0f, 250.0f);
+            glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            s_LightSpaceMatrix = lightProjection * lightView;
+
+            s_ShadowMapFBO->Bind();
+
+            s_RendererAPI->SetViewport(0, 0, s_ShadowMapFBO->GetSpecification().width, s_ShadowMapFBO->GetSpecification().height);
+            s_RendererAPI->ClearDepth();
+            s_RendererAPI->SetDepthTest(true);
+
+            //s_RendererAPI->SetCullFace(1);// Fix for peter panning // Not working properly, requires further investigation
+
+            s_ShadowShader->Bind();
+            s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+
+            for (const auto& packet : s_RendererQueue) {
+                s_ShadowShader->SetMat4("model", packet.transform);
+                /*
+                if (!packet.boneTransforms.empty()) {
+                    for (int i = 0; i < packet.boneTransforms.size(); i++) {
+                        s_ShadowShader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                    }
+                }*/
+
+                packet.vao->Bind();
+                s_RendererAPI->DrawIndexed(packet.vao);
+            }
+
+            for (const auto& packet : s_InstancedQueue) {
+                packet.vao->Bind();
+                s_RendererAPI->DrawIndexedInstanced(packet.vao, packet.instanceCount);
+            }
+
+            //s_RendererAPI->SetCullFace(0);
+
+            s_ShadowMapFBO->Unbind();
+        }
+
+        if (s_HDRFramebuffer->GetSpecification().width > 0 && s_HDRFramebuffer->GetSpecification().height > 0) {
+            s_HDRFramebuffer->Bind();
+            s_RendererAPI->SetViewport(0, 0, s_HDRFramebuffer->GetSpecification().width, s_HDRFramebuffer->GetSpecification().height);
+        }
+
         uint32_t lastShaderID = 0;
         uint32_t lastTextureID = 0;
 
@@ -191,8 +251,11 @@ namespace NFSEngine {
 
                     packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
                     packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
-
                     packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
+
+                    packet.shader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    s_RendererAPI->BindTexture(s_ShadowMapFBO->GetDepthAttachmentRendererID(), 7);
+                    packet.shader->SetInt("shadowMap", 7);
 
                     if (s_SceneData->EnvMap) {
                         s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
@@ -285,8 +348,6 @@ namespace NFSEngine {
             }
         }
 
-        std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
-                  [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
         {
             NFS_PROFILE_SCOPE("Instanced Render Queue");
             s_RendererAPI->SetBlendEnabled(true);
@@ -301,6 +362,10 @@ namespace NFSEngine {
                     packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
                     packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
                     packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
+
+                    packet.shader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    s_RendererAPI->BindTexture(s_ShadowMapFBO->GetDepthAttachmentRendererID(), 7);
+                    packet.shader->SetInt("shadowMap", 7);
 
                     if (s_SceneData->EnvMap) {
                         s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
