@@ -47,6 +47,7 @@
 #include "Platforms/OpenGL/OpenGLTexture.hpp"
 
 #include "SceneLoader/CasetteComponentLoader.hpp"
+#include "SceneLoader/OutlineParametersLoader.hpp"
 #include "SceneLoader/SceneLoader.hpp"
 #include "SceneLoader/CoinComponentLoader.hpp"
 #include "SceneLoader/CheckpointComponentLoader.hpp"
@@ -98,6 +99,7 @@ void LayerExample::OnAttach() {
     sceneLoader.RegisterLoader(std::make_unique<BounceComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<CasetteComponentLoader>());
     sceneLoader.RegisterLoader(std::make_unique<AuraPlatformLoader>());
+    sceneLoader.RegisterLoader(std::make_unique<OutlineParameterstLoader>());
     sceneLoader.LoadScene(m_Scene.get(), "assets/scenes/POziomix_export.json");
 
     int gameObjectCounter = m_Scene->GetAllGameObjects().size();
