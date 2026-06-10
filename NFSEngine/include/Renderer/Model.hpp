@@ -62,6 +62,7 @@ namespace NFSEngine {
 
         const std::vector<MeshData>& GetMeshes() const { return m_Meshes; }
 
+
         const std::vector<AssimpMaterialInfo>& GetMaterialInfo() const { return m_MaterialInfo; }
 
         const BoundingSphere& GetMeshBoundingSphere() const { return m_MeshBoundingSphere; }
