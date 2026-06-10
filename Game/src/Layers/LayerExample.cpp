@@ -708,9 +708,8 @@ void LayerExample::OnAttach() {
     consoleModelComponent.AddLOD(consoleModel, 10000.0f);
 
     std::vector<glm::vec3> colors = {
-        {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f},
-        {1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f},
-        {1.0f, 0.5f, 0.0f}, {0.5f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.5f},
+        { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.0f }, { 1.0f, 0.0f, 1.0f },
+        { 0.0f, 1.0f, 1.0f }, { 1.0f, 0.5f, 0.0f }, { 0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.5f },
     };
 
     // test light console
@@ -719,9 +718,9 @@ void LayerExample::OnAttach() {
 
     float buttonSizeXZ = 5.0f;
     float buttonHeight = 0.2f;
-    float gap = 0.2f;  
+    float gap = 0.2f;
 
-    float spacing = buttonSizeXZ + gap; 
+    float spacing = buttonSizeXZ + gap;
 
     int index = 0;
 
@@ -738,7 +737,7 @@ void LayerExample::OnAttach() {
             auto cubeMesh = buttonObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, material);
 
             auto& collider = buttonObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-            //collider.Size = glm::vec3(buttonSizeXZ, buttonHeight, buttonSizeXZ);
+            // collider.Size = glm::vec3(buttonSizeXZ, buttonHeight, buttonSizeXZ);
 
             auto& logic = buttonObj->AddComponent<ConsoleButtonComponent>();
             logic.ButtonIndex = index;
@@ -798,7 +797,7 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         prevEditorActive = editorActive;
         if (editorActive) {
             if (camController) camController->SetActive(false);
-            if (playerController) playerController->SetActive(false);
+            if (playerController) playerController->SetActive(true);
             if (m_CachedCamera) {
                 auto* ct = m_CachedCamera->GetOwner()->GetTransform();
                 NFSEngine::DebugCamera::SyncFromTransform(ct->GetPosition(), ct->GetRotation());

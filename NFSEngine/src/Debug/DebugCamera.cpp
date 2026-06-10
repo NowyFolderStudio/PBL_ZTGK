@@ -35,7 +35,10 @@ namespace NFSEngine {
     }
 
     DebugCamera::DebugCamera(float fov, float aspectRatio, float nearClip, float farClip)
-        : m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip) {
+        : m_FOV(fov)
+        , m_AspectRatio(aspectRatio)
+        , m_NearClip(nearClip)
+        , m_FarClip(farClip) {
         UpdateProjection();
         UpdateView();
     }
@@ -81,31 +84,29 @@ namespace NFSEngine {
             }
         }
 
-        const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
+        const glm::vec2& mouse { Input::GetMouseX(), Input::GetMouseY() };
         glm::vec2 delta = (mouse - cam.m_InitialMousePosition) * 0.003f;
         cam.m_InitialMousePosition = mouse;
 
         if (rmbHeld) {
-            cam.m_Yaw   -= delta.x * cam.RotationSpeed();
+            cam.m_Yaw -= delta.x * cam.RotationSpeed();
             cam.m_Pitch -= delta.y * cam.RotationSpeed();
 
             float moveSpeed = 10.0f * dt;
             if (Input::IsKeyPressed(Key::LeftShift)) moveSpeed *= 2.5f;
 
-            if (Input::IsKeyPressed(Key::W)) cam.m_Position += cam.GetForwardDirection() * moveSpeed;
-            if (Input::IsKeyPressed(Key::S)) cam.m_Position -= cam.GetForwardDirection() * moveSpeed;
-            if (Input::IsKeyPressed(Key::A)) cam.m_Position -= cam.GetRightDirection() * moveSpeed;
-            if (Input::IsKeyPressed(Key::D)) cam.m_Position += cam.GetRightDirection() * moveSpeed;
-            if (Input::IsKeyPressed(Key::E)) cam.m_Position += glm::vec3(0, 1, 0) * moveSpeed;
-            if (Input::IsKeyPressed(Key::Q)) cam.m_Position -= glm::vec3(0, 1, 0) * moveSpeed;
+            if (Input::IsKeyPressed(Key::Up)) cam.m_Position += cam.GetForwardDirection() * moveSpeed;
+            if (Input::IsKeyPressed(Key::Down)) cam.m_Position -= cam.GetForwardDirection() * moveSpeed;
+            if (Input::IsKeyPressed(Key::Left)) cam.m_Position -= cam.GetRightDirection() * moveSpeed;
+            if (Input::IsKeyPressed(Key::Right)) cam.m_Position += cam.GetRightDirection() * moveSpeed;
+            if (Input::IsKeyPressed(Key::U)) cam.m_Position += glm::vec3(0, 1, 0) * moveSpeed;
+            if (Input::IsKeyPressed(Key::J)) cam.m_Position -= glm::vec3(0, 1, 0) * moveSpeed;
 
             cam.m_FocalPoint = cam.m_Position + cam.GetForwardDirection() * cam.m_Distance;
-        }
-        else if (Input::IsKeyPressed(Key::LeftAlt) && Input::IsMouseButtonPressed(Mouse::ButtonLeft)) {
+        } else if (Input::IsKeyPressed(Key::LeftAlt) && Input::IsMouseButtonPressed(Mouse::ButtonLeft)) {
             cam.MouseRotate(delta);
             cam.m_Position = cam.CalculatePosition();
-        }
-        else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle)) {
+        } else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle)) {
             cam.MousePan(delta);
         }
 
@@ -129,8 +130,9 @@ namespace NFSEngine {
     }
 
     void DebugCamera::MousePan(const glm::vec2& delta) {
-        auto [xSpeed, ySpeed] = std::pair<float, float>{ PanSpeed(), PanSpeed() };
-        glm::vec3 offset = -GetRightDirection() * delta.x * xSpeed * m_Distance + GetUpDirection() * delta.y * ySpeed * m_Distance;
+        auto [xSpeed, ySpeed] = std::pair<float, float> { PanSpeed(), PanSpeed() };
+        glm::vec3 offset
+            = -GetRightDirection() * delta.x * xSpeed * m_Distance + GetUpDirection() * delta.y * ySpeed * m_Distance;
 
         m_FocalPoint += offset;
         m_Position += offset;
@@ -150,13 +152,9 @@ namespace NFSEngine {
         }
     }
 
-    glm::vec3 DebugCamera::CalculatePosition() const {
-        return m_FocalPoint - GetForwardDirection() * m_Distance;
-    }
+    glm::vec3 DebugCamera::CalculatePosition() const { return m_FocalPoint - GetForwardDirection() * m_Distance; }
 
-    glm::quat DebugCamera::GetOrientationImpl() const {
-        return glm::quat(glm::vec3(m_Pitch, m_Yaw, 0.0f));
-    }
+    glm::quat DebugCamera::GetOrientationImpl() const { return glm::quat(glm::vec3(m_Pitch, m_Yaw, 0.0f)); }
 
     glm::vec3 DebugCamera::GetUpDirection() const { return glm::rotate(GetOrientationImpl(), glm::vec3(0.0f, 1.0f, 0.0f)); }
     glm::vec3 DebugCamera::GetRightDirection() const { return glm::rotate(GetOrientationImpl(), glm::vec3(1.0f, 0.0f, 0.0f)); }
@@ -165,4 +163,4 @@ namespace NFSEngine {
     float DebugCamera::RotationSpeed() const { return 0.8f; }
     float DebugCamera::PanSpeed() const { return 0.03f; }
     float DebugCamera::ZoomSpeed() const { return m_Distance * 0.2f; }
-}
+} // namespace NFSEngine
