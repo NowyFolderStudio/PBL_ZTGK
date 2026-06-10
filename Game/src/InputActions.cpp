@@ -25,12 +25,12 @@ namespace NFSEngine {
 
         actions.Create("Attack", InputAction::Type::Button).BindKey(Key::F);
 
-        actions.Create("NextAura", InputAction::Type::Button)
-            .BindKey(Key::E)
-            .BindControllerButton(ControllerButtons::RightBumper);
-
-        actions.Create("PreviousAura", InputAction::Type::Button)
+        actions.Create("SelectFirstAura", InputAction::Type::Button)
             .BindKey(Key::Q)
             .BindControllerButton(ControllerButtons::LeftBumper);
+
+        actions.Create("SelectSecondAura", InputAction::Type::Button)
+            .BindKey(Key::E)
+            .BindControllerButton(ControllerButtons::RightBumper);
     }
 } // namespace NFSEngine

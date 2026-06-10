@@ -13,6 +13,7 @@
 #include "Components/Managers/LivesManager.hpp"
 #include "Components/Aura/AuraManager.hpp"
 #include "Components/CharacterController.hpp"
+#include "Components/PlayerAttackComponent.hpp"
 #include "Components/CharacterAnimationController.hpp"
 #include "Components/Controllers/AuraInputController.hpp"
 #include "Core/Log.hpp"
@@ -197,6 +198,7 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
+    m_Player->AddComponent<PlayerAttackComponent>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     playerModel->AddComponent<AnimatorComponent>();
     playerModel->AddComponent<CharacterAnimationController>();

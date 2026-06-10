@@ -18,53 +18,13 @@ protected:
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
         if (!AuraManager::Instance) return;
 
-        if (NFSEngine::InputActionManager::IsDown("NextAura")) {
-            CycleAura(true);
-        } else if (NFSEngine::InputActionManager::IsDown("PreviousAura")) {
-            CycleAura(false);
+        if (NFSEngine::InputActionManager::IsDown("SelectFirstAura")) {
+            AuraManager::Instance->ChangeAura(AuraType::First);
+        } else if (NFSEngine::InputActionManager::IsDown("SelectSecondAura")) {
+            AuraManager::Instance->ChangeAura(AuraType::Second);
         }
     }
 
     void OnEnable() override { }
     void OnDisable() override { }
-
-private:
-    void CycleAura(bool forward) {
-        AuraType current = AuraManager::Instance->CurrentAura;
-        AuraType nextAura = current;
-
-        if (forward) {
-            switch (current) {
-            case AuraType::First:
-                nextAura = AuraType::Second;
-                break;
-            case AuraType::Second:
-                nextAura = AuraType::Third;
-                break;
-            case AuraType::Third:
-                nextAura = AuraType::First;
-                break;
-            default:
-                nextAura = AuraType::First;
-                break;
-            }
-        } else {
-            switch (current) {
-            case AuraType::First:
-                nextAura = AuraType::Third;
-                break;
-            case AuraType::Second:
-                nextAura = AuraType::First;
-                break;
-            case AuraType::Third:
-                nextAura = AuraType::Second;
-                break;
-            default:
-                nextAura = AuraType::First;
-                break;
-            }
-        }
-
-        AuraManager::Instance->ChangeAura(nextAura);
-    }
 };

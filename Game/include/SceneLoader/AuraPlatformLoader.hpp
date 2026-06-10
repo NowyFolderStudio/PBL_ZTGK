@@ -39,9 +39,7 @@ class AuraPlatformLoader : public NFSEngine::IComponentLoader {
             return AuraType::First;
         } else if (auraStr == "Guitar") {
             return AuraType::Second;
-        } else if (auraStr == "Piano") {
-            return AuraType::Third;
         }
-        return AuraType::None;
+        return AuraType::First;
     }
 };
