@@ -17,7 +17,7 @@
 
 // --- Specyficzne dla tej sceny ---
 #include "Components/RotatingPlatform.hpp"
-#include "Components/BasicEnemy.hpp"
+#include "Components/Enemy/BasicEnemy.hpp"
 #include "Components/PlayerAttackComponent.hpp"
 
 // Core & Renderer
