@@ -13,6 +13,7 @@ namespace NFSEngine {
     public:
         CubeMesh(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material);
         std::string GetName() const override { return "CubeMesh"; }
+        std::shared_ptr<Material> GetMaterial() const { return p_Material; }
 
     protected:
         virtual void OnAwake() override;

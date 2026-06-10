@@ -32,6 +32,7 @@
 #include "Components/PusherComponent.hpp"
 #include "Components/DancingWall.hpp"
 #include "Components/CasetteComponent.hpp"
+#include "Components/ConsoleButtonComponent.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -114,7 +115,7 @@ void LayerExample::OnAttach() {
         }
     }
 
-    // m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+    m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
     // m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
     // "assets/shaders/PBRShader.frag"); m_HazardShader
     //     = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -691,6 +692,62 @@ void LayerExample::OnAttach() {
     auto& neonGramophoneComp = neonGramophoneObj->AddComponent<NFSEngine::ModelComponent>(gramophoneShader, matNeonRed);
     neonGramophoneComp.AddLOD(gramophoneModel1, 10000.0f);
     */
+
+    // model konsoli
+
+    auto matConsole = std::make_shared<NFSEngine::Material>();
+    matConsole->AlbedoMap = NFSEngine::Texture::Create("assets/models/konsola/konsola_kolor.png");
+
+    auto consoleModel = std::make_shared<NFSEngine::Model>("assets/models/konsola/konsola.fbx");
+
+    NFSEngine::GameObject* console = m_Scene->CreateGameObject("console");
+    console->GetTransform()->SetPosition(glm::vec3(-42.7f, -6.0f, 24.0f));
+    console->GetTransform()->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+
+    auto& consoleModelComponent = console->AddComponent<NFSEngine::ModelComponent>(m_Shader, matConsole);
+    consoleModelComponent.AddLOD(consoleModel, 10000.0f);
+
+    std::vector<glm::vec3> colors = {
+        {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f},
+        {1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f},
+        {1.0f, 0.5f, 0.0f}, {0.5f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.5f},
+    };
+
+    // test light console
+
+    glm::vec3 centerPosition = glm::vec3(-45.0f, 12.1f, 58.0f);
+
+    float buttonSizeXZ = 5.0f;
+    float buttonHeight = 0.2f;
+    float gap = 0.2f;  
+
+    float spacing = buttonSizeXZ + gap; 
+
+    int index = 0;
+
+    for (int x = -1; x <= 1; x++) {
+        for (int z = -1; z <= 1; z++) {
+            auto* buttonObj = m_Scene->CreateGameObject("ConsoleButton_" + std::to_string(index));
+
+            glm::vec3 pos = centerPosition + glm::vec3(x * spacing, 0.0f, z * spacing);
+            buttonObj->GetTransform()->SetPosition(pos);
+
+            buttonObj->GetTransform()->SetScale(glm::vec3(buttonSizeXZ, buttonHeight, buttonSizeXZ));
+
+            auto material = std::make_shared<NFSEngine::Material>();
+            auto cubeMesh = buttonObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, material);
+
+            auto& collider = buttonObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+            //collider.Size = glm::vec3(buttonSizeXZ, buttonHeight, buttonSizeXZ);
+
+            auto& logic = buttonObj->AddComponent<ConsoleButtonComponent>();
+            logic.ButtonIndex = index;
+            logic.TargetPlayer = m_Player;
+            logic.ActiveColor = colors[index];
+
+            index++;
+        }
+    }
 
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
