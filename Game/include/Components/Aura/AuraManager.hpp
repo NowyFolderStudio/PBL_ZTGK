@@ -4,10 +4,8 @@
 #include "Core/AudioManager.hpp"
 
 enum class AuraType { // TODO: Rename it
-    None,
     First,
-    Second,
-    Third
+    Second
 };
 
 class AuraManager : public NFSEngine::Component {
@@ -26,7 +24,7 @@ public:
     std::string GetName() const override { return "AuraManager"; }
 
     NFSEngine::Action<AuraType> OnAuraChanged;
-    AuraType CurrentAura = AuraType::None;
+    AuraType CurrentAura = AuraType::First;
 
 private:
     std::vector<AuraType> m_UnlockedAuras;
@@ -44,7 +42,6 @@ protected:
         // For testing purposes
         UnlockAura(AuraType::First);
         UnlockAura(AuraType::Second);
-        UnlockAura(AuraType::Third);
     }
 
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
@@ -63,7 +60,7 @@ public:
     }
 
     void UnlockNextAura() {
-        static const std::vector<AuraType> progressionOrder = { AuraType::First, AuraType::Second, AuraType::Third };
+        static const std::vector<AuraType> progressionOrder = { AuraType::First, AuraType::Second };
 
         size_t currentProgress = m_UnlockedAuras.size();
 

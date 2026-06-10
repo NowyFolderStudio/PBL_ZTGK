@@ -59,7 +59,7 @@ private:
     size_t m_ScoreEventId = 0;
     size_t m_LivesEventId = 0;
 
-    const std::vector<AuraType> m_AuraOrder = { AuraType::First, AuraType::Second, AuraType::Third };
+    const std::vector<AuraType> m_AuraOrder = { AuraType::First, AuraType::Second };
 
 protected:
     void OnAwake() override {
@@ -119,18 +119,6 @@ protected:
 
 private:
     void InitScoreUI() {
-        // NFSEngine::UI::LabelParameters labelParams;
-        // labelParams.position = glm::vec3(1500, 100, 2.0f);
-        // labelParams.text = "SCORE: 0";
-        // labelParams.color = glm::vec4(1.0f);
-        // m_ScoreLabel = &NFSEngine::UI::Label(*m_Canvas, labelParams);
-
-        // NFSEngine::UI::ImageParameters scoreBgParams;
-        // scoreBgParams.position = glm::vec3(1500, 100, 1.0f);
-        // scoreBgParams.width = 400;
-        // scoreBgParams.height = 100;
-        // scoreBgParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.5f);
-        // NFSEngine::UI::Image(*m_Canvas, scoreBgParams);
 
         float originalWidth = 462;
         float originalHeight = 591;
@@ -277,31 +265,6 @@ private:
         pSkill.scale = 0.7f;
         m_CenterSkillLabel = &NFSEngine::UI::Label(*m_Canvas, pSkill);
     }
-    std::string GetAuraName(AuraType aura) {
-        switch (aura) {
-        case AuraType::First:
-            return "PIANO";
-        case AuraType::Second:
-            return "BASS";
-        case AuraType::Third:
-            return "GUITAR";
-        default:
-            return "UNKNOWN";
-        }
-    }
-
-    std::string GetAuraSkill(AuraType aura) {
-        switch (aura) {
-        case AuraType::First:
-            return "(DOUBLE JUMP)";
-        case AuraType::Second:
-            return "(DASH)";
-        case AuraType::Third:
-            return "(ATTACK)";
-        default:
-            return "";
-        }
-    }
 
     void UpdateScoreText(int newScore) {
         // if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
@@ -341,21 +304,29 @@ private:
             }
         }
     }
+    std::string GetAuraName(AuraType aura) {
+        switch (aura) {
+        case AuraType::First:
+            return "PIANO";
+        case AuraType::Second:
+            return "BASS";
+        default:
+            return "UNKNOWN";
+        }
+    }
+
+    std::string GetAuraSkill(AuraType aura) {
+        switch (aura) {
+        case AuraType::First:
+            return "(DOUBLE JUMP)";
+        case AuraType::Second:
+            return "(DASH)";
+        default:
+            return "";
+        }
+    }
 
     void UpdateAuraText(AuraType newAura) {
-        int currentIndex = 0;
-        int totalAuras = static_cast<int>(m_AuraOrder.size());
-
-        for (int i = 0; i < totalAuras; ++i) {
-            if (m_AuraOrder[i] == newAura) {
-                currentIndex = i;
-                break;
-            }
-        }
-
-        int leftIndex = (currentIndex - 1 + totalAuras) % totalAuras;
-        int rightIndex = (currentIndex + 1) % totalAuras;
-
         auto SetText = [&](NFSEngine::UIObject* obj, std::string text, float scale) {
             if (obj && obj->HasComponent<NFSEngine::TextComponent>()) {
                 auto* tc = obj->GetComponent<NFSEngine::TextComponent>();
@@ -365,13 +336,13 @@ private:
             }
         };
 
-        SetText(m_CenterNameLabel, GetAuraName(m_AuraOrder[currentIndex]), 1.0f);
-        SetText(m_CenterSkillLabel, GetAuraSkill(m_AuraOrder[currentIndex]), 0.7f);
+        SetText(m_CenterNameLabel, GetAuraName(newAura), 1.0f);
+        SetText(m_CenterSkillLabel, GetAuraSkill(newAura), 0.7f);
 
-        SetText(m_LeftNameLabel, GetAuraName(m_AuraOrder[leftIndex]), 0.8f);
-        SetText(m_LeftSkillLabel, GetAuraSkill(m_AuraOrder[leftIndex]), 0.6f);
+        SetText(m_LeftNameLabel, GetAuraName(AuraType::First), 0.8f);
+        SetText(m_LeftSkillLabel, GetAuraSkill(AuraType::First), 0.6f);
 
-        SetText(m_RightNameLabel, GetAuraName(m_AuraOrder[rightIndex]), 0.8f);
-        SetText(m_RightSkillLabel, GetAuraSkill(m_AuraOrder[rightIndex]), 0.6f);
+        SetText(m_RightNameLabel, GetAuraName(AuraType::Second), 0.8f);
+        SetText(m_RightSkillLabel, GetAuraSkill(AuraType::Second), 0.6f);
     }
 };

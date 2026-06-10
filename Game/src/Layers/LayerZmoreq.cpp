@@ -68,7 +68,7 @@ void LayerZmoreq::OnAttach() {
     m_HUD = &uiObj->AddComponent<HUDComponent>();
 
     // --- Shadery i Materiały ---
-    m_Shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/DissolveShader.frag");
+    m_Shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
 
     auto matSample = std::make_shared<Material>();
     matSample->AlbedoMap = Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Color.png");

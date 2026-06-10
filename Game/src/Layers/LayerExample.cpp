@@ -13,6 +13,7 @@
 #include "Components/Managers/LivesManager.hpp"
 #include "Components/Aura/AuraManager.hpp"
 #include "Components/CharacterController.hpp"
+#include "Components/PlayerAttackComponent.hpp"
 #include "Components/CharacterAnimationController.hpp"
 #include "Components/Controllers/AuraInputController.hpp"
 #include "Core/Log.hpp"
@@ -197,6 +198,7 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
+    m_Player->AddComponent<PlayerAttackComponent>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     playerModel->AddComponent<AnimatorComponent>();
     playerModel->AddComponent<CharacterAnimationController>();
@@ -708,9 +710,8 @@ void LayerExample::OnAttach() {
     consoleModelComponent.AddLOD(consoleModel, 10000.0f);
 
     std::vector<glm::vec3> colors = {
-        {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, 1.0f},
-        {1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f},
-        {1.0f, 0.5f, 0.0f}, {0.5f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.5f},
+        { 1.0f, 0.0f, 0.0f }, { 0.0f, 1.0f, 0.0f }, { 0.0f, 0.0f, 1.0f }, { 1.0f, 1.0f, 0.0f }, { 1.0f, 0.0f, 1.0f },
+        { 0.0f, 1.0f, 1.0f }, { 1.0f, 0.5f, 0.0f }, { 0.5f, 0.0f, 1.0f }, { 0.0f, 1.0f, 0.5f },
     };
 
     // test light console
@@ -719,9 +720,9 @@ void LayerExample::OnAttach() {
 
     float buttonSizeXZ = 5.0f;
     float buttonHeight = 0.2f;
-    float gap = 0.2f;  
+    float gap = 0.2f;
 
-    float spacing = buttonSizeXZ + gap; 
+    float spacing = buttonSizeXZ + gap;
 
     int index = 0;
 
@@ -738,7 +739,7 @@ void LayerExample::OnAttach() {
             auto cubeMesh = buttonObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, material);
 
             auto& collider = buttonObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-            //collider.Size = glm::vec3(buttonSizeXZ, buttonHeight, buttonSizeXZ);
+            // collider.Size = glm::vec3(buttonSizeXZ, buttonHeight, buttonSizeXZ);
 
             auto& logic = buttonObj->AddComponent<ConsoleButtonComponent>();
             logic.ButtonIndex = index;
