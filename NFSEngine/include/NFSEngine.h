@@ -45,5 +45,7 @@
 #include "Components/AnimatorComponent.hpp"
 #include "Components/ParticleEmitterComponent.hpp"
 
+#include "Core/ParticleFactory.hpp"
+
 #include "ImGui/ImGuiLayer.hpp"
 #include "ImGui/SceneHierarchyPanel.hpp"

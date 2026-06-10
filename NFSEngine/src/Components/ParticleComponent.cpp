@@ -1,20 +1,24 @@
-#include "Components/ParticleEmitterComponent.hpp"
+#include "Components/ParticleComponent.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
+#include "Renderer/Particle.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Core/MathUtils.hpp"
+#include <cmath>
 #include <glm/ext/vector_float3.hpp>
+#include <memory>
 
 namespace NFSEngine {
 
-    ParticleEmitterComponent::ParticleEmitterComponent(GameObject* owner, size_t maxParticles, std::shared_ptr<Shader> shader,
-                                                       std::shared_ptr<Material> material, bool destroyAfterTime,
-                                                       float timeOfLife)
+    ParticleComponent::ParticleComponent(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material,
+                                         const ParticleProperties& properties, float timeOfLife, float particlesPerSecond,
+                                         int maxParticles)
         : Component(owner)
         , m_Shader(std::move(shader))
         , m_Material(std::move(material))
-        , m_DestroyableAfterTime(destroyAfterTime)
-        , m_TimeOfLife(timeOfLife) {
+        , m_TimeOfLife(timeOfLife)
+        , m_ParticlesPerSecond(particlesPerSecond)
+        , m_Properties(properties) {
 
         m_ParticlePool.resize(maxParticles);
         m_InstanceDataBuffer.reserve(maxParticles);
@@ -41,12 +45,14 @@ namespace NFSEngine {
         m_VAO->AddInstancedVertexBuffer(m_InstanceVBO);
     }
 
-    void ParticleEmitterComponent::OnAwake() { m_Transform = m_Owner->GetComponent<Transform>(); }
+    void ParticleComponent::OnAwake() { m_Transform = m_Owner->GetComponent<Transform>(); }
 
-    void ParticleEmitterComponent::Emit(const ParticleProperties& particleProps) {
+    void ParticleComponent::Emit(const ParticleProperties& particleProps) {
         Particle& particle = m_ParticlePool[m_PoolIndex];
         particle.active = true;
 
+        if (!m_Transform) m_Transform = m_Owner->GetComponent<Transform>();
+        if (!m_Transform) return;
         particle.position = m_Transform->GetWorldPosition() + particleProps.position;
 
         glm::vec3 velocityVariation;
@@ -69,16 +75,23 @@ namespace NFSEngine {
         particle.rotationSpeed
             = particleProps.rotationSpeed + (particleProps.rotationSpeedVariation * Math::RandomFloat(-0.5f, 0.5f));
 
-        m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
+        m_PoolIndex = (m_PoolIndex + 1) % m_ParticlePool.size();
     }
 
-    void ParticleEmitterComponent::EmitMultiple(const ParticleProperties& particleProps, int number) {
+    void ParticleComponent::EmitMultiple(const ParticleProperties& particleProps, int number) {
         for (int i = 0; i < number; i++) {
             Emit(particleProps);
         }
     }
 
-    void ParticleEmitterComponent::OnUpdate(DeltaTime deltaTime) {
+    void ParticleComponent::OnUpdate(DeltaTime deltaTime) {
+        if (m_TimeOfLife > 0) {
+            m_ParticleToDraw += m_ParticlesPerSecond * deltaTime;
+            int drawParticleCount = (int)m_ParticleToDraw;
+            EmitMultiple(m_Properties, drawParticleCount);
+            m_ParticleToDraw = std::fmod(m_ParticleToDraw, 1);
+        }
+
         for (auto& particle : m_ParticlePool) {
             if (!particle.active) continue;
 
@@ -91,9 +104,14 @@ namespace NFSEngine {
             particle.position += particle.velocity * static_cast<float>(deltaTime);
             particle.rotation += particle.rotationSpeed * static_cast<float>(deltaTime);
         }
+
+        m_TimeOfLife -= deltaTime;
+        if (m_TimeOfLife + m_Properties.lifeTime < 0) {
+            m_Owner->Destroy();
+        }
     }
 
-    void ParticleEmitterComponent::OnRender() {
+    void ParticleComponent::OnRender() {
         if (!m_Material || !m_Shader) return;
 
         m_InstanceDataBuffer.clear();

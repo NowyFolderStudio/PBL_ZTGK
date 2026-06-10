@@ -12,12 +12,13 @@
 
 namespace NFSEngine {
 
-    class ParticleEmitterComponent : public Component {
+    class ParticleComponent : public Component {
     public:
-        ParticleEmitterComponent(GameObject* owner, size_t maxParticles, std::shared_ptr<Shader> shader,
-                                 std::shared_ptr<Material> material, bool destroyAfterTime = false, float timeOfLife = 0.0f);
+        ParticleComponent(GameObject* owner, std::shared_ptr<Shader> shader, std::shared_ptr<Material> material,
+                          const ParticleProperties& properties, float timeOfLife = 0.1f, float particlesPerSecond = 60,
+                          int maxParticles = 100);
 
-        std::string GetName() const override { return "ParticleEmitterComponent"; }
+        std::string GetName() const override { return "ParticleComponent"; }
 
         void Emit(const ParticleProperties& particleProps);
         void EmitMultiple(const ParticleProperties& particleProps, int number);
@@ -30,13 +31,16 @@ namespace NFSEngine {
     private:
         std::vector<Particle> m_ParticlePool;
         size_t m_PoolIndex = 0;
+        ParticleProperties m_Properties;
 
         std::shared_ptr<Material> m_Material;
         std::shared_ptr<Shader> m_Shader;
         Transform* m_Transform = nullptr;
 
-        bool m_DestroyableAfterTime = false;
-        float m_TimeOfLife = 0.0f;
+        float m_TimeOfLife;
+        float m_ParticlesPerSecond;
+
+        float m_ParticleToDraw = 0.0f;
 
         struct ParticleInstanceData {
             glm::vec3 position;
