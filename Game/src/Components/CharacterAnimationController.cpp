@@ -1,5 +1,6 @@
 #include "Components/CharacterAnimationController.hpp"
 #include "Components/CharacterController.hpp"
+#include "Core/Log.hpp"
 
 void CharacterAnimationController::OnStart() {
     m_Rigidbody = m_Owner->GetTransform()->GetParent()->GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
@@ -17,6 +18,7 @@ void CharacterAnimationController::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 void CharacterAnimationController::UpdateStates() {
     bool onGround = m_OnGround;
     m_OnGround = m_Rigidbody->IsGrounded;
+    m_OnWall = IsTouchingJumpableWall();
     m_InMotion = (glm::length(m_Rigidbody->Velocity) > 1.0f);
     m_VerticalSpeed = glm::length(glm::vec2(m_Rigidbody->Velocity.x, m_Rigidbody->Velocity.z));
     float horizontalSpeed = m_HorizontalSpeed;
@@ -37,7 +39,10 @@ void CharacterAnimationController::ChangeAnimation() {
     // 1 - run
     // 2 - jump
     // 3 - fall
+    // 4 - WallJump
     m_Animator->SetAnimationSpeed(1);
+    glm::vec3 eulerDegrees = { 0, 0, 0 };
+    m_Owner->GetTransform()->SetRotation(eulerDegrees);
     if (m_OnGround) {
         if (m_InMotion) {
             m_Animator->PlayAnimation(1);
@@ -47,7 +52,14 @@ void CharacterAnimationController::ChangeAnimation() {
             m_Animator->PlayAnimation(0);
         }
     } else {
-        if (m_HorizontalSpeed > 0)
+        if (m_OnWall) {
+            m_Animator->PlayAnimation(4, false);
+
+            eulerDegrees = { 0, 90, 0 };
+
+            m_Owner->GetTransform()->SetRotation(eulerDegrees);
+
+        } else if (m_HorizontalSpeed > 0)
             m_Animator->PlayAnimation(2, false);
         else
             m_Animator->PlayAnimation(3, false);

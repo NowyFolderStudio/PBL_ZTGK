@@ -37,6 +37,7 @@ protected:
 private:
     bool m_OnGround = false;
     bool m_InMotion = false;
+    bool m_OnWall = false;
     float m_VerticalSpeed = 0.0f;
     float m_HorizontalSpeed = 0.0f;
     float m_MaxSpeed = 0.0f;
@@ -53,4 +54,9 @@ private:
 
     void EmitJumpParticles(int count);
     void EmitWalkParticles();
+
+    bool IsTouchingJumpableWall() const {
+        return m_Rigidbody->IsTouchingWall && m_Rigidbody->TouchedWallObject != nullptr
+            && m_Rigidbody->TouchedWallObject->CompareTag(NFSEngine::Tags::WallJumpSurface);
+    }
 };

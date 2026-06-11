@@ -219,11 +219,13 @@ void LayerExample::OnAttach() {
     auto runAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 10);
     auto jumpAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 9);
     auto fallAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 6);
+    auto wallJumpAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations_wj.fbx", m, 4);
 
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(idleAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(runAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(jumpAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(fallAnimation);
+    playerModel->GetComponent<AnimatorComponent>()->AddAnimation(wallJumpAnimation);
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;

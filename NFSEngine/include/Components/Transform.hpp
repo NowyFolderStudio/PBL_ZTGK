@@ -30,6 +30,10 @@ namespace NFSEngine {
             m_Rotation = glm::quat(glm::radians(eulerDegrees));
             SetDirty();
         }
+        void SetRotation(const glm::quat& newRotation) {
+            m_Rotation = newRotation;
+            SetDirty();
+        }
 
         void SetScale(const glm::vec3& scale) {
             m_Scale = scale;
