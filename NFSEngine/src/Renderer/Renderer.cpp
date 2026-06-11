@@ -226,9 +226,34 @@ namespace NFSEngine {
             [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
 
         if (s_SceneData->DirLight) {
-            glm::vec3 lightPos = glm::vec3(0.0f) - (s_SceneData->DirLight->Direction * 50.0f);
-            glm::mat4 lightProjection = glm::ortho(-120.0f, 120.0f, -120.0f, 120.0f, 1.0f, 250.0f);
-            glm::mat4 lightView = glm::lookAt(lightPos, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+            float orthoSize = 120.0f;
+            float shadowMapRes = (float)s_ShadowMapFBO->GetSpecification().width;
+
+            float texelSize = (orthoSize * 2.0f) / shadowMapRes;
+
+            glm::vec3 targetPos = s_SceneData->CameraPosition;
+            glm::vec3 lightDir = glm::normalize(s_SceneData->DirLight->Direction);
+            glm::vec3 lightPos = targetPos - (lightDir * 50.0f);
+
+            glm::mat4 lightView = glm::lookAt(lightPos, targetPos, glm::vec3(0.0f, 1.0f, 0.0f));
+
+            glm::vec4 originInLightSpace = lightView * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+            glm::vec3 snappedOrigin;
+            snappedOrigin.x = std::floor(originInLightSpace.x / texelSize) * texelSize;
+            snappedOrigin.y = std::floor(originInLightSpace.y / texelSize) * texelSize;
+            snappedOrigin.z = originInLightSpace.z;
+
+            glm::vec3 offset = glm::vec3(originInLightSpace) - snappedOrigin;
+            float left = -orthoSize + offset.x;
+            float right = orthoSize + offset.x;
+            float bottom = -orthoSize + offset.y;
+            float top = orthoSize + offset.y;
+            float zNear = 1.0f;
+            float zFar = 250.0f;
+
+            glm::mat4 lightProjection = glm::ortho(left, right, bottom, top, zNear, zFar);
+
             s_LightSpaceMatrix = lightProjection * lightView;
 
             s_ShadowMapFBO->Bind();
