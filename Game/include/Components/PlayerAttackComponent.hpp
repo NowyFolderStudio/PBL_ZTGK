@@ -24,15 +24,19 @@ protected:
 
     size_t m_AuraEventId = 0;
 
-    std::shared_ptr<NFSEngine::Material> m_StarMaterial;
+    std::shared_ptr<NFSEngine::Material> m_GuitarMaterial;
+    std::shared_ptr<NFSEngine::Material> m_PianoMaterial;
     std::shared_ptr<NFSEngine::Shader> m_ParticleShader;
 
     void OnAwake() override { }
 
     void OnStart() override {
-        auto texture = NFSEngine::Texture::Create("assets/textures/particles/star.png");
-        m_StarMaterial = std::make_shared<NFSEngine::Material>();
-        m_StarMaterial->AlbedoMap = texture;
+        auto texture = NFSEngine::Texture::Create("assets/textures/particles/guitar_particle.png");
+        m_GuitarMaterial = std::make_shared<NFSEngine::Material>();
+        m_GuitarMaterial->AlbedoMap = texture;
+        texture = NFSEngine::Texture::Create("assets/textures/particles/piano_particle.png");
+        m_PianoMaterial = std::make_shared<NFSEngine::Material>();
+        m_PianoMaterial->AlbedoMap = texture;
         m_ParticleShader
             = NFSEngine::Shader::Create("StarParticle", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
 
@@ -81,20 +85,26 @@ private:
     void PerformAttack() {
         NFSEngine::ParticleProperties properties;
         properties.lifeTime = 0.3f;
-        properties.colorBegin = glm::vec4(0.949f, 0.851f, 0.207f, 1.0f);
-        properties.colorEnd = glm::vec4(0.949f, 0.851f, 0.207f, 0.0f);
+        properties.colorBegin = glm::vec4(1, 1, 1, 0.8f);
+        properties.colorEnd = glm::vec4(1, 1, 1, 0.0f);
 
         properties.sizeBegin = 1.8f;
-        properties.sizeEnd = 0.2f;
+        properties.sizeEnd = 0.5f;
         properties.sizeVariation = 0.5f;
         properties.rotationVariation = 360.0f;
 
-        properties.velocityVariation = glm::vec3(25.0f, 25.0f, 25.0f);
+        properties.velocityVariation = glm::vec3(20.0f, 20.0f, 20.0f);
 
         glm::vec3 spawnPosition = m_Owner->GetTransform()->GetWorldPosition() + glm::vec3(0.0f, 1.0f, 0.0f);
 
-        NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_StarMaterial, m_ParticleShader, properties, 0.1f, 1000, 250,
-                                           spawnPosition);
+        if (AuraManager::Instance->CurrentAura == AuraType::Second) {
+            NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_GuitarMaterial, m_ParticleShader, properties, 0.1f, 1000,
+                                               250, spawnPosition);
+        }
+        if (AuraManager::Instance->CurrentAura == AuraType::First) {
+            NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_PianoMaterial, m_ParticleShader, properties, 0.1f, 1000,
+                                               250, spawnPosition);
+        }
 
         if (m_EnemiesInRange.empty()) return;
 

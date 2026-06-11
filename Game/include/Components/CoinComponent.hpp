@@ -44,14 +44,14 @@ protected:
             NFSEngine::ParticleProperties properties;
             properties.lifeTime = 0.3;
             properties.colorBegin = glm::vec4(0.949, 0.851, 0.207, 1.0);
-            properties.colorEnd = glm::vec4(0.949, 0.851, 0.207, 5.0);
-            properties.sizeBegin = 0.7;
+            properties.colorEnd = glm::vec4(0.949, 0.851, 0.207, 0.5);
+            properties.sizeBegin = 1.2;
             properties.sizeEnd = 0.0;
             properties.sizeVariation = 0.2;
             properties.rotationVariation = 90;
-            properties.velocityVariation = glm::vec3(6, 6, 6);
+            properties.velocityVariation = glm::vec3(10, 10, 10);
 
-            NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), material, shader, properties, 0.1, 60, 100,
+            NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), material, shader, properties, 0.1, 120, 100,
                                                GetOwner()->GetTransform()->GetWorldPosition());
 
             if (ScoreManager::Instance) {
