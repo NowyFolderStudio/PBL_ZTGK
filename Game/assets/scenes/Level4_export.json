@@ -2184,18 +2184,13 @@
                         0.0,
                         0.0
                     ],
-                    "is_trigger": true
+                    "is_trigger": false
                 }
             ],
             "custom_components": [
                 {
                     "name": "Coin",
                     "properties": [
-                        {
-                            "name": "rotationSpeed",
-                            "type": "Single",
-                            "value": "100"
-                        },
                         {
                             "name": "value",
                             "type": "Int32",
@@ -2263,8 +2258,8 @@
                     ],
                     "offset": [
                         0.0,
-                        0.0,
-                        0.0
+                        -0.0000011920927818209748,
+                        -1.7881393432617188e-7
                     ],
                     "is_trigger": true
                 }
@@ -2273,11 +2268,6 @@
                 {
                     "name": "Coin",
                     "properties": [
-                        {
-                            "name": "rotationSpeed",
-                            "type": "Single",
-                            "value": "100"
-                        },
                         {
                             "name": "value",
                             "type": "Int32",
@@ -2345,8 +2335,8 @@
                     ],
                     "offset": [
                         0.0,
-                        0.0,
-                        0.0
+                        -0.0000011920927818209748,
+                        -1.7881393432617188e-7
                     ],
                     "is_trigger": true
                 }
@@ -2355,11 +2345,6 @@
                 {
                     "name": "Coin",
                     "properties": [
-                        {
-                            "name": "rotationSpeed",
-                            "type": "Single",
-                            "value": "100"
-                        },
                         {
                             "name": "value",
                             "type": "Int32",
@@ -2427,8 +2412,8 @@
                     ],
                     "offset": [
                         0.0,
-                        0.0,
-                        0.0
+                        -0.0000011920927818209748,
+                        -1.7881393432617188e-7
                     ],
                     "is_trigger": true
                 }
@@ -2437,11 +2422,6 @@
                 {
                     "name": "Coin",
                     "properties": [
-                        {
-                            "name": "rotationSpeed",
-                            "type": "Single",
-                            "value": "100"
-                        },
                         {
                             "name": "value",
                             "type": "Int32",
@@ -2509,8 +2489,8 @@
                     ],
                     "offset": [
                         0.0,
-                        0.0,
-                        0.0
+                        -0.0000011920927818209748,
+                        -1.7881393432617188e-7
                     ],
                     "is_trigger": true
                 }
@@ -2519,11 +2499,6 @@
                 {
                     "name": "Coin",
                     "properties": [
-                        {
-                            "name": "rotationSpeed",
-                            "type": "Single",
-                            "value": "100"
-                        },
                         {
                             "name": "value",
                             "type": "Int32",
@@ -2587,25 +2562,20 @@
                     "size": [
                         3.0,
                         3.0,
-                        3.0
+                        2.999999761581421
                     ],
                     "offset": [
                         0.0,
-                        0.0,
-                        0.0
+                        -0.0000011920927818209748,
+                        -1.7881393432617188e-7
                     ],
-                    "is_trigger": true
+                    "is_trigger": false
                 }
             ],
             "custom_components": [
                 {
                     "name": "Coin",
                     "properties": [
-                        {
-                            "name": "rotationSpeed",
-                            "type": "Single",
-                            "value": "100"
-                        },
                         {
                             "name": "value",
                             "type": "Int32",

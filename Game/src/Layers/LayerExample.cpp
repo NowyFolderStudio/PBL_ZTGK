@@ -187,7 +187,7 @@ void LayerExample::OnAttach() {
         = NFSEngine::Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/toonShader.frag");
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(NFSEngine::Tags::Player);
-    m_Player->GetTransform()->SetPosition(glm::vec3(-45.0f, 2.7f, 37.0f));
+    m_Player->GetTransform()->SetPosition(glm::vec3(-45.0f, 30.7f, 37.0f));
     // m_Player->GetTransform()->SetPosition(glm::vec3(115.0f, 100.0f, 5.0f));
     auto playerMaterial = std::make_shared<Material>();
     auto* playerModel = m_Scene->CreateGameObject("PlayerModel");

@@ -69,15 +69,6 @@ bool IsEdge(vec2 texCoord, float thickness, float depthThreshold, float normalTh
 void main() {
 	const float gamma = 2.2;
 	vec3 hdrColor = texture(screenTexture, TexCoords).rgb;
-	vec3 bloomColor = texture(bloomBlurTexture, TexCoords).rgb;
-
-	hdrColor += bloomColor;
-
-	vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
-
-	mapped = pow(mapped, vec3(1.0 / gamma));
-
-	vec4 finalColor = vec4(mapped, 1.0);
 
     // ====== OUTLINE ======
 	float rawDepth = texture(depthTexture, TexCoords).r;
@@ -92,12 +83,23 @@ void main() {
         if (IsEdge(TexCoords, currentSize, currentDepthT, currentNormT)) {
             vec4 edgeColorSample = texture(outlineColorTexture, TexCoords);
             if (edgeColorSample.a > 0.01) {
-                finalColor = vec4(edgeColorSample.rgb, 1.0);
+                hdrColor = edgeColorSample.rgb;
             } else {
-                finalColor = vec4(0.0, 0.0, 0.0, 1.0);
+                hdrColor = vec3(0.0, 0.0, 0.0);
             }
         }
         
     }
+
+	vec3 bloomColor = texture(bloomBlurTexture, TexCoords).rgb;
+
+	hdrColor += bloomColor;
+
+	vec3 mapped = vec3(1.0) - exp(-hdrColor * exposure);
+
+	mapped = pow(mapped, vec3(1.0 / gamma));
+
+	vec4 finalColor = vec4(mapped, 1.0);
+
 	FragColor = finalColor;
 }

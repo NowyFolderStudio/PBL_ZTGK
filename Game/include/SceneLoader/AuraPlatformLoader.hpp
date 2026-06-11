@@ -35,7 +35,7 @@ class AuraPlatformLoader : public NFSEngine::IComponentLoader {
     }
 
     AuraType ParseAuraType(const std::string& auraStr) {
-        if (auraStr == "Guitar") {
+        if (auraStr == "Piano") {
             return AuraType::First;
         } else if (auraStr == "Bass") {
             return AuraType::Second;

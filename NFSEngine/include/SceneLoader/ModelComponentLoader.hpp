@@ -18,7 +18,7 @@ namespace NFSEngine {
                     for (const auto& comp : j_obj["custom_components"]) {
                         if (comp["name"] == "GeneratywnyKomponent") {
                             shader = Shader::Create("GeneratedShader", "assets/shaders/audioShader.vert",
-                                "assets/shaders/toonShader.frag");
+                                                    "assets/shaders/toonShader.frag");
                             material = std::make_shared<Material>();
                             material->name = "AnimationMaterial";
                             for (const auto& prop : comp["properties"]) {
@@ -27,20 +27,17 @@ namespace NFSEngine {
                                 if (propValue.empty()) continue;
                                 if (propName == "u_ScaleStrengthY") {
                                     material->SetFloat("u_ScaleStrengthY", std::stof(propValue));
-                                }
-                                else if (propName == "u_ScaleStrengthXZ") {
+                                } else if (propName == "u_ScaleStrengthXZ") {
                                     material->SetFloat("u_ScaleStrengthXZ", std::stof(propValue));
-                                }
-                                else if (propName == "u_BendStrength") {
+                                } else if (propName == "u_BendStrength") {
                                     material->SetFloat("u_BendStrength", std::stof(propValue));
-                                }
-                                else if (propName == "u_TwistStrength") {
+                                } else if (propName == "u_TwistStrength") {
                                     material->SetFloat("u_TwistStrength", std::stof(propValue));
                                 }
+                                model = std::make_shared<NFSEngine::Model>("assets/models/glosnik/glosnik_wieza.fbx");
+                                targetObj->GetTransform()->SetScale({ 1, 1, 1 });
                             }
-                            model = std::make_shared<NFSEngine::Model>("assets/models/Gramophone/glosnik.fbx");
                             generated = true;
-                            targetObj->GetTransform()->SetScale({ 1, 1, 1 });
                             break;
                         }
                     }
@@ -66,7 +63,6 @@ namespace NFSEngine {
                 material->AlbedoMap = NFSEngine::Texture::Create(texPath);
                 material->RampMap = map;
                 targetObj->AddComponent<ModelComponent>(shader, material);
-
                 targetObj->GetComponent<ModelComponent>()->AddLOD(model, 1000);
             }
         }

@@ -17,8 +17,9 @@ public:
 protected:
     NFSEngine::ColliderComponent* m_Collider = nullptr;
     ScaleAnimator* m_Animator = nullptr;
+    glm::vec3 m_OriginalScale { 1.0f };
 
-    void OnAwake() override { }
+    void OnAwake() override { m_OriginalScale = GetOwner()->GetTransform()->GetScale(); }
 
     void OnStart() override {
         m_Collider = GetOwner()->GetComponent<NFSEngine::ColliderComponent>();
@@ -48,9 +49,9 @@ private:
 
         if (m_Animator) {
             if (isActive) {
-                m_Animator->SetTargetScale(glm::vec3(1.0f));
+                m_Animator->SetTargetScale(m_OriginalScale);
             } else {
-                m_Animator->SetTargetScale(glm::vec3(0.1f));
+                m_Animator->SetTargetScale(m_OriginalScale * 0.1f);
             }
         }
     };

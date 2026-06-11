@@ -1,6 +1,8 @@
 #pragma once
 
 #include <NFSEngine.h>
+#include "Core/Log.hpp"
+#include "Events/NotePlayedEvent.hpp"
 
 #include "Components/ScaleAnimator.hpp"
 
@@ -31,7 +33,6 @@ private:
     void Initialize() {
         if (!m_Initialized) {
             m_Animator = GetOwner()->GetComponent<ScaleAnimator>();
-
             m_OriginalScale = GetOwner()->GetTransform()->GetScale();
             m_IsActive = StartsActive;
             m_Initialized = true;
@@ -54,9 +55,9 @@ private:
         auto transform = GetOwner()->GetTransform();
 
         if (m_IsActive) {
-            m_Animator->SetTargetScale(glm::vec3(1.0f));
+            m_Animator->SetTargetScale(m_OriginalScale);
         } else {
-            m_Animator->SetTargetScale(glm::vec3(0.1f));
+            m_Animator->SetTargetScale(m_OriginalScale * 0.1f);
         }
     }
 };

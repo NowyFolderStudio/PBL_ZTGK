@@ -6,6 +6,7 @@
 #include "Components/Transform.hpp"
 #include "SceneLoader/SceneLoader.hpp"
 
+#include "SceneLoader/CylinderColliderLoader.hpp"
 #include "SceneLoader/ModelComponentLoader.hpp"
 #include "SceneLoader/BoxColliderLoader.hpp"
 
@@ -19,6 +20,7 @@ namespace NFSEngine {
         if (m_Loaders.empty()) {
             RegisterLoader(std::make_unique<ModelComponentLoader>());
             RegisterLoader(std::make_unique<BoxColliderLoader>());
+            RegisterLoader(std::make_unique<CylinderColliderLoader>());
         }
     }
 
