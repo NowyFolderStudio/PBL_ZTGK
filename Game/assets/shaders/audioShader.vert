@@ -28,11 +28,11 @@ void main() {
     vec3 localPos = aPos;
 
     float waveScaleY = wave * u_ScaleStrengthY;
-    localPos.y += waveScaleY * (localPos.y + 1.0); 
+    localPos.z += waveScaleY * (localPos.z + 1.0); 
 
     float scaleXZ = 1.0 + (wave * u_ScaleStrengthXZ);
     localPos.x *= scaleXZ;
-    localPos.z *= scaleXZ;
+    localPos.y *= scaleXZ;
 
     float twistAngle = wave * u_TwistStrength * (localPos.y + 1.0);
     float s = sin(twistAngle);

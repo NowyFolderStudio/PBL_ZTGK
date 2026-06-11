@@ -138,9 +138,9 @@ namespace NFSEngine {
         bool cullingEnabled = Renderer::IsFrustumCullingEnabled();
         int cullingMode = Renderer::GetFrustumCullingMode();
 
-        // ITERUJEMY TYLKO PO OBIEKTACH GRAFICZNYCH!
         for (auto* gameObject : m_Renderables) {
             if (!gameObject->IsActive()) continue;
+            if (gameObject->IsDestroyed()) continue;
 
             Transform* transform = gameObject->GetTransform();
 
@@ -152,10 +152,11 @@ namespace NFSEngine {
                     // UWAGA: Pobieramy wcześniej zcache'owaną sferę, NIE LICZYMY JEJ OD NOWA!
                     // Wymaga dopisania GetCachedLocalSphere() w Twojej klasie renderującej
                     BoundingSphere localSphere;
-                    if (auto* mc = gameObject->GetComponent<ModelComponent>())
-                        localSphere = mc->GetCachedLocalSphere();
-                    else if (auto* cm = gameObject->GetComponent<CubeMesh>())
-                        localSphere = cm->GetCachedLocalSphere();
+                    if (auto* mc = gameObject->GetComponent<ModelComponent>()) {
+                        if (mc) localSphere = mc->GetCachedLocalSphere();
+                    } else if (auto* cm = gameObject->GetComponent<CubeMesh>()) {
+                        if (cm) localSphere = cm->GetCachedLocalSphere();
+                    }
 
                     if (localSphere.Radius > 0.0f) {
                         // Reszta logiki wyliczania sfery jest OK, bo to tylko jedna macierz i wektor
