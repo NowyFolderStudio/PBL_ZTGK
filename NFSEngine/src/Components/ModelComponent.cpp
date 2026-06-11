@@ -2,6 +2,7 @@
 #include "Components/AnimatorComponent.hpp"
 #include "Core/GameObject.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Core/CullingUtils.hpp"
 
 namespace NFSEngine {
 
@@ -19,6 +20,9 @@ namespace NFSEngine {
     void ModelComponent::OnAwake() {
         m_Transform = m_Owner->GetComponent<Transform>();
         m_Animator = m_Owner->GetComponent<AnimatorComponent>();
+
+        m_LocalBoundingSphere = CullingUtils::GetLocalBoundingSphere(m_Owner);
+        m_LocalAABB = CullingUtils::GetLocalAABB(m_Owner);
     }
 
     void ModelComponent::OnRender() {
@@ -38,13 +42,9 @@ namespace NFSEngine {
 
         if (!selectedModel) return;
 
-        std::vector<glm::mat4> boneTransforms;
+        static const std::vector<glm::mat4> emptyBones;
 
-        if (m_Animator) {
-            boneTransforms = m_Animator->GetFinalBoneMatrices();
-        } else {
-            boneTransforms.resize(100, glm::mat4(1.0f));
-        }
+        const std::vector<glm::mat4>& boneTransforms = m_Animator ? m_Animator->GetFinalBoneMatrices() : emptyBones;
 
         for (const auto& meshData : selectedModel->GetMeshes()) {
 

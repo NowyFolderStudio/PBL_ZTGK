@@ -8,6 +8,10 @@
 #include "Components/PointLight.hpp"
 #include "Components/SpotLight.hpp"
 
+#include "Components/CubeMesh.hpp"
+#include "Components/ModelComponent.hpp"
+#include "Components/ParticleComponent.hpp"
+
 namespace NFSEngine {
 
     GameObject* Scene::CreateGameObject(const std::string& name) {
@@ -15,7 +19,7 @@ namespace NFSEngine {
         GameObject* rawPtr = go.get();
         m_GameObjects.push_back(std::move(go));
 
-        m_PhysicsListsDirty = true;
+        m_RenderablesDirty = true;
 
         return rawPtr;
     }
@@ -60,6 +64,18 @@ namespace NFSEngine {
                 m_PhysicsListsDirty = false;
             }
         }
+        if (m_RenderablesDirty) {
+            m_Renderables.clear();
+            for (const auto& gameObject : m_GameObjects) {
+                if (!gameObject->IsActive()) continue;
+
+                if (gameObject->HasComponent<ModelComponent>() || gameObject->HasComponent<CubeMesh>()
+                    || gameObject->HasComponent<ParticleComponent>()) {
+                    m_Renderables.push_back(gameObject.get());
+                }
+            }
+            m_RenderablesDirty = false;
+        }
 
         if (deltaTime > 0.25f) deltaTime = 0.25f;
         m_Accumulator += deltaTime;
@@ -90,10 +106,22 @@ namespace NFSEngine {
                                                [this](const std::unique_ptr<GameObject>& gameObject) {
                                                    if (gameObject->IsDestroyed()) {
 
+                                                       bool hadPhysics = false;
+
                                                        if (auto* col = gameObject->GetComponent<ColliderComponent>()) {
                                                            m_PhysicsSystem.RemoveCollider(col);
+                                                           hadPhysics = true;
                                                        }
-                                                       m_PhysicsListsDirty = true;
+                                                       if (gameObject->GetComponent<RigidBody3DComponent>()) {
+                                                           hadPhysics = true;
+                                                       }
+
+                                                       if (hadPhysics) {
+                                                           m_PhysicsListsDirty = true;
+                                                       }
+
+                                                       m_RenderablesDirty = true;
+
                                                        return true;
                                                    }
                                                    return false;
@@ -103,12 +131,15 @@ namespace NFSEngine {
     }
 
     void Scene::OnRender() {
+        NFS_PROFILE_FUNCTION();
+
         const Frustum& frustum = Renderer::GetFrustum();
         float cullingRange = Renderer::GetCullingRange();
         bool cullingEnabled = Renderer::IsFrustumCullingEnabled();
         int cullingMode = Renderer::GetFrustumCullingMode();
 
-        for (auto& gameObject : m_GameObjects) {
+        // ITERUJEMY TYLKO PO OBIEKTACH GRAFICZNYCH!
+        for (auto* gameObject : m_Renderables) {
             if (!gameObject->IsActive()) continue;
 
             Transform* transform = gameObject->GetTransform();
@@ -116,10 +147,18 @@ namespace NFSEngine {
             if (cullingEnabled && transform) {
                 bool visible = true;
 
-                if (cullingMode == 0) {
-                    BoundingSphere localSphere = CullingUtils::GetLocalBoundingSphere(gameObject.get());
+                // --- ZOPTYMALIZOWANY CULLING ---
+                if (cullingMode == 0) { // Sfera
+                    // UWAGA: Pobieramy wcześniej zcache'owaną sferę, NIE LICZYMY JEJ OD NOWA!
+                    // Wymaga dopisania GetCachedLocalSphere() w Twojej klasie renderującej
+                    BoundingSphere localSphere;
+                    if (auto* mc = gameObject->GetComponent<ModelComponent>())
+                        localSphere = mc->GetCachedLocalSphere();
+                    else if (auto* cm = gameObject->GetComponent<CubeMesh>())
+                        localSphere = cm->GetCachedLocalSphere();
 
                     if (localSphere.Radius > 0.0f) {
+                        // Reszta logiki wyliczania sfery jest OK, bo to tylko jedna macierz i wektor
                         glm::mat4 global = transform->GetGlobalMatrix();
                         glm::vec4 worldCenter = global * glm::vec4(localSphere.Center, 1.0f);
 
@@ -136,8 +175,14 @@ namespace NFSEngine {
                             if (dist - sphere.Radius > cullingRange) visible = false;
                         }
                     }
-                } else {
-                    auto localAABB = CullingUtils::GetLocalAABB(gameObject.get());
+                } else { // AABB
+                    // UWAGA: Pobieramy wcześniej zcache'owane AABB
+                    std::pair<glm::vec3, glm::vec3> localAABB;
+                    if (auto* mc = gameObject->GetComponent<ModelComponent>())
+                        localAABB = mc->GetCachedLocalAABB();
+                    else if (auto* cm = gameObject->GetComponent<CubeMesh>())
+                        localAABB = cm->GetCachedLocalAABB();
+
                     bool hasBounds = localAABB.first != localAABB.second;
 
                     if (hasBounds) {
@@ -154,6 +199,7 @@ namespace NFSEngine {
                         };
                         glm::vec3 worldMin(1e10f), worldMax(-1e10f);
                         for (auto& c : corners) {
+                            // Idealnie byłoby to przenieść do Transform i aktualizować tylko gdy isDirty == true
                             glm::vec3 w = glm::vec3(global * glm::vec4(c, 1.0f));
                             worldMin = glm::min(worldMin, w);
                             worldMax = glm::max(worldMax, w);
@@ -172,6 +218,7 @@ namespace NFSEngine {
                 if (!visible) continue;
             }
 
+            // Odpalamy Render tylko na obiektach, o których już WIEMY, że mają co rysować
             gameObject->Render();
         }
     }

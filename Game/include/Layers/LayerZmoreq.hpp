@@ -50,4 +50,5 @@ private:
     bool m_DrawDebug = false;
 
     HUDComponent* m_HUD = nullptr;
+    bool m_ShowImGui = false;
 };

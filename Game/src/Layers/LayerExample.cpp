@@ -715,6 +715,8 @@ void LayerExample::OnAttach() {
         }
     }
 
+    m_Scene->MarkPhysicsDirty();
+
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
 
@@ -837,6 +839,8 @@ void LayerExample::OnRender() {
 }
 
 void LayerExample::OnImGuiRender() {
+    if (!m_ShowImGui) return;
+
     ImGui::Begin("Diagnostic window");
 
     bool debugActive = NFSEngine::DebugCamera::IsActive();
@@ -932,8 +936,14 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
+
         if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
+            e.Handled = true;
+        }
+
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::F1) {
+            m_ShowImGui = !m_ShowImGui;
             e.Handled = true;
         }
     }

@@ -46,6 +46,8 @@ namespace NFSEngine {
         const std::vector<NFSEngine::PointLight*>& GetPointLights() const { return m_CachedPointLights; }
         const std::vector<NFSEngine::SpotLight*>& GetSpotLights() const { return m_CachedSpotLights; }
 
+        void MarkPhysicsDirty() { m_PhysicsListsDirty = true; }
+
     private:
         DeltaTime m_FixedDeltaTime = 0.01666f;
         float m_Accumulator = 0.0f;
@@ -54,6 +56,9 @@ namespace NFSEngine {
         std::vector<RigidBody3DComponent*> m_PhysicsBodies;
         std::vector<ColliderComponent*> m_Colliders;
         PhysicsSystem m_PhysicsSystem;
+
+        std::vector<GameObject*> m_Renderables;
+        bool m_RenderablesDirty = true;
 
         NFSEngine::DirectionalLight* m_CachedDirLight = nullptr;
         std::vector<NFSEngine::SpotLight*> m_CachedSpotLights;

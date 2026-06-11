@@ -93,7 +93,8 @@ namespace NFSEngine {
 
         s_ShadowMapFBO = Framebuffer::Create(shadowSpec);
         s_ShadowShader = Shader::Create("ShadowShader", "assets/shaders/shadowMap.vert", "assets/shaders/shadowMap.frag");
-        s_AnimatedShadowShader = Shader::Create("AnimShadowShader", "assets/shaders/shadowMapAnimated.vert", "assets/shaders/shadowMap.frag");
+        s_AnimatedShadowShader
+            = Shader::Create("AnimShadowShader", "assets/shaders/shadowMapAnimated.vert", "assets/shaders/shadowMap.frag");
 
         FramebufferSpecification pointShadowSpec;
         pointShadowSpec.width = 2048;
@@ -102,15 +103,11 @@ namespace NFSEngine {
 
         s_PointShadowMapFBO = Framebuffer::Create(pointShadowSpec);
 
-        s_PointShadowShader = Shader::Create("PointShadowShader",
-            "assets/shaders/pointShadow.vert",
-            "assets/shaders/pointShadow.frag",
-            "assets/shaders/pointShadow.geom");
+        s_PointShadowShader = Shader::Create("PointShadowShader", "assets/shaders/pointShadow.vert",
+                                             "assets/shaders/pointShadow.frag", "assets/shaders/pointShadow.geom");
 
-        s_PointShadowShaderAnim = Shader::Create("PointShadowShaderAnim",
-            "assets/shaders/pointShadowAnimated.vert",
-            "assets/shaders/pointShadow.frag",
-            "assets/shaders/pointShadow.geom");
+        s_PointShadowShaderAnim = Shader::Create("PointShadowShaderAnim", "assets/shaders/pointShadowAnimated.vert",
+                                                 "assets/shaders/pointShadow.frag", "assets/shaders/pointShadow.geom");
 
         float skyboxVertices[] = { -1.0f, 1.0f,  -1.0f, -1.0f, -1.0f, -1.0f, 1.0f,  -1.0f, -1.0f,
                                    1.0f,  -1.0f, -1.0f, 1.0f,  1.0f,  -1.0f, -1.0f, 1.0f,  -1.0f,
@@ -189,6 +186,7 @@ namespace NFSEngine {
         packet.material = material;
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
+
         packet.boneTransforms = boneTransforms;
 
         // TODO doda閿燂拷 optymalizacje renderowanie obiekt閿熺弹 tworzenie id na podsawie tekstur, shadr閿熺弹
@@ -223,8 +221,13 @@ namespace NFSEngine {
                   [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
 
         std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
-            [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
+                  [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
 
+        static std::vector<std::string> boneUniformNames;
+        if (boneUniformNames.empty()) {
+            for (int i = 0; i < 100; i++)
+                boneUniformNames.push_back("finalBonesMatrices[" + std::to_string(i) + "]");
+        }
         if (s_SceneData->DirLight) {
             float orthoSize = 120.0f;
             float shadowMapRes = (float)s_ShadowMapFBO->GetSpecification().width;
@@ -262,26 +265,27 @@ namespace NFSEngine {
             s_RendererAPI->ClearDepth();
             s_RendererAPI->SetDepthTest(true);
 
-            //s_RendererAPI->SetCullFace(1);// Fix for peter panning // Not working properly, requires further investigation
+            // s_RendererAPI->SetCullFace(1);// Fix for peter panning // Not working properly, requires further investigation
 
-            
             // Check optimization of this function //TODOgugapl
+            s_ShadowShader->Bind();
+            s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
             for (const auto& packet : s_RendererQueue) {
-                if (!packet.boneTransforms.empty()) {
-                    s_AnimatedShadowShader->Bind();
-                    s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
-                    s_AnimatedShadowShader->SetMat4("model", packet.transform);
+                if (!packet.boneTransforms.empty()) continue;
 
-                    for (int i = 0; i < packet.boneTransforms.size(); i++) {
-                        s_AnimatedShadowShader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
-                    }
-                }
-                else {
-                    s_ShadowShader->Bind();
-                    s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
-                    s_ShadowShader->SetMat4("model", packet.transform);
-                }
+                s_ShadowShader->SetMat4("model", packet.transform);
+                packet.vao->Bind();
+                s_RendererAPI->DrawIndexed(packet.vao);
+            }
 
+            s_AnimatedShadowShader->Bind();
+            s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+            for (const auto& packet : s_RendererQueue) {
+                if (packet.boneTransforms.empty()) continue;
+                s_AnimatedShadowShader->SetMat4("model", packet.transform);
+                for (size_t i = 0; i < packet.boneTransforms.size(); i++) {
+                    s_AnimatedShadowShader->SetMat4(boneUniformNames[i], packet.boneTransforms[i]);
+                }
                 packet.vao->Bind();
                 s_RendererAPI->DrawIndexed(packet.vao);
             }
@@ -291,7 +295,7 @@ namespace NFSEngine {
                 s_RendererAPI->DrawIndexedInstanced(packet.vao, packet.instanceCount);
             }
 
-            //s_RendererAPI->SetCullFace(0);
+            // s_RendererAPI->SetCullFace(0);
 
             s_ShadowMapFBO->Unbind();
         }
@@ -306,15 +310,21 @@ namespace NFSEngine {
             glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, farPlane);
 
             std::vector<glm::mat4> shadowTransforms;
-            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
-            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-            shadowTransforms.push_back(shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
-
+            shadowTransforms.push_back(
+                shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+            shadowTransforms.push_back(
+                shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+            shadowTransforms.push_back(
+                shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+            shadowTransforms.push_back(
+                shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f)));
+            shadowTransforms.push_back(
+                shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
+            shadowTransforms.push_back(
+                shadowProj * glm::lookAt(lightPos, lightPos + glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, -1.0f, 0.0f)));
             s_PointShadowMapFBO->Bind();
-            s_RendererAPI->SetViewport(0, 0, s_PointShadowMapFBO->GetSpecification().width, s_PointShadowMapFBO->GetSpecification().height);
+            s_RendererAPI->SetViewport(0, 0, s_PointShadowMapFBO->GetSpecification().width,
+                                       s_PointShadowMapFBO->GetSpecification().height);
             s_RendererAPI->ClearDepth();
             s_RendererAPI->SetDepthTest(true);
 
@@ -322,9 +332,6 @@ namespace NFSEngine {
             s_PointShadowShader->SetMat4Array("shadowMatrices", shadowTransforms);
             s_PointShadowShader->SetVec3("lightPos", lightPos);
             s_PointShadowShader->SetFloat("far_plane", farPlane);
-
-            // Check optimization of this function //TODOgugapl
-
             for (const auto& packet : s_RendererQueue) {
                 if (!packet.boneTransforms.empty()) continue;
 
@@ -337,24 +344,22 @@ namespace NFSEngine {
             s_PointShadowShaderAnim->SetMat4Array("shadowMatrices", shadowTransforms);
             s_PointShadowShaderAnim->SetVec3("lightPos", lightPos);
             s_PointShadowShaderAnim->SetFloat("far_plane", farPlane);
-
             for (const auto& packet : s_RendererQueue) {
                 if (packet.boneTransforms.empty()) continue;
-
                 s_PointShadowShaderAnim->SetMat4("model", packet.transform);
-                for (int i = 0; i < packet.boneTransforms.size(); i++) {
-                    s_PointShadowShaderAnim->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                for (size_t i = 0; i < packet.boneTransforms.size(); i++) {
+                    s_PointShadowShaderAnim->SetMat4(boneUniformNames[i], packet.boneTransforms[i]);
                 }
                 packet.vao->Bind();
                 s_RendererAPI->DrawIndexed(packet.vao);
             }
-
             s_PointShadowMapFBO->Unbind();
         }
 
         if (s_HDRFramebuffer->GetSpecification().width > 0 && s_HDRFramebuffer->GetSpecification().height > 0) {
             s_HDRFramebuffer->Bind();
-            s_RendererAPI->SetViewport(0, 0, s_HDRFramebuffer->GetSpecification().width, s_HDRFramebuffer->GetSpecification().height);
+            s_RendererAPI->SetViewport(0, 0, s_HDRFramebuffer->GetSpecification().width,
+                                       s_HDRFramebuffer->GetSpecification().height);
         }
 
         uint32_t lastShaderID = 0;
@@ -363,17 +368,17 @@ namespace NFSEngine {
         {
             NFS_PROFILE_SCOPE("Render Queue");
             for (const auto& packet : s_RendererQueue) {
+
                 if (packet.shader->GetRendererID() != lastShaderID) {
                     packet.shader->Bind();
                     lastShaderID = packet.shader->GetRendererID();
-
                     s_Stats.stateChanges++;
 
                     packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
                     packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
                     packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
-
                     packet.shader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+
                     s_RendererAPI->BindTexture(s_ShadowMapFBO->GetDepthAttachmentRendererID(), 7);
                     packet.shader->SetInt("shadowMap", 7);
 
@@ -409,38 +414,18 @@ namespace NFSEngine {
                         }
                         packet.shader->SetInt("activePointLights", lightIndex);
                     }
-
-                    if (s_SceneData->SpotLights) {
-                        int spotIndex = 0;
-                        for (auto* light : *s_SceneData->SpotLights) {
-                            if (spotIndex >= 4) break;
-                            std::string base = "spotLights[" + std::to_string(spotIndex) + "].";
-                            packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
-                            packet.shader->SetVec3(base + "direction", light->Direction);
-                            packet.shader->SetVec3(base + "color", light->Color);
-                            packet.shader->SetFloat(base + "intensity", light->Intensity);
-                            packet.shader->SetFloat(base + "cutOff", light->CutOff);
-                            packet.shader->SetFloat(base + "outerCutOff", light->OuterCutOff);
-                            packet.shader->SetFloat(base + "constant", light->Constant);
-                            packet.shader->SetFloat(base + "linear", light->Linear);
-                            packet.shader->SetFloat(base + "quadratic", light->Quadratic);
-                            spotIndex++;
-                        }
-                        packet.shader->SetInt("activeSpotLights", spotIndex);
-                    }
                 }
 
                 packet.shader->SetMat4("model", packet.transform);
 
                 if (!packet.boneTransforms.empty()) {
-                    for (int i = 0; i < packet.boneTransforms.size(); i++) {
-                        packet.shader->SetMat4("finalBonesMatrices[" + std::to_string(i) + "]", packet.boneTransforms[i]);
+                    for (size_t i = 0; i < packet.boneTransforms.size(); i++) {
+                        packet.shader->SetMat4(boneUniformNames[i], packet.boneTransforms[i]);
                     }
                 }
 
                 if (packet.material) {
                     packet.material->Bind(packet.shader);
-
                     for (const auto& [name, value] : packet.material->Properties) {
                         std::visit(
                             [&](auto&& arg) {
@@ -456,7 +441,6 @@ namespace NFSEngine {
                             },
                             value);
                     }
-
                     s_Stats.stateChanges++;
                 }
 
@@ -471,7 +455,6 @@ namespace NFSEngine {
                 }
             }
         }
-
         {
             NFS_PROFILE_SCOPE("Instanced Render Queue");
             s_RendererAPI->SetBlendEnabled(true);

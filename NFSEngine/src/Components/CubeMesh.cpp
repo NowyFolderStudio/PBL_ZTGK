@@ -4,6 +4,7 @@
 #include "Core/GameObject.hpp"
 #include "Renderer/Buffer.hpp"
 #include "Renderer/Renderer.hpp"
+#include "Core/CullingUtils.hpp"
 
 namespace NFSEngine {
 
@@ -52,7 +53,12 @@ namespace NFSEngine {
         p_VertexArray->SetIndexBuffer(ibo);
     }
 
-    void CubeMesh::OnAwake() { p_Transform = m_Owner->GetComponent<Transform>(); }
+    void CubeMesh::OnAwake() {
+        p_Transform = m_Owner->GetComponent<Transform>();
+
+        m_LocalBoundingSphere = CullingUtils::GetLocalBoundingSphere(m_Owner);
+        m_LocalAABB = CullingUtils::GetLocalAABB(m_Owner);
+    }
 
     void CubeMesh::OnRender() {
         if (!p_Shader || !p_Material || p_Transform == nullptr) return;

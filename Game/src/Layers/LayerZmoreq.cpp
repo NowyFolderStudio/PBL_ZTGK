@@ -176,6 +176,8 @@ void LayerZmoreq::OnAttach() {
     basicEnemyComp.ChaseSpeed = 6.0f;
     basicEnemyComp.DetectionRadius = 7.0f;
 
+    m_Scene->MarkPhysicsDirty();
+
     // --- KAMERA ---
     auto* cameraObj = m_Scene->CreateGameObject("MainCamera");
     m_CachedCamera = &cameraObj->AddComponent<Camera>();
@@ -258,6 +260,10 @@ void LayerZmoreq::OnRender() {
 }
 
 void LayerZmoreq::OnImGuiRender() {
+    if (!m_ShowImGui) {
+        return;
+    }
+
     ImGui::Begin("Diagnostic window");
 
     bool debugActive = NFSEngine::DebugCamera::IsActive();

@@ -9,6 +9,7 @@
 #include "Renderer/Model.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Material.hpp"
+#include "Renderer/Frustum.hpp"
 
 namespace NFSEngine {
 
@@ -35,6 +36,8 @@ namespace NFSEngine {
         }
 
         std::shared_ptr<Material> GetMaterial(int index) { return m_Materials[index]; }
+        BoundingSphere GetCachedLocalSphere() const { return m_LocalBoundingSphere; }
+        std::pair<glm::vec3, glm::vec3> GetCachedLocalAABB() const { return m_LocalAABB; }
 
     protected:
         virtual void OnAwake() override;
@@ -44,6 +47,9 @@ namespace NFSEngine {
         std::vector<LODLevel> m_LODs;
         std::shared_ptr<Shader> m_Shader;
         std::vector<std::shared_ptr<Material>> m_Materials;
+
+        BoundingSphere m_LocalBoundingSphere;
+        std::pair<glm::vec3, glm::vec3> m_LocalAABB;
 
         Transform* m_Transform = nullptr;
         AnimatorComponent* m_Animator = nullptr;

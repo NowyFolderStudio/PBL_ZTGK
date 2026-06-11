@@ -40,6 +40,7 @@ public:
 
 private:
     HUDComponent* m_HUD = nullptr;
+    bool m_ShowImGui = false;
 
     NFSEngine::GameObject* m_Player = nullptr;
     NFSEngine::GameObject* m_MovingCube = nullptr;

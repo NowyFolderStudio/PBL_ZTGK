@@ -444,8 +444,8 @@ namespace NFSEngine {
                     outResult.Hit = true;
                     outResult.Distance = hitDist;
                     outResult.Point = ray.Origin + ray.Direction * hitDist;
-                    glm::vec3 capsuleCenter = (GetCapsule(transform, capsuleCollider).PointA
-                                               + GetCapsule(transform, capsuleCollider).PointB) * 0.5f;
+                    glm::vec3 capsuleCenter
+                        = (GetCapsule(transform, capsuleCollider).PointA + GetCapsule(transform, capsuleCollider).PointB) * 0.5f;
                     outResult.Normal = glm::normalize(outResult.Point - capsuleCenter);
                     return true;
                 }
