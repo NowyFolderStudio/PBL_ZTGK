@@ -70,7 +70,7 @@ protected:
 
     void OnStart() override {
         InitScoreUI();
-        InitHeartsUI();
+        // InitHeartsUI();
         InitAuraUI();
 
         if (AuraManager::Instance) {
@@ -85,11 +85,11 @@ protected:
                 = ScoreManager::Instance->OnScoreChanged.AddListener([this](int score) { this->UpdateScoreText(score); });
         }
 
-        if (LivesManager::Instance) {
-            UpdateHeartVisuals(LivesManager::Instance->GetLives());
-            m_LivesEventId
-                = LivesManager::Instance->OnLivesChanged.AddListener([this](int lives) { this->UpdateHeartVisuals(lives); });
-        }
+        // if (LivesManager::Instance) {
+        //     UpdateHeartVisuals(LivesManager::Instance->GetLives());
+        //     m_LivesEventId
+        //         = LivesManager::Instance->OnLivesChanged.AddListener([this](int lives) { this->UpdateHeartVisuals(lives); });
+        // }
     }
 
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
