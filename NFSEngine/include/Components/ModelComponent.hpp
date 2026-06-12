@@ -24,6 +24,8 @@ namespace NFSEngine {
 
         virtual std::string GetName() const override { return "ModelComponent"; }
 
+        virtual void OnImGuiRender() override;
+
         void AddLOD(std::shared_ptr<Model> model, float maxDistance);
 
         const std::vector<LODLevel>& GetLODs() const { return m_LODs; }

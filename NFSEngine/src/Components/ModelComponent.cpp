@@ -59,4 +59,29 @@ namespace NFSEngine {
             Renderer::Submit(m_Shader, meshData.VAO, currentMaterial, m_Transform->GetGlobalMatrix(), boneTransforms);
         }
     }
+
+    void ModelComponent::OnImGuiRender() {
+        if (ImGui::CollapsingHeader("Model Materials")) {
+
+            for (size_t i = 0; i < m_Materials.size(); i++) {
+                auto& mat = m_Materials[i];
+                if (!mat) continue;
+
+                std::string headerName = "Material " + std::to_string(i) + (mat->name.empty() ? "" : " (" + mat->name + ")");
+
+                if (ImGui::TreeNode(headerName.c_str())) {
+                    std::string idSuffix = "##" + std::to_string(i);
+
+                    ImGui::ColorEdit3(("Albedo Color" + idSuffix).c_str(), &mat->AlbedoColor.x);
+                    ImGui::ColorEdit3(("Emissive Color" + idSuffix).c_str(), &mat->EmissiveColor.x);
+
+                    ImGui::DragFloat(("Emissive Strength" + idSuffix).c_str(), &mat->EmissiveStrength, 0.1f, 0.0f, 100.0f);
+                    ImGui::SliderFloat(("Metallic" + idSuffix).c_str(), &mat->Metallic, 0.0f, 1.0f);
+                    ImGui::SliderFloat(("Roughness" + idSuffix).c_str(), &mat->Roughness, 0.0f, 1.0f);
+
+                    ImGui::TreePop();
+                }
+            }
+        }
+    }
 } // namespace NFSEngine
