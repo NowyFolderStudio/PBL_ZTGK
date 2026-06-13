@@ -17,6 +17,12 @@ namespace NFSEngine {
     class SpotLight;
     class EnvironmentMap;
 
+    enum class RenderFeature {
+        Static,
+        Animated,
+        AudioReactive
+    };
+
     struct RenderPacket {
         uint64_t sortKey = 0;
 
@@ -26,6 +32,8 @@ namespace NFSEngine {
         glm::mat4 transform = glm::mat4(1.0f);
 
         std::vector<glm::mat4> boneTransforms;
+
+        RenderFeature feature = RenderFeature::Static;
     };
 
     struct InstancedRenderPacket {
@@ -134,6 +142,7 @@ namespace NFSEngine {
         static std::shared_ptr<Framebuffer> s_ShadowMapFBO;
         static std::shared_ptr<Shader> s_ShadowShader;
         static std::shared_ptr<Shader> s_AnimatedShadowShader;
+        static std::shared_ptr<Shader> s_AudioShadowShader;
         static glm::mat4 s_LightSpaceMatrix;
 
         // Point Light Shadows

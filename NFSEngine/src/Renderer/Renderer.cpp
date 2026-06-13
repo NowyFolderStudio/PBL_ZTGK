@@ -39,6 +39,7 @@ namespace NFSEngine {
     std::shared_ptr<Framebuffer> Renderer::s_ShadowMapFBO = nullptr;
     std::shared_ptr<Shader> Renderer::s_ShadowShader = nullptr;
     std::shared_ptr<Shader> Renderer::s_AnimatedShadowShader = nullptr;
+    std::shared_ptr<Shader> Renderer::s_AudioShadowShader = nullptr;
     glm::mat4 Renderer::s_LightSpaceMatrix = glm::mat4(1.0f);
 
     std::shared_ptr<Framebuffer> Renderer::s_PointShadowMapFBO = nullptr;
@@ -95,6 +96,7 @@ namespace NFSEngine {
         s_ShadowShader = Shader::Create("ShadowShader", "assets/shaders/shadowMap.vert", "assets/shaders/shadowMap.frag");
         s_AnimatedShadowShader
             = Shader::Create("AnimShadowShader", "assets/shaders/shadowMapAnimated.vert", "assets/shaders/shadowMap.frag");
+        s_AudioShadowShader = Shader::Create("AudioShadowShader", "assets/shaders/shadowMapAudio.vert", "assets/shaders/shadowMap.frag");
 
         FramebufferSpecification pointShadowSpec;
         pointShadowSpec.width = 2048;
@@ -189,7 +191,15 @@ namespace NFSEngine {
 
         packet.boneTransforms = boneTransforms;
 
-        // TODO doda閿燂拷 optymalizacje renderowanie obiekt閿熺弹 tworzenie id na podsawie tekstur, shadr閿熺弹
+        if (!boneTransforms.empty()) {
+            packet.feature = RenderFeature::Animated;
+        }
+        else if (shader->GetName() == "AudioShader") {
+            packet.feature = RenderFeature::AudioReactive;
+        }
+        else {
+            packet.feature = RenderFeature::Static;
+        }
 
         s_RendererQueue.push_back(packet);
     }
@@ -228,6 +238,9 @@ namespace NFSEngine {
             for (int i = 0; i < 100; i++)
                 boneUniformNames.push_back("finalBonesMatrices[" + std::to_string(i) + "]");
         }
+
+        // Shadows for DirectionalLight 
+
         if (s_SceneData->DirLight) {
             float orthoSize = 120.0f;
             float shadowMapRes = (float)s_ShadowMapFBO->GetSpecification().width;
@@ -267,28 +280,69 @@ namespace NFSEngine {
 
             // s_RendererAPI->SetCullFace(1);// Fix for peter panning // Not working properly, requires further investigation
 
-            // Check optimization of this function //TODOgugapl
+            RenderFeature currentFeature = RenderFeature::Static;
             s_ShadowShader->Bind();
             s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
-            for (const auto& packet : s_RendererQueue) {
-                if (!packet.boneTransforms.empty()) continue;
 
-                s_ShadowShader->SetMat4("model", packet.transform);
-                packet.vao->Bind();
-                s_RendererAPI->DrawIndexed(packet.vao);
-            }
-
-            s_AnimatedShadowShader->Bind();
-            s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
             for (const auto& packet : s_RendererQueue) {
-                if (packet.boneTransforms.empty()) continue;
-                s_AnimatedShadowShader->SetMat4("model", packet.transform);
-                for (size_t i = 0; i < packet.boneTransforms.size(); i++) {
-                    s_AnimatedShadowShader->SetMat4(boneUniformNames[i], packet.boneTransforms[i]);
+
+                if (packet.feature != currentFeature) {
+                    currentFeature = packet.feature;
+
+                    if (currentFeature == RenderFeature::Static) {
+                        s_ShadowShader->Bind();
+                        s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    }
+                    else if (currentFeature == RenderFeature::Animated) {
+                        s_AnimatedShadowShader->Bind();
+                        s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    }
+                    else if (currentFeature == RenderFeature::AudioReactive) {
+                        s_AudioShadowShader->Bind();
+                        s_AudioShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+                    }
                 }
+
+                switch (packet.feature) {
+                case RenderFeature::Static:
+                    s_ShadowShader->SetMat4("model", packet.transform);
+                    break;
+
+                case RenderFeature::Animated:
+                    s_AnimatedShadowShader->SetMat4("model", packet.transform);
+                    for (size_t i = 0; i < packet.boneTransforms.size(); i++) {
+                        s_AnimatedShadowShader->SetMat4(boneUniformNames[i], packet.boneTransforms[i]);
+                    }
+                    break;
+
+                case RenderFeature::AudioReactive:
+                    s_AudioShadowShader->SetMat4("model", packet.transform);
+                    if (packet.material) {
+                        for (const auto& [name, value] : packet.material->Properties) {
+                            std::visit(
+                                [&](auto&& arg) {
+                                    using T = std::decay_t<decltype(arg)>;
+                                    if constexpr (std::is_same_v<T, float>)
+                                        s_AudioShadowShader->SetFloat(name, arg);
+                                    else if constexpr (std::is_same_v<T, int>)
+                                        s_AudioShadowShader->SetInt(name, arg);
+                                    else if constexpr (std::is_same_v<T, glm::vec3>)
+                                        s_AudioShadowShader->SetVec3(name, arg);
+                                    else if constexpr (std::is_same_v<T, glm::vec4>)
+                                        s_AudioShadowShader->SetVec4(name, arg);
+                                },
+                                value);
+                        }
+                    }
+                    break;
+                }
+
                 packet.vao->Bind();
                 s_RendererAPI->DrawIndexed(packet.vao);
             }
+
+            s_ShadowShader->Bind();
+            s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
 
             for (const auto& packet : s_InstancedQueue) {
                 packet.vao->Bind();

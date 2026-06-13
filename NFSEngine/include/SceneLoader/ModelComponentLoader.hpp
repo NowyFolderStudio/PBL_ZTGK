@@ -17,7 +17,7 @@ namespace NFSEngine {
                 if (j_obj.contains("custom_components")) {
                     for (const auto& comp : j_obj["custom_components"]) {
                         if (comp["name"] == "GeneratywnyKomponent") {
-                            shader = Shader::Create("GeneratedShader", "assets/shaders/audioShader.vert",
+                            shader = Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
                                                     "assets/shaders/toonShader.frag");
                             material = std::make_shared<Material>();
                             material->name = "AnimationMaterial";
