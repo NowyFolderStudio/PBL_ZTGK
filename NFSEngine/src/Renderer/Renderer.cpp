@@ -50,6 +50,8 @@ namespace NFSEngine {
     std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
     std::shared_ptr<Shader> Renderer::s_DebugShader;
 
+    bool Renderer::s_SortingEnabled;
+    bool Renderer::s_LodEnabled;
     bool Renderer::s_DrawDebug;
 
     void Renderer::Init() {
@@ -57,6 +59,7 @@ namespace NFSEngine {
         s_RendererAPI->Init();
         s_GPUTimer = std::make_unique<GPUTimer>();
         s_DrawDebug = false;
+        s_SortingEnabled = true;
 
         FramebufferSpecification fbSpec;
         fbSpec.width = Application::Get().GetConfig().WindowWidth;
@@ -96,7 +99,8 @@ namespace NFSEngine {
         s_ShadowShader = Shader::Create("ShadowShader", "assets/shaders/shadowMap.vert", "assets/shaders/shadowMap.frag");
         s_AnimatedShadowShader
             = Shader::Create("AnimShadowShader", "assets/shaders/shadowMapAnimated.vert", "assets/shaders/shadowMap.frag");
-        s_AudioShadowShader = Shader::Create("AudioShadowShader", "assets/shaders/shadowMapAudio.vert", "assets/shaders/shadowMap.frag");
+        s_AudioShadowShader
+            = Shader::Create("AudioShadowShader", "assets/shaders/shadowMapAudio.vert", "assets/shaders/shadowMap.frag");
 
         FramebufferSpecification pointShadowSpec;
         pointShadowSpec.width = 2048;
@@ -193,11 +197,9 @@ namespace NFSEngine {
 
         if (!boneTransforms.empty()) {
             packet.feature = RenderFeature::Animated;
-        }
-        else if (shader->GetName() == "AudioShader") {
+        } else if (shader->GetName() == "AudioShader") {
             packet.feature = RenderFeature::AudioReactive;
-        }
-        else {
+        } else {
             packet.feature = RenderFeature::Static;
         }
 
@@ -227,11 +229,13 @@ namespace NFSEngine {
 
         s_GPUTimer->Begin();
 
-        std::sort(s_RendererQueue.begin(), s_RendererQueue.end(),
-                  [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
+        if (s_SortingEnabled) {
+            std::sort(s_RendererQueue.begin(), s_RendererQueue.end(),
+                      [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
 
-        std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
-                  [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
+            std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
+                      [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
+        }
 
         static std::vector<std::string> boneUniformNames;
         if (boneUniformNames.empty()) {
@@ -239,7 +243,7 @@ namespace NFSEngine {
                 boneUniformNames.push_back("finalBonesMatrices[" + std::to_string(i) + "]");
         }
 
-        // Shadows for DirectionalLight 
+        // Shadows for DirectionalLight
 
         if (s_SceneData->DirLight) {
             float orthoSize = 120.0f;
@@ -292,12 +296,10 @@ namespace NFSEngine {
                     if (currentFeature == RenderFeature::Static) {
                         s_ShadowShader->Bind();
                         s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
-                    }
-                    else if (currentFeature == RenderFeature::Animated) {
+                    } else if (currentFeature == RenderFeature::Animated) {
                         s_AnimatedShadowShader->Bind();
                         s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
-                    }
-                    else if (currentFeature == RenderFeature::AudioReactive) {
+                    } else if (currentFeature == RenderFeature::AudioReactive) {
                         s_AudioShadowShader->Bind();
                         s_AudioShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
                     }

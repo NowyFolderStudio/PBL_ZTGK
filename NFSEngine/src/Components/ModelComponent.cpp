@@ -42,6 +42,10 @@ namespace NFSEngine {
 
         if (!selectedModel) return;
 
+        if (Renderer::s_LodEnabled) {
+            selectedModel = m_LODs[0].ModelData;
+        }
+
         static const std::vector<glm::mat4> emptyBones;
 
         const std::vector<glm::mat4>& boneTransforms = m_Animator ? m_Animator->GetFinalBoneMatrices() : emptyBones;

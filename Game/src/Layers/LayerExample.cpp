@@ -889,6 +889,14 @@ void LayerExample::OnImGuiRender() {
     if (ImGui::Combo("Culling Mode", &cullingMode, modes, 2)) {
         NFSEngine::Renderer::SetFrustumCullingMode(cullingMode);
     }
+    bool sortingEnabled = NFSEngine::Renderer::s_SortingEnabled;
+    if (ImGui::Checkbox("Sorting Enabled", &sortingEnabled)) {
+        NFSEngine::Renderer::s_SortingEnabled = sortingEnabled;
+    }
+    bool lodEnabled = NFSEngine::Renderer::s_LodEnabled;
+    if (ImGui::Checkbox("LOD Enabled", &lodEnabled)) {
+        NFSEngine::Renderer::s_LodEnabled = lodEnabled;
+    }
     ImGui::Separator();
 
     auto stats = NFSEngine::Renderer::GetStats();
