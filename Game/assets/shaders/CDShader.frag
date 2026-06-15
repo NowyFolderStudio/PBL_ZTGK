@@ -263,8 +263,26 @@ void main() {
     float denom_dir = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L_dir), 0.0) + 0.0001;
     vec3 specular_dir = nom_dir / denom_dir;
 
+    vec3 kS_dir = F_dir;
+    vec3 kD_dir = vec3(1.0) - kS_dir;
+    kD_dir *= 1.0 - metallic;    
+
+    float NdotL_dir = max(dot(N, L_dir), 0.0);
+    float shadow = ShadowCalculation(FragPosLightSpace, N, L_dir);
+
+    Lo += (1.0 - shadow) * (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir;
+
     if (u_UseDiffraction) {
-        vec3 T = normalize(TBN[0]); 
+        
+        vec2 dirUV = TexCoord - vec2(0.5, 0.5);
+        
+        vec2 tangentUV = vec2(-dirUV.y, dirUV.x);
+        
+        if (length(tangentUV) > 0.0001) {
+            tangentUV = normalize(tangentUV);
+        }
+
+        vec3 T = normalize(TBN * vec3(tangentUV, 0.0));
         
         float sin_thetaV = dot(T, V);
         float sin_thetaL = dot(T, L_dir);
@@ -278,18 +296,9 @@ void main() {
         
         diffractionColor = clamp(diffractionColor, 0.0, 1.0) * u_DiffractionStrength;
 
-        specular_dir += diffractionColor; 
+        Lo += diffractionColor * radiance_dir * (1.0 - shadow) * NdotL_dir; 
     }
-    
-    vec3 kS_dir = F_dir;
-    vec3 kD_dir = vec3(1.0) - kS_dir;
-    kD_dir *= 1.0 - metallic;     
-
-    float NdotL_dir = max(dot(N, L_dir), 0.0);
-
-    float shadow = ShadowCalculation(FragPosLightSpace, N, L_dir);
-
-    Lo += (1.0 - shadow) * (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir;
+   
 
     // Point light
 
