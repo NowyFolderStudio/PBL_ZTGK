@@ -171,7 +171,7 @@ namespace NFSEngine {
 // ========================================================================
 
 // CHANGE TO 0 TURN OFF PROFILER FOR THE PROJECT
-#define NFS_PROFILE 1
+#define NFS_PROFILE 0
 
 #if NFS_PROFILE
 
@@ -238,7 +238,7 @@ namespace NFSEngine {
 
 #else
 
-#define NFS_PROFILE_BEGIN_SESSION(name, filepath)
+#define NFS_PROFILE_BEGIN_SESSION(name)
 #define NFS_PROFILE_END_SESSION()
 #define NFS_PROFILE_SCOPE(name)
 #define NFS_PROFILE_FUNCTION()

@@ -180,7 +180,7 @@ void LayerExample::OnAttach() {
     // m_MovingCube->GetTransform()->SetPosition(glm::vec3(0.0f, 0.0f, 15.0f));
     // m_MovingCube->AddComponent<NFSEngine::BoxCollider3DComponent>();
 
-    // Player
+    // ================= CREATING PLAYER START ==================
     auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
 
     auto animationShader
@@ -204,12 +204,13 @@ void LayerExample::OnAttach() {
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
     playerModel->AddComponent<AnimatorComponent>();
     playerModel->AddComponent<CharacterAnimationController>();
-    auto particleMaterial = std::make_shared<Material>();
-    auto texture = Texture::Create("assets/textures/particles/cloud.png");
-    particleMaterial->AlbedoMap = texture;
-
     auto particleShader = Shader::Create("particleShader", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
-    playerModel->AddComponent<ParticleEmitterComponent>(2000, particleShader, particleMaterial);
+    auto particleShader2 = Shader::Create("particleShader2", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
+    // Particle clouds
+    auto particleCloudMaterial = std::make_shared<Material>();
+    auto cloudParticleTexture = Texture::Create("assets/textures/particles/cloud.png");
+    particleCloudMaterial->AlbedoMap = cloudParticleTexture;
+    playerModel->AddComponent<ParticleEmitterComponent>(2000, particleShader, particleCloudMaterial);
 
     m_Player->AddComponent<AuraInputController>();
 
@@ -220,12 +221,15 @@ void LayerExample::OnAttach() {
     auto jumpAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 9);
     auto fallAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations(2).fbx", m, 6);
     auto wallJumpAnimation = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations_wj.fbx", m, 4);
+    auto dashAnimation
+        = std::make_shared<Animation>("assets/models/Player/Glowna_postac_baked_animations_dash_skeleton.fbx", m, 5);
 
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(idleAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(runAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(jumpAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(fallAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(wallJumpAnimation);
+    playerModel->GetComponent<AnimatorComponent>()->AddAnimation(dashAnimation);
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
@@ -236,6 +240,8 @@ void LayerExample::OnAttach() {
     m_RampTexture = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
     playerMaterial->RampMap = m_RampTexture;
     m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
+
+    // ================= CREATING PLAYER END ==================
 
     // Sphere
     // auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/ball/ball.obj");

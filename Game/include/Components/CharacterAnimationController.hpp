@@ -1,6 +1,9 @@
+#include "Components/CharacterController.hpp"
+#include "Components/ParticleEmitterComponent.hpp"
 #include "NFSEngine.h"
 #include "Renderer/Particle.hpp"
 #include <glm/ext/vector_float3.hpp>
+#include <glm/ext/vector_float4.hpp>
 
 class CharacterAnimationController : public NFSEngine::Component {
 public:
@@ -23,8 +26,8 @@ public:
         m_WalkParticleProperties.velocityVariation = { 4, 1, 4 };
         m_WalkParticleProperties.sizeBegin = 0.8;
         m_WalkParticleProperties.sizeEnd = 0;
-        m_JumpParticleProperties.rotationVariation = 90;
-        m_JumpParticleProperties.rotationSpeedVariation = 20;
+        m_WalkParticleProperties.rotationVariation = 90;
+        m_WalkParticleProperties.rotationSpeedVariation = 20;
     }
     std::string GetName() const override { return "CharacterAnimationController"; }
 
@@ -43,6 +46,7 @@ private:
     float m_MaxSpeed = 0.0f;
     NFSEngine::RigidBody3DComponent* m_Rigidbody;
     NFSEngine::AnimatorComponent* m_Animator;
+    CharacterController* m_Controller;
     NFSEngine::ParticleEmitterComponent* m_ParticleEmitter;
     NFSEngine::ParticleProperties m_JumpParticleProperties;
     NFSEngine::ParticleProperties m_WalkParticleProperties;

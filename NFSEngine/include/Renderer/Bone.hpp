@@ -123,6 +123,37 @@ namespace NFSEngine {
             return m_NumScalings - 2;
         }
 
+        glm::vec3 GetLocalPosition(float animationTime) {
+            if (m_Positions.empty()) return glm::vec3(0.0f);
+            if (1 == m_NumPositions) return m_Positions[0].position;
+
+            int p0Index = GetPositionIndex(animationTime);
+            int p1Index = p0Index + 1;
+            float scaleFactor = GetScaleFactor(m_Positions[p0Index].timeStamp, m_Positions[p1Index].timeStamp, animationTime);
+            return glm::mix(m_Positions[p0Index].position, m_Positions[p1Index].position, scaleFactor);
+        }
+
+        glm::quat GetLocalRotation(float animationTime) {
+            if (m_Rotations.empty()) return glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
+            if (1 == m_NumRotations) return glm::normalize(m_Rotations[0].orientation);
+
+            int p0Index = GetRotationIndex(animationTime);
+            int p1Index = p0Index + 1;
+            float scaleFactor = GetScaleFactor(m_Rotations[p0Index].timeStamp, m_Rotations[p1Index].timeStamp, animationTime);
+            glm::quat finalRotation = glm::slerp(m_Rotations[p0Index].orientation, m_Rotations[p1Index].orientation, scaleFactor);
+            return glm::normalize(finalRotation);
+        }
+
+        glm::vec3 GetLocalScale(float animationTime) {
+            if (m_Scales.empty()) return glm::vec3(1.0f);
+            if (1 == m_NumScalings) return m_Scales[0].scale;
+
+            int p0Index = GetScaleIndex(animationTime);
+            int p1Index = p0Index + 1;
+            float scaleFactor = GetScaleFactor(m_Scales[p0Index].timeStamp, m_Scales[p1Index].timeStamp, animationTime);
+            return glm::mix(m_Scales[p0Index].scale, m_Scales[p1Index].scale, scaleFactor);
+        }
+
     private:
         float GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime) {
             float scaleFactor = 0.0f;

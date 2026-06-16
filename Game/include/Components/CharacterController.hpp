@@ -98,6 +98,8 @@ public:
         return true;
     }
 
+    bool IsDashing() const { return m_IsDashing; }
+
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
     NFSEngine::Transform* m_CameraTransform = nullptr;

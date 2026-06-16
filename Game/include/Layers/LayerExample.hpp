@@ -1,9 +1,11 @@
 #pragma once
 
+#include "Core/GameObject.hpp"
 #include "NFSEngine.h"
 #include <memory>
 #include <vector>
 #include "Renderer/Material.hpp"
+#include "Renderer/Particle.hpp"
 #include "Renderer/Skybox.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
 #include "Components/AudioPatternComponent.hpp"
