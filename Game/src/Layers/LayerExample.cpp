@@ -34,6 +34,7 @@
 #include "Components/DancingWall.hpp"
 #include "Components/CasetteComponent.hpp"
 #include "Components/ConsoleButtonComponent.hpp"
+#include "Components/RotatingPlatform.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -119,6 +120,8 @@ void LayerExample::OnAttach() {
     }
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+
+
     // m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
     // "assets/shaders/PBRShader.frag"); m_HazardShader
     //     = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -699,6 +702,7 @@ void LayerExample::OnAttach() {
     neonGramophoneComp.AddLOD(gramophoneModel1, 10000.0f);
     */
 
+    
     auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
 
     auto matCD = std::make_shared<NFSEngine::Material>();
@@ -711,14 +715,18 @@ void LayerExample::OnAttach() {
     matCD->SetFloat("u_DiffractionDistance", 2000.0f);
     matCD->SetFloat("u_DiffractionStrength", 2.5f);
 
-    NFSEngine::GameObject* cdObj = m_Scene->CreateGameObject("Test_CD");
-    cdObj->GetTransform()->SetPosition(glm::vec3(-40.0f, 10.0f, 40.0f));
-    cdObj->GetTransform()->SetScale(glm::vec3(3.0f, 3.0f, 3.0f));
-    cdObj->GetTransform()->SetRotation(glm::vec3(90.0f, 0.0f, 0.0f));
+    auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
+    spinningCD->GetTransform()->SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
+    spinningCD->GetTransform()->SetPosition(glm::vec3{ -35.0f, 20.0f, 50.0f });
+    spinningCD->AddComponent<CylinderCollider3DComponent>();
 
-    auto sphereModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
-    auto& cdComp = cdObj->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
-    cdComp.AddLOD(sphereModel, 10000.0f);
+    auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
+    auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
+    cdModelComp.AddLOD(cdModel, 100000.0f);
+
+    auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
+    rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
+
 
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;

@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <string>
 
 #include "Renderer/Renderer.hpp"
@@ -298,6 +298,7 @@ namespace NFSEngine {
                         s_AnimatedShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
                     }
                     else if (currentFeature == RenderFeature::AudioReactive) {
+                        
                         s_AudioShadowShader->Bind();
                         s_AudioShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
                     }
@@ -344,11 +345,12 @@ namespace NFSEngine {
             s_ShadowShader->Bind();
             s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
 
+            /*
             for (const auto& packet : s_InstancedQueue) {
                 packet.vao->Bind();
                 s_RendererAPI->DrawIndexedInstanced(packet.vao, packet.instanceCount);
             }
-
+            */
             // s_RendererAPI->SetCullFace(0);
 
             s_ShadowMapFBO->Unbind();
