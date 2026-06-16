@@ -13,6 +13,8 @@
 #include "Renderer/EnvironmentMap.hpp"
 #include "Components/HUDComponent.hpp"
 #include "Components/DancingWall.hpp"
+#include "SceneLoader/SceneLoader.hpp"
+#include "Components/LoadingScreenComponent.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -42,6 +44,7 @@ public:
 
 private:
     HUDComponent* m_HUD = nullptr;
+    LoadingScreenComponent* m_LoadingScreen = nullptr;
     bool m_ShowImGui = false;
 
     NFSEngine::GameObject* m_Player = nullptr;
@@ -93,4 +96,9 @@ private:
     std::shared_ptr<NFSEngine::Material> matGramophone5 = nullptr;
 
     std::vector<DancingWall*> m_CachedDancingWalls;
+
+    NFSEngine::SceneLoader m_SceneLoader;
+    bool m_SceneReady = false;
+
+    void FinalizeSceneSetup();
 };

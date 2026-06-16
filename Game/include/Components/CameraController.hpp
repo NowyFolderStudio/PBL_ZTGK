@@ -15,7 +15,7 @@ namespace NFSEngine {
     class CameraController : public Component {
     public:
         explicit CameraController(GameObject* owner)
-            : Component(owner) {}
+            : Component(owner) { }
 
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
@@ -129,7 +129,7 @@ namespace NFSEngine {
             float yawRad = glm::radians(m_Yaw);
             float pitchRad = glm::radians(m_Pitch);
 
-            glm::vec3 direction = {cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad)};
+            glm::vec3 direction = { cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad) };
 
             float collisionDistance = CheckCameraCollision(m_Target->GetPosition(), direction);
             m_CurrentDistance = glm::mix(m_CurrentDistance, collisionDistance, 15.0f * static_cast<float>(dt));
@@ -137,7 +137,7 @@ namespace NFSEngine {
             auto* pTransform = m_Owner->GetTransform();
             pTransform->SetPosition(m_Target->GetPosition() + direction * m_CurrentDistance);
 
-            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), {0, 1, 0});
+            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_Target->GetPosition(), { 0, 1, 0 });
             pTransform->SetRotation(glm::degrees(glm::eulerAngles(glm::quat_cast(glm::inverse(lookAt)))));
         }
 
@@ -169,7 +169,7 @@ namespace NFSEngine {
                 auto* collider = go->GetComponent<ColliderComponent>();
                 if (!collider || collider->IsTrigger) continue;
 
-                Ray ray{ targetPos, direction };
+                Ray ray { targetPos, direction };
                 RaycastResult hit;
                 if (PhysicsSystem::RaycastCollider(ray, m_Distance, collider, goTransform, hit)) {
                     float safeDist = std::max(0.5f, hit.Distance - 0.2f);
@@ -181,8 +181,8 @@ namespace NFSEngine {
         }
 
         Transform* m_Target = nullptr;
-        float m_Distance = 12.0f;
-        float m_CurrentDistance = 12.0f;
+        float m_Distance = 20.0f;
+        float m_CurrentDistance = 20.0f;
         float m_Yaw = 90.0f, m_Pitch = 25.0f;
         float m_Sensitivity = 0.12f;
         float m_ControllerSensitivity = 2.5f;
@@ -196,7 +196,7 @@ namespace NFSEngine {
         float m_OverrideLerpSpeed = 5.0f;
         float m_OriginalYaw = 90.0f;
         float m_OriginalPitch = 25.0f;
-        float m_OriginalDistance = 12.0f;
+        float m_OriginalDistance = 20.0f;
         bool m_ReturningToOriginal = false;
     };
 } // namespace NFSEngine
