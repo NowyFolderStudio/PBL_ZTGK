@@ -207,13 +207,13 @@ private:
                 m_CanDash = true;
             }
 
-            if (p_RigidBody->Velocity.y <= 0.0f) {
+            if (p_RigidBody->Velocity.y <= 0.2f) {
                 m_JumpsRemaining = MaxJumps;
                 m_IsJumping = false;
             }
         }
 
-        if (m_DashTimeCounter <= 0.0f || (p_RigidBody->IsGrounded && p_RigidBody->Velocity.y <= 0.0f)) {
+        if (m_DashTimeCounter <= 0.0f || (p_RigidBody->IsGrounded && p_RigidBody->Velocity.y <= 0.2f)) {
             m_IsDashing = false;
         }
     }
