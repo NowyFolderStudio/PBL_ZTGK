@@ -1,4 +1,4 @@
-#include <algorithm>
+﻿#include <algorithm>
 #include <string>
 
 #include "Renderer/Renderer.hpp"
@@ -346,11 +346,12 @@ namespace NFSEngine {
             s_ShadowShader->Bind();
             s_ShadowShader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
 
+            /*
             for (const auto& packet : s_InstancedQueue) {
                 packet.vao->Bind();
                 s_RendererAPI->DrawIndexedInstanced(packet.vao, packet.instanceCount);
             }
-
+            */
             // s_RendererAPI->SetCullFace(0);
 
             s_ShadowMapFBO->Unbind();

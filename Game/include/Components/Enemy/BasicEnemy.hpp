@@ -6,6 +6,7 @@
 #include "EnemyChaseState.hpp"
 #include "EnemyAttackState.hpp"
 #include "Components/CharacterController.hpp"
+#include "Components/DestructibleComponent.hpp"
 
 class BasicEnemy : public NFSEngine::Component {
 public:
@@ -116,11 +117,19 @@ protected:
                 = [this](NFSEngine::GameObject* other, glm::vec3 contactNormal) { DealDamage(other, contactNormal); };
         }
 
+        if (auto* destructible = GetOwner()->GetComponent<DestructibleComponent>()) {
+            destructible->OnDestroyed = [this]() {
+                NFS_CORE_INFO("Wrog zabity! Zatrzymaj logike AI!");
+                ChangeState(nullptr);
+            };
+        }
+
         ChangeState(StatePatrol);
     }
 
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
         if (!m_Player || !m_RigidBody) return;
+
         if (m_CurrentState) m_CurrentState->FixedUpdate(this, deltaTime);
     }
 

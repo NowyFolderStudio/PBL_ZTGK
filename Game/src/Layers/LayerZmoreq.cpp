@@ -19,6 +19,7 @@
 #include "Components/RotatingPlatform.hpp"
 #include "Components/Enemy/BasicEnemy.hpp"
 #include "Components/PlayerAttackComponent.hpp"
+#include "Components/DestructibleComponent.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -46,7 +47,6 @@ LayerZmoreq::LayerZmoreq() {
 }
 
 LayerZmoreq::~LayerZmoreq() { }
-
 void LayerZmoreq::OnAttach() {
     m_Scene = std::make_unique<Scene>();
     m_HierarchyPanel = std::make_unique<SceneHierarchyPanel>(m_Scene.get());
@@ -113,7 +113,6 @@ void LayerZmoreq::OnAttach() {
     m_Player->AddComponent<CapsuleCollider3DComponent>();
     m_Player->AddComponent<RigidBody3DComponent>();
 
-    // POPRAWA BŁĘDU: Rozbicie na dwie instrukcje
     m_Player->AddComponent<CharacterController>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
 
@@ -159,22 +158,58 @@ void LayerZmoreq::OnAttach() {
     auto& rotPlatform = gramophone->AddComponent<RotatingPlatform>();
     rotPlatform.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
 
-    // --- Przykładowy przeciwnik (do testowania AI i kolizji) ---
+    // =========================================================================
+    // LAMBDY POMOCNICZE DO SPAWNOWANIA (Czysty ECS!)
+    // =========================================================================
 
-    auto* enemy = m_Scene->CreateGameObject("BasicEnemy");
-    enemy->GetTransform()->SetPosition({ 5.0f, 0.0f, 5.0f });
-    enemy->AddComponent<CubeMesh>(m_Shader, matSample);
-    enemy->AddComponent<BoxCollider3DComponent>();
-    enemy->AddComponent<RigidBody3DComponent>();
+    // Funkcja tworząca wroga
+    auto SpawnEnemy = [&](const std::string& name, glm::vec3 startPos, glm::vec3 endPos) {
+        auto* enemy = m_Scene->CreateGameObject(name);
+        enemy->GetTransform()->SetPosition(startPos);
+        enemy->AddComponent<CubeMesh>(m_Shader, matSample);
+        enemy->AddComponent<BoxCollider3DComponent>();
+        enemy->AddComponent<RigidBody3DComponent>();
+        enemy->AddComponent<DestructibleComponent>(); // Otrzymuje obrażenia
+        enemy->AddTag(Tags::Enemy);
 
-    enemy->AddTag(Tags::Enemy);
-    auto& basicEnemyComp = enemy->AddComponent<BasicEnemy>();
-    basicEnemyComp.PatrolPointA = glm::vec3(5.0f, 0.0f, 5.0f);
-    basicEnemyComp.PatrolPointB = glm::vec3(15.0f, 0.0f, 5.0f);
+        auto& basicEnemyComp = enemy->AddComponent<BasicEnemy>(); // Myśli i atakuje
+        basicEnemyComp.PatrolPointA = startPos;
+        basicEnemyComp.PatrolPointB = endPos;
+        basicEnemyComp.MovementSpeed = 2.0f;
+        basicEnemyComp.ChaseSpeed = 6.0f;
+        basicEnemyComp.DetectionRadius = 7.0f;
+    };
 
-    basicEnemyComp.MovementSpeed = 2.0f;
-    basicEnemyComp.ChaseSpeed = 6.0f;
-    basicEnemyComp.DetectionRadius = 7.0f;
+    // Funkcja tworząca skrzynkę (tylko zniszczalna, brak myślenia)
+    auto SpawnCrate = [&](const std::string& name, glm::vec3 pos) {
+        auto* crate = m_Scene->CreateGameObject(name);
+        crate->GetTransform()->SetPosition(pos);
+        // Lekko skalujemy, żeby skrzynki wyglądały fajnie
+        crate->GetTransform()->SetScale({ 1.2f, 1.2f, 1.2f });
+
+        crate->AddComponent<CubeMesh>(m_Shader, matSample); // Używam matSample (drewno), idealne na skrzynkę
+        crate->AddComponent<BoxCollider3DComponent>();
+        crate->AddComponent<RigidBody3DComponent>(); // Pozwala się odpychać (Knockback z DestructibleComponent)
+
+        auto& destComp = crate->AddComponent<DestructibleComponent>();
+        destComp.MaxHealth = 1; // Rozpada się na jeden hit
+    };
+
+    // =========================================================================
+    // SPAWNOWANIE ELEMENTÓW NA SCENIE
+    // =========================================================================
+
+    // Spawnowanie 2 przeciwników
+    SpawnEnemy("Enemy_1", glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(15.0f, 0.0f, 5.0f));
+    SpawnEnemy("Enemy_2", glm::vec3(-8.0f, 0.0f, -8.0f), glm::vec3(-2.0f, 0.0f, -8.0f));
+
+    // Spawnowanie piramidki ze skrzynek koło środka
+    SpawnCrate("Crate_BottomLeft", glm::vec3(3.0f, -1.0f, -4.0f));
+    SpawnCrate("Crate_BottomRight", glm::vec3(5.0f, -1.0f, -4.0f));
+    SpawnCrate("Crate_Top", glm::vec3(4.0f, 0.5f, -4.0f)); // Ta spadnie na dół dzięki grawitacji (RigidBody)!
+
+    // Spawnowanie samotnej skrzynki
+    SpawnCrate("Crate_Solo", glm::vec3(-5.0f, -1.0f, 5.0f));
 
     m_Scene->MarkPhysicsDirty();
 
