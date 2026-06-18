@@ -8,6 +8,7 @@
 #include "Renderer/Particle.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
+#include "Components/DestructibleComponent.hpp"
 
 class PlayerAttackComponent : public NFSEngine::Component {
 public:
@@ -46,7 +47,7 @@ protected:
             m_Sphere->Radius = AttackRadius;
 
             m_Sphere->OnTriggerEnter = [this](NFSEngine::GameObject* other) {
-                if (other->CompareTag(NFSEngine::Tags::Enemy)) {
+                if (other->GetComponent<DestructibleComponent>() != nullptr) {
                     m_EnemiesInRange.push_back(other);
                 }
             };
@@ -108,10 +109,14 @@ private:
 
         if (m_EnemiesInRange.empty()) return;
 
-        for (auto* enemy : m_EnemiesInRange) {
-            enemy->SetActive(false); // TODO: Replace with proper damage handling and death logic
-        }
+        glm::vec3 myPos = m_Owner->GetTransform()->GetWorldPosition();
 
-        m_EnemiesInRange.clear();
+        for (auto* target : m_EnemiesInRange) {
+            // Szukamy Destructible. Jeśli to wróg - zada HP. Jeśli to beczka - zada HP.
+            // Jeśli to np. ściana bez DestructibleComponent - zignoruje ją!
+            if (auto* destComp = target->GetComponent<DestructibleComponent>()) {
+                destComp->TakeDamage(1, myPos);
+            }
+        }
     }
 };
