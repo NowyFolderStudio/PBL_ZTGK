@@ -25,6 +25,7 @@ namespace NFSEngine {
 
     struct RenderPacket {
         uint64_t sortKey = 0;
+        float distanceToCamera = 0.0f;
 
         std::shared_ptr<VertexArray> vao;
         std::shared_ptr<Shader> shader;
@@ -130,6 +131,7 @@ namespace NFSEngine {
 
         static std::unique_ptr<GPUTimer> s_GPUTimer;
         static std::vector<RenderPacket> s_RendererQueue;
+        static std::vector<RenderPacket> s_TransparentQueue;
         static std::vector<InstancedRenderPacket> s_InstancedQueue;
         static std::shared_ptr<VertexBuffer> s_InstanceMatrixVBO;
         static std::unique_ptr<RendererAPI> s_RendererAPI;

@@ -281,29 +281,29 @@ void LayerExample::OnAttach() {
     auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
     pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
 
-    auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
+    // auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
 
-    auto matCD = std::make_shared<NFSEngine::Material>();
-    matCD->name = "DiffractionMaterial";
-    matCD->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
-    matCD->Metallic = 1.0f;
-    matCD->Roughness = 0.15f;
+    // auto matCD = std::make_shared<NFSEngine::Material>();
+    // matCD->name = "DiffractionMaterial";
+    // matCD->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
+    // matCD->Metallic = 1.0f;
+    // matCD->Roughness = 0.15f;
 
-    matCD->SetInt("u_UseDiffraction", 1);
-    matCD->SetFloat("u_DiffractionDistance", 2000.0f);
-    matCD->SetFloat("u_DiffractionStrength", 2.5f);
+    // matCD->SetInt("u_UseDiffraction", 1);
+    // matCD->SetFloat("u_DiffractionDistance", 2000.0f);
+    // matCD->SetFloat("u_DiffractionStrength", 2.5f);
 
-    auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
-    spinningCD->GetTransform()->SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
-    spinningCD->GetTransform()->SetPosition(glm::vec3 { -35.0f, 20.0f, 50.0f });
-    spinningCD->AddComponent<CylinderCollider3DComponent>();
+    // auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
+    // spinningCD->GetTransform()->SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
+    // spinningCD->GetTransform()->SetPosition(glm::vec3 { -35.0f, 20.0f, 50.0f });
+    // spinningCD->AddComponent<CylinderCollider3DComponent>();
 
-    auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
-    auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
-    cdModelComp.AddLOD(cdModel, 100000.0f);
+    // auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
+    // auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
+    // cdModelComp.AddLOD(cdModel, 100000.0f);
 
-    auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
-    rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
+    // auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
+    // rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();

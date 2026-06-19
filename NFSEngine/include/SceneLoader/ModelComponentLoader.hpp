@@ -21,7 +21,7 @@ namespace NFSEngine {
                     for (const auto& comp : j_obj["custom_components"]) {
                         if (comp["name"] == "AudioAnimation") {
                             shader = Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
-                                                    "assets/shaders/toonShader.frag");
+                                                    "assets/shaders/toonShaderNew.frag");
                             material->name = "AnimationMaterial";
                             for (const auto& prop : comp["properties"]) {
                                 std::string propName = prop["name"];

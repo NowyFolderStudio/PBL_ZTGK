@@ -15,6 +15,7 @@
 namespace NFSEngine {
 
     std::vector<RenderPacket> Renderer::s_RendererQueue;
+    std::vector<RenderPacket> Renderer::s_TransparentQueue;
     std::vector<InstancedRenderPacket> Renderer::s_InstancedQueue;
     std::unique_ptr<RendererAPI> Renderer::s_RendererAPI = nullptr;
     Renderer::SceneData* Renderer::s_SceneData = new Renderer::SceneData;
@@ -179,7 +180,7 @@ namespace NFSEngine {
             s_HDRFramebuffer->Bind();
         }
 
-        s_RendererAPI->SetClearColor({ 0.2f, 0.1f, 0.1f, 1.0f });
+        s_RendererAPI->SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
         s_RendererAPI->Clear();
     }
 
@@ -192,7 +193,6 @@ namespace NFSEngine {
         packet.material = material;
         packet.transform = transform;
         packet.sortKey = shader->GetRendererID();
-
         packet.boneTransforms = boneTransforms;
 
         if (!boneTransforms.empty()) {
@@ -202,8 +202,24 @@ namespace NFSEngine {
         } else {
             packet.feature = RenderFeature::Static;
         }
+        bool isTransparent = false;
+        if (material) {
+            auto it = material->Properties.find("u_Opacity");
+            if (it != material->Properties.end()) {
+                if (std::holds_alternative<float>(it->second) && std::get<float>(it->second) < 1.0f) {
+                    isTransparent = true;
+                }
+            }
+        }
 
-        s_RendererQueue.push_back(packet);
+        if (isTransparent) {
+            glm::vec3 objectPos = glm::vec3(transform[3]);
+            packet.distanceToCamera = glm::distance(s_SceneData->CameraPosition, objectPos);
+
+            s_TransparentQueue.push_back(packet);
+        } else {
+            s_RendererQueue.push_back(packet);
+        }
     }
 
     void Renderer::SubmitInstanced(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
@@ -232,6 +248,9 @@ namespace NFSEngine {
         if (s_SortingEnabled) {
             std::sort(s_RendererQueue.begin(), s_RendererQueue.end(),
                       [](const RenderPacket& a, const RenderPacket& b) { return a.sortKey < b.sortKey; });
+
+            std::sort(s_TransparentQueue.begin(), s_TransparentQueue.end(),
+                      [](const RenderPacket& a, const RenderPacket& b) { return a.distanceToCamera > b.distanceToCamera; });
 
             std::sort(s_InstancedQueue.begin(), s_InstancedQueue.end(),
                       [](const InstancedRenderPacket& a, const InstancedRenderPacket& b) { return a.sortKey < b.sortKey; });
@@ -618,11 +637,110 @@ namespace NFSEngine {
             }
             s_RendererAPI->SetBlendEnabled(false);
         }
+        {
+            NFS_PROFILE_SCOPE("Transparent Render Queue");
+
+            s_RendererAPI->SetBlendEnabled(true);
+            s_RendererAPI->SetBlendFunction(BlendFunction::Alpha);
+
+            s_RendererAPI->SetDepthWriteMask(false);
+
+            for (const auto& packet : s_TransparentQueue) {
+                if (packet.shader->GetRendererID() != lastShaderID) {
+                    packet.shader->Bind();
+                    lastShaderID = packet.shader->GetRendererID();
+                    s_Stats.stateChanges++;
+
+                    packet.shader->SetMat4("view", s_SceneData->ViewMatrix);
+                    packet.shader->SetMat4("projection", s_SceneData->ProjectionMatrix);
+                    packet.shader->SetVec3("viewPos", s_SceneData->CameraPosition);
+                    packet.shader->SetMat4("lightSpaceMatrix", s_LightSpaceMatrix);
+
+                    s_RendererAPI->BindTexture(s_ShadowMapFBO->GetDepthAttachmentRendererID(), 7);
+                    packet.shader->SetInt("shadowMap", 7);
+
+                    s_RendererAPI->BindCubeTexture(s_PointShadowMapFBO->GetDepthAttachmentRendererID(), 8);
+                    packet.shader->SetInt("pointShadowMap", 8);
+                    packet.shader->SetFloat("pointShadowFarPlane", 25.0f);
+
+                    if (s_SceneData->EnvMap) {
+                        s_SceneData->EnvMap->BindEnvironmentMaps(30, 29, 28);
+                        packet.shader->SetInt("irradianceMap", 30);
+                        packet.shader->SetInt("prefilterMap", 29);
+                        packet.shader->SetInt("brdfLUT", 28);
+                    }
+
+                    if (s_SceneData->DirLight) {
+                        packet.shader->SetVec3("dirLight.direction", s_SceneData->DirLight->Direction);
+                        packet.shader->SetVec3("dirLight.color", s_SceneData->DirLight->Color);
+                        packet.shader->SetFloat("dirLight.intensity", s_SceneData->DirLight->Intensity);
+                    }
+
+                    if (s_SceneData->PointLights) {
+                        int lightIndex = 0;
+                        for (auto* light : *s_SceneData->PointLights) {
+                            if (lightIndex >= 16) break;
+                            std::string base = "pointLights[" + std::to_string(lightIndex) + "].";
+                            packet.shader->SetVec3(base + "position", light->GetOwner()->GetTransform()->GetPosition());
+                            packet.shader->SetVec3(base + "color", light->Color);
+                            packet.shader->SetFloat(base + "intensity", light->Intensity);
+                            packet.shader->SetFloat(base + "constant", light->Constant);
+                            packet.shader->SetFloat(base + "linear", light->Linear);
+                            packet.shader->SetFloat(base + "quadratic", light->Quadratic);
+                            lightIndex++;
+                        }
+                        packet.shader->SetInt("activePointLights", lightIndex);
+                    }
+                }
+
+                packet.shader->SetMat4("model", packet.transform);
+
+                if (!packet.boneTransforms.empty()) {
+                    for (size_t i = 0; i < packet.boneTransforms.size(); i++) {
+                        packet.shader->SetMat4(boneUniformNames[i], packet.boneTransforms[i]);
+                    }
+                }
+
+                if (packet.material) {
+                    packet.material->Bind(packet.shader);
+                    for (const auto& [name, value] : packet.material->Properties) {
+                        std::visit(
+                            [&](auto&& arg) {
+                                using T = std::decay_t<decltype(arg)>;
+                                if constexpr (std::is_same_v<T, float>)
+                                    packet.shader->SetFloat(name, arg);
+                                else if constexpr (std::is_same_v<T, int>)
+                                    packet.shader->SetInt(name, arg);
+                                else if constexpr (std::is_same_v<T, glm::vec3>)
+                                    packet.shader->SetVec3(name, arg);
+                                else if constexpr (std::is_same_v<T, glm::vec4>)
+                                    packet.shader->SetVec4(name, arg);
+                            },
+                            value);
+                    }
+                    s_Stats.stateChanges++;
+                }
+
+                packet.vao->Bind();
+                s_Stats.stateChanges++;
+
+                s_RendererAPI->DrawIndexed(packet.vao);
+                s_Stats.drawCalls++;
+
+                if (packet.vao->GetIndexBuffer()) {
+                    s_Stats.triangleCount += packet.vao->GetIndexBuffer()->GetCount() / 3;
+                }
+            }
+
+            s_RendererAPI->SetDepthWriteMask(true);
+            s_RendererAPI->SetBlendEnabled(false);
+        }
 
         DrawDebug();
 
         s_GPUTimer->End();
         s_RendererQueue.clear();
+        s_TransparentQueue.clear();
         s_InstancedQueue.clear();
 
         s_HDRFramebuffer->Unbind();

@@ -31,6 +31,8 @@ uniform bool u_HasEmissiveMap;
 uniform vec3 u_EmissiveColor;
 uniform float u_EmissiveStrength;
 
+uniform float u_Opacity = 1.0;
+
 uniform sampler2D u_RampMap;
 uniform bool u_HasRampMap;
 
@@ -158,7 +160,16 @@ float PointShadowCalculation(vec3 fragPos, vec3 lightPos)
 
 void main()
 {
-    vec3 albedo = u_HasAlbedoMap ? texture(u_AlbedoMap, TexCoord).rgb : u_AlbedoColor;
+    float alpha = u_Opacity;
+    vec3 albedo;
+
+    if (u_HasAlbedoMap) {
+        vec4 texData = texture(u_AlbedoMap, TexCoord);
+        albedo = texData.rgb;
+        alpha *= texData.a;
+    } else {
+        albedo = u_AlbedoColor;
+    }
 
     vec3 N = normalize(Normal);
     /*
@@ -274,7 +285,7 @@ void main()
     }
     finalColor += emission;
 
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor, alpha);
 
     float brightness = dot(finalColor, vec3(0.2126, 0.7152, 0.0722));
     float threshold = 1.0;
@@ -282,9 +293,9 @@ void main()
     if(brightness > threshold) {
         float excess = brightness - threshold;
         vec3 bloomColor = finalColor * (excess / brightness);
-        BrightColor = vec4(bloomColor, 1.0);
+        BrightColor = vec4(bloomColor, alpha);
     } else {
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        BrightColor = vec4(0.0, 0.0, 0.0, alpha);
     }
 
     OutNormal = vec4(normalize(Normal), 1.0);

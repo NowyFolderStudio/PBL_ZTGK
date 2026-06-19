@@ -211,6 +211,7 @@ private:
             m_Hearts.push_back(&NFSEngine::UI::Image(*m_Canvas, heartParams));
         }
     }
+
     void InitAuraUI() {
         const float centerX = 960.0f;
         const float sideOffset = 340.0f;

@@ -16,9 +16,7 @@ namespace NFSEngine {
 
     void OpenGLRendererAPI::Clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
 
-    void OpenGLRendererAPI::ClearDepth() {
-        glClear(GL_DEPTH_BUFFER_BIT);
-    }
+    void OpenGLRendererAPI::ClearDepth() { glClear(GL_DEPTH_BUFFER_BIT); }
 
     void OpenGLRendererAPI::DrawIndexed(const std::shared_ptr<VertexArray>& vertexArray) {
         glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
@@ -97,17 +95,18 @@ namespace NFSEngine {
         }
     }
 
+    void OpenGLRendererAPI::SetDepthWriteMask(bool enabled) { glDepthMask(enabled ? GL_TRUE : GL_FALSE); }
+
     void OpenGLRendererAPI::SetCullFace(bool value) {
         if (value) {
             glCullFace(GL_FRONT);
-        }
-        else {
+        } else {
             glCullFace(GL_BACK);
         }
     }
 
     void OpenGLRendererAPI::BindCubeTexture(uint32_t rendererID, uint32_t slot) {
         glActiveTexture(GL_TEXTURE0 + slot);
-        glBindTexture(GL_TEXTURE_CUBE_MAP, rendererID); // <-- Magiczna ró¿nica!
+        glBindTexture(GL_TEXTURE_CUBE_MAP, rendererID); // <-- Magiczna rç½‚nica!
     }
 } // namespace NFSEngine
