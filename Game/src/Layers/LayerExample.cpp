@@ -718,7 +718,8 @@ void LayerExample::OnAttach() {
     auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
     spinningCD->GetTransform()->SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
     spinningCD->GetTransform()->SetPosition(glm::vec3{ -35.0f, 20.0f, 50.0f });
-    spinningCD->AddComponent<CylinderCollider3DComponent>();
+    auto& colliderCD = spinningCD->AddComponent<CylinderCollider3DComponent>();
+    colliderCD.Height = 0.2f;
 
     auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
     auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);

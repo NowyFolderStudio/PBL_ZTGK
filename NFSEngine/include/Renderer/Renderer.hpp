@@ -97,6 +97,7 @@ namespace NFSEngine {
 
         static void SubmitDebugBox(const glm::mat4& transform, const glm::vec4& color = { 0.0f, 1.0f, 0.0f, 1.0f });
 
+        static void SubmitDebugCylinder(const glm::mat4& transform, const glm::vec4& color = { 0.0f, 1.0f, 0.0f, 1.0f });
         static void SetDrawDebug(bool value);
         static void DrawDebug();
 
@@ -155,8 +156,15 @@ namespace NFSEngine {
             glm::vec4 color;
         };
 
+        struct DebugCylinder {
+            glm::mat4 transform;
+            glm::vec4 color;
+        };
+
         static std::vector<DebugBox> s_DebugQueue;
+        static std::vector<DebugCylinder> s_DebugCylinderQueue;
         static std::shared_ptr<VertexArray> s_DebugCubeVAO;
+        static std::shared_ptr<VertexArray> s_DebugCylinderVAO;
         static std::shared_ptr<Shader> s_DebugShader;
 
         static bool s_DrawDebug;
