@@ -1,5 +1,7 @@
 #include "Core/Physics/CollisionDetector.hpp"
 #include <glm/gtc/quaternion.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 #include <algorithm>
 #include <cmath>
 
@@ -180,13 +182,41 @@ namespace NFSEngine {
 
     CollisionInfo CollisionDetector::CheckCapsuleCylinder(const Capsule& capsule, const Cylinder& cylinder) {
         CollisionInfo info;
+
+        // 1. Obliczamy oś i wektor kierunkowy Cylindra
+        glm::vec3 cylAxis = cylinder.PointB - cylinder.PointA;
+        float cylHeight = glm::length(cylAxis);
+
+        // Zabezpieczenie przed dzieleniem przez zero
+        if (cylHeight < 0.0001f) return info;
+
+        glm::vec3 cylDir = cylAxis / cylHeight;
         glm::vec3 cylCenter = (cylinder.PointA + cylinder.PointB) * 0.5f;
 
-        glm::vec3 closestOnSegment = PhysicsMath::ClosestPointOnSegment(capsule.PointA, capsule.PointB, cylCenter);
-        glm::vec3 closestOnCylinder = PhysicsMath::ClampPointToCylinder(closestOnSegment, cylinder);
-        glm::vec3 finalClosestPoint = PhysicsMath::ClosestPointOnSegment(capsule.PointA, capsule.PointB, closestOnCylinder);
+        // 2. Obliczamy kwaternion rotacji względem globalnej osi Y
+        // glm::rotation tworzy kwaternion, który obraca wektor (0,1,0) do wektora cylDir.
+        glm::quat rot = glm::rotation(glm::vec3(0.0f, 1.0f, 0.0f), cylDir);
+        glm::quat invRot = glm::inverse(rot);
 
-        glm::vec3 diff = finalClosestPoint - closestOnCylinder;
+        // 3. Przenosimy kapsułę do przestrzeni lokalnej (gdzie cylinder stoi pionowo)
+        glm::vec3 localCapA = invRot * (capsule.PointA - cylCenter);
+        glm::vec3 localCapB = invRot * (capsule.PointB - cylCenter);
+        Capsule localCapsule { localCapA, localCapB, capsule.Radius };
+
+        // W przestrzeni lokalnej nasz cylinder to po prostu idealnie pionowy walec
+        // wycentrowany w (0,0,0)
+        glm::vec3 localCylA = glm::vec3(0.0f, cylHeight * 0.5f, 0.0f);
+        glm::vec3 localCylB = glm::vec3(0.0f, -cylHeight * 0.5f, 0.0f);
+        Cylinder localCylinder { localCylA, localCylB, cylinder.Radius };
+
+        // 4. Klasyczna logika Twojego silnika (teraz bezpieczna, bo cylinder jest pionowy!)
+        glm::vec3 localClosestOnSegment
+            = PhysicsMath::ClosestPointOnSegment(localCapsule.PointA, localCapsule.PointB, glm::vec3(0.0f));
+        glm::vec3 localClosestOnCylinder = PhysicsMath::ClampPointToCylinder(localClosestOnSegment, localCylinder);
+        glm::vec3 finalClosestPoint
+            = PhysicsMath::ClosestPointOnSegment(localCapsule.PointA, localCapsule.PointB, localClosestOnCylinder);
+
+        glm::vec3 diff = finalClosestPoint - localClosestOnCylinder;
         float distance = glm::length(diff);
 
         if (distance < capsule.Radius) {
@@ -194,9 +224,11 @@ namespace NFSEngine {
             info.PenetrationDepth = capsule.Radius - distance;
 
             if (distance > 0.0001f) {
-                info.ContactNormal = diff / distance;
+                glm::vec3 localNormal = diff / distance;
+
+                info.ContactNormal = rot * localNormal;
             } else {
-                info.ContactNormal = glm::vec3(0.0f, 1.0f, 0.0f);
+                info.ContactNormal = rot * glm::vec3(0.0f, 1.0f, 0.0f);
             }
         }
 
@@ -289,8 +321,8 @@ namespace NFSEngine {
         glm::mat3 rot = glm::mat3_cast(obb.Rotation);
         glm::vec3 localOrigin = glm::transpose(rot) * (ray.Origin - obb.Center);
         glm::vec3 localDir = glm::transpose(rot) * ray.Direction;
-        AABB localAABB{ -obb.HalfSize, obb.HalfSize };
-        Ray localRay{ localOrigin, localDir };
+        AABB localAABB { -obb.HalfSize, obb.HalfSize };
+        Ray localRay { localOrigin, localDir };
         return CheckRayAABB(localRay, localAABB, outDistance);
     }
 
@@ -313,7 +345,7 @@ namespace NFSEngine {
         glm::vec3 axis = capsule.PointB - capsule.PointA;
         float height = glm::length(axis);
         if (height < 0.0001f) {
-            return CheckRaySphere(ray, Sphere{ capsule.PointA, capsule.Radius }, outDistance);
+            return CheckRaySphere(ray, Sphere { capsule.PointA, capsule.Radius }, outDistance);
         }
         axis /= height;
 
@@ -346,13 +378,16 @@ namespace NFSEngine {
         }
 
         float tA, tB;
-        bool hitA = CheckRaySphere(ray, Sphere{ capsule.PointA, capsule.Radius }, tA);
-        bool hitB = CheckRaySphere(ray, Sphere{ capsule.PointB, capsule.Radius }, tB);
+        bool hitA = CheckRaySphere(ray, Sphere { capsule.PointA, capsule.Radius }, tA);
+        bool hitB = CheckRaySphere(ray, Sphere { capsule.PointB, capsule.Radius }, tB);
 
         float tSphere = -1.0f;
-        if (hitA && hitB) tSphere = glm::min(tA, tB);
-        else if (hitA) tSphere = tA;
-        else if (hitB) tSphere = tB;
+        if (hitA && hitB)
+            tSphere = glm::min(tA, tB);
+        else if (hitA)
+            tSphere = tA;
+        else if (hitB)
+            tSphere = tB;
 
         if (tCyl < 0.0f && tSphere < 0.0f) return false;
 

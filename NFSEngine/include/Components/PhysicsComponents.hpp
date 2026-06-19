@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/ext/vector_float3.hpp>
 #include <glm/glm.hpp>
 #include <functional>
 
@@ -39,6 +40,7 @@ namespace NFSEngine {
         std::string GetName() const override { return "RigidBody3D"; }
 
         glm::vec3 Velocity = glm::vec3(0.0f);
+        glm::vec3 PreviousVelocity = glm::vec3(0.0f);
         glm::vec3 Acceleration = glm::vec3(0.0f);
         glm::vec3 PreviousPosition = glm::vec3(0.0f);
 

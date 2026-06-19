@@ -3,6 +3,7 @@
 #include "Components/AnimatorComponent.hpp"
 #include "Components/Camera.hpp"
 #include "BounceComponent.hpp"
+#include "Core/Log.hpp"
 #include "Core/MathUtils.hpp"
 #include "Aura/AuraManager.hpp"
 #include "Managers/LivesManager.hpp"
