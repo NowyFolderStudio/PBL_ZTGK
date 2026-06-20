@@ -54,6 +54,9 @@ namespace NFSEngine {
         glm::vec3 GetForward();
         glm::vec3 GetUp();
 
+        void SetWorldPosition(const glm::vec3& globalPosition);
+        void SetWorldRotation(const glm::vec3& globalEulerDegrees);
+        void SetWorldRotation(const glm::quat& globalRotation);
         glm::vec3 GetWorldPosition();
         glm::vec3 GetWorldScale();
         glm::quat GetWorldRotation();

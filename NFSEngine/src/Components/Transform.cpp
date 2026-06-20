@@ -93,6 +93,36 @@ namespace NFSEngine {
 
     glm::vec3 Transform::GetUp() { return glm::normalize(glm::vec3(GetGlobalMatrix()[1])); }
 
+    void Transform::SetWorldRotation(const glm::quat& globalRotation) {
+        if (m_Parent) {
+            glm::quat parentGlobalRotInv = glm::inverse(m_Parent->GetWorldRotation());
+
+            m_Rotation = parentGlobalRotInv * globalRotation;
+        } else {
+            m_Rotation = globalRotation;
+        }
+
+        m_Rotation = glm::normalize(m_Rotation);
+        SetDirty();
+    }
+
+    void Transform::SetWorldRotation(const glm::vec3& globalEulerDegrees) {
+        glm::quat globalRotation = glm::quat(glm::radians(globalEulerDegrees));
+        SetWorldRotation(globalRotation);
+    }
+
+    void Transform::SetWorldPosition(const glm::vec3& globalPosition) {
+        if (m_Parent) {
+            glm::mat4 parentGlobalInv = glm::inverse(m_Parent->GetGlobalMatrix());
+
+            glm::vec4 localPos = parentGlobalInv * glm::vec4(globalPosition, 1.0f);
+            m_Position = glm::vec3(localPos);
+        } else {
+            m_Position = globalPosition;
+        }
+        SetDirty();
+    }
+
     glm::vec3 Transform::GetWorldPosition() { return glm::vec3(GetGlobalMatrix()[3]); }
 
     glm::vec3 Transform::GetWorldScale() {

@@ -300,6 +300,10 @@ private:
     }
 
     void HandleRotation(float dt) {
+        if (IsTouchingJumpableWall() && !p_RigidBody->IsGrounded) {
+            return;
+        }
+
         glm::vec3 moveDir = GetMovementVector();
 
         if (m_WallJumpLockCounter > 0.0f) {

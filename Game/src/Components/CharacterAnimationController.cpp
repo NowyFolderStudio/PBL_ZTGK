@@ -46,15 +46,16 @@ void CharacterAnimationController::ChangeAnimation() {
     // 4 - WallJump
     // 5 - Dash
     m_Animator->SetAnimationSpeed(1.0f);
-    glm::vec3 eulerDegrees = { 0, 0, 0 };
-    m_Owner->GetTransform()->SetRotation(eulerDegrees);
 
     if (m_Controller->IsDashing()) {
         m_Animator->PlayAnimationBlended(5, 0.05f, false);
+        m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
         return;
     }
 
     if (m_OnGround) {
+        m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
         if (m_InMotion) {
             m_Animator->PlayAnimationBlended(1, 0.1f, true);
             m_Animator->SetAnimationSpeed(m_VerticalSpeed / m_MaxSpeed);
@@ -65,11 +66,23 @@ void CharacterAnimationController::ChangeAnimation() {
     } else {
         if (m_OnWall) {
             m_Animator->PlayAnimation(4, false);
-            eulerDegrees = { 0, 90, 0 };
-            m_Owner->GetTransform()->SetRotation(eulerDegrees);
+
+            glm::vec3 wallNormal = m_Rigidbody->WallNormal;
+
+            float wallYawRadians = atan2(wallNormal.x, wallNormal.z);
+            float wallYawDegrees = glm::degrees(wallYawRadians);
+
+            float animationOffset = -90.0f;
+
+            m_Controller->GetOwner()->GetTransform()->SetWorldRotation(glm::vec3(0.0f, wallYawDegrees + animationOffset, 0.0f));
+
+            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
+
         } else if (m_HorizontalSpeed > 0) {
+            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f)); // Reset dla modelu
             m_Animator->PlayAnimationBlended(2, 0.075f, false);
         } else {
+            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f)); // Reset dla modelu
             m_Animator->PlayAnimationBlended(3, 0.075f, false);
         }
     }

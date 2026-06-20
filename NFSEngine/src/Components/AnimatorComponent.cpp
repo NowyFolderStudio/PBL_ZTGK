@@ -79,7 +79,6 @@ namespace NFSEngine {
             m_PreviousTime += prevAnimation->GetTicksPerSecond() * deltaTime * m_AnimationSpeed;
             m_PreviousTime = fmod(m_PreviousTime, prevAnimation->GetDuration());
 
-            // Prędkość zmian m_BlendFactor wyliczana dynamicznie z przekazanego czasu (w sekundach)
             float blendSpeed = 1.0f / m_BlendDuration;
             m_BlendFactor += deltaTime * blendSpeed;
 
