@@ -52,7 +52,8 @@ uniform float u_OutlineSize = 0.08;
 uniform float u_OutlineDepthThreshold = 1.1;
 uniform float u_OutlineNormalThreshold = 0.35;
 
-const float PI = 3.14159265359;
+//const float PI = 3.14159265359;
+const float PI = 1;
 
 #define MAX_POINT_LIGHTS 16
 #define MAX_SPOT_LIGHTS 4

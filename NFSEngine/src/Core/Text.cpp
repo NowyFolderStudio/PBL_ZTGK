@@ -77,11 +77,18 @@ namespace NFSEngine {
         float cursorX = 0.0f;
         float cursorY = 0.0f;
 
+        float lineSpacing = 48.0f;
+
         for (char c : text) {
+            if (c == '\n') {
+                cursorX = 0.0f;
+                cursorY += lineSpacing;
+                continue;
+            }
+
             if (c < firstChar || c >= firstChar + charCount) continue;
 
             stbtt_aligned_quad quad;
-
             stbtt_GetPackedQuad(charInfo.data(), atlasWidth, atlasHeight, c - firstChar, &cursorX, &cursorY, &quad, 1);
 
             float x0 = x + (quad.x0 * scale);
@@ -91,7 +98,6 @@ namespace NFSEngine {
 
             float charVertices[6][4]
                 = { { x0, y1, quad.s0, quad.t1 }, { x0, y0, quad.s0, quad.t0 }, { x1, y0, quad.s1, quad.t0 },
-
                     { x0, y1, quad.s0, quad.t1 }, { x1, y0, quad.s1, quad.t0 }, { x1, y1, quad.s1, quad.t1 } };
 
             for (int i = 0; i < 6; ++i) {
@@ -108,14 +114,22 @@ namespace NFSEngine {
     }
 
     float Text::GetTextWidth(std::string text, float scale) {
-        float width = 0.0f;
+        float maxWidth = 0.0f;
+        float currentWidth = 0.0f;
 
         for (char c : text) {
+            if (c == '\n') {
+                if (currentWidth > maxWidth) maxWidth = currentWidth;
+                currentWidth = 0.0f;
+                continue;
+            }
+
             if (c < firstChar || c >= firstChar + charCount) continue;
             stbtt_packedchar& ch = charInfo[c - firstChar];
-            width += ch.xadvance * scale;
+            currentWidth += ch.xadvance * scale;
         }
 
-        return width;
+        if (currentWidth > maxWidth) maxWidth = currentWidth;
+        return maxWidth;
     }
 } // namespace NFSEngine
