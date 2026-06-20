@@ -16,7 +16,7 @@ uniform sampler2D outlineParamsTexture;
 // ====== OUTLINE ======
 float GetLinearDepth(vec2 uv) {
     // This 2 values has to adjusted to camera settings
-	float zNear = 0.01;
+	float zNear = 0.1;
     float zFar = 1000;
     float depth = texture(depthTexture, uv).r;
     return (2.0 * zNear * zFar) / (zFar + zNear - (depth * 2.0 - 1.0) * (zFar - zNear));
