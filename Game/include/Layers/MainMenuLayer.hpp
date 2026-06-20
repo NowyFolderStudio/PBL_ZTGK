@@ -17,4 +17,7 @@ public:
 
 private:
     NFSEngine::Canvas* m_Canvas = nullptr;
+
+    int m_FocusedIndex = 0;
+    void BuildUI();
 };

@@ -21,4 +21,9 @@ public:
 
 private:
     NFSEngine::Canvas* m_Canvas;
+
+    int m_FocusedIndex = 0;
+    void BuildUI();
+
+    float m_CreationTimer = 0.0f;
 };

@@ -121,7 +121,6 @@ void LayerExample::OnAttach() {
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
 
-
     // m_AudioShader = NFSEngine::Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
     // "assets/shaders/PBRShader.frag"); m_HazardShader
     //     = NFSEngine::Shader::Create("HazardShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -702,7 +701,6 @@ void LayerExample::OnAttach() {
     neonGramophoneComp.AddLOD(gramophoneModel1, 10000.0f);
     */
 
-    
     auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
 
     auto matCD = std::make_shared<NFSEngine::Material>();
@@ -717,7 +715,7 @@ void LayerExample::OnAttach() {
 
     auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
     spinningCD->GetTransform()->SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
-    spinningCD->GetTransform()->SetPosition(glm::vec3{ -35.0f, 20.0f, 50.0f });
+    spinningCD->GetTransform()->SetPosition(glm::vec3 { -35.0f, 20.0f, 50.0f });
     auto& colliderCD = spinningCD->AddComponent<CylinderCollider3DComponent>();
     colliderCD.Height = 0.2f;
 
@@ -727,7 +725,6 @@ void LayerExample::OnAttach() {
 
     auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
     rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
-
 
     for (const auto& go : m_Scene->GetAllGameObjects()) {
         if (auto* cam = go->GetComponent<NFSEngine::Camera>()) m_CachedCamera = cam;
@@ -769,6 +766,11 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         m_CachedCameraController->ResetMouseDelta();
     }
     prevWasPaused = false;
+
+    if (NFSEngine::Input::IsControllerButtonDown(0, NFSEngine::ControllerButtons::Start)) {
+        GameManager::Get().TogglePause();
+        return; // Zatrzymujemy update w tej klatce, bo właśnie weszliśmy w pauzę
+    }
 
     // DebugCamera
     bool editorActive = NFSEngine::DebugCamera::IsActive();
@@ -977,4 +979,4 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
             e.Handled = true;
         }
     }
-}
+};

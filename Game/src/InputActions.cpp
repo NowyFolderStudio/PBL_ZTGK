@@ -32,5 +32,27 @@ namespace NFSEngine {
         actions.Create("SelectSecondAura", InputAction::Type::Button)
             .BindKey(Key::E)
             .BindControllerButton(ControllerButtons::RightBumper);
+
+        actions.Create("UINavUp", InputAction::Type::Button)
+            .BindKey(Key::Up)
+            .BindKey(Key::W)
+            .BindControllerButton(ControllerButtons::DPadUp);
+
+        actions.Create("UINavDown", InputAction::Type::Button)
+            .BindKey(Key::Down)
+            .BindKey(Key::S)
+            .BindControllerButton(ControllerButtons::DPadDown);
+
+        actions.Create("UINavLeft", InputAction::Type::Button)
+            .BindKey(Key::Left)
+            .BindKey(Key::A)
+            .BindControllerButton(ControllerButtons::DPadLeft);
+
+        actions.Create("UINavRight", InputAction::Type::Button)
+            .BindKey(Key::Right)
+            .BindKey(Key::D)
+            .BindControllerButton(ControllerButtons::DPadRight);
+
+        actions.Create("UIConfirm", InputAction::Type::Button).BindKey(Key::Enter).BindControllerButton(ControllerButtons::A);
     }
 } // namespace NFSEngine

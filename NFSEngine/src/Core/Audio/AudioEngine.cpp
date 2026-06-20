@@ -57,5 +57,12 @@ namespace NFSEngine {
         }
     }
 
-    void AudioEngine::SetMasterVolume(float volume) { ma_engine_set_volume(&s_Engine, volume); }
+    void AudioEngine::SetMasterVolume(float volume) {
+        if (volume < 0.0f) volume = 0.0f;
+        if (volume > 2.0f) volume = 2.0f;
+
+        ma_engine_set_volume(&s_Engine, volume);
+    }
+
+    float AudioEngine::GetMasterVolume() { return ma_engine_get_volume(&s_Engine); }
 } // namespace NFSEngine

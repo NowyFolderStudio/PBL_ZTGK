@@ -38,6 +38,7 @@ private:
     std::shared_ptr<NFSEngine::Shader> m_Shader;
     std::shared_ptr<NFSEngine::Skybox> m_Skybox;
     std::shared_ptr<NFSEngine::Shader> m_SkyboxShader;
+    std::shared_ptr<NFSEngine::Shader> m_EnemyGlitchShader;
     std::unique_ptr<NFSEngine::EnvironmentMap> m_EnvironmentMap;
 
     NFSEngine::Camera* m_CachedCamera = nullptr;

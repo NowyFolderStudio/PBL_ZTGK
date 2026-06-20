@@ -1,4 +1,5 @@
 #pragma once
+
 #include <NFSEngine.h>
 #include "Components/Managers/LivesManager.hpp"
 #include "IEnemyState.hpp"
@@ -34,6 +35,8 @@ public:
     float DamageCooldown = 2.0f;
     float KnockBackStrength = 25.0f;
 
+    float RotationOffset = 0.0f;
+
     IEnemyState* StatePatrol = nullptr;
     IEnemyState* StateChase = nullptr;
     IEnemyState* StateAttack = nullptr;
@@ -62,17 +65,22 @@ public:
     void TogglePatrolDirection() { m_MovingToB = !m_MovingToB; }
 
     void MoveTowards(glm::vec3 targetPosFlat, float speed) {
+        if (!m_RigidBody) return;
+
         glm::vec3 myPos = GetOwner()->GetTransform()->GetWorldPosition();
         glm::vec3 myPosFlat = glm::vec3(myPos.x, 0.0f, myPos.z);
         glm::vec3 direction = targetPosFlat - myPosFlat;
 
         if (glm::length(direction) > 0.01f) {
             direction = glm::normalize(direction);
+
             m_RigidBody->Velocity.x = direction.x * speed;
             m_RigidBody->Velocity.z = direction.z * speed;
 
-            float targetAngle = atan2(direction.x, direction.z);
-            GetOwner()->GetTransform()->SetRotation(glm::vec3(0.0f, targetAngle, 0.0f));
+            float targetAngleRadians = atan2(direction.x, direction.z);
+            float targetAngleDegrees = glm::degrees(targetAngleRadians) + RotationOffset;
+
+            GetOwner()->GetTransform()->SetRotation(glm::vec3(0.0f, targetAngleDegrees, 0.0f));
         }
     }
 
@@ -84,7 +92,6 @@ public:
 
                 if (damageDealt) {
                     m_LastDamageTime = DamageCooldown;
-
                     ChangeState(StateAttack);
                 }
             }

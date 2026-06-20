@@ -19,6 +19,7 @@ namespace NFSEngine {
         static void RestartClip(AudioClip* clip);
 
         static void SetMasterVolume(float volume);
+        static float GetMasterVolume();
 
     private:
         static ma_engine s_Engine;

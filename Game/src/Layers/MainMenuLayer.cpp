@@ -10,16 +10,61 @@ MainMenuLayer::~MainMenuLayer() {
 }
 
 void MainMenuLayer::OnAttach() {
-    // TODO: Here we should clear renderer last frame
-
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
+    BuildUI();
+}
+
+void MainMenuLayer::OnDetach() { }
+
+void MainMenuLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
+    if (GameManager::Get().IsOptionsOpen()) return;
+    if (m_Canvas) m_Canvas->Update();
+
+    auto& input = NFSEngine::InputActionManager::Get();
+    bool uiChanged = false;
+
+    if (input.IsDown("UINavDown")) {
+        m_FocusedIndex = (m_FocusedIndex + 1) % 3;
+        uiChanged = true;
+    } else if (input.IsDown("UINavUp")) {
+        m_FocusedIndex = (m_FocusedIndex - 1 + 3) % 3;
+        uiChanged = true;
+    }
+
+    if (uiChanged) BuildUI();
+
+    if (input.IsDown("UIConfirm")) {
+        if (m_FocusedIndex == 0)
+            GameManager::Get().RequestStateChange(GameState::Playing);
+        else if (m_FocusedIndex == 1)
+            GameManager::Get().OpenOptions();
+        else if (m_FocusedIndex == 2)
+            NFSEngine::Application::Get().Close();
+    }
+}
+
+void MainMenuLayer::OnRender() {
+    NFSEngine::UIRenderer::Begin();
+    if (m_Canvas) {
+        m_Canvas->Draw();
+    }
+    NFSEngine::UIRenderer::End();
+}
+
+void MainMenuLayer::OnEvent(NFSEngine::Event& e) { }
+
+void MainMenuLayer::BuildUI() {
+    m_Canvas->ClearUIObjects();
 
     const float centerX = NFSEngine::UIRenderer::VIRTUAL_WIDTH / 2.0f;
     const float centerY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT / 2.0f;
 
     const float leftStart = centerX - 550.0f;
     const float rightStart = centerX + 550.0f;
+
+    glm::vec4 normalColor(0.4f, 0.4f, 0.4f, 1.0f);
+    glm::vec4 focusColor(0.8f, 0.8f, 0.2f, 1.0f);
 
     // Background
     NFSEngine::UI::ImageParameters bgParams;
@@ -59,6 +104,7 @@ void MainMenuLayer::OnAttach() {
     startParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     startParams.text = "START GAME";
     startParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::Playing); };
+    startParams.color = (m_FocusedIndex == 0) ? focusColor : normalColor;
     NFSEngine::UI::Button(*m_Canvas, startParams);
 
     currentY += elementSpacing;
@@ -71,6 +117,7 @@ void MainMenuLayer::OnAttach() {
     optionsParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     optionsParams.text = "OPTIONS";
     optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
+    optionsParams.color = (m_FocusedIndex == 1) ? focusColor : normalColor;
     NFSEngine::UI::Button(*m_Canvas, optionsParams);
 
     currentY += elementSpacing;
@@ -83,27 +130,6 @@ void MainMenuLayer::OnAttach() {
     quitParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     quitParams.text = "QUIT";
     quitParams.onClick = []() { NFSEngine::Application::Get().Close(); };
+    quitParams.color = (m_FocusedIndex == 2) ? focusColor : normalColor;
     NFSEngine::UI::Button(*m_Canvas, quitParams);
 }
-
-void MainMenuLayer::OnDetach() { }
-
-void MainMenuLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
-    if (GameManager::Get().IsOptionsOpen()) {
-        return;
-    }
-
-    if (m_Canvas) {
-        m_Canvas->Update();
-    }
-}
-
-void MainMenuLayer::OnRender() {
-    NFSEngine::UIRenderer::Begin();
-    if (m_Canvas) {
-        m_Canvas->Draw();
-    }
-    NFSEngine::UIRenderer::End();
-}
-
-void MainMenuLayer::OnEvent(NFSEngine::Event& e) { }

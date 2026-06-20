@@ -29,6 +29,8 @@ namespace NFSEngine {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
         m_Window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
 
         m_Context = new OpenGLContext(m_Window);
@@ -130,5 +132,39 @@ namespace NFSEngine {
         if (mode == GLFW_CURSOR_HIDDEN) return CursorMode::Hidden;
         return CursorMode::Normal;
     }
+
+    void WindowsWindow::SetVSync(bool enabled) {
+        if (enabled) {
+            glfwSwapInterval(1);
+            m_VSync = true;
+        } else {
+            glfwSwapInterval(0);
+            m_VSync = false;
+        }
+    }
+
+    bool WindowsWindow::IsVSync() const { return m_VSync; }
+
+    void WindowsWindow::SetWindowSize(uint32_t width, uint32_t height) {
+        m_Data.Width = width;
+        m_Data.Height = height;
+        glfwSetWindowSize(m_Window, width, height);
+    }
+
+    void WindowsWindow::SetFullscreen(bool fullscreen) {
+        GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+        const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+        if (fullscreen) {
+            glfwSetWindowMonitor(m_Window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+            m_Data.Width = mode->width;
+            m_Data.Height = mode->height;
+        } else {
+            glfwSetWindowMonitor(m_Window, nullptr, 100, 100, m_Data.Width, m_Data.Height, 0);
+        }
+        m_Fullscreen = fullscreen;
+    }
+
+    bool WindowsWindow::IsFullscreen() const { return m_Fullscreen; }
 
 } // namespace NFSEngine

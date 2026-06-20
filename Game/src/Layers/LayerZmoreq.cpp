@@ -106,6 +106,7 @@ void LayerZmoreq::OnAttach() {
     // --- GRACZ ---
     auto animationShader = Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
     auto capsuleModel = std::make_shared<Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
+    auto enemyModel = std::make_shared<Model>("assets/models/glosnik/glosnik_wieza.fbx");
 
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(Tags::Player);
@@ -162,12 +163,19 @@ void LayerZmoreq::OnAttach() {
     // LAMBDY POMOCNICZE DO SPAWNOWANIA (Czysty ECS!)
     // =========================================================================
 
-    // Funkcja tworząca wroga
+    m_EnemyGlitchShader
+        = Shader::Create("EnemyGlitchShader", "assets/shaders/enemy_glitch.vert", "assets/shaders/enemy_glitch.frag");
     auto SpawnEnemy = [&](const std::string& name, glm::vec3 startPos, glm::vec3 endPos) {
         auto* enemy = m_Scene->CreateGameObject(name);
         enemy->GetTransform()->SetPosition(startPos);
-        enemy->AddComponent<CubeMesh>(m_Shader, matSample);
-        enemy->AddComponent<BoxCollider3DComponent>();
+
+        enemy->GetTransform()->SetScale({ 1.5f, 1.5f, 1.5f });
+
+        auto& modelComp = enemy->AddComponent<ModelComponent>(m_EnemyGlitchShader, matSample);
+        modelComp.AddLOD(enemyModel, 10000.0f);
+
+        auto& boxCollider = enemy->AddComponent<BoxCollider3DComponent>();
+        boxCollider.Offset = glm::vec3(0.0f, -0.75f, 0.0f);
         enemy->AddComponent<RigidBody3DComponent>();
         enemy->AddComponent<DestructibleComponent>(); // Otrzymuje obrażenia
         enemy->AddTag(Tags::Enemy);
@@ -271,11 +279,17 @@ void LayerZmoreq::OnUpdate(DeltaTime deltaTime) {
     static float timePassed = 0.0f;
     timePassed += deltaTime.GetSeconds();
 
+    m_EnemyGlitchShader->Bind();
+    m_EnemyGlitchShader->SetFloat("u_Time", timePassed); // Do telewizyjnego śniegu
+
     float dissolveValue = (std::sin(timePassed * 2.0f) + 1.0f) / 2.0f;
 
     m_Shader->Bind();
     m_Shader->SetFloat("u_Time", timePassed);
     m_Shader->SetFloat("u_DissolveAmount", dissolveValue);
+
+    m_EnemyGlitchShader->Bind();
+    m_EnemyGlitchShader->SetFloat("u_Time", timePassed);
 }
 
 void LayerZmoreq::OnRender() {

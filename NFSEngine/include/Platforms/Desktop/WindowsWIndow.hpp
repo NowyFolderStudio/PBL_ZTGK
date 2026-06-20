@@ -21,6 +21,12 @@ namespace NFSEngine {
         void SetCursorMode(CursorMode mode) override;
         CursorMode GetCursorMode() const override;
 
+        void SetVSync(bool enabled) override;
+        bool IsVSync() const override;
+        void SetWindowSize(uint32_t width, uint32_t height) override;
+        void SetFullscreen(bool fullscreen) override;
+        bool IsFullscreen() const override;
+
     private:
         void Init(const std::string& title, int width, int height);
         void Shutdown();
@@ -30,10 +36,12 @@ namespace NFSEngine {
 
         struct WindowData {
             std::string Title;
-            int Width, Height;
+            int Width = 0, Height = 0;
             EventCallbackFn EventCallback;
         };
 
         WindowData m_Data;
+        bool m_VSync = true;
+        bool m_Fullscreen = false;
     };
 } // namespace NFSEngine

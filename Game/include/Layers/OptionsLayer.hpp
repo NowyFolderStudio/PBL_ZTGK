@@ -21,4 +21,12 @@ public:
 
 private:
     NFSEngine::Canvas* m_Canvas;
+    int m_CurrentResIndex = 2;
+    std::vector<std::pair<int, int>> m_Resolutions = { { 1280, 720 }, { 1600, 900 }, { 1920, 1080 } };
+
+    int m_FocusedIndex = 0;
+    int m_FocusedRow = 0;
+
+    void SyncResolutionIndex();
+    void BuildUI();
 };
