@@ -3,6 +3,7 @@
 #include "Core/GameObject.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Core/CullingUtils.hpp"
+#include <variant>
 
 namespace NFSEngine {
 
@@ -42,6 +43,10 @@ namespace NFSEngine {
 
         if (!selectedModel) return;
 
+        if (Renderer::s_LodEnabled) {
+            selectedModel = m_LODs[0].ModelData;
+        }
+
         static const std::vector<glm::mat4> emptyBones;
 
         const std::vector<glm::mat4>& boneTransforms = m_Animator ? m_Animator->GetFinalBoneMatrices() : emptyBones;
@@ -78,6 +83,29 @@ namespace NFSEngine {
                     ImGui::DragFloat(("Emissive Strength" + idSuffix).c_str(), &mat->EmissiveStrength, 0.1f, 0.0f, 100.0f);
                     ImGui::SliderFloat(("Metallic" + idSuffix).c_str(), &mat->Metallic, 0.0f, 1.0f);
                     ImGui::SliderFloat(("Roughness" + idSuffix).c_str(), &mat->Roughness, 0.0f, 1.0f);
+
+                    ImGui::Separator();
+                    ImGui::Text("Dynamic Properties:");
+
+                    for (auto& [propName, propValue] : mat->Properties) {
+                        std::string label = propName + idSuffix;
+
+                        std::visit(
+                            [&label](auto& val) {
+                                using T = std::decay_t<decltype(val)>;
+
+                                if constexpr (std::is_same_v<T, float>) {
+                                    ImGui::DragFloat(label.c_str(), &val, 0.05f);
+                                } else if constexpr (std::is_same_v<T, int>) {
+                                    ImGui::DragInt(label.c_str(), &val, 1);
+                                } else if constexpr (std::is_same_v<T, glm::vec3>) {
+                                    ImGui::DragFloat3(label.c_str(), &val.x, 0.05f);
+                                } else if constexpr (std::is_same_v<T, glm::vec4>) {
+                                    ImGui::DragFloat4(label.c_str(), &val.x, 0.05f);
+                                }
+                            },
+                            propValue);
+                    }
 
                     ImGui::TreePop();
                 }

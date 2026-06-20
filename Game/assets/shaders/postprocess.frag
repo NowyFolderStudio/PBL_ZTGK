@@ -72,14 +72,16 @@ void main() {
 
     // ====== OUTLINE ======
 	float rawDepth = texture(depthTexture, TexCoords).r;
+    
+    vec4 paramsData = texture(outlineParamsTexture, TexCoords);
+    vec3 params = paramsData.rgb;
+    float currentSize   = params.r;
+    float currentDepthT = params.g;
+    float currentNormT  = params.b;
 
-    if (rawDepth < 0.99999) {
+    float objectMask = paramsData.a;
 
-        vec3 params = texture(outlineParamsTexture, TexCoords).rgb;
-        float currentSize   = params.r;
-        float currentDepthT = params.g;
-        float currentNormT  = params.b;
-
+    if (rawDepth < 0.99999 || objectMask > 0.01) {
         if (IsEdge(TexCoords, currentSize, currentDepthT, currentNormT)) {
             vec4 edgeColorSample = texture(outlineColorTexture, TexCoords);
             if (edgeColorSample.a > 0.01) {

@@ -27,6 +27,7 @@ void main() {
 
     vec3 localPos = aPos;
 
+    // Skalowanie (Twoje poprawki dla osi Z jako wysokości)
     float waveScaleY = wave * u_ScaleStrengthY;
     localPos.z += waveScaleY * (localPos.z + 1.0); 
 
@@ -34,15 +35,21 @@ void main() {
     localPos.x *= scaleXZ;
     localPos.y *= scaleXZ;
 
-    float twistAngle = wave * u_TwistStrength * (localPos.y + 1.0);
+    // --- POPRAWIONY TWIST ---
+    // Siła skrętu zależy teraz od osi Z (wysokości)
+    float twistAngle = wave * u_TwistStrength * (localPos.z + 1.0);
     float s = sin(twistAngle);
     float c = cos(twistAngle);
 
     vec3 twistedPos = localPos;
-    twistedPos.x = localPos.x * c - localPos.z * s;
-    twistedPos.z = localPos.x * s + localPos.z * c;
+    // Obracamy płaszczyznę poziimą (X oraz Y) wokół osi Z
+    twistedPos.x = localPos.x * c - localPos.y * s;
+    twistedPos.y = localPos.x * s + localPos.y * c;
 
-    float bendOffset = pow(max(0.0, twistedPos.y + 1.0), 2.0) * wave * u_BendStrength;
+    // --- POPRAWIONY BEND ---
+    // Siła wygięcia rośnie wraz z osią Z (wysokością)
+    float bendOffset = pow(max(0.0, twistedPos.z + 1.0), 2.0) * wave * u_BendStrength;
+    // Przesuwamy model wzdłuż osi X
     vec3 finalLocalPos = twistedPos + vec3(bendOffset, 0.0, 0.0);
 
     FragPos = vec3(model * vec4(finalLocalPos, 1.0));

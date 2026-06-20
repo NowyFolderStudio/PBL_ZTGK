@@ -25,6 +25,7 @@ namespace NFSEngine {
 
     struct RenderPacket {
         uint64_t sortKey = 0;
+        float distanceToCamera = 0.0f;
 
         std::shared_ptr<VertexArray> vao;
         std::shared_ptr<Shader> shader;
@@ -43,6 +44,7 @@ namespace NFSEngine {
         std::shared_ptr<Material> material;
 
         uint32_t instanceCount = 0;
+        std::vector<glm::mat4> transforms;
     };
 
     struct RendererStats {
@@ -72,10 +74,14 @@ namespace NFSEngine {
         static void SubmitInstanced(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
                                     const std::shared_ptr<Material>& material, uint32_t instanceCount);
 
+        static void SubmitInstanced(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vao,
+                                    const std::shared_ptr<Material>& material, const std::vector<glm::mat4>& transforms);
+
         // TODO: Implement static Shutdown() method
 
         static RendererStats GetStats() { return s_Stats; }
         static float GetGPUTime();
+        static std::shared_ptr<VertexBuffer> GetInstanceVBO() { return s_InstanceMatrixVBO; }
 
         static void DrawSkybox(const std::shared_ptr<Skybox>& skybox, const std::shared_ptr<Shader>& shader);
         static std::shared_ptr<VertexArray> GetSkyboxVAO() { return s_SkyboxVAO; }
@@ -101,6 +107,10 @@ namespace NFSEngine {
         static void SetDrawDebug(bool value);
         static void DrawDebug();
 
+        static bool s_SortingEnabled;
+        static bool s_InstancesEnabled;
+        static bool s_LodEnabled;
+
     private:
         static void SetupBloomChain(uint32_t width, uint32_t height);
 
@@ -122,7 +132,9 @@ namespace NFSEngine {
 
         static std::unique_ptr<GPUTimer> s_GPUTimer;
         static std::vector<RenderPacket> s_RendererQueue;
+        static std::vector<RenderPacket> s_TransparentQueue;
         static std::vector<InstancedRenderPacket> s_InstancedQueue;
+        static std::shared_ptr<VertexBuffer> s_InstanceMatrixVBO;
         static std::unique_ptr<RendererAPI> s_RendererAPI;
 
         static std::shared_ptr<VertexArray> s_SkyboxVAO;

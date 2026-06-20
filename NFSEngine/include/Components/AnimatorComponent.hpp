@@ -16,6 +16,7 @@ namespace NFSEngine {
         virtual std::string GetName() const override { return "AnimatorComponent"; }
         void AddAnimation(const std::shared_ptr<Animation>& animation);
         void PlayAnimation(int index, bool looped = true);
+        void PlayAnimationBlended(int index, float blendDuration, bool looped = false);
         void OnUpdate(DeltaTime deltaTime) override;
         void SetAnimationSpeed(float speed) { m_AnimationSpeed = speed; }
 
@@ -32,6 +33,10 @@ namespace NFSEngine {
         std::vector<glm::mat4> m_FinalBoneMatrices;
         std::vector<std::shared_ptr<Animation>> m_Animations;
         int m_CurrentAnimationIndex = 0;
+        int m_PreviousAnimationIndex = -1;
+        float m_PreviousTime = 0.0f;
+        float m_BlendFactor = 1.0f;
+        float m_BlendDuration = 0.4f;
         float m_AnimationSpeed = 1.0f;
         float m_CurrentTime;
         float m_DeltaTime;

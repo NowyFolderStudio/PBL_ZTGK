@@ -8,6 +8,7 @@
 using namespace NFSEngine;
 
 class BounceComponentLoader : public NFSEngine::IComponentLoader {
+public:
     void Load(const nlohmann::json& j_obj, GameObject* targetObj, Scene* currentScene) override {
         if (!j_obj.contains("custom_components")) {
             return;
@@ -18,13 +19,17 @@ class BounceComponentLoader : public NFSEngine::IComponentLoader {
             if (comp["name"] == "BounceComponent") {
 
                 auto& bounceComp = targetObj->AddComponent<BounceComponent>();
+
                 for (const auto& prop : comp["properties"]) {
                     std::string propName = prop["name"];
                     std::string propValue = prop["value"];
+
                     if (propValue.empty()) continue;
 
-                    if (propName == "BounceHeight") {
-                        bounceComp.BounceHeight = std::stof(propValue);
+                    if (propName == "BaseBounceHeight") {
+                        bounceComp.BaseBounceHeight = std::stof(propValue);
+                    } else if (propName == "BounceMultiplier") {
+                        bounceComp.BounceMultiplier = std::stof(propValue);
                     }
                 }
                 break;

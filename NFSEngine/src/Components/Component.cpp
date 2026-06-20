@@ -1,9 +1,11 @@
 #include "Components/Component.hpp"
 #include "Core/GameObject.hpp"
+#include "Debug/Profiler.hpp"
 
 namespace NFSEngine {
 
     void Component::Awake() {
+        NFS_PROFILE_FUNCTION();
         if (m_Awakened) return;
 
         OnAwake();
@@ -11,6 +13,7 @@ namespace NFSEngine {
     }
 
     void Component::Start() {
+        NFS_PROFILE_FUNCTION();
         if (m_Started || !m_Active) return;
 
         OnStart();
@@ -18,6 +21,7 @@ namespace NFSEngine {
     }
 
     void Component::FixedUpdate(DeltaTime fixedDeltaTime) {
+        NFS_PROFILE_FUNCTION();
         if (!m_Active) return;
 
         if (!m_Started) {
@@ -27,6 +31,7 @@ namespace NFSEngine {
     }
 
     void Component::Update(DeltaTime deltaTime) {
+        NFS_PROFILE_FUNCTION();
         if (!m_Active) return;
         if (!m_Started) {
             Start();
@@ -35,6 +40,7 @@ namespace NFSEngine {
     }
 
     void Component::Render() {
+        NFS_PROFILE_FUNCTION();
         if (!m_Active) return;
         OnRender();
     }

@@ -44,7 +44,11 @@ class CoinComponentLoader : public NFSEngine::IComponentLoader {
                 auto* modelObject = currentScene->CreateGameObject("ModelObject");
                 modelObject->AddComponent<ModelComponent>(shader, material);
                 auto model = std::make_shared<Model>("assets/models/Notes/nuta2.fbx");
-                modelObject->GetComponent<ModelComponent>()->AddLOD(model, 1000);
+                auto model2 = std::make_shared<Model>("assets/models/Notes/nuta3.fbx");
+                auto model3 = std::make_shared<Model>("assets/models/Notes/nuta4.fbx");
+                modelObject->GetComponent<ModelComponent>()->AddLOD(model, 500);
+                modelObject->GetComponent<ModelComponent>()->AddLOD(model2, 4000);
+                modelObject->GetComponent<ModelComponent>()->AddLOD(model3, 30000);
                 modelObject->GetTransform()->SetParent(targetObj->GetTransform());
                 modelObject->GetTransform()->Rotate({ -90, 0, 0 });
                 modelObject->GetTransform()->SetPosition({ 0, 0, 0 });

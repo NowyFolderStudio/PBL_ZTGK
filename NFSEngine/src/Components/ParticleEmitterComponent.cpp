@@ -47,6 +47,8 @@ namespace NFSEngine {
         Particle& particle = m_ParticlePool[m_PoolIndex];
         particle.active = true;
 
+        if (!m_Transform) m_Transform = m_Owner->GetComponent<Transform>();
+        if (!m_Transform) return;
         particle.position = m_Transform->GetWorldPosition() + particleProps.position;
 
         glm::vec3 velocityVariation;
@@ -69,7 +71,7 @@ namespace NFSEngine {
         particle.rotationSpeed
             = particleProps.rotationSpeed + (particleProps.rotationSpeedVariation * Math::RandomFloat(-0.5f, 0.5f));
 
-        m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
+        m_PoolIndex = (m_PoolIndex + 1) % m_ParticlePool.size();
     }
 
     void ParticleEmitterComponent::EmitMultiple(const ParticleProperties& particleProps, int number) {
@@ -95,6 +97,8 @@ namespace NFSEngine {
 
     void ParticleEmitterComponent::OnRender() {
         if (!m_Material || !m_Shader) return;
+
+        if (!m_Transform) m_Transform = m_Owner->GetComponent<Transform>();
 
         m_InstanceDataBuffer.clear();
 

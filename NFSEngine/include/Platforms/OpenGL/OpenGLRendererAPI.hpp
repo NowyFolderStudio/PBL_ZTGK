@@ -19,6 +19,7 @@ namespace NFSEngine {
         void SetWireframeMode(bool value) override;
         void SetBlendEnabled(bool enabled) override;
         void SetBlendFunction(BlendFunction func) override;
+        void SetDepthWriteMask(bool enabled) override;
         void SetCullFace(bool value) override;
         void BindCubeTexture(uint32_t rendererID, uint32_t slot) override;
     };

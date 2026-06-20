@@ -1,5 +1,6 @@
 #pragma once
 #include <NFSEngine.h>
+#include <algorithm>
 
 class BounceComponent : public NFSEngine::Component {
 public:
@@ -8,7 +9,9 @@ public:
 
     std::string GetName() const override { return "BounceComponent"; }
 
-    float BounceHeight = 15.0f;
+    float BaseBounceHeight = 15.0f;
+    float MaxBounceHeight = 640.0f;
+    float BounceMultiplier = 0.8f;
 
 protected:
     void OnStart() override {
@@ -34,9 +37,19 @@ private:
         float alignment = glm::dot(contactNormal, bounceUp);
 
         if (std::abs(alignment) > 0.7f) {
-            float speed = sqrt(2.0f * BounceHeight * -NFSEngine::PhysicsSystem::Gravity.y);
+            float baseSpeed = sqrt(2.0f * BaseBounceHeight * -NFSEngine::PhysicsSystem::Gravity.y);
+            float maxSpeed = sqrt(2.0f * MaxBounceHeight * -NFSEngine::PhysicsSystem::Gravity.y);
 
-            rb->Velocity = bounceUp * speed;
+            float impactSpeed = std::abs(glm::dot(rb->PreviousVelocity, bounceUp));
+
+            impactSpeed /= 1.414f;
+
+            float kineticSpeed = impactSpeed * BounceMultiplier;
+
+            float finalSpeed = std::clamp(std::max(baseSpeed, kineticSpeed), baseSpeed, maxSpeed);
+
+            rb->Velocity = bounceUp * finalSpeed;
+
             rb->IsGrounded = false;
             rb->IsTouchingWall = false;
 

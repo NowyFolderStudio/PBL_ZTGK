@@ -1,11 +1,15 @@
 #include "Components/CharacterAnimationController.hpp"
 #include "Components/CharacterController.hpp"
+#include "Components/CoinComponent.hpp"
+#include "Components/ParticleEmitterComponent.hpp"
+#include "Components/PointLight.hpp"
 #include "Core/Log.hpp"
 
 void CharacterAnimationController::OnStart() {
     m_Rigidbody = m_Owner->GetTransform()->GetParent()->GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
     m_Animator = m_Owner->GetComponent<NFSEngine::AnimatorComponent>();
-    m_MaxSpeed = m_Owner->GetTransform()->GetParent()->GetOwner()->GetComponent<CharacterController>()->MaxSpeed;
+    m_Controller = m_Owner->GetTransform()->GetParent()->GetOwner()->GetComponent<CharacterController>();
+    m_MaxSpeed = m_Controller->MaxSpeed;
     m_ParticleEmitter = m_Owner->GetComponent<NFSEngine::ParticleEmitterComponent>();
 }
 
@@ -40,29 +44,34 @@ void CharacterAnimationController::ChangeAnimation() {
     // 2 - jump
     // 3 - fall
     // 4 - WallJump
-    m_Animator->SetAnimationSpeed(1);
+    // 5 - Dash
+    m_Animator->SetAnimationSpeed(1.0f);
     glm::vec3 eulerDegrees = { 0, 0, 0 };
     m_Owner->GetTransform()->SetRotation(eulerDegrees);
+
+    if (m_Controller->IsDashing()) {
+        m_Animator->PlayAnimationBlended(5, 0.05f, false);
+        return;
+    }
+
     if (m_OnGround) {
         if (m_InMotion) {
-            m_Animator->PlayAnimation(1);
+            m_Animator->PlayAnimationBlended(1, 0.1f, true);
             m_Animator->SetAnimationSpeed(m_VerticalSpeed / m_MaxSpeed);
-            if (m_VerticalSpeed > (m_MaxSpeed * 0.75)) EmitWalkParticles();
+            if (m_VerticalSpeed > (m_MaxSpeed * 0.75f)) EmitWalkParticles();
         } else {
-            m_Animator->PlayAnimation(0);
+            m_Animator->PlayAnimationBlended(0, 0.1f, true);
         }
     } else {
         if (m_OnWall) {
             m_Animator->PlayAnimation(4, false);
-
             eulerDegrees = { 0, 90, 0 };
-
             m_Owner->GetTransform()->SetRotation(eulerDegrees);
-
-        } else if (m_HorizontalSpeed > 0)
-            m_Animator->PlayAnimation(2, false);
-        else
-            m_Animator->PlayAnimation(3, false);
+        } else if (m_HorizontalSpeed > 0) {
+            m_Animator->PlayAnimationBlended(2, 0.075f, false);
+        } else {
+            m_Animator->PlayAnimationBlended(3, 0.075f, false);
+        }
     }
 }
 

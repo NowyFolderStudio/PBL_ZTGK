@@ -14,12 +14,14 @@ namespace NFSEngine {
                 std::shared_ptr<Material> material;
                 std::shared_ptr<Shader> shader;
                 std::shared_ptr<Model> model;
+
+                material = std::make_shared<NFSEngine::Material>();
+
                 if (j_obj.contains("custom_components")) {
                     for (const auto& comp : j_obj["custom_components"]) {
-                        if (comp["name"] == "GeneratywnyKomponent") {
+                        if (comp["name"] == "AudioAnimation") {
                             shader = Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
-                                                    "assets/shaders/toonShader.frag");
-                            material = std::make_shared<Material>();
+                                                    "assets/shaders/toonShaderNew.frag");
                             material->name = "AnimationMaterial";
                             for (const auto& prop : comp["properties"]) {
                                 std::string propName = prop["name"];
@@ -34,34 +36,31 @@ namespace NFSEngine {
                                 } else if (propName == "u_TwistStrength") {
                                     material->SetFloat("u_TwistStrength", std::stof(propValue));
                                 }
-                                model = std::make_shared<NFSEngine::Model>("assets/models/glosnik/glosnik_wieza.fbx");
-                                targetObj->GetTransform()->SetScale({ 1, 1, 1 });
                             }
-                            generated = true;
-                            break;
                         }
                     }
                 }
-                if (!generated) {
-                    shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-                    material = std::make_shared<NFSEngine::Material>();
-                    model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
+                if (!shader) {
+                    shader
+                        = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShaderNew.frag");
                 }
+                model = std::make_shared<NFSEngine::Model>(j_obj["mesh_path"]);
                 NFSEngine::TextureParameters rampParams;
                 rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
                 rampParams.WrapT = NFSEngine::TextureWrap::Clamp;
                 rampParams.MinFilter = NFSEngine::TextureFilter::Nearest;
                 rampParams.MagFilter = NFSEngine::TextureFilter::Nearest;
-                rampParams.GenerateMipmaps = false;
+                rampParams.GenerateMipmaps = true;
                 auto map = std::make_shared<NFSEngine::OpenGLTexture>("assets/textures/ramp/RampTexture.png", rampParams);
 
-                std::string texPath = "assets/textures/cat.png"; // Fallback
+                std::string texPath = "assets/textures/cat.png";
                 if (j_obj.contains("texture_path") && j_obj["texture_path"] != "") {
                     texPath = j_obj["texture_path"];
                 }
 
                 material->AlbedoMap = NFSEngine::Texture::Create(texPath);
                 material->RampMap = map;
+
                 targetObj->AddComponent<ModelComponent>(shader, material);
                 targetObj->GetComponent<ModelComponent>()->AddLOD(model, 1000);
             }

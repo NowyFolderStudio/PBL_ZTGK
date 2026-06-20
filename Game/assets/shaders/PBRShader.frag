@@ -50,7 +50,7 @@ uniform sampler2D brdfLUT;
 uniform vec3 u_OutlineColor = vec3(0, 0, 0);
 uniform float u_OutlineSize = 0.08;
 uniform float u_OutlineDepthThreshold = 1.1;
-uniform float u_OutlineNormalThreshold = 0.30;
+uniform float u_OutlineNormalThreshold = 0.35;
 
 const float PI = 3.14159265359;
 

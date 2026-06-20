@@ -8,7 +8,7 @@
 class CheckpointComponent : public NFSEngine::Component {
 public:
     explicit CheckpointComponent(NFSEngine::GameObject* owner)
-        : NFSEngine::Component(owner) {}
+        : NFSEngine::Component(owner) { }
 
     std::string GetName() const override { return "CheckpointComponent"; }
 
@@ -31,7 +31,6 @@ protected:
 
             glm::vec3 checkpointWorldPos = m_Owner->GetTransform()->GetWorldPosition();
             glm::vec3 correctedOffset = SpawnOffset;
-            correctedOffset.x += SpawnOffsetCorrectionX;
             glm::vec4 spawnPos = m_Owner->GetTransform()->GetGlobalMatrix() * glm::vec4(correctedOffset, 1.0f);
             cc->SpawnPosition = glm::vec3(spawnPos);
 

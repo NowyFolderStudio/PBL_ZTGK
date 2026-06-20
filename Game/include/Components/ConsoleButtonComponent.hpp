@@ -2,6 +2,7 @@
 #include <NFSEngine.h>
 #include <glm/glm.hpp>
 #include "Components/ModelComponent.hpp"
+#include "Components/Transform.hpp"
 
 class ConsoleButtonComponent : public NFSEngine::Component {
 public:
@@ -19,8 +20,7 @@ public:
     float ReleaseDelay = 0.15f;
 
     ConsoleButtonComponent(NFSEngine::GameObject* owner)
-        : Component(owner) {
-    }
+        : Component(owner) { }
 
     ~ConsoleButtonComponent() override {
         if (m_SoundLoaded) {
@@ -32,20 +32,27 @@ public:
 
 protected:
     void OnStart() override {
-        m_BasePosition = GetOwner()->GetTransform()->GetPosition();
 
         auto renderComponent = GetOwner()->GetComponent<NFSEngine::ModelComponent>();
         if (renderComponent) {
             m_Material = renderComponent->GetMaterial(0);
             SetMaterialEmission(BaseColor, BaseStrength);
+            m_Transform = GetOwner()->GetTransform();
+            m_BasePosition = m_Transform->GetPosition();
+        } else {
+            renderComponent = GetOwner()->GetTransform()->GetChild(0)->GetOwner()->GetComponent<NFSEngine::ModelComponent>();
+            m_Material = renderComponent->GetMaterial(0);
+            SetMaterialEmission(BaseColor, BaseStrength);
+            m_Transform = GetOwner()->GetTransform()->GetChild(0)->GetOwner()->GetTransform();
+            m_BasePosition = m_Transform->GetPosition();
         }
 
         if (!SoundFilePath.empty()) {
-            ma_result result = ma_sound_init_from_file(NFSEngine::AudioEngine::GetEngine(), SoundFilePath.c_str(), 0, NULL, NULL, &m_ButtonSound);
+            ma_result result = ma_sound_init_from_file(NFSEngine::AudioEngine::GetEngine(), SoundFilePath.c_str(), 0, NULL, NULL,
+                                                       &m_ButtonSound);
             if (result == MA_SUCCESS) {
                 m_SoundLoaded = true;
-            }
-            else {
+            } else {
                 NFS_CORE_ERROR("consolebutton: Couldnt load sound ", SoundFilePath);
             }
         }
@@ -58,13 +65,13 @@ protected:
                 if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
                 m_IsCurrentlyColliding = true;
-                };
+            };
 
             collider->OnTriggerExit = [this](NFSEngine::GameObject* other) {
                 if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
                 m_IsCurrentlyColliding = false;
-                };
+            };
         }
     }
 
@@ -86,13 +93,11 @@ public:
                     ma_sound_start(&m_ButtonSound);
                 }
 
-                auto transform = GetOwner()->GetTransform();
                 glm::vec3 pos = m_BasePosition;
                 pos.y -= 0.1f;
-                transform->SetPosition(pos);
+                m_Transform->SetPosition(pos);
             }
-        }
-        else {
+        } else {
             m_TimeSinceLastCollision += deltaTime.GetSeconds();
 
             if (m_IsPressed && m_TimeSinceLastCollision > ReleaseDelay) {
@@ -100,8 +105,7 @@ public:
                 m_CurrentCooldown = CooldownTime;
                 SetMaterialEmission(BaseColor, BaseStrength);
 
-                auto transform = GetOwner()->GetTransform();
-                transform->SetPosition(m_BasePosition);
+                m_Transform->SetPosition(m_BasePosition);
             }
         }
     }
@@ -111,13 +115,14 @@ private:
 
     bool m_IsPressed = false;
     bool m_IsCurrentlyColliding = false;
-    glm::vec3 m_BasePosition{ 0.0f };
+    glm::vec3 m_BasePosition { 0.0f };
 
     float m_CurrentCooldown = 0.0f;
     float m_TimeSinceLastCollision = 0.0f;
 
     ma_sound m_ButtonSound;
     bool m_SoundLoaded = false;
+    NFSEngine::Transform* m_Transform;
 
     void SetMaterialEmission(const glm::vec3& color, float strength) {
         if (m_Material) {

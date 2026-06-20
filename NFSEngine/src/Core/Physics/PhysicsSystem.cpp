@@ -139,6 +139,7 @@ namespace NFSEngine {
 
             NFS_PROFILE_SCOPE("Physics: Check Collisions & Move");
             for (auto* rigidBody : rigidBodies) {
+                rigidBody->PreviousVelocity = rigidBody->Velocity;
                 GameObject* objA = rigidBody->GetOwner();
 
                 if (!objA->IsActive()) continue;
@@ -395,10 +396,25 @@ namespace NFSEngine {
 
         case ColliderType::Cylinder: {
             auto cylinder = GetCylinder(transform, static_cast<CylinderCollider3DComponent*>(col));
-            glm::vec3 radiusVec(cylinder.Radius);
-            glm::vec3 minP = glm::min(cylinder.PointA, cylinder.PointB) - radiusVec;
-            glm::vec3 maxP = glm::max(cylinder.PointA, cylinder.PointB) + radiusVec;
-            return { minP, maxP };
+
+            glm::vec3 axis = cylinder.PointB - cylinder.PointA;
+            float height = glm::length(axis);
+
+            if (height < 0.0001f) {
+                glm::vec3 radiusVec(cylinder.Radius);
+                return { cylinder.PointA - radiusVec, cylinder.PointA + radiusVec };
+            }
+
+            glm::vec3 dir = axis / height;
+
+            glm::vec3 extent;
+            extent.x = (std::abs(axis.x) * 0.5f) + cylinder.Radius * std::sqrt(std::max(0.0f, 1.0f - dir.x * dir.x));
+            extent.y = (std::abs(axis.y) * 0.5f) + cylinder.Radius * std::sqrt(std::max(0.0f, 1.0f - dir.y * dir.y));
+            extent.z = (std::abs(axis.z) * 0.5f) + cylinder.Radius * std::sqrt(std::max(0.0f, 1.0f - dir.z * dir.z));
+
+            glm::vec3 center = (cylinder.PointA + cylinder.PointB) * 0.5f;
+
+            return { center - extent, center + extent };
         }
         }
 
