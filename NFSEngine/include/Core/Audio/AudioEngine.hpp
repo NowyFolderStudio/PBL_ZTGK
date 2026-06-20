@@ -2,17 +2,25 @@
 #include <miniaudio/miniaudio.h>
 
 namespace NFSEngine {
-	class AudioEngine {
-	public:
-		static void Init();
-		static void Shutdown();
+    class AudioClip;
 
-		static ma_engine* GetEngine();
+    class AudioEngine {
+    public:
+        static void Init();
+        static void Shutdown();
 
-		static double GetGlobalTimeInSeconds();
-		static ma_uint64 GetTimeInPCM();
+        static ma_engine* GetEngine();
 
-	private:
-		static ma_engine m_Engine;
-	};
-}
+        static double GetGlobalTimeInSeconds();
+        static ma_uint64 GetTimeInPCM();
+
+        static void PlayClip(AudioClip* clip);
+        static void StopClip(AudioClip* clip);
+        static void RestartClip(AudioClip* clip);
+
+        static void SetMasterVolume(float volume);
+
+    private:
+        static ma_engine s_Engine;
+    };
+} // namespace NFSEngine

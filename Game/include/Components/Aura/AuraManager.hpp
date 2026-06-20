@@ -1,6 +1,9 @@
 #pragma once
 
 #include <NFSEngine.h>
+#include <memory>
+#include "Core/Audio/AudioClip.hpp"
+#include "Core/Audio/AudioEngine.hpp"
 #include "Core/AudioManager.hpp"
 
 enum class AuraType { // TODO: Rename it
@@ -28,6 +31,7 @@ public:
 
 private:
     std::vector<AuraType> m_UnlockedAuras;
+    std::shared_ptr<NFSEngine::AudioClip> m_AudioClip;
 
 protected:
     void OnAwake() override {
@@ -35,6 +39,7 @@ protected:
             return;
         }
         Instance = this;
+        m_AudioClip = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/dj_scratch.mp3");
     }
 
     void OnStart() override {
@@ -81,6 +86,8 @@ public:
         if (!IsAuraUnlocked(newAura)) {
             return;
         }
+
+        NFSEngine::AudioEngine::PlayClip(m_AudioClip.get());
 
         if (CurrentAura == AuraType::First) {
             NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
