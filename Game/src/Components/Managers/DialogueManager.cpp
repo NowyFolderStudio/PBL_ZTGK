@@ -33,21 +33,32 @@ namespace NFSEngine {
 
     void DialogueManager::ShowMessage(const std::string& speaker, const std::string& msg, const std::string& portraitPath,
                                       float duration) {
-        std::istringstream words(msg);
-        std::string word;
+        std::istringstream linesStream(msg);
+        std::string line;
         std::string wrappedText;
-        size_t currentLineLength = 0;
         size_t maxLineLength = 40;
 
-        while (words >> word) {
-            if (currentLineLength + word.length() > maxLineLength) {
-                wrappedText += "\n" + word + " ";
-                currentLineLength = word.length() + 1;
-            } else {
-                wrappedText += word + " ";
-                currentLineLength += word.length() + 1;
+        while (std::getline(linesStream, line)) {
+            std::istringstream words(line);
+            std::string word;
+            size_t currentLineLength = 0;
+
+            while (words >> word) {
+                if (currentLineLength + word.length() > maxLineLength) {
+                    if (!wrappedText.empty() && wrappedText.back() == ' ') wrappedText.pop_back();
+                    wrappedText += "\n" + word + " ";
+                    currentLineLength = word.length() + 1;
+                } else {
+                    wrappedText += word + " ";
+                    currentLineLength += word.length() + 1;
+                }
             }
+
+            if (!wrappedText.empty() && wrappedText.back() == ' ') wrappedText.pop_back();
+            wrappedText += "\n";
         }
+
+        if (!wrappedText.empty() && wrappedText.back() == '\n') wrappedText.pop_back();
 
         m_ActiveDialogue.SpeakerName = speaker;
         m_ActiveDialogue.FullMessage = wrappedText;
@@ -57,7 +68,6 @@ namespace NFSEngine {
 
         m_ActiveDialogue.VisibleCharacters = 0;
         m_ActiveDialogue.CharacterTimer = 0.0f;
-
         m_ActiveDialogue.IsVisible = true;
     }
 

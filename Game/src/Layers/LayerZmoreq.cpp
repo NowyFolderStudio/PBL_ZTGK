@@ -229,7 +229,8 @@ void LayerZmoreq::OnAttach() {
 
     auto& dialogueTrigger = testDialogueZone->AddComponent<DialogueTriggerComponent>();
     dialogueTrigger.SpeakerName = "Cat";
-    dialogueTrigger.Message = "Meow! Hello everyone! Meow! Meow! Meow!\nMeow!";
+    dialogueTrigger.Message = "Meow!\n Hello everyone! Meow! Meow! Meow!Meow! ello everyone! Meow! Meow! Meow!Meow! ello "
+                              "everyone! Meow! Meow! Meow!Meow!";
     dialogueTrigger.PortraitPath = "assets/textures/cat.png";
 
     dialogueTrigger.Duration = 10.0f;
