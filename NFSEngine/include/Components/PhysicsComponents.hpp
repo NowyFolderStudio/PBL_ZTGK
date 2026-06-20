@@ -115,5 +115,24 @@ namespace NFSEngine {
         float Height = 2.0f;
 
         glm::vec3 Offset = glm::vec3(0.0f);
+
+        void OnRender() override {
+            Transform* t = m_Owner->GetComponent<Transform>();
+            if (!t) return;
+
+            glm::mat4 positionMat = glm::translate(glm::mat4(1.0f), t->GetWorldPosition());
+            glm::mat4 offsetMat = glm::translate(glm::mat4(1.0f), Offset);
+            glm::mat4 rotation = glm::mat4_cast(t->GetWorldRotation());
+
+            glm::vec3 worldScale = t->GetWorldScale();
+            glm::vec3 finalScale = glm::vec3(Radius * 2.0f * worldScale.x, Height * worldScale.y, Radius * 2.0f * worldScale.z);
+            glm::mat4 scaleMat = glm::scale(glm::mat4(1.0f), finalScale);
+
+            glm::mat4 debugTransform = positionMat * offsetMat * rotation * scaleMat;
+
+            glm::vec4 color = IsTrigger ? glm::vec4(1.0f, 0.0f, 0.0f, 1.0f) : glm::vec4(0.0f, 1.0f, 0.0f, 1.0f);
+
+            Renderer::SubmitDebugCylinder(debugTransform, color);
+        }
     };
 } // namespace NFSEngine

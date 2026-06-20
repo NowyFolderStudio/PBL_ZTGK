@@ -48,7 +48,9 @@ namespace NFSEngine {
     std::shared_ptr<Shader> Renderer::s_PointShadowShaderAnim = nullptr;
 
     std::vector<Renderer::DebugBox> Renderer::s_DebugQueue;
+    std::vector<Renderer::DebugCylinder> Renderer::s_DebugCylinderQueue;
     std::shared_ptr<VertexArray> Renderer::s_DebugCubeVAO;
+    std::shared_ptr<VertexArray> Renderer::s_DebugCylinderVAO;
     std::shared_ptr<Shader> Renderer::s_DebugShader;
 
     bool Renderer::s_SortingEnabled;
@@ -154,6 +156,50 @@ namespace NFSEngine {
 
         s_DebugCubeVAO->AddVertexBuffer(debugVBO);
         s_DebugCubeVAO->SetIndexBuffer(debugIBO);
+
+        // Set up Cylinder for debug purposese
+
+        const int segments = 16;
+        std::vector<float> cylinderVertices;
+        std::vector<uint32_t> cylinderIndices;
+
+        for (int i = 0; i < segments; i++) {
+            float theta = 2.0f * 3.1415927 * float(i) / float(segments);
+            float cx = std::cos(theta) * 0.5f;
+            float cz = std::sin(theta) * 0.5f;
+
+            cylinderVertices.push_back(cx);
+            cylinderVertices.push_back(0.5f);
+            cylinderVertices.push_back(cz);
+
+            cylinderVertices.push_back(cx);
+            cylinderVertices.push_back(-0.5f);
+            cylinderVertices.push_back(cz);
+        }
+
+        for (int i = 0; i < segments; i++) {
+            int top = i * 2;
+            int bot = i * 2 + 1;
+            int nextTop = ((i + 1) % segments) * 2;
+            int nextBot = ((i + 1) % segments) * 2 + 1;
+
+            cylinderIndices.push_back(top);
+            cylinderIndices.push_back(nextTop);
+
+            cylinderIndices.push_back(bot);
+            cylinderIndices.push_back(nextBot);
+
+            cylinderIndices.push_back(top);
+            cylinderIndices.push_back(bot);
+        }
+
+        s_DebugCylinderVAO = std::shared_ptr<VertexArray>(VertexArray::Create());
+        auto cylinderVBO = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(cylinderVertices.data(), cylinderVertices.size() * sizeof(float)));
+        cylinderVBO->SetLayout({ { ShaderDataType::Float3, "aPos" } });
+        auto cylinderIBO = std::shared_ptr<IndexBuffer>(IndexBuffer::Create(cylinderIndices.data(), cylinderIndices.size()));
+
+        s_DebugCylinderVAO->AddVertexBuffer(cylinderVBO);
+        s_DebugCylinderVAO->SetIndexBuffer(cylinderIBO);
     }
 
     void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
@@ -867,14 +913,17 @@ namespace NFSEngine {
     void Renderer::SetDrawDebug(bool value) { s_DrawDebug = value; };
 
     void Renderer::DrawDebug() {
-        if (!s_DebugQueue.empty() && s_DrawDebug) {
-            s_DebugShader->Bind();
-            s_DebugShader->SetMat4("view", s_SceneData->ViewMatrix);
-            s_DebugShader->SetMat4("projection", s_SceneData->ProjectionMatrix);
+        if (!s_DrawDebug) return;
+        if (s_DebugQueue.empty() && s_DebugCylinderQueue.empty()) return;
 
-            s_RendererAPI->SetWireframeMode(true);
-            s_RendererAPI->SetDepthTest(false);
+        s_DebugShader->Bind();
+        s_DebugShader->SetMat4("view", s_SceneData->ViewMatrix);
+        s_DebugShader->SetMat4("projection", s_SceneData->ProjectionMatrix);
 
+        s_RendererAPI->SetWireframeMode(true);
+        s_RendererAPI->SetDepthTest(false);
+
+        if (!s_DebugQueue.empty()) {
             s_DebugCubeVAO->Bind();
 
             for (const auto& box : s_DebugQueue) {
@@ -884,11 +933,26 @@ namespace NFSEngine {
                 s_RendererAPI->DrawIndexed(s_DebugCubeVAO);
                 s_Stats.drawCalls++;
             }
-
-            s_RendererAPI->SetWireframeMode(false);
-            s_RendererAPI->SetDepthTest(true);
             s_DebugQueue.clear();
         }
+
+        if (!s_DebugCylinderQueue.empty()) {
+            s_DebugCylinderVAO->Bind();
+            for (const auto& cylinder : s_DebugCylinderQueue) {
+                s_DebugShader->SetMat4("model", cylinder.transform);
+                s_DebugShader->SetVec4("u_Color", cylinder.color);
+                s_RendererAPI->DrawIndexed(s_DebugCylinderVAO);
+                s_Stats.drawCalls++;
+            }
+            s_DebugCylinderQueue.clear();
+        }
+
+        s_RendererAPI->SetWireframeMode(false);
+        s_RendererAPI->SetDepthTest(true);
+    }
+
+    void Renderer::SubmitDebugCylinder(const glm::mat4& transform, const glm::vec4& color) {
+        s_DebugCylinderQueue.push_back({ transform, color });
     }
 
 } // namespace NFSEngine
