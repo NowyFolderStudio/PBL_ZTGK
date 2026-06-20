@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <utility>
 #include <miniaudio/miniaudio.h>
 
 namespace NFSEngine {
@@ -7,29 +8,15 @@ namespace NFSEngine {
     public:
         // Use stream = true for longer audio clips to save up RAM
         // Use stream = false for short clips
-        AudioClip(const std::string& filepath, bool stream = false);
-        ~AudioClip();
+        AudioClip(std::string filepath, bool stream = false)
+            : m_Filepath(std::move(filepath))
+            , m_Stream(stream) { }
 
-        // This class is not allowed to be copied
-        AudioClip(const AudioClip&) = delete;
-        AudioClip& operator=(const AudioClip&) = delete;
-
-        void SetVolume(float volume);
-        void SetPitch(float pitch);
-        void SetLooping(bool loop);
-
-        float GetVolume() const;
-        float GetPitch() const;
-        bool IsLooping() const;
-        float GetDurationInSeconds() const;
-        bool IsPlaying() const;
-
-        ma_sound* GetSoundHandle();
-        bool IsLoaded() const { return m_IsLoaded; }
+        const std::string& GetFilepath() const { return m_Filepath; }
+        bool IsStream() const { return m_Stream; }
 
     private:
-        ma_sound m_Sound;
         std::string m_Filepath;
-        bool m_IsLoaded = false;
+        bool m_Stream;
     };
 } // namespace NFSEngine

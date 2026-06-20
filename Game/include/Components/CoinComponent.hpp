@@ -3,9 +3,12 @@
 #include <NFSEngine.h>
 #include <cmath>
 #include <glm/ext/vector_float3.hpp>
+#include <memory>
 
 #include "Components/Managers/ScoreManager.hpp"
 #include "Components/Transform.hpp"
+#include "Core/Audio/AudioClip.hpp"
+#include "Core/Audio/AudioEngine.hpp"
 #include "Renderer/Material.hpp"
 #include "Renderer/Particle.hpp"
 #include "Renderer/Shader.hpp"
@@ -22,6 +25,7 @@ public:
 
 protected:
     void OnStart() override {
+        m_AudioClip = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/note.mp3");
         auto* collider = m_Owner->GetComponent<NFSEngine::ColliderComponent>();
         m_ModelTransform = m_Owner->GetTransform()->GetChild(0);
         if (!collider) return;
@@ -32,6 +36,7 @@ protected:
             if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
             m_Collected = true;
+            NFSEngine::AudioEngine::PlayClipRandomPitch(m_AudioClip.get(), 1.0f, 1.2f);
 
             auto texture = NFSEngine::Texture::Create("assets/textures/particles/note_particle.png");
 
@@ -75,4 +80,5 @@ private:
     float m_RotationSpeed = 45.0;
     float m_FloatSpeed = 3.0;
     float m_FloatAmplitude = 0.3;
+    std::shared_ptr<NFSEngine::AudioClip> m_AudioClip;
 };

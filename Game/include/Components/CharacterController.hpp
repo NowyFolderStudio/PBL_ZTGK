@@ -1,8 +1,12 @@
 #pragma once
 #include <NFSEngine.h>
+#include <memory>
+#include <vector>
 #include "Components/AnimatorComponent.hpp"
 #include "Components/Camera.hpp"
 #include "BounceComponent.hpp"
+#include "Core/Audio/AudioClip.hpp"
+#include "Core/Audio/AudioEngine.hpp"
 #include "Core/Log.hpp"
 #include "Core/MathUtils.hpp"
 #include "Aura/AuraManager.hpp"
@@ -104,6 +108,8 @@ public:
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
     NFSEngine::Transform* m_CameraTransform = nullptr;
+    std::vector<std::shared_ptr<NFSEngine::AudioClip>> m_JumpClips;
+    std::shared_ptr<NFSEngine::AudioClip> m_DashClip;
 
     size_t m_AuraEventId = 0;
     bool m_IsDashUnlocked = false;
@@ -134,7 +140,13 @@ private:
     float m_TurnSmoothVelocity = 0.0f;
 
 protected:
-    void OnAwake() override { SpawnPosition = m_Owner->GetTransform()->GetPosition(); }
+    void OnAwake() override {
+        SpawnPosition = m_Owner->GetTransform()->GetPosition();
+        m_JumpClips.push_back(std::make_shared<NFSEngine::AudioClip>("assets/audio/player_sounds/jump1.mp3"));
+        m_JumpClips.push_back(std::make_shared<NFSEngine::AudioClip>("assets/audio/player_sounds/jump2.mp3"));
+        m_JumpClips.push_back(std::make_shared<NFSEngine::AudioClip>("assets/audio/player_sounds/jump4.mp3"));
+        m_DashClip = std::make_shared<NFSEngine::AudioClip>("assets/audio/player_sounds/dash.mp3");
+    }
 
     virtual void OnStart() override {
         p_RigidBody = m_Owner->GetComponent<NFSEngine::RigidBody3DComponent>();
@@ -312,11 +324,13 @@ private:
                 if (m_IsDashing) m_IsDashing = false;
                 ExecuteWallJump();
                 jumped = true;
+                PlayJumpSound();
             }
 
             if (!jumped && (m_CoyoteTimeCounter > 0.0f || m_JumpsRemaining > 0)) {
                 if (m_IsDashing) m_IsDashing = false;
                 ExecuteJump();
+                PlayJumpSound();
             }
         }
     }
@@ -368,6 +382,7 @@ private:
             p_RigidBody->Velocity.y = DashUpwardForce;
 
             m_IsJumping = true;
+            PlayDashSound();
         }
     }
 
@@ -506,4 +521,15 @@ private:
             m_IsDashUnlocked = false;
         }
     }
+
+    void PlayJumpSound() {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<int> dis(0, m_JumpClips.size() - 1);
+
+        int clipIndex = dis(gen);
+
+        NFSEngine::AudioEngine::PlayClipRandomPitch(m_JumpClips[clipIndex].get(), 0.95f, 1);
+    }
+    void PlayDashSound() { NFSEngine::AudioEngine::PlayClipRandomPitch(m_DashClip.get(), 0.95f, 1, 1.5f); }
 };

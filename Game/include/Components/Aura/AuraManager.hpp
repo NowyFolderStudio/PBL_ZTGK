@@ -87,7 +87,7 @@ public:
             return;
         }
 
-        NFSEngine::AudioEngine::PlayClip(m_AudioClip.get());
+        NFSEngine::AudioEngine::PlayClipRandomPitch(m_AudioClip.get(), 0.9, 1.1);
 
         if (CurrentAura == AuraType::First) {
             NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
