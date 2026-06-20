@@ -25,7 +25,6 @@ void OptionsLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     auto& input = NFSEngine::InputActionManager::Get();
     bool uiChanged = false;
 
-    // --- Zmiana wiersza ---
     if (input.IsDown("UINavDown")) {
         m_FocusedRow = (m_FocusedRow + 1) % 5;
         uiChanged = true;
@@ -34,7 +33,6 @@ void OptionsLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         uiChanged = true;
     }
 
-    // --- Lewo / Prawo (dla opcji z suwakami) ---
     if (input.IsDown("UINavLeft")) {
         if (m_FocusedRow == 1) {
             float vol = NFSEngine::AudioEngine::GetMasterVolume();
@@ -70,7 +68,6 @@ void OptionsLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         }
     }
 
-    // --- Zatwierdzenie (Tylko dla guzików On/Off/Back) ---
     if (input.IsDown("UIConfirm")) {
         if (m_FocusedRow == 0) {
             bool isVsync = NFSEngine::Application::Get().GetWindow().IsVSync();
@@ -154,7 +151,6 @@ void OptionsLayer::BuildUI() {
     titleBgParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     NFSEngine::UI::Image(*m_Canvas, titleBgParams);
 
-    // Start pierwszego rzędu opcji (V-SYNC)
     currentY += elementSpacing + 50.0f;
 
     NFSEngine::UI::LabelParameters vsyncLabel;
@@ -172,6 +168,7 @@ void OptionsLayer::BuildUI() {
     vsyncBtn.height = buttonHeight;
     vsyncBtn.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     vsyncBtn.text = isVsync ? "ON" : "OFF";
+    vsyncBtn.textColor = glm::vec4(1.0f);
     vsyncBtn.onClick = [this, isVsync]() {
         NFSEngine::Application::Get().GetWindow().SetVSync(!isVsync);
         this->BuildUI();
@@ -200,6 +197,7 @@ void OptionsLayer::BuildUI() {
         this->BuildUI();
     };
     volMinus.color = (m_FocusedRow == 1) ? focusColor : normalColor;
+    volMinus.textColor = glm::vec4(1.0f);
     NFSEngine::UI::Button(*m_Canvas, volMinus);
 
     float currentVol = NFSEngine::AudioEngine::GetMasterVolume();
@@ -223,6 +221,7 @@ void OptionsLayer::BuildUI() {
         this->BuildUI();
     };
     volPlus.color = (m_FocusedRow == 1) ? focusColor : normalColor;
+    volPlus.textColor = glm::vec4(1.0f);
     NFSEngine::UI::Button(*m_Canvas, volPlus);
 
     currentY += elementSpacing;
@@ -256,6 +255,7 @@ void OptionsLayer::BuildUI() {
         this->BuildUI();
     };
     fsBtn.color = (m_FocusedRow == 2) ? focusColor : normalColor;
+    fsBtn.textColor = glm::vec4(1.0f);
     NFSEngine::UI::Button(*m_Canvas, fsBtn);
 
     currentY += elementSpacing;
@@ -282,6 +282,7 @@ void OptionsLayer::BuildUI() {
         }
     };
     resMinus.color = (m_FocusedRow == 3) ? focusColor : normalColor;
+    resMinus.textColor = glm::vec4(1.0f);
     NFSEngine::UI::Button(*m_Canvas, resMinus);
 
     NFSEngine::UI::LabelParameters resValue;
@@ -299,6 +300,7 @@ void OptionsLayer::BuildUI() {
     resPlus.height = buttonHeight;
     resPlus.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     resPlus.text = ">";
+    resPlus.textColor = glm::vec4(1.0f);
     resPlus.onClick = [this]() {
         if (m_CurrentResIndex < m_Resolutions.size() - 1) {
             m_CurrentResIndex++;
@@ -320,6 +322,7 @@ void OptionsLayer::BuildUI() {
     backParams.text = "BACK";
     backParams.onClick = []() { GameManager::Get().CloseOptions(); };
     backParams.color = (m_FocusedRow == 4) ? focusColor : normalColor;
+    backParams.textColor = glm::vec4(1.0f);
     NFSEngine::UI::Button(*m_Canvas, backParams);
 }
 

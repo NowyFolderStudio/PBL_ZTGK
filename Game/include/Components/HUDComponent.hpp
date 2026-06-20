@@ -11,6 +11,7 @@
 #include "Renderer/Texture.hpp"
 #include "UI/UIComponents.hpp"
 #include "UI/UIFactory.hpp"
+#include "Components/Managers/DialogueManager.hpp"
 #include <vector>
 #include <string>
 
@@ -61,6 +62,13 @@ private:
 
     const std::vector<AuraType> m_AuraOrder = { AuraType::First, AuraType::Second };
 
+    NFSEngine::UIObject* m_DialoguePortrait = nullptr;
+    NFSEngine::UIObject* m_DialogueName = nullptr;
+    NFSEngine::UIObject* m_DialogueShadow = nullptr;
+    NFSEngine::UIObject* m_DialogueMsg = nullptr;
+
+    std::string m_CurrentPortraitPath = "";
+
 protected:
     void OnAwake() override {
         if (m_Canvas == nullptr) {
@@ -72,6 +80,8 @@ protected:
         InitScoreUI();
         InitHeartsUI();
         InitAuraUI();
+
+        InitDialogueUI();
 
         if (AuraManager::Instance) {
             UpdateAuraText(AuraManager::Instance->CurrentAura);
@@ -95,6 +105,8 @@ protected:
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        UpdateDialogueUI();
+
         if (m_Canvas) {
             m_Canvas->Update();
         }
@@ -268,9 +280,6 @@ private:
     }
 
     void UpdateScoreText(int newScore) {
-        // if (m_ScoreLabel && m_ScoreLabel->HasComponent<NFSEngine::TextComponent>()) {
-        //     m_ScoreLabel->GetComponent<NFSEngine::TextComponent>()->TextString = "SCORE: " + std::to_string(newScore);
-        // }
         if (!m_FullNotes.empty()) {
             int allCoins = 132;
             float note = 132 / m_NumberOfNotes;
@@ -345,5 +354,83 @@ private:
 
         SetText(m_RightNameLabel, GetAuraName(AuraType::Second), 0.8f);
         SetText(m_RightSkillLabel, GetAuraSkill(AuraType::Second), 0.6f);
+    }
+
+    void InitDialogueUI() {
+        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 120.0f;
+        const float textStartX = 450.0f;
+
+        NFSEngine::UI::ImageParameters portraitParams;
+        portraitParams.position = glm::vec3(200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 200.0f, 10.0f);
+        portraitParams.width = 250.0f;
+        portraitParams.height = 250.0f;
+        portraitParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        m_DialoguePortrait = &NFSEngine::UI::Image(*m_Canvas, portraitParams);
+
+        NFSEngine::UI::LabelParameters nameParams;
+        nameParams.position = glm::vec3(textStartX, bottomY - 140.0f, 10.1f);
+        nameParams.text = "";
+        nameParams.scale = 1.2f;
+        nameParams.color = glm::vec4(0.8f, 0.8f, 0.2f, 0.0f);
+        m_DialogueName = &NFSEngine::UI::Label(*m_Canvas, nameParams);
+
+        m_DialogueName->Transform.Pivot.x = 0.0f;
+        m_DialogueName->Transform.Pivot.y = 0.0f;
+
+        NFSEngine::UI::LabelParameters shadowParams;
+        shadowParams.position = glm::vec3(textStartX + 3.0f, bottomY - 62.0f, 10.0f);
+        shadowParams.text = "";
+        shadowParams.scale = 1.8f;
+        shadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        m_DialogueShadow = &NFSEngine::UI::Label(*m_Canvas, shadowParams);
+
+        m_DialogueShadow->Transform.Pivot.x = 0.0f;
+        m_DialogueShadow->Transform.Pivot.y = 0.0f;
+
+        NFSEngine::UI::LabelParameters msgParams;
+        msgParams.position = glm::vec3(textStartX, bottomY - 65.0f, 10.1f);
+        msgParams.text = "";
+        msgParams.scale = 1.8f;
+        msgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        m_DialogueMsg = &NFSEngine::UI::Label(*m_Canvas, msgParams);
+
+        m_DialogueMsg->Transform.Pivot.x = 0.0f;
+        m_DialogueMsg->Transform.Pivot.y = 0.0f;
+    }
+
+    void UpdateDialogueUI() {
+        const auto& dialogue = NFSEngine::DialogueManager::Get().GetActiveDialogue();
+
+        auto SetLabelState = [](NFSEngine::UIObject* obj, const std::string& text, float alpha) {
+            if (obj && obj->HasComponent<NFSEngine::TextComponent>()) {
+                auto* tc = obj->GetComponent<NFSEngine::TextComponent>();
+                tc->TextString = text;
+                tc->Color.a = alpha;
+            }
+        };
+
+        if (dialogue.IsVisible) {
+            SetLabelState(m_DialogueName, dialogue.SpeakerName + ":", 1.0f);
+            SetLabelState(m_DialogueShadow, dialogue.DisplayedMessage, 1.0f);
+            SetLabelState(m_DialogueMsg, dialogue.DisplayedMessage, 1.0f);
+
+            if (m_DialoguePortrait && m_DialoguePortrait->HasComponent<NFSEngine::ImageComponent>()) {
+                auto* imgComp = m_DialoguePortrait->GetComponent<NFSEngine::ImageComponent>();
+                imgComp->Color.a = 1.0f;
+
+                if (m_CurrentPortraitPath != dialogue.PortraitPath && !dialogue.PortraitPath.empty()) {
+                    imgComp->TexturePtr = NFSEngine::Texture::Create(dialogue.PortraitPath);
+                    m_CurrentPortraitPath = dialogue.PortraitPath;
+                }
+            }
+        } else {
+            SetLabelState(m_DialogueName, "", 0.0f);
+            SetLabelState(m_DialogueShadow, "", 0.0f);
+            SetLabelState(m_DialogueMsg, "", 0.0f);
+
+            if (m_DialoguePortrait && m_DialoguePortrait->HasComponent<NFSEngine::ImageComponent>()) {
+                m_DialoguePortrait->GetComponent<NFSEngine::ImageComponent>()->Color.a = 0.0f;
+            }
+        }
     }
 };

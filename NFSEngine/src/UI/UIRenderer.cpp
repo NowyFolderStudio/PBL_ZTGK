@@ -85,7 +85,7 @@ namespace NFSEngine {
 
         s_Data->UITextShader->Bind();
         s_Data->UITextShader->SetMat4("projection", s_Data->ProjectionMatrix);
-        s_Data->UITextShader->SetVec3("textColor", glm::vec3(textComp.Color.r, textComp.Color.g, textComp.Color.b));
+        s_Data->UITextShader->SetVec4("textColor", textComp.Color);
 
         float textWidth = fontToUse->GetTextWidth(textComp.TextString, textComp.Scale);
         float startX = transform.Position.x - textWidth * transform.Pivot.x;

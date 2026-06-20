@@ -103,6 +103,7 @@ void MainMenuLayer::BuildUI() {
     startParams.height = 100.0f;
     startParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     startParams.text = "START GAME";
+    startParams.textColor = glm::vec4(1.0f);
     startParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::Playing); };
     startParams.color = (m_FocusedIndex == 0) ? focusColor : normalColor;
     NFSEngine::UI::Button(*m_Canvas, startParams);
@@ -116,6 +117,7 @@ void MainMenuLayer::BuildUI() {
     optionsParams.height = 100.0f;
     optionsParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     optionsParams.text = "OPTIONS";
+    optionsParams.textColor = glm::vec4(1.0f);
     optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
     optionsParams.color = (m_FocusedIndex == 1) ? focusColor : normalColor;
     NFSEngine::UI::Button(*m_Canvas, optionsParams);
@@ -129,6 +131,7 @@ void MainMenuLayer::BuildUI() {
     quitParams.height = 100.0f;
     quitParams.color = glm::vec4(0.4f, 0.4f, 0.4f, 1.0f);
     quitParams.text = "QUIT";
+    quitParams.textColor = glm::vec4(1.0f);
     quitParams.onClick = []() { NFSEngine::Application::Get().Close(); };
     quitParams.color = (m_FocusedIndex == 2) ? focusColor : normalColor;
     NFSEngine::UI::Button(*m_Canvas, quitParams);

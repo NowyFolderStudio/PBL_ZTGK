@@ -20,6 +20,9 @@
 #include "Components/Enemy/BasicEnemy.hpp"
 #include "Components/PlayerAttackComponent.hpp"
 #include "Components/DestructibleComponent.hpp"
+#include "Components/HUDComponent.hpp"
+#include "Components/Managers/DialogueManager.hpp"
+#include "Components/DialogueTriggerComponent.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -203,10 +206,6 @@ void LayerZmoreq::OnAttach() {
         destComp.MaxHealth = 1; // Rozpada się na jeden hit
     };
 
-    // =========================================================================
-    // SPAWNOWANIE ELEMENTÓW NA SCENIE
-    // =========================================================================
-
     // Spawnowanie 2 przeciwników
     SpawnEnemy("Enemy_1", glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(15.0f, 0.0f, 5.0f));
     SpawnEnemy("Enemy_2", glm::vec3(-8.0f, 0.0f, -8.0f), glm::vec3(-2.0f, 0.0f, -8.0f));
@@ -219,13 +218,30 @@ void LayerZmoreq::OnAttach() {
     // Spawnowanie samotnej skrzynki
     SpawnCrate("Crate_Solo", glm::vec3(-5.0f, -1.0f, 5.0f));
 
-    m_Scene->MarkPhysicsDirty();
+    // --- TEST SYSTEMU DIALOGÓW ---
+    NFSEngine::GameObject* testDialogueZone = m_Scene->CreateGameObject("TestDialogueZone");
+
+    testDialogueZone->GetTransform()->SetPosition(glm::vec3(-5.0f, -1.0f, 5.0f));
+    testDialogueZone->GetTransform()->SetScale(glm::vec3(100.0f, 105.0f, 105.0f));
+
+    auto& dialogueCol = testDialogueZone->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    dialogueCol.IsTrigger = true;
+
+    auto& dialogueTrigger = testDialogueZone->AddComponent<DialogueTriggerComponent>();
+    dialogueTrigger.SpeakerName = "Cat";
+    dialogueTrigger.Message = "Meow! Hello everyone! Meow! Meow! Meow!\nMeow!";
+    dialogueTrigger.PortraitPath = "assets/textures/cat.png";
+
+    dialogueTrigger.Duration = 10.0f;
+    dialogueTrigger.TriggerOnce = false;
 
     // --- KAMERA ---
     auto* cameraObj = m_Scene->CreateGameObject("MainCamera");
     m_CachedCamera = &cameraObj->AddComponent<Camera>();
     m_CachedCameraController = &cameraObj->AddComponent<CameraController>();
     m_CachedCameraController->SetTarget(m_Player->GetTransform());
+
+    m_Scene->MarkPhysicsDirty();
 
     uint32_t width = Application::Get().GetWindow().GetWidth();
     uint32_t height = Application::Get().GetWindow().GetHeight();
@@ -237,6 +253,8 @@ void LayerZmoreq::OnDetach() { }
 void LayerZmoreq::OnUpdate(DeltaTime deltaTime) {
     NFS_PROFILE_FUNCTION();
     m_DeltaTime = deltaTime;
+
+    NFSEngine::DialogueManager::Get().Update(deltaTime.GetSeconds());
 
     // --- Debug Camera Logic ---
     bool editorActive = DebugCamera::IsActive();
