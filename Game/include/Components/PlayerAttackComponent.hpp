@@ -9,6 +9,7 @@
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
 #include "Components/DestructibleComponent.hpp"
+#include "Components/AttackInteractableComponent.hpp"
 
 class PlayerAttackComponent : public NFSEngine::Component {
 public:
@@ -47,7 +48,8 @@ protected:
             m_Sphere->Radius = AttackRadius;
 
             m_Sphere->OnTriggerEnter = [this](NFSEngine::GameObject* other) {
-                if (other->GetComponent<DestructibleComponent>() != nullptr) {
+                if (other->GetComponent<DestructibleComponent>() != nullptr ||
+                    other->GetComponent<AttackInteractableComponent>() != nullptr) {
                     m_EnemiesInRange.push_back(other);
                 }
             };
@@ -116,6 +118,12 @@ private:
             // Jeśli to np. ściana bez DestructibleComponent - zignoruje ją!
             if (auto* destComp = target->GetComponent<DestructibleComponent>()) {
                 destComp->TakeDamage(1, myPos);
+            }
+
+            if (auto* interactable = target->GetComponent<AttackInteractableComponent>()) {
+                if (interactable->OnHit) {
+                    interactable->OnHit();
+                }
             }
         }
     }

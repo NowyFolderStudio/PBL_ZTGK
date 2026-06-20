@@ -35,6 +35,7 @@
 #include "Components/CasetteComponent.hpp"
 #include "Components/ConsoleButtonComponent.hpp"
 #include "Components/RotatingPlatform.hpp"
+#include "Components/CDBoxComponent.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -137,8 +138,10 @@ void LayerExample::OnAttach() {
     m_Player->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
     m_Player->AddComponent<NFSEngine::RigidBody3DComponent>();
     m_Player->AddComponent<CharacterController>();
-    m_Player->AddComponent<PlayerAttackComponent>();
     m_Player->GetComponent<CharacterController>()->SpawnPosition = m_PlayerSpawnPosition;
+    auto* playerAoE = m_Scene->CreateGameObject("PlayerAttackZone");
+    playerAoE->GetTransform()->SetParent(m_Player->GetTransform(), false);
+    playerAoE->AddComponent<PlayerAttackComponent>();
     playerModel->AddComponent<AnimatorComponent>();
     playerModel->AddComponent<CharacterAnimationController>();
     auto particleShader = Shader::Create("particleShader", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
@@ -281,29 +284,76 @@ void LayerExample::OnAttach() {
     auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
     pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
 
-    // auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
+    // Spinning CD
+    
+    auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
 
-    // auto matCD = std::make_shared<NFSEngine::Material>();
-    // matCD->name = "DiffractionMaterial";
-    // matCD->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
-    // matCD->Metallic = 1.0f;
-    // matCD->Roughness = 0.15f;
+    auto matCD = std::make_shared<NFSEngine::Material>();
+    matCD->name = "DiffractionMaterial";
+    matCD->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
+    matCD->Metallic = 1.0f;
+    matCD->Roughness = 0.15f;
 
-    // matCD->SetInt("u_UseDiffraction", 1);
-    // matCD->SetFloat("u_DiffractionDistance", 2000.0f);
-    // matCD->SetFloat("u_DiffractionStrength", 2.5f);
+    matCD->SetInt("u_UseDiffraction", 1);
+    matCD->SetFloat("u_DiffractionDistance", 2000.0f);
+    matCD->SetFloat("u_DiffractionStrength", 2.5f);
 
-    // auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
-    // spinningCD->GetTransform()->SetScale(glm::vec3(9.0f, 9.0f, 9.0f));
-    // spinningCD->GetTransform()->SetPosition(glm::vec3 { -35.0f, 20.0f, 50.0f });
-    // spinningCD->AddComponent<CylinderCollider3DComponent>();
+    auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
+    spinningCD->GetTransform()->SetScale(glm::vec3(18.0f, 18.0f, 18.0f));
+    spinningCD->GetTransform()->SetPosition(glm::vec3{ -25.0f, 20.0f, 50.0f });
+    auto& colliderCD = spinningCD->AddComponent<CylinderCollider3DComponent>();
+    colliderCD.Height = 0.2f;
 
-    // auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
-    // auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
-    // cdModelComp.AddLOD(cdModel, 100000.0f);
+    auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
+    auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
+    cdModelComp.AddLOD(cdModel, 100000.0f);
 
-    // auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
-    // rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
+    auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
+    rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
+
+    // CDPlayer
+
+    auto matCDPlayer = std::make_shared<NFSEngine::Material>();
+    matCDPlayer->AlbedoMap = NFSEngine::Texture::Create("assets/models/Odtwarzacz/odtwarzacz_kolor.001.png");
+
+    auto* cDPlayer = m_Scene->CreateGameObject("CDPlayer");
+    cDPlayer->GetTransform()->SetScale(glm::vec3(3.0f, 3.0f, 3.0f));
+    cDPlayer->GetTransform()->SetPosition(glm::vec3{ -90.0f, 20.0f, 50.0f });
+    cDPlayer->GetTransform()->SetRotation(glm::vec3{ -90.0f, 0.0f, 0.0f });
+
+    auto& colliderCDPlayer = cDPlayer->AddComponent<BoxCollider3DComponent>();
+
+    auto cDPlayerModel = std::make_shared<NFSEngine::Model>("assets/models/Odtwarzacz/odtwarzacz.fbx");
+    auto& cDPlayerModelComp = cDPlayer->AddComponent<NFSEngine::ModelComponent>(m_Shader, matCDPlayer);
+    cDPlayerModelComp.AddLOD(cDPlayerModel, 100000.0f);
+
+    // CDPlayer Button
+
+    auto* playButton = m_Scene->CreateGameObject("CDPlayer_Button");
+
+    playButton->GetTransform()->SetPosition(glm::vec3{ -50.0f, 22.0f, 50.0f });
+
+    playButton->AddComponent<NFSEngine::CubeMesh>(m_ToonShader, matCDPlayer);
+
+    spinningCD->GetTransform()->SetParent(cDPlayer->GetTransform());
+    playButton->GetTransform()->SetParent(cDPlayer->GetTransform());
+
+    auto& cDBoxLogic = cDPlayer->AddComponent<CDBoxComponent>();
+
+    // Microphone test 
+
+    auto matMicrophone = std::make_shared<NFSEngine::Material>();
+    matMicrophone->AlbedoMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_kolor2.png");
+    matMicrophone->RoughnessMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_rough.png");
+    matMicrophone->MetallicMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_metal.png");
+
+    auto* microphone = m_Scene->CreateGameObject("MicrophoneTest");
+    microphone->GetTransform()->SetPosition(glm::vec3{ -55.0f, 20.0f, 50.0f });
+    microphone->GetTransform()->SetRotation(glm::vec3{ -90.0f, 0.0f, 0.0f });
+
+    auto micModel = std::make_shared<NFSEngine::Model>("assets/models/RetroMicrophone/retro_mikrofon.fbx");
+    auto& micModelComp = microphone->AddComponent<NFSEngine::ModelComponent>(m_Shader, matMicrophone);
+    micModelComp.AddLOD(micModel, 100000.0f);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
