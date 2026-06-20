@@ -36,7 +36,7 @@ protected:
             if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
             m_Collected = true;
-            NFSEngine::AudioEngine::PlayClipRandomPitch(m_AudioClip.get(), 1.0f, 1.2f);
+            NFSEngine::AudioEngine::PlayClipRandomPitch(m_AudioClip.get(), 1.0f, 1.2f, 0.5);
 
             auto texture = NFSEngine::Texture::Create("assets/textures/particles/note_particle.png");
 

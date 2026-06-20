@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 
+#include "Components/PhysicsComponents.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/Physics/PhysicsSystem.hpp"
@@ -47,6 +48,8 @@ namespace NFSEngine {
         const std::vector<NFSEngine::SpotLight*>& GetSpotLights() const { return m_CachedSpotLights; }
 
         void MarkPhysicsDirty() { m_PhysicsListsDirty = true; }
+
+        std::vector<ColliderComponent*> GetAllColliders() { return m_Colliders; }
 
     private:
         DeltaTime m_FixedDeltaTime = 0.01666f;

@@ -31,7 +31,7 @@ namespace NFSEngine {
         glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
 
         float m_FOV = 45.0f;
-        float m_NearClip = 0.1f;
+        float m_NearClip = 0.01f;
         float m_FarClip = 1000.0f;
         float m_AspectRatio = 1.778f;
     };

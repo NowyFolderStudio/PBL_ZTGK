@@ -20,5 +20,6 @@ namespace NFSEngine {
         static bool CheckRayOBB(const Ray& ray, const OBB& obb, float& outDistance);
         static bool CheckRaySphere(const Ray& ray, const Sphere& sphere, float& outDistance);
         static bool CheckRayCapsule(const Ray& ray, const Capsule& capsule, float& outDistance);
+        static bool CheckRayCylinder(const Ray& ray, const Cylinder& cylinder, float& outDistance);
     };
 } // namespace NFSEngine

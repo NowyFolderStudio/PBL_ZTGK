@@ -1,6 +1,7 @@
 #include "Core/Physics/PhysicsSystem.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/Transform.hpp"
+#include "Core/Tags.hpp"
 #include <unordered_set>
 
 namespace NFSEngine {
@@ -468,8 +469,88 @@ namespace NFSEngine {
             }
             break;
         }
+        case ColliderType::Cylinder: {
+            auto* cylinderCollider = static_cast<CylinderCollider3DComponent*>(collider);
+            Cylinder cyl = GetCylinder(transform, cylinderCollider);
+
+            if (CollisionDetector::CheckRayCylinder(ray, cyl, hitDist)) {
+                if (hitDist <= maxDistance) {
+                    outResult.Hit = true;
+                    outResult.Distance = hitDist;
+                    outResult.Point = ray.Origin + ray.Direction * hitDist;
+
+                    glm::vec3 axis = cyl.PointB - cyl.PointA;
+                    float height = glm::length(axis);
+
+                    if (height > 0.0001f) {
+                        axis /= height;
+                        glm::vec3 hitVector = outResult.Point - cyl.PointA;
+                        float hitHeight = glm::dot(hitVector, axis);
+
+                        const float epsilon = 0.001f;
+
+                        if (hitHeight <= epsilon) {
+                            outResult.Normal = -axis;
+                        } else if (hitHeight >= height - epsilon) {
+                            outResult.Normal = axis;
+                        } else {
+                            glm::vec3 closestAxisPoint = cyl.PointA + axis * hitHeight;
+                            outResult.Normal = glm::normalize(outResult.Point - closestAxisPoint);
+                        }
+                    } else {
+                        outResult.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
+                    }
+
+                    return true;
+                }
+            }
+            break;
+        }
         default:
             break;
+        }
+
+        return false;
+    }
+
+    bool PhysicsSystem::Raycast(const Ray& ray, RaycastResult& outResult, const std::vector<ColliderComponent*>& allColliders,
+                                const RaycastOptions& options) {
+        bool hitAnything = false;
+        float closestDistance = options.MaxDistance;
+        RaycastResult closestResult;
+
+        for (auto* collider : allColliders) {
+            GameObject* go = collider->GetOwner();
+            if (!go->IsActive()) continue;
+
+            if (options.IgnoreTriggers && collider->IsTrigger) continue;
+
+            if (options.TagsToIgnore != 0) {
+                Transform* ancestor = go->GetTransform();
+                bool isIgnoredOrDescendant = false;
+                while (ancestor) {
+                    if (ancestor->GetOwner()->CompareTag(options.TagsToIgnore)) {
+                        isIgnoredOrDescendant = true;
+                        break;
+                    }
+                    ancestor = ancestor->GetParent();
+                }
+                if (isIgnoredOrDescendant) continue;
+            }
+
+            RaycastResult tempResult;
+            if (RaycastCollider(ray, closestDistance, collider, go->GetTransform(), tempResult)) {
+                if (tempResult.Distance < closestDistance) {
+                    closestDistance = tempResult.Distance;
+                    closestResult = tempResult;
+                    hitAnything = true;
+                }
+            }
+        }
+
+        if (hitAnything) {
+            outResult = closestResult;
+            return true;
         }
 
         return false;

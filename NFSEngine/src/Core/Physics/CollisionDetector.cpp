@@ -400,4 +400,75 @@ namespace NFSEngine {
         }
         return true;
     }
+
+    bool CollisionDetector::CheckRayCylinder(const Ray& ray, const Cylinder& cylinder, float& outDistance) {
+        glm::vec3 axis = cylinder.PointB - cylinder.PointA;
+        float height = glm::length(axis);
+
+        if (height < 0.0001f) {
+            return CheckRaySphere(ray, Sphere { cylinder.PointA, cylinder.Radius }, outDistance);
+        }
+        axis /= height;
+
+        glm::vec3 ro = ray.Origin - cylinder.PointA;
+        float dotDirAxis = glm::dot(ray.Direction, axis);
+        float dotRoAxis = glm::dot(ro, axis);
+
+        glm::vec3 d = ray.Direction - axis * dotDirAxis;
+        glm::vec3 o = ro - axis * dotRoAxis;
+
+        float a = glm::dot(d, d);
+        float b = 2.0f * glm::dot(o, d);
+        float c = glm::dot(o, o) - cylinder.Radius * cylinder.Radius;
+
+        float tBest = -1.0f;
+
+        auto updateBest = [&](float tHit) {
+            if (tHit >= 0.0f && (tBest < 0.0f || tHit < tBest)) {
+                tBest = tHit;
+            }
+        };
+
+        float discriminant = b * b - 4.0f * a * c;
+        if (discriminant >= 0.0f && a > 0.0001f) {
+            float sqrtD = glm::sqrt(discriminant);
+            float t1 = (-b - sqrtD) / (2.0f * a);
+            float t2 = (-b + sqrtD) / (2.0f * a);
+
+            float h1 = dotRoAxis + t1 * dotDirAxis;
+            if (t1 >= 0.0f && h1 >= 0.0f && h1 <= height) {
+                updateBest(t1);
+            }
+
+            float h2 = dotRoAxis + t2 * dotDirAxis;
+            if (t2 >= 0.0f && h2 >= 0.0f && h2 <= height) {
+                updateBest(t2);
+            }
+        }
+
+        if (std::abs(dotDirAxis) > 0.0001f) {
+            float tBot = -dotRoAxis / dotDirAxis;
+            if (tBot >= 0.0f) {
+                glm::vec3 hitBot = ro + ray.Direction * tBot; // względem PointA
+                if (glm::dot(hitBot, hitBot) <= cylinder.Radius * cylinder.Radius) {
+                    updateBest(tBot);
+                }
+            }
+
+            float tTop = (height - dotRoAxis) / dotDirAxis;
+            if (tTop >= 0.0f) {
+                glm::vec3 hitTop = ro + ray.Direction * tTop - axis * height;
+                if (glm::dot(hitTop, hitTop) <= cylinder.Radius * cylinder.Radius) {
+                    updateBest(tTop);
+                }
+            }
+        }
+
+        if (tBest >= 0.0f) {
+            outDistance = tBest;
+            return true;
+        }
+
+        return false;
+    }
 } // namespace NFSEngine

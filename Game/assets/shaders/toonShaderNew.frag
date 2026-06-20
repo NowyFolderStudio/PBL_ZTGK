@@ -299,6 +299,6 @@ void main()
     }
 
     OutNormal = vec4(normalize(Normal), 1.0);
-    OutlineColor = vec4(u_OutlineColor, 1);
+    OutlineColor = vec4(u_OutlineColor, alpha);
     OutOutlineParams = vec4(u_OutlineSize, u_OutlineDepthThreshold, u_OutlineNormalThreshold, 1.0);
 }

@@ -5,6 +5,7 @@
 #include "Components/Transform.hpp"
 #include "Core/InputAction.hpp"
 #include "Core/Application.hpp"
+#include "Core/Tags.hpp"
 #include "Events/MouseEvent.hpp"
 #include "Core/Physics/PhysicsSystem.hpp"
 #include "Core/Scene.hpp"
@@ -132,7 +133,11 @@ namespace NFSEngine {
             glm::vec3 direction = { cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad) };
 
             float collisionDistance = CheckCameraCollision(m_Target->GetPosition(), direction);
-            m_CurrentDistance = glm::mix(m_CurrentDistance, collisionDistance, 15.0f * static_cast<float>(dt));
+            if (m_CurrentDistance < collisionDistance) {
+                m_CurrentDistance = glm::mix(m_CurrentDistance, collisionDistance, 15.0f * static_cast<float>(dt));
+            } else {
+                m_CurrentDistance = collisionDistance;
+            }
 
             auto* pTransform = m_Owner->GetTransform();
             pTransform->SetPosition(m_Target->GetPosition() + direction * m_CurrentDistance);
@@ -144,40 +149,21 @@ namespace NFSEngine {
         [[nodiscard]] float CheckCameraCollision(const glm::vec3& targetPos, const glm::vec3& direction) const {
             if (m_OverrideActive) return m_Distance;
 
-            float minHitDist = m_Distance;
+            Ray ray { targetPos, direction };
+            RaycastResult hit;
 
-            Scene* scene = m_Owner->GetScene();
-            if (!scene) return m_Distance;
+            RaycastOptions options;
+            options.MaxDistance = m_Distance;
+            options.IgnoreTriggers = true;
+            options.TagsToIgnore = Tags::Player;
 
-            for (const auto& go : scene->GetAllGameObjects()) {
-                if (go.get() == m_Owner || go->GetTransform() == m_Target) continue;
+            const auto& colliders = m_Owner->GetScene()->GetAllColliders();
 
-                Transform* goTransform = go->GetTransform();
-                {
-                    Transform* ancestor = goTransform;
-                    bool isPlayerOrDescendant = false;
-                    while (ancestor) {
-                        if (ancestor == m_Target) {
-                            isPlayerOrDescendant = true;
-                            break;
-                        }
-                        ancestor = ancestor->GetParent();
-                    }
-                    if (isPlayerOrDescendant) continue;
-                }
-
-                auto* collider = go->GetComponent<ColliderComponent>();
-                if (!collider || collider->IsTrigger) continue;
-
-                Ray ray { targetPos, direction };
-                RaycastResult hit;
-                if (PhysicsSystem::RaycastCollider(ray, m_Distance, collider, goTransform, hit)) {
-                    float safeDist = std::max(0.5f, hit.Distance - 0.2f);
-                    minHitDist = std::min(safeDist, minHitDist);
-                }
+            if (PhysicsSystem::Raycast(ray, hit, colliders, options)) {
+                return std::max(0.5f, hit.Distance - 0.2f);
             }
 
-            return minHitDist;
+            return m_Distance;
         }
 
         Transform* m_Target = nullptr;

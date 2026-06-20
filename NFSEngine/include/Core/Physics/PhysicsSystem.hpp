@@ -4,6 +4,7 @@
 #include "Components/Transform.hpp"
 #include "Core/Physics/PhysicsPrimitives.hpp"
 #include "Core/Physics/CollisionDetector.hpp"
+#include "Core/Tags.hpp"
 #include "Core/DeltaTime.hpp"
 #include <vector>
 #include <set>
@@ -23,6 +24,12 @@ namespace NFSEngine {
         }
     };
 
+    struct RaycastOptions {
+        float MaxDistance = 1000.0f;
+        bool IgnoreTriggers = true;
+        uint32_t TagsToIgnore = Tags::Untagged;
+    };
+
     class PhysicsSystem {
     public:
         static inline glm::vec3 Gravity = glm::vec3(0.0f, -25.0f, 0.0f);
@@ -40,9 +47,10 @@ namespace NFSEngine {
         static Capsule GetCapsule(Transform* transform, CapsuleCollider3DComponent* collider);
         static Cylinder GetCylinder(Transform* transform, CylinderCollider3DComponent* collider);
         static AABB GetColliderBounds(ColliderComponent* col);
-
         static bool RaycastCollider(const Ray& ray, float maxDistance, ColliderComponent* collider, Transform* transform,
                                     RaycastResult& outResult);
+        static bool Raycast(const Ray& ray, RaycastResult& outResult, const std::vector<ColliderComponent*>& allColliders,
+                            const RaycastOptions& options = RaycastOptions());
 
     private:
         static constexpr float CELL_SIZE = 20.0f;
