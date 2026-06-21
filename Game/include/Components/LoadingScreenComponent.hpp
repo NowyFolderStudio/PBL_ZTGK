@@ -6,8 +6,10 @@
 #include <algorithm>
 
 #include "Components/Component.hpp"
+#include "Core/Text.hpp"
 #include "UI/UIComponents.hpp"
 #include "UI/UIFactory.hpp"
+#include "UI/PLMpegVideoDecoder.hpp"
 
 class LoadingScreenComponent : public NFSEngine::Component {
 public:
@@ -34,16 +36,9 @@ public:
     void SetVisible(bool visible) { m_IsVisible = visible; }
 
     void UpdateProgress(float progress) {
-        // 1. Zmiana szerokości - używamy bezpośrednio pola Transform!
         if (m_ProgressBarFill) {
-            m_ProgressBarFill->Transform.Width = m_MaxBarWidth * progress;
-        }
-
-        // 2. Aktualizacja tekstu (tutaj HasComponent jest prawidłowe, bo to osobny dodawany komponent)
-        if (m_ProgressText && m_ProgressText->HasComponent<NFSEngine::TextComponent>()) {
-            auto* textComp = m_ProgressText->GetComponent<NFSEngine::TextComponent>();
-            int percent = std::min(static_cast<int>(progress * 100.0f), 100);
-            textComp->TextString = "LOADING... " + std::to_string(percent) + "%";
+            float clampedProgress = std::clamp(progress, 0.0f, 1.0f);
+            m_ProgressBarFill->Transform.Width = m_MaxBarWidth * clampedProgress;
         }
     }
 
@@ -60,8 +55,39 @@ protected:
     void OnStart() override { }
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
-        if (m_Canvas && m_IsVisible) {
+        if (!m_IsVisible) return;
+
+        if (m_Canvas) {
             m_Canvas->Update();
+        }
+
+        if (m_VideoDecoder && m_VideoTexture) {
+            m_VideoAccumulator += deltaTime.GetSeconds();
+            float frameTime = 1.0f / static_cast<float>(m_VideoDecoder->GetFPS());
+
+            if (m_VideoAccumulator >= frameTime) {
+                if (m_VideoDecoder->ReadNextFrame()) {
+                    uint32_t dataSize = m_VideoDecoder->GetWidth() * m_VideoDecoder->GetHeight() * 3;
+                    m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
+                }
+                m_VideoAccumulator -= frameTime;
+            }
+        }
+        m_TextAnimTimer += deltaTime.GetSeconds();
+        if (m_TextAnimTimer >= 0.5f) {
+            m_TextAnimTimer -= 0.5f;
+
+            m_DotCount++;
+            if (m_DotCount > 3) {
+                m_DotCount = 1;
+            }
+
+            if (m_ProgressText && m_ProgressText->HasComponent<NFSEngine::TextComponent>()) {
+                auto* textComp = m_ProgressText->GetComponent<NFSEngine::TextComponent>();
+
+                std::string dots(m_DotCount, '.');
+                textComp->TextString = "Loading" + dots;
+            }
         }
     }
 
@@ -70,48 +96,66 @@ private:
         float screenWidth = 1920.0f;
         float screenHeight = 1080.0f;
 
-        m_MaxBarWidth = 800.0f;
-        float barHeight = 40.0f;
+        m_MaxBarWidth = screenWidth;
+
+        float barHeight = 15.0f;
 
         float centerX = screenWidth / 2.0f;
-        float barY = 500.0f;
 
-        // 1. Główne tło
+        float barY = screenHeight - (barHeight / 2.0f);
+
+        m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
+        if (m_VideoDecoder->OpenFile("assets/videos/loading.mpg")) {
+            NFSEngine::TextureParameters texParams;
+            texParams.Channels = 3;
+            texParams.GenerateMipmaps = false;
+            texParams.WrapS = NFSEngine::TextureWrap::Clamp;
+            texParams.WrapT = NFSEngine::TextureWrap::Clamp;
+            texParams.sRGB = false;
+
+            m_VideoTexture = NFSEngine::Texture::Create(m_VideoDecoder->GetWidth(), m_VideoDecoder->GetHeight(), texParams);
+            if (m_VideoTexture && m_VideoDecoder->ReadNextFrame()) {
+                uint32_t dataSize = m_VideoDecoder->GetWidth() * m_VideoDecoder->GetHeight() * 3;
+                m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
+            }
+        } else {
+            NFS_ERROR("[LoadingScreenComponent]: Can't load video!");
+        }
+
         NFSEngine::UI::ImageParameters bgParams;
         bgParams.position = glm::vec3(centerX, screenHeight / 2.0f, 0.1f);
-        bgParams.width = 4000.0f;
-        bgParams.height = 4000.0f;
-        bgParams.color = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
-        NFSEngine::UI::Image(*m_Canvas, bgParams);
+        bgParams.width = screenWidth;
+        bgParams.height = -screenHeight;
+        bgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-        // 2. Tło paska (wycentrowane)
-        NFSEngine::UI::ImageParameters barBgParams;
-        barBgParams.position = glm::vec3(centerX, barY, 0.2f);
-        barBgParams.width = m_MaxBarWidth;
-        barBgParams.height = barHeight;
-        barBgParams.color = glm::vec4(0.2f, 0.2f, 0.2f, 1.0f);
-        NFSEngine::UI::Image(*m_Canvas, barBgParams);
+        if (m_VideoTexture) {
+            bgParams.texture = m_VideoTexture;
+        } else {
+            bgParams.color = glm::vec4(0.05f, 0.05f, 0.05f, 1.0f);
+        }
 
-        // 3. Wypełnienie paska (startuje jako wyzerowane)
-        float leftEdgeX = centerX - (m_MaxBarWidth / 2.0f);
+        m_VideoBackground = &NFSEngine::UI::Image(*m_Canvas, bgParams);
+        float leftEdgeX = 0.0f;
 
         NFSEngine::UI::ImageParameters barFillParams;
         barFillParams.position = glm::vec3(leftEdgeX, barY, 0.3f);
-        barFillParams.width = 0.0f; // Bezpieczne 0, zadziała dzięki prawidłowemu Pivotowi
+        barFillParams.width = 0.0f;
         barFillParams.height = barHeight;
         barFillParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_ProgressBarFill = &NFSEngine::UI::Image(*m_Canvas, barFillParams);
 
-        // Ustawienie pivota bezpośrednio na zmiennej Transform - punkt zerowy na osi X
         m_ProgressBarFill->Transform.Pivot.x = 0.0f;
 
-        // 4. Tekst informacyjny
         NFSEngine::UI::LabelParameters textParams;
-        textParams.position = glm::vec3(centerX, barY + 60.0f, 0.4f);
-        textParams.text = "LOADING... 0%";
+        float textX = screenWidth - 225.0f;
+
+        textParams.position = glm::vec3(textX, barY - 30.0f, 0.4f);
+        textParams.font = new NFSEngine::Text("assets/fonts/Super-Pandora.ttf");
+        textParams.text = "Loading...";
         textParams.scale = 1.0f;
         textParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_ProgressText = &NFSEngine::UI::Label(*m_Canvas, textParams);
+        m_ProgressText->Transform.Pivot = glm::vec2(0, 0);
 
         m_UIInitialized = true;
     }
@@ -123,4 +167,12 @@ private:
 
     NFSEngine::UIObject* m_ProgressBarFill = nullptr;
     NFSEngine::UIObject* m_ProgressText = nullptr;
+
+    std::unique_ptr<NFSEngine::PLMpegDecoder> m_VideoDecoder;
+    std::shared_ptr<NFSEngine::Texture> m_VideoTexture;
+    float m_VideoAccumulator = 0.0f;
+    NFSEngine::UIObject* m_VideoBackground = nullptr;
+
+    float m_TextAnimTimer = 0.0f;
+    int m_DotCount = 3;
 };

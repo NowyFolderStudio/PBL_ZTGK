@@ -409,6 +409,7 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
         if (m_LoadingScreen) {
             m_LoadingScreen->UpdateProgress(m_SceneLoader.GetProgress());
+            m_LoadingScreen->Update(deltaTime);
         }
 
         return;

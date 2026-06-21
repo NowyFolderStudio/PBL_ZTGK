@@ -44,6 +44,7 @@ set(IMGUI_SOURCES
 set_source_files_properties(
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
+    thirdparty/pl_mpeg/pl_mpeg_impl.cpp
     PROPERTIES SKIP_PRECOMPILE_HEADERS ON
     )
 
@@ -52,6 +53,7 @@ add_library(${PROJECT_NAME} STATIC
     ${IMGUI_SOURCES}
     thirdparty/glad/src/glad.c
     thirdparty/stb/stb_impl.cpp
+    thirdparty/pl_mpeg/pl_mpeg_impl.cpp
 )
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
@@ -76,6 +78,7 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC
     thirdparty/tinygltf
     thirdparty/stb
     thirdparty/spdlog/include
+    thirdparty/pl_mpeg
 )
 
 # Linking spdlog to the engine (spdlog v1.x)

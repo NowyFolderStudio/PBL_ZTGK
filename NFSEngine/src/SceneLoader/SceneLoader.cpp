@@ -183,7 +183,7 @@ namespace NFSEngine {
 
         if (m_CurrentState == LoadingState::InstantiatingObjects) {
             int objectsProcessedThisFrame = 0;
-            const int maxObjectsPerFrame = 5;
+            const int maxObjectsPerFrame = 1;
 
             while (!m_ObjectsToLoadQueue.empty() && objectsProcessedThisFrame < maxObjectsPerFrame) {
                 auto j_obj = m_ObjectsToLoadQueue.front();

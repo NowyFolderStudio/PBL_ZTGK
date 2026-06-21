@@ -8,8 +8,10 @@ namespace NFSEngine {
 
     static GLenum NFSTextureWrapToGL(TextureWrap wrap) {
         switch (wrap) {
-        case TextureWrap::Repeat: return GL_REPEAT;
-        case TextureWrap::Clamp:  return GL_CLAMP_TO_EDGE;
+        case TextureWrap::Repeat:
+            return GL_REPEAT;
+        case TextureWrap::Clamp:
+            return GL_CLAMP_TO_EDGE;
         }
         return GL_REPEAT;
     }
@@ -17,8 +19,7 @@ namespace NFSEngine {
     static GLenum NFSTextureFilterToGL(TextureFilter filter, bool isMinFilter, bool mipmaps) {
         if (filter == TextureFilter::Linear) {
             return (isMinFilter && mipmaps) ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR;
-        }
-        else {
+        } else {
             return (isMinFilter && mipmaps) ? GL_NEAREST_MIPMAP_NEAREST : GL_NEAREST;
         }
     }
@@ -42,8 +43,7 @@ namespace NFSEngine {
                     internalFormat = GL_RGB16F;
                     dataFormat = GL_RGB;
                     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-                }
-                else if (channels == 4) {
+                } else if (channels == 4) {
                     internalFormat = GL_RGBA16F;
                     dataFormat = GL_RGBA;
                 }
@@ -56,7 +56,8 @@ namespace NFSEngine {
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, NFSTextureWrapToGL(parameters.WrapS));
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, NFSTextureWrapToGL(parameters.WrapT));
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                                NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, NFSTextureFilterToGL(parameters.MagFilter, false, false));
 
                 glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_FLOAT, data);
@@ -64,13 +65,11 @@ namespace NFSEngine {
                 glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
                 stbi_image_free(data);
-            }
-            else {
+            } else {
                 NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD_HDR: {}", path);
                 NFS_CORE_ERROR("STB REASON: {}", stbi_failure_reason());
             }
-        }
-        else {
+        } else {
             stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
             if (data) {
@@ -81,13 +80,11 @@ namespace NFSEngine {
                 if (channels == 1) {
                     internalFormat = GL_R8;
                     dataFormat = GL_RED;
-                }
-                else if (channels == 3) {
+                } else if (channels == 3) {
                     internalFormat = parameters.sRGB ? GL_SRGB8 : GL_RGB8;
                     dataFormat = GL_RGB;
                     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-                }
-                else if (channels == 4) {
+                } else if (channels == 4) {
                     internalFormat = parameters.sRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8;
                     dataFormat = GL_RGBA;
                 }
@@ -100,7 +97,8 @@ namespace NFSEngine {
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, NFSTextureWrapToGL(parameters.WrapS));
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, NFSTextureWrapToGL(parameters.WrapT));
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                                NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, NFSTextureFilterToGL(parameters.MagFilter, false, false));
 
                 glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, m_Width, m_Height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
@@ -108,8 +106,7 @@ namespace NFSEngine {
                 glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
                 stbi_image_free(data);
-            }
-            else {
+            } else {
                 NFS_CORE_ERROR("ERROR::TEXTURE::FAILED_TO_LOAD: {}", path);
                 NFS_CORE_ERROR("STB REASON: {}", stbi_failure_reason());
             }
@@ -118,16 +115,26 @@ namespace NFSEngine {
 
     OpenGLTexture::OpenGLTexture(uint32_t width, uint32_t height, const TextureParameters& parameters)
         : m_Width(width)
-        , m_Height(height) {
-        m_InternalFormat = GL_RGBA8;
-        m_DataFormat = GL_RGBA;
+        , m_Height(height)
+        , m_Parameters(parameters) {
+
+        if (parameters.Channels == 3) {
+            m_InternalFormat = parameters.sRGB ? GL_SRGB8 : GL_RGB8;
+            m_DataFormat = GL_RGB;
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+        } else {
+            m_InternalFormat = parameters.sRGB ? GL_SRGB8_ALPHA8 : GL_RGBA8;
+            m_DataFormat = GL_RGBA;
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+        }
 
         glGenTextures(1, &m_RendererID);
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, NFSTextureWrapToGL(parameters.WrapS));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, NFSTextureWrapToGL(parameters.WrapT));
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                        NFSTextureFilterToGL(parameters.MinFilter, true, parameters.GenerateMipmaps));
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, NFSTextureFilterToGL(parameters.MagFilter, false, false));
 
         glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat, GL_UNSIGNED_BYTE, nullptr);
@@ -144,6 +151,18 @@ namespace NFSEngine {
 
         glBindTexture(GL_TEXTURE_2D, m_RendererID);
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
+    }
+
+    void OpenGLTexture::UpdateData(const void* data, uint32_t width, uint32_t height) {
+        if (!data) return; // Bezpieczeństwo
+
+        glBindTexture(GL_TEXTURE_2D, m_RendererID);
+
+        // Nadpisujemy zaalokowaną wcześniej pamięć VRAM nowymi pikselami.
+        // Jest to operacja znacznie szybsza niż glTexImage2D.
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void OpenGLTexture::Bind(uint32_t slot) const {
