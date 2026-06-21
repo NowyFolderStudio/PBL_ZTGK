@@ -147,12 +147,12 @@ private:
         m_ProgressBarFill->Transform.Pivot.x = 0.0f;
 
         NFSEngine::UI::LabelParameters textParams;
-        float textX = screenWidth - 225.0f;
+        float textX = screenWidth - 425.0f;
 
         textParams.position = glm::vec3(textX, barY - 30.0f, 0.4f);
-        textParams.font = new NFSEngine::Text("assets/fonts/Super-Pandora.ttf");
+        textParams.font = new NFSEngine::Text("assets/fonts/Super-Pandora.ttf", 72);
         textParams.text = "Loading...";
-        textParams.scale = 1.0f;
+        textParams.scale = 1.33f;
         textParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_ProgressText = &NFSEngine::UI::Label(*m_Canvas, textParams);
         m_ProgressText->Transform.Pivot = glm::vec2(0, 0);
