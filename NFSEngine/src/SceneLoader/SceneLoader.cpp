@@ -2,6 +2,7 @@
 #include <memory>
 #include <unordered_map>
 #include <fstream>
+#include <chrono>
 
 #include "Components/Transform.hpp"
 #include "SceneLoader/SceneLoader.hpp"
@@ -182,10 +183,10 @@ namespace NFSEngine {
         }
 
         if (m_CurrentState == LoadingState::InstantiatingObjects) {
-            int objectsProcessedThisFrame = 0;
-            const int maxObjectsPerFrame = 1;
+            auto startTime = std::chrono::high_resolution_clock::now();
+            const float timeBudgetMs = 10.0f;
 
-            while (!m_ObjectsToLoadQueue.empty() && objectsProcessedThisFrame < maxObjectsPerFrame) {
+            while (!m_ObjectsToLoadQueue.empty()) {
                 auto j_obj = m_ObjectsToLoadQueue.front();
                 m_ObjectsToLoadQueue.pop();
 
@@ -208,7 +209,12 @@ namespace NFSEngine {
                 }
 
                 m_InstanceMap[id] = go;
-                objectsProcessedThisFrame++;
+                auto currentTime = std::chrono::high_resolution_clock::now();
+                float elapsedMs = std::chrono::duration<float, std::milli>(currentTime - startTime).count();
+
+                if (elapsedMs >= timeBudgetMs) {
+                    break;
+                }
             }
 
             if (m_ObjectsToLoadQueue.empty()) {
