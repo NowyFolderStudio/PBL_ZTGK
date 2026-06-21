@@ -268,7 +268,7 @@ void main() {
     kD_dir *= 1.0 - metallic;    
 
     float NdotL_dir = max(dot(N, L_dir), 0.0);
-    float shadow = ShadowCalculation(FragPosLightSpace, N, L_dir);
+    float shadow = ShadowCalculation(FragPosLightSpace, N, L_dir) * 0.5;
 
     Lo += (1.0 - shadow) * (kD_dir * albedo / PI + specular_dir) * radiance_dir * NdotL_dir;
 

@@ -65,6 +65,7 @@
 #include "SceneLoader/ConsoleButtonLoader.hpp"
 #include "SceneLoader/EnemyComponentLoader.hpp"
 #include "SceneLoader/DestructibleComponentLoader.hpp"
+#include "SceneLoader/CDBoxComponentLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -111,7 +112,7 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<ConsoleButtonLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<EnemyComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<DestructibleComponentLoader>());
-
+    m_SceneLoader.RegisterLoader(std::make_unique<CDBoxComponentLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -307,16 +308,11 @@ void LayerExample::OnAttach() {
 
     auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
     spinningCD->GetTransform()->SetScale(glm::vec3(18.0f, 18.0f, 18.0f));
-    spinningCD->GetTransform()->SetPosition(glm::vec3 { -25.0f, 20.0f, 50.0f });
-    auto& colliderCD = spinningCD->AddComponent<CylinderCollider3DComponent>();
-    colliderCD.Height = 0.2f;
+    spinningCD->GetTransform()->SetPosition(glm::vec3{ -25.0f, 20.0f, 50.0f });
 
     auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
     auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
     cdModelComp.AddLOD(cdModel, 100000.0f);
-
-    auto& rotPlatformComp = spinningCD->AddComponent<RotatingPlatform>();
-    rotPlatformComp.RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
 
     // CDPlayer
 
