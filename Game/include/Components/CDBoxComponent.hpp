@@ -16,6 +16,7 @@ public:
 
     bool IsPlaying = true;
 
+    glm::vec3 ButtonPressOffset = glm::vec3(0.0f, -0.2f, 0.0f);
     glm::vec3 EjectOffset = glm::vec3(-15.0f, 0.0f, 0.0f);
     float EjectDuration = 0.5f;
 
@@ -40,6 +41,18 @@ protected:
 
         if (TargetCD) {
             m_InitialPosition = TargetCD->GetTransform()->GetPosition();
+
+            auto* rotPlatform = TargetCD->GetComponent<RotatingPlatform>();
+            if (!rotPlatform) {
+                rotPlatform = &TargetCD->AddComponent<RotatingPlatform>();
+            }
+            rotPlatform->RotationSpeed = glm::vec3(0.0f, 90.0f, 0.0f);
+
+            auto* cdCollider = TargetCD->GetComponent<NFSEngine::CylinderCollider3DComponent>();
+            if (!cdCollider) {
+                cdCollider = &TargetCD->AddComponent<NFSEngine::CylinderCollider3DComponent>();
+                cdCollider->Height = 0.2f;
+            }
         }
 
         if (TargetButton) {
@@ -105,7 +118,7 @@ private:
             auto tf = TargetButton->GetTransform();
             glm::vec3 currentPos = tf->GetPosition();
 
-            currentPos.y -= 0.2f;
+            currentPos -= ButtonPressOffset;
             tf->SetPosition(currentPos);
         }
     }

@@ -7,11 +7,13 @@ layout (location = 3) in vec3 aTangent;
 out vec2 TexCoord;
 out vec3 Normal;
 out vec3 FragPos;
+out vec4 FragPosLightSpace;
 out mat3 TBN;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
 
 uniform float u_MusicTime;
 uniform float u_ScaleStrengthY;
@@ -27,7 +29,6 @@ void main() {
 
     vec3 localPos = aPos;
 
-    // Skalowanie (Twoje poprawki dla osi Z jako wysokości)
     float waveScaleY = wave * u_ScaleStrengthY;
     localPos.z += waveScaleY * (localPos.z + 1.0); 
 
@@ -35,25 +36,21 @@ void main() {
     localPos.x *= scaleXZ;
     localPos.y *= scaleXZ;
 
-    // --- POPRAWIONY TWIST ---
-    // Siła skrętu zależy teraz od osi Z (wysokości)
     float twistAngle = wave * u_TwistStrength * (localPos.z + 1.0);
     float s = sin(twistAngle);
     float c = cos(twistAngle);
 
     vec3 twistedPos = localPos;
-    // Obracamy płaszczyznę poziimą (X oraz Y) wokół osi Z
     twistedPos.x = localPos.x * c - localPos.y * s;
     twistedPos.y = localPos.x * s + localPos.y * c;
 
-    // --- POPRAWIONY BEND ---
-    // Siła wygięcia rośnie wraz z osią Z (wysokością)
     float bendOffset = pow(max(0.0, twistedPos.z + 1.0), 2.0) * wave * u_BendStrength;
-    // Przesuwamy model wzdłuż osi X
     vec3 finalLocalPos = twistedPos + vec3(bendOffset, 0.0, 0.0);
 
     FragPos = vec3(model * vec4(finalLocalPos, 1.0));
     TexCoord = aTexCoord;
+
+    FragPosLightSpace = lightSpaceMatrix * vec4(FragPos, 1.0);
 
     mat3 normalMatrix = mat3(transpose(inverse(model)));
     Normal = normalMatrix * aNormal;

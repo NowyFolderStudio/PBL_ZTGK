@@ -26,15 +26,15 @@ void main()
     localPos.x *= scaleXZ;
     localPos.y *= scaleXZ;
 
-    float twistAngle = wave * u_TwistStrength * (localPos.y + 1.0);
+    float twistAngle = wave * u_TwistStrength * (localPos.z + 1.0);
     float s = sin(twistAngle);
     float c = cos(twistAngle);
 
     vec3 twistedPos = localPos;
-    twistedPos.x = localPos.x * c - localPos.z * s;
-    twistedPos.z = localPos.x * s + localPos.z * c;
+    twistedPos.x = localPos.x * c - localPos.y * s;
+    twistedPos.y = localPos.x * s + localPos.y * c;
 
-    float bendOffset = pow(max(0.0, twistedPos.y + 1.0), 2.0) * wave * u_BendStrength;
+    float bendOffset = pow(max(0.0, twistedPos.z + 1.0), 2.0) * wave * u_BendStrength;
     vec3 finalLocalPos = twistedPos + vec3(bendOffset, 0.0, 0.0);
 
     gl_Position = lightSpaceMatrix * model * vec4(finalLocalPos, 1.0);
