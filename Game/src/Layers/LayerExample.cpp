@@ -396,11 +396,6 @@ void LayerExample::FinalizeSceneSetup() {
         }
     }
 
-    auto* testFloor = m_Scene->CreateGameObject("TestFloor");
-    testFloor->GetTransform()->SetPosition(glm::vec3(0.0f, -5.0f, 0.0f)); // Ustaw Y poniżej wrogów
-    testFloor->GetTransform()->SetScale(glm::vec3(500.0f, 1.0f, 500.0f));
-    testFloor->AddComponent<BoxCollider3DComponent>();
-
     m_Scene->MarkPhysicsDirty();
 }
 
