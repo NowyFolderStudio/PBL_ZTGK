@@ -186,9 +186,6 @@ void LayerZmoreq::OnAttach() {
         auto& basicEnemyComp = enemy->AddComponent<BasicEnemy>(); // Myśli i atakuje
         basicEnemyComp.PatrolPointA = startPos;
         basicEnemyComp.PatrolPointB = endPos;
-        basicEnemyComp.MovementSpeed = 2.0f;
-        basicEnemyComp.ChaseSpeed = 6.0f;
-        basicEnemyComp.DetectionRadius = 7.0f;
     };
 
     // Funkcja tworząca skrzynkę (tylko zniszczalna, brak myślenia)
@@ -203,7 +200,6 @@ void LayerZmoreq::OnAttach() {
         crate->AddComponent<RigidBody3DComponent>(); // Pozwala się odpychać (Knockback z DestructibleComponent)
 
         auto& destComp = crate->AddComponent<DestructibleComponent>();
-        destComp.MaxHealth = 1; // Rozpada się na jeden hit
     };
 
     // Spawnowanie 2 przeciwników

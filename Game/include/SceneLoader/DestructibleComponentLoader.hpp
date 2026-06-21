@@ -28,9 +28,16 @@ public:
 
                     if (propName == "MaxHealth") {
                         destComp.MaxHealth = std::stoi(propValue);
+                    } else if (propName == "SpawnParticlesOnDeath") {
+                        destComp.SpawnParticlesOnDeath = (propValue == "True" || propValue == "true");
                     }
                     break;
                 }
+
+                if (!targetObj->HasComponent<RigidBody3DComponent>()) {
+                    targetObj->AddComponent<RigidBody3DComponent>();
+                }
             }
         }
-    };
+    }
+};

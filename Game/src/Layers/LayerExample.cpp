@@ -63,6 +63,8 @@
 #include "SceneLoader/BounceComponentLoader.hpp"
 #include "SceneLoader/AuraPlatformLoader.hpp"
 #include "SceneLoader/ConsoleButtonLoader.hpp"
+#include "SceneLoader/EnemyComponentLoader.hpp"
+#include "SceneLoader/DestructibleComponentLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -107,6 +109,9 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<AuraPlatformLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<OutlineParameterstLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<ConsoleButtonLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<EnemyComponentLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<DestructibleComponentLoader>());
+
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -390,6 +395,11 @@ void LayerExample::FinalizeSceneSetup() {
             wall->OnAwake();
         }
     }
+
+    auto* testFloor = m_Scene->CreateGameObject("TestFloor");
+    testFloor->GetTransform()->SetPosition(glm::vec3(0.0f, -5.0f, 0.0f)); // Ustaw Y poniżej wrogów
+    testFloor->GetTransform()->SetScale(glm::vec3(500.0f, 1.0f, 500.0f));
+    testFloor->AddComponent<BoxCollider3DComponent>();
 
     m_Scene->MarkPhysicsDirty();
 }
