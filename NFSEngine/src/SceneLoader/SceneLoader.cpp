@@ -138,14 +138,13 @@ namespace NFSEngine {
 
         NFS_CORE_INFO("Loading scene from file (Async): {0}", filepath);
 
-        // Wczytywanie pliku tekstowego na osobnym wątku (Brak OpenGL, czyste C++)
         m_JsonFuture = std::async(std::launch::async, [filepath]() {
             std::ifstream file(filepath);
             nlohmann::json j;
 
             if (!file.is_open()) {
                 NFS_CORE_ERROR("Can't open file: {0}", filepath);
-                return j; // Zwróci pusty JSON
+                return j;
             }
 
             try {
@@ -162,11 +161,9 @@ namespace NFSEngine {
         if (m_CurrentState == LoadingState::Idle) return;
 
         if (m_CurrentState == LoadingState::ParsingJSON) {
-            // Sprawdzamy, czy wątek poboczny skończył czytać plik
             if (m_JsonFuture.wait_for(std::chrono::seconds(0)) == std::future_status::ready) {
                 m_LoadedJsonDocument = m_JsonFuture.get();
 
-                // Zabezpieczenie przed pustym lub błędnym JSONem
                 if (m_LoadedJsonDocument.empty() || !m_LoadedJsonDocument.contains("game_objects")) {
                     NFS_CORE_ERROR("JSON file don't have 'game_objects' key or file read failed.");
                     m_CurrentState = LoadingState::Idle; // Błąd ładowania, przerywamy
@@ -175,7 +172,6 @@ namespace NFSEngine {
 
                 NFS_CORE_INFO("Found {0} GameObjects.", m_LoadedJsonDocument["game_objects"].size());
 
-                // Wrzucamy wszystko do kolejki
                 for (const auto& j_obj : m_LoadedJsonDocument["game_objects"]) {
                     m_ObjectsToLoadQueue.push(j_obj);
                 }
@@ -186,9 +182,8 @@ namespace NFSEngine {
         }
 
         if (m_CurrentState == LoadingState::InstantiatingObjects) {
-            // TIMER: Ograniczamy czas pracy, żeby nie zamrozić klatki!
             int objectsProcessedThisFrame = 0;
-            const int maxObjectsPerFrame = 5; // <-- DOSTOSUJ TĘ WARTOŚĆ (zależy od wydajności i wielkości modeli)
+            const int maxObjectsPerFrame = 5;
 
             while (!m_ObjectsToLoadQueue.empty() && objectsProcessedThisFrame < maxObjectsPerFrame) {
                 auto j_obj = m_ObjectsToLoadQueue.front();
@@ -200,7 +195,6 @@ namespace NFSEngine {
                 auto* go = m_TargetScene->CreateGameObject(name);
                 Transform* t = go->GetTransform();
 
-                // Ustawianie transformacji
                 auto pos = j_obj["transform"]["position"];
                 auto rot = j_obj["transform"]["rotation"];
                 auto scl = j_obj["transform"]["scale"];
@@ -240,9 +234,8 @@ namespace NFSEngine {
 
             NFS_CORE_INFO("Loading success!");
 
-            // Zwalniamy pamięć z JSON-a, ponieważ nie będzie już potrzebny
             m_LoadedJsonDocument.clear();
-            m_CurrentState = LoadingState::Idle; // Koniec ładowania!
+            m_CurrentState = LoadingState::Idle;
         }
     }
 

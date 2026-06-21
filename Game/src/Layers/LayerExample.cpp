@@ -42,6 +42,7 @@
 #include "Core/GameObject.hpp"
 #include "Core/AudioManager.hpp"
 #include "Core/Scene.hpp"
+#include "Core/Tags.hpp"
 #include "Renderer/Animation.hpp"
 #include "Renderer/Shader.hpp"
 #include "Renderer/Texture.hpp"
@@ -170,6 +171,7 @@ void LayerExample::OnAttach() {
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(fallAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(wallJumpAnimation);
     playerModel->GetComponent<AnimatorComponent>()->AddAnimation(dashAnimation);
+    playerModel->SetTag(Tags::Player);
 
     NFSEngine::TextureParameters rampParams;
     rampParams.WrapS = NFSEngine::TextureWrap::Clamp;
@@ -285,7 +287,7 @@ void LayerExample::OnAttach() {
     pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
 
     // Spinning CD
-    
+
     auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
 
     auto matCD = std::make_shared<NFSEngine::Material>();
@@ -300,7 +302,7 @@ void LayerExample::OnAttach() {
 
     auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
     spinningCD->GetTransform()->SetScale(glm::vec3(18.0f, 18.0f, 18.0f));
-    spinningCD->GetTransform()->SetPosition(glm::vec3{ -25.0f, 20.0f, 50.0f });
+    spinningCD->GetTransform()->SetPosition(glm::vec3 { -25.0f, 20.0f, 50.0f });
     auto& colliderCD = spinningCD->AddComponent<CylinderCollider3DComponent>();
     colliderCD.Height = 0.2f;
 
@@ -318,8 +320,8 @@ void LayerExample::OnAttach() {
 
     auto* cDPlayer = m_Scene->CreateGameObject("CDPlayer");
     cDPlayer->GetTransform()->SetScale(glm::vec3(3.0f, 3.0f, 3.0f));
-    cDPlayer->GetTransform()->SetPosition(glm::vec3{ -90.0f, 20.0f, 50.0f });
-    cDPlayer->GetTransform()->SetRotation(glm::vec3{ -90.0f, 0.0f, 0.0f });
+    cDPlayer->GetTransform()->SetPosition(glm::vec3 { -90.0f, 20.0f, 50.0f });
+    cDPlayer->GetTransform()->SetRotation(glm::vec3 { -90.0f, 0.0f, 0.0f });
 
     auto& colliderCDPlayer = cDPlayer->AddComponent<BoxCollider3DComponent>();
 
@@ -331,7 +333,7 @@ void LayerExample::OnAttach() {
 
     auto* playButton = m_Scene->CreateGameObject("CDPlayer_Button");
 
-    playButton->GetTransform()->SetPosition(glm::vec3{ -50.0f, 22.0f, 50.0f });
+    playButton->GetTransform()->SetPosition(glm::vec3 { -50.0f, 22.0f, 50.0f });
 
     playButton->AddComponent<NFSEngine::CubeMesh>(m_ToonShader, matCDPlayer);
 
@@ -340,7 +342,7 @@ void LayerExample::OnAttach() {
 
     auto& cDBoxLogic = cDPlayer->AddComponent<CDBoxComponent>();
 
-    // Microphone test 
+    // Microphone test
 
     auto matMicrophone = std::make_shared<NFSEngine::Material>();
     matMicrophone->AlbedoMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_kolor2.png");
@@ -348,8 +350,8 @@ void LayerExample::OnAttach() {
     matMicrophone->MetallicMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_metal.png");
 
     auto* microphone = m_Scene->CreateGameObject("MicrophoneTest");
-    microphone->GetTransform()->SetPosition(glm::vec3{ -55.0f, 20.0f, 50.0f });
-    microphone->GetTransform()->SetRotation(glm::vec3{ -90.0f, 0.0f, 0.0f });
+    microphone->GetTransform()->SetPosition(glm::vec3 { -55.0f, 20.0f, 50.0f });
+    microphone->GetTransform()->SetRotation(glm::vec3 { -90.0f, 0.0f, 0.0f });
 
     auto micModel = std::make_shared<NFSEngine::Model>("assets/models/RetroMicrophone/retro_mikrofon.fbx");
     auto& micModelComp = microphone->AddComponent<NFSEngine::ModelComponent>(m_Shader, matMicrophone);

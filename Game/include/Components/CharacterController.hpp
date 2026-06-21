@@ -41,8 +41,8 @@ public:
     float WallJumpLockTime = 0.2f;
 
     // Dash settings
-    float DashSpeed = 25.0f;
-    float DashUpwardForce = 12.0f;
+    float DashSpeed = 35.0f;
+    float DashUpwardForce = 13.0f;
     float DashDuration = 0.4f;
     float DashGravityScale = 0.2f;
     float DashAirControl = 0.8f;
@@ -377,8 +377,10 @@ private:
             glm::vec3 dashDirection = GetMovementVector();
 
             if (glm::length(dashDirection) < 0.1f) {
-                dashDirection = glm::vec3(
-                    0.0f, 0.0f, 1.0f); // TODO: Refactor this when camera transform will have method to get forward direction
+                dashDirection = m_Owner->GetTransform()->GetForward();
+
+                dashDirection.y = 0.0f;
+                dashDirection = glm::normalize(dashDirection);
             }
 
             p_RigidBody->Velocity.x = dashDirection.x * DashSpeed;

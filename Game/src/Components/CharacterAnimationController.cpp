@@ -79,10 +79,10 @@ void CharacterAnimationController::ChangeAnimation() {
             m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
         } else if (m_HorizontalSpeed > 0) {
-            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f)); // Reset dla modelu
+            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
             m_Animator->PlayAnimationBlended(2, 0.075f, false);
         } else {
-            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f)); // Reset dla modelu
+            m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
             m_Animator->PlayAnimationBlended(3, 0.075f, false);
         }
     }
