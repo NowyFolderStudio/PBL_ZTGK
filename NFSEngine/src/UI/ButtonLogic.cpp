@@ -43,6 +43,11 @@ namespace NFSEngine {
                 }
                 State = ButtonState::Hovered;
             } else if (State != ButtonState::Pressed) {
+                if (State == ButtonState::Idle) {
+                    if (OnHoverEnter) {
+                        OnHoverEnter();
+                    }
+                }
                 State = ButtonState::Hovered;
             }
         } else {

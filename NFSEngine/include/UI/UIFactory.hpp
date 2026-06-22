@@ -31,6 +31,7 @@ namespace NFSEngine {
             float textScale = 1.0f;
 
             std::function<void()> onClick = nullptr;
+            std::function<void()> onHover = nullptr;
         };
 
         struct LabelParameters {

@@ -177,6 +177,7 @@ void MainMenuLayer::BuildUI() {
     startParams.textColor = normalColor;
     startParams.textScale = m_ButtonScales[0];
     startParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::Playing); };
+    startParams.onHover = [this]() { m_FocusedIndex = 0; };
 
     auto& startBtn = NFSEngine::UI::Button(*m_Canvas, startParams);
     m_ButtonTexts[0] = startBtn.GetComponent<NFSEngine::TextComponent>();
@@ -208,7 +209,7 @@ void MainMenuLayer::BuildUI() {
     optionsParams.textColor = normalColor;
     optionsParams.textScale = m_ButtonScales[1];
     optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
-
+    optionsParams.onHover = [this]() { m_FocusedIndex = 1; };
     auto& optionsBtn = NFSEngine::UI::Button(*m_Canvas, optionsParams);
     m_ButtonTexts[1] = optionsBtn.GetComponent<NFSEngine::TextComponent>();
     m_PierdolniczekPosition[1] = glm::vec2(315, currentY);
@@ -238,6 +239,7 @@ void MainMenuLayer::BuildUI() {
     quitParams.textColor = normalColor;
     quitParams.textScale = m_ButtonScales[2];
     quitParams.onClick = []() { NFSEngine::Application::Get().Close(); };
+    quitParams.onHover = [this]() { m_FocusedIndex = 2; };
 
     auto& quitBtn = NFSEngine::UI::Button(*m_Canvas, quitParams);
     m_ButtonTexts[2] = quitBtn.GetComponent<NFSEngine::TextComponent>();

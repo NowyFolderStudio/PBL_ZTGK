@@ -33,6 +33,7 @@ namespace NFSEngine {
 
             auto& logic = obj.AddComponent<ButtonLogic>();
             logic.OnClick = params.onClick;
+            logic.OnHoverEnter = params.onHover;
 
             logic.SetColor(params.color);
 
