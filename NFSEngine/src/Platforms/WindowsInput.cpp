@@ -6,6 +6,17 @@
 namespace NFSEngine {
     Input* Input::instance = nullptr;
 
+    void WindowsInput::SwitchDevice(InputDevice device) {
+        if (m_ActiveDevice != device) {
+            m_ActiveDevice = device;
+            if (device == InputDevice::Gamepad) {
+                Application::Get().GetWindow().SetCursorMode(CursorMode::Hidden);
+            } else {
+                Application::Get().GetWindow().SetCursorMode(CursorMode::Normal);
+            }
+        }
+    }
+
     void WindowsInput::UpdateStatesImpl() {
         auto window = static_cast<GLFWwindow*>(Application::Get().GetWindow().GetNativeWindow());
         if (!window) return;
@@ -15,14 +26,30 @@ namespace NFSEngine {
 
         for (int i = 32; i <= GLFW_KEY_LAST; i++) {
             m_Keys[i] = glfwGetKey(window, i) == GLFW_PRESS;
+            if (m_Keys[i] && !m_KeysLast[i]) SwitchDevice(InputDevice::KeyboardAndMouse);
         }
 
         for (int i = 0; i <= GLFW_MOUSE_BUTTON_LAST; i++) {
             m_Mouse[i] = glfwGetMouseButton(window, i) == GLFW_PRESS;
+            if (m_Mouse[i] && !m_MouseLast[i]) SwitchDevice(InputDevice::KeyboardAndMouse);
+        }
+
+        double xPos, yPos;
+        glfwGetCursorPos(window, &xPos, &yPos);
+        float currentX = static_cast<float>(xPos);
+        float currentY = static_cast<float>(yPos);
+
+        if (std::abs(currentX - m_LastMouseX) > 1.0f || std::abs(currentY - m_LastMouseY) > 1.0f) {
+            SwitchDevice(InputDevice::KeyboardAndMouse);
+            m_LastMouseX = currentX;
+            m_LastMouseY = currentY;
         }
 
         for (int c = 0; c < MAX_CONTROLLERS; c++) {
             std::memcpy(m_ControllerButtonsLast[c], m_ControllerButtons[c], sizeof(m_ControllerButtons[c]));
+
+            float previousAxes[CONTROLLER_AXIS_COUNT];
+            std::memcpy(previousAxes, m_ControllerAxes[c], sizeof(m_ControllerAxes[c]));
 
             int glfwId = GLFW_JOYSTICK_1 + c;
             m_ControllerPresent[c] = glfwJoystickIsGamepad(glfwId) == GLFW_TRUE;
@@ -32,15 +59,21 @@ namespace NFSEngine {
                 if (glfwGetGamepadState(glfwId, &state) == GLFW_TRUE) {
                     for (int b = 0; b < CONTROLLER_BUTTON_COUNT; b++) {
                         m_ControllerButtons[c][b] = state.buttons[b] == GLFW_PRESS;
+                        if (m_ControllerButtons[c][b] && !m_ControllerButtonsLast[c][b]) {
+                            SwitchDevice(InputDevice::Gamepad);
+                        }
                     }
                     for (int a = 0; a < CONTROLLER_AXIS_COUNT; a++) {
                         m_ControllerAxes[c][a] = state.axes[a];
+
+                        if (std::abs(state.axes[a]) > 0.25f && std::abs(state.axes[a] - previousAxes[a]) > 0.01f) {
+                            SwitchDevice(InputDevice::Gamepad);
+                        }
                     }
                 }
             }
         }
     }
-
     bool WindowsInput::IsKeyPressedImpl(KeyCode keycode) {
         if (keycode < 0 || keycode >= 512) return false;
         return m_Keys[keycode];

@@ -5,8 +5,15 @@
 
 namespace NFSEngine {
 
+    enum class InputDevice {
+        KeyboardAndMouse,
+        Gamepad
+    };
+
     class Input {
     public:
+        static InputDevice GetActiveInputDevice() { return instance->GetActiveInputDeviceImpl(); }
+
         static bool IsKeyPressed(KeyCode keycode) { return instance->IsKeyPressedImpl(keycode); }
         static bool IsKeyDown(KeyCode keycode) { return instance->IsKeyDownImpl(keycode); }
         static bool IsKeyUp(KeyCode keycode) { return instance->IsKeyUpImpl(keycode); }
@@ -20,16 +27,26 @@ namespace NFSEngine {
         static float GetMouseY() { return instance->GetMouseYImpl(); }
 
         static bool IsControllerPresent(int controllerId) { return instance->IsControllerPresentImpl(controllerId); }
-        static bool IsControllerButtonPressed(int controllerId, ControllerButton button) { return instance->IsControllerButtonPressedImpl(controllerId, button); }
-        static bool IsControllerButtonDown(int controllerId, ControllerButton button) { return instance->IsControllerButtonDownImpl(controllerId, button); }
-        static bool IsControllerButtonUp(int controllerId, ControllerButton button) { return instance->IsControllerButtonUpImpl(controllerId, button); }
-        static float GetControllerAxis(int controllerId, ControllerAxis axis) { return instance->GetControllerAxisImpl(controllerId, axis); }
+        static bool IsControllerButtonPressed(int controllerId, ControllerButton button) {
+            return instance->IsControllerButtonPressedImpl(controllerId, button);
+        }
+        static bool IsControllerButtonDown(int controllerId, ControllerButton button) {
+            return instance->IsControllerButtonDownImpl(controllerId, button);
+        }
+        static bool IsControllerButtonUp(int controllerId, ControllerButton button) {
+            return instance->IsControllerButtonUpImpl(controllerId, button);
+        }
+        static float GetControllerAxis(int controllerId, ControllerAxis axis) {
+            return instance->GetControllerAxisImpl(controllerId, axis);
+        }
 
         static void UpdateStates() { instance->UpdateStatesImpl(); }
 
         virtual ~Input() = default;
 
     protected:
+        virtual InputDevice GetActiveInputDeviceImpl() = 0;
+
         virtual bool IsKeyPressedImpl(KeyCode keycode) = 0;
         virtual bool IsKeyDownImpl(KeyCode keycode) = 0;
         virtual bool IsKeyUpImpl(KeyCode keycode) = 0;

@@ -65,12 +65,22 @@ protected:
             m_VideoAccumulator += deltaTime.GetSeconds();
             float frameTime = 1.0f / static_cast<float>(m_VideoDecoder->GetFPS());
 
-            if (m_VideoAccumulator >= frameTime) {
+            int framesDecodedThisTick = 0;
+
+            while (m_VideoAccumulator >= frameTime && framesDecodedThisTick < 2) {
                 if (m_VideoDecoder->ReadNextFrame()) {
-                    uint32_t dataSize = m_VideoDecoder->GetWidth() * m_VideoDecoder->GetHeight() * 3;
+                    uint32_t dataSize = m_VideoDecoder->GetDataSize();
                     m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
+
+                    m_VideoAccumulator -= frameTime;
+                    framesDecodedThisTick++;
+                } else {
+                    break;
                 }
-                m_VideoAccumulator -= frameTime;
+            }
+
+            if (m_VideoAccumulator > frameTime * 2.0f) {
+                m_VideoAccumulator = 0.0f;
             }
         }
         m_TextAnimTimer += deltaTime.GetSeconds();

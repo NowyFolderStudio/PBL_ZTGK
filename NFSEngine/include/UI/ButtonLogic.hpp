@@ -26,6 +26,7 @@ namespace NFSEngine {
         }
 
         std::function<void()> OnClick = nullptr;
+        std::function<void()> OnHoverEnter = nullptr;
 
         void Update();
     };

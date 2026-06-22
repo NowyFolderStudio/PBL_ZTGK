@@ -15,24 +15,28 @@ namespace NFSEngine {
         auto* rectTransform = &Owner->Transform;
         if (!rectTransform) return;
 
-        float physicalWidth = (float)NFSEngine::Application::Get().GetConfig().WindowWidth;
-        float physicalHeight = (float)NFSEngine::Application::Get().GetConfig().WindowHeight;
+        bool isHovered = false;
 
-        float virtualWidth = 1920.0f;
-        float virtualHeight = 1080.0f;
+        if (Input::GetActiveInputDevice() == InputDevice::KeyboardAndMouse) {
+            float physicalWidth = (float)NFSEngine::Application::Get().GetConfig().WindowWidth;
+            float physicalHeight = (float)NFSEngine::Application::Get().GetConfig().WindowHeight;
 
-        float rawMouseX = NFSEngine::Input::GetMouseX();
-        float rawMouseY = NFSEngine::Input::GetMouseY();
+            float virtualWidth = 1920.0f;
+            float virtualHeight = 1080.0f;
 
-        float uiMouseX = (rawMouseX / physicalWidth) * virtualWidth;
-        float uiMouseY = (rawMouseY / physicalHeight) * virtualHeight;
+            float rawMouseX = NFSEngine::Input::GetMouseX();
+            float rawMouseY = NFSEngine::Input::GetMouseY();
 
-        float left = rectTransform->Position.x - rectTransform->Pivot.x * rectTransform->Width;
-        float right = rectTransform->Position.x + (1.0f - rectTransform->Pivot.x) * rectTransform->Width;
-        float top = rectTransform->Position.y - rectTransform->Pivot.y * rectTransform->Height;
-        float bottom = rectTransform->Position.y + (1.0f - rectTransform->Pivot.y) * rectTransform->Height;
+            float uiMouseX = (rawMouseX / physicalWidth) * virtualWidth;
+            float uiMouseY = (rawMouseY / physicalHeight) * virtualHeight;
 
-        bool isHovered = uiMouseX >= left && uiMouseX <= right && uiMouseY >= top && uiMouseY <= bottom;
+            float left = rectTransform->Position.x - rectTransform->Pivot.x * rectTransform->Width;
+            float right = rectTransform->Position.x + (1.0f - rectTransform->Pivot.x) * rectTransform->Width;
+            float top = rectTransform->Position.y - rectTransform->Pivot.y * rectTransform->Height;
+            float bottom = rectTransform->Position.y + (1.0f - rectTransform->Pivot.y) * rectTransform->Height;
+
+            isHovered = uiMouseX >= left && uiMouseX <= right && uiMouseY >= top && uiMouseY <= bottom;
+        }
 
         if (isHovered) {
             if (Input::IsMouseButtonDown(Mouse::ButtonLeft)) {
@@ -43,6 +47,11 @@ namespace NFSEngine {
                 }
                 State = ButtonState::Hovered;
             } else if (State != ButtonState::Pressed) {
+                if (State == ButtonState::Idle) {
+                    if (OnHoverEnter) {
+                        OnHoverEnter();
+                    }
+                }
                 State = ButtonState::Hovered;
             }
         } else {

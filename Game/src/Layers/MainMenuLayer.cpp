@@ -17,7 +17,7 @@ void MainMenuLayer::OnAttach() {
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
     m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/main_menu_bg.mpg")) {
+    if (m_VideoDecoder->OpenFile("assets/videos/menu_lq.mpg")) {
         NFSEngine::TextureParameters texParams;
         texParams.Channels = 3;
         texParams.GenerateMipmaps = false;
@@ -49,15 +49,18 @@ void MainMenuLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         m_VideoAccumulator += deltaTime.GetSeconds();
         float frameTime = 1.0f / static_cast<float>(m_VideoDecoder->GetFPS());
 
-        int framesDecodedThisTick = 0; // Zabezpieczenie
+        int framesDecodedThisTick = 0;
 
         while (m_VideoAccumulator >= frameTime && framesDecodedThisTick < 2) {
             if (m_VideoDecoder->ReadNextFrame()) {
                 uint32_t dataSize = m_VideoDecoder->GetDataSize();
                 m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
+
+                m_VideoAccumulator -= frameTime;
+                framesDecodedThisTick++;
+            } else {
+                break;
             }
-            m_VideoAccumulator -= frameTime;
-            framesDecodedThisTick++;
         }
 
         if (m_VideoAccumulator > frameTime * 2.0f) {
@@ -177,6 +180,7 @@ void MainMenuLayer::BuildUI() {
     startParams.textColor = normalColor;
     startParams.textScale = m_ButtonScales[0];
     startParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::Playing); };
+    startParams.onHover = [this]() { m_FocusedIndex = 0; };
 
     auto& startBtn = NFSEngine::UI::Button(*m_Canvas, startParams);
     m_ButtonTexts[0] = startBtn.GetComponent<NFSEngine::TextComponent>();
@@ -208,7 +212,7 @@ void MainMenuLayer::BuildUI() {
     optionsParams.textColor = normalColor;
     optionsParams.textScale = m_ButtonScales[1];
     optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
-
+    optionsParams.onHover = [this]() { m_FocusedIndex = 1; };
     auto& optionsBtn = NFSEngine::UI::Button(*m_Canvas, optionsParams);
     m_ButtonTexts[1] = optionsBtn.GetComponent<NFSEngine::TextComponent>();
     m_PierdolniczekPosition[1] = glm::vec2(315, currentY);
@@ -238,6 +242,7 @@ void MainMenuLayer::BuildUI() {
     quitParams.textColor = normalColor;
     quitParams.textScale = m_ButtonScales[2];
     quitParams.onClick = []() { NFSEngine::Application::Get().Close(); };
+    quitParams.onHover = [this]() { m_FocusedIndex = 2; };
 
     auto& quitBtn = NFSEngine::UI::Button(*m_Canvas, quitParams);
     m_ButtonTexts[2] = quitBtn.GetComponent<NFSEngine::TextComponent>();

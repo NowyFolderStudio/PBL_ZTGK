@@ -15,7 +15,7 @@ void PauseLayer::OnAttach() {
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
     m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/pause_bg.mpg")) {
+    if (m_VideoDecoder->OpenFile("assets/videos/pause_lq.mpg")) {
         NFSEngine::TextureParameters texParams;
         texParams.Channels = 3;
         texParams.GenerateMipmaps = false;
@@ -55,9 +55,12 @@ void PauseLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
             if (m_VideoDecoder->ReadNextFrame()) {
                 uint32_t dataSize = m_VideoDecoder->GetDataSize();
                 m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
+
+                m_VideoAccumulator -= frameTime;
+                framesDecodedThisTick++;
+            } else {
+                break;
             }
-            m_VideoAccumulator -= frameTime;
-            framesDecodedThisTick++;
         }
 
         if (m_VideoAccumulator > frameTime * 2.0f) {
@@ -192,6 +195,7 @@ void PauseLayer::BuildUI() {
     resumeParams.textColor = normalColor;
     resumeParams.textScale = m_ButtonScales[0];
     resumeParams.onClick = []() { GameManager::Get().TogglePause(); };
+    resumeParams.onHover = [this]() { m_FocusedIndex = 0; };
 
     auto& resumeBtn = NFSEngine::UI::Button(*m_Canvas, resumeParams);
     m_ButtonTexts[0] = resumeBtn.GetComponent<NFSEngine::TextComponent>();
@@ -223,6 +227,7 @@ void PauseLayer::BuildUI() {
     optionsParams.textColor = normalColor;
     optionsParams.textScale = m_ButtonScales[1];
     optionsParams.onClick = []() { GameManager::Get().OpenOptions(); };
+    optionsParams.onHover = [this]() { m_FocusedIndex = 1; };
 
     auto& optionsBtn = NFSEngine::UI::Button(*m_Canvas, optionsParams);
     m_ButtonTexts[1] = optionsBtn.GetComponent<NFSEngine::TextComponent>();
@@ -254,7 +259,7 @@ void PauseLayer::BuildUI() {
     quitParams.textColor = normalColor;
     quitParams.textScale = m_ButtonScales[2];
     quitParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::MainMenu); };
-
+    quitParams.onHover = [this]() { m_FocusedIndex = 2; };
     auto& quitBtn = NFSEngine::UI::Button(*m_Canvas, quitParams);
     m_ButtonTexts[2] = quitBtn.GetComponent<NFSEngine::TextComponent>();
 
