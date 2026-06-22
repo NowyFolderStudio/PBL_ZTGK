@@ -26,6 +26,13 @@ namespace NFSEngine {
         void UpdateStatesImpl() override;
 
     private:
+        InputDevice m_ActiveDevice = InputDevice::KeyboardAndMouse;
+        float m_LastMouseX = 0.0f;
+        float m_LastMouseY = 0.0f;
+
+        void SwitchDevice(InputDevice newDevice);
+        InputDevice GetActiveInputDeviceImpl() override { return m_ActiveDevice; }
+
         bool m_Keys[512] = { false };
         bool m_KeysLast[512] = { false };
         bool m_Mouse[16] = { false };
