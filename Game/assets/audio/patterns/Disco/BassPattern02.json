@@ -1,0 +1,64 @@
+{
+  "patternName": "BassPattern02",
+  "audioFile": "assets/audio/sounds/bassslap02.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 2,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "G5",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 1,
+      "note": "D6",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "A#5",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 1,
+      "note": "D#5",
+      "length": 4
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "D#5",
+      "length": 4
+    },
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 1,
+      "note": "A#5",
+      "length": 4
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "C6",
+      "length": 4
+    },
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 1,
+      "note": "F5",
+      "length": 4
+    }
+  ]
+}

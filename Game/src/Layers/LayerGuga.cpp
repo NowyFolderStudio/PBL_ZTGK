@@ -24,7 +24,8 @@
 #include "Components/HUDComponent.hpp"
 #include "Components/Managers/DialogueManager.hpp"
 #include "Components/DialogueTriggerComponent.hpp"
-#include "Components/MusicDirector.hpp" // <--- DODANO
+#include "Components/MusicDirector.hpp"
+#include "Components/MusicTriggerComponent.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -200,6 +201,14 @@ void LayerGuga::OnAttach() {
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
 
     casetteBassComp.TracksToUnlock.push_back("Bass");
+
+    // zmiana traców test
+
+    auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
+    trigger1->GetTransform()->SetPosition(glm::vec3(50.0f, 1.0f, 0.0f));
+    trigger1->AddComponent<BoxCollider3DComponent>();
+    auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
+    triggerComp1.TargetTrack = "Bass";
 
 
     // --- KAMERA ---

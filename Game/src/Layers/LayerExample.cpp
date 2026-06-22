@@ -37,6 +37,7 @@
 #include "Components/RotatingPlatform.hpp"
 #include "Components/CDBoxComponent.hpp"
 #include "Components/MusicDirector.hpp"
+#include "Components/MusicTriggerComponent.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -279,6 +280,15 @@ void LayerExample::OnAttach() {
     casetteBassObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
     casetteBassComp.TracksToUnlock.push_back("Bass");
+
+    // zmiana traców test
+
+    auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
+    trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
+    trigger1->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
+    trigger1->AddComponent<BoxCollider3DComponent>();
+    auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
+    triggerComp1.TargetTrack = "Bass";
 
     // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
