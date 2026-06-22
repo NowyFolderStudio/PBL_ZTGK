@@ -46,8 +46,8 @@ class CoinComponentLoader : public NFSEngine::IComponentLoader {
                 auto model = std::make_shared<Model>("assets/models/Notes/nuta2.fbx");
                 auto model2 = std::make_shared<Model>("assets/models/Notes/nuta3.fbx");
                 auto model3 = std::make_shared<Model>("assets/models/Notes/nuta4.fbx");
-                modelObject->GetComponent<ModelComponent>()->AddLOD(model, 500);
-                modelObject->GetComponent<ModelComponent>()->AddLOD(model2, 4000);
+                modelObject->GetComponent<ModelComponent>()->AddLOD(model, 10);
+                modelObject->GetComponent<ModelComponent>()->AddLOD(model2, 50);
                 modelObject->GetComponent<ModelComponent>()->AddLOD(model3, 30000);
                 modelObject->GetTransform()->SetParent(targetObj->GetTransform());
                 modelObject->GetTransform()->Rotate({ -90, 0, 0 });

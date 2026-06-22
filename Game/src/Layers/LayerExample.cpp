@@ -507,8 +507,21 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("(Current) FPS: %.1f", currentFps);
     ImGui::Text("(Current) Frame Time: %.3f ms", currentFrameTime);
 
+    if (currentFps < m_MinFps) m_MinFps = currentFps;
+    if (currentFps > m_MaxFps) m_MaxFps = currentFps;
+
+    ImGui::Text("MIN FPS: %.1f | MAX FPS: %.1f", m_MinFps, m_MaxFps);
+
+    if (ImGui::Button("Reset Min/Max FPS")) {
+        m_MinFps = 9999.0f;
+        m_MaxFps = 0.0f;
+    }
+
     ImGui::Separator();
     ImGui::Text("GPU: %.3f ms", NFSEngine::Renderer::GetGPUTime());
+    float estimatedCPUTime = currentFrameTime - NFSEngine::Renderer::GetGPUTime();
+    if (estimatedCPUTime < 0) estimatedCPUTime = 0;
+    ImGui::Text("CPU Time (est.): %.3f ms", estimatedCPUTime);
     ImGui::Separator();
 
     bool cullingEnabled = NFSEngine::Renderer::IsFrustumCullingEnabled();
@@ -535,6 +548,21 @@ void LayerExample::OnImGuiRender() {
     ImGui::Text("Draw Calls: %u", stats.drawCalls);
     ImGui::Text("Triangle count: %u", stats.triangleCount);
     ImGui::Text("State changes: %u", stats.stateChanges);
+
+    m_TotalSessionTime += m_DeltaTime;
+    m_LogCooldown += m_DeltaTime;
+
+    if (m_LogCooldown > 0.25f) {
+        float gpuTime = NFSEngine::Renderer::GetGPUTime();
+        float estimatedCpu = m_DeltaTime.GetMilliseconds() - gpuTime;
+
+        std::cout << "timeStamp: " << m_TotalSessionTime << ", avgFrametime: " << averageFrameTime
+                  << ", currentFrameTime: " << m_DeltaTime.GetMilliseconds()
+                  << ", CPUtime: " << (estimatedCpu > 0 ? estimatedCpu : 0) << ", GPUtime: " << gpuTime
+                  << ", drawCalls: " << stats.drawCalls << ", triangleCount: " << stats.triangleCount << std::endl;
+
+        m_LogCooldown = 0.0f;
+    }
 
     static float values[90] = { 0 };
     static int values_offset = 0;

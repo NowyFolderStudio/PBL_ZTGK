@@ -71,6 +71,10 @@ private:
     std::unique_ptr<NFSEngine::EnvironmentMap> m_EnvironmentMap;
 
     MusicDirector* m_CachedMusicDirector = nullptr;
+    float m_MinFps = 9999.0f;
+    float m_MaxFps = 0.0f;
+    float m_LogCooldown = 0.0f;
+    float m_TotalSessionTime = 0.0f;
 
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;

@@ -62,6 +62,7 @@ private:
     }
 
     bool OnNotePlayed(NFSEngine::NotePlayedEvent& e) {
+        NFS_CORE_INFO("TrackPlayedEvent: {}", e.GetTrackName());
         if (e.GetTrackName() != TargetTrack) return false;
 
         Initialize();
