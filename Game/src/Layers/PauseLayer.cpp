@@ -15,7 +15,7 @@ void PauseLayer::OnAttach() {
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
     m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/pause_bg.mpg")) {
+    if (m_VideoDecoder->OpenFile("assets/videos/pause_lq.mpg")) {
         NFSEngine::TextureParameters texParams;
         texParams.Channels = 3;
         texParams.GenerateMipmaps = false;
@@ -55,9 +55,12 @@ void PauseLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
             if (m_VideoDecoder->ReadNextFrame()) {
                 uint32_t dataSize = m_VideoDecoder->GetDataSize();
                 m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
+
+                m_VideoAccumulator -= frameTime;
+                framesDecodedThisTick++;
+            } else {
+                break;
             }
-            m_VideoAccumulator -= frameTime;
-            framesDecodedThisTick++;
         }
 
         if (m_VideoAccumulator > frameTime * 2.0f) {
