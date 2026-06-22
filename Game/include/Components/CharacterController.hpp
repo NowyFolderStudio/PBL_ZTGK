@@ -12,6 +12,11 @@
 #include "Aura/AuraManager.hpp"
 #include "Managers/LivesManager.hpp"
 
+#include "Renderer/Material.hpp"
+#include "Renderer/Particle.hpp"
+#include "Renderer/Shader.hpp"
+#include "Renderer/Texture.hpp"
+
 class CharacterController : public NFSEngine::Component {
 public:
     CharacterController(NFSEngine::GameObject* owner)
@@ -55,6 +60,8 @@ public:
     float InvulnerabilityDuration = 2.0f;
     glm::vec3 SpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);
 
+    glm::vec3 m_OriginalModelScale = glm::vec3(0.03f, 0.03f, 0.03f);
+
     void Respawn() {
         m_Owner->GetTransform()->SetPosition(SpawnPosition);
         if (p_RigidBody) {
@@ -75,15 +82,55 @@ public:
         m_LastJumpedWallNormal = glm::vec3(0.0f);
         m_IsInvulnerable = true;
         m_InvulnerabilityTimer = InvulnerabilityDuration;
+
+        m_IsDead = false;
+        m_HasExploded = false;
+
+        if (m_Collider) {
+            m_Collider->IsTrigger = false;
+        }
+
+        int childCount = m_Owner->GetTransform()->GetChildCount();
+        for (int i = 0; i < childCount; ++i) {
+            auto* childObj = m_Owner->GetTransform()->GetChild(i)->GetOwner();
+            if (childObj->name == "PlayerModel") {
+                childObj->GetTransform()->SetScale(m_OriginalModelScale);
+            }
+        }
+
+        if (LivesManager::Instance && LivesManager::Instance->GetLives() <= 0) {
+            LivesManager::Instance->ResetLives();
+        }
+    }
+
+    void Die() {
+        if (m_IsDead) return;
+
+        m_IsDead = true;
+        m_HasExploded = false;
+        m_DeathTimer = 1.5f;
+
+        if (p_RigidBody) {
+            p_RigidBody->Velocity = glm::vec3(0.0f);
+        }
+
+        if (m_Collider) {
+            m_Collider->IsTrigger = true;
+        }
     }
 
     bool IsInvulnerable() const { return m_IsInvulnerable; }
 
     bool TakeDamage(glm::vec3 damageSourcePosition, float knockbackStrength) {
-        if (m_IsInvulnerable) return false;
+        if (m_IsInvulnerable || m_IsDead) return false;
 
         if (LivesManager::Instance) {
-            LivesManager::Instance->LoseHeart();
+            int currentLives = LivesManager::Instance->LoseHeart();
+
+            if (currentLives <= 0) {
+                Die();
+                return true;
+            }
         }
 
         m_IsInvulnerable = true;
@@ -91,12 +138,10 @@ public:
 
         if (p_RigidBody) {
             glm::vec3 myPos = m_Owner->GetTransform()->GetWorldPosition();
-
             glm::vec3 knockbackDir = glm::normalize(myPos - damageSourcePosition);
             knockbackDir.y = 0.5f;
 
             p_RigidBody->Velocity = knockbackDir * knockbackStrength;
-
             m_IsDashing = false;
         }
 
@@ -104,9 +149,11 @@ public:
     }
 
     bool IsDashing() const { return m_IsDashing; }
+    bool IsDead() const { return m_IsDead; }
 
 private:
     NFSEngine::RigidBody3DComponent* p_RigidBody = nullptr;
+    NFSEngine::ColliderComponent* m_Collider = nullptr;
     NFSEngine::Transform* m_CameraTransform = nullptr;
     std::vector<std::shared_ptr<NFSEngine::AudioClip>> m_JumpClips;
     std::shared_ptr<NFSEngine::AudioClip> m_DashClip;
@@ -133,6 +180,12 @@ private:
     bool m_IsInvulnerable = false;
     float m_InvulnerabilityTimer = 0.0f;
 
+    bool m_IsDead = false;
+    bool m_HasExploded = false;
+    float m_DeathTimer = 0.0f;
+    std::shared_ptr<NFSEngine::Material> m_DeathParticleMaterial;
+    std::shared_ptr<NFSEngine::Shader> m_ParticleShader;
+
     glm::vec3 m_LastWallNormal = glm::vec3(0.0f);
     glm::vec3 m_LastJumpedWallNormal = glm::vec3(0.0f);
 
@@ -154,6 +207,8 @@ protected:
             NFS_CORE_ERROR("CharacterController: Brak RigidBody3D!");
         }
 
+        m_Collider = m_Owner->GetComponent<NFSEngine::ColliderComponent>();
+
         const auto& sceneObjects = m_Owner->GetScene()->GetAllGameObjects();
         for (const auto& go : sceneObjects) {
             if (go->GetComponent<NFSEngine::Camera>()) {
@@ -167,6 +222,12 @@ protected:
             m_AuraEventId
                 = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) { this->UpdateAbilities(newAura); });
         }
+
+        auto texture = NFSEngine::Texture::Create("assets/textures/particles/star.png");
+        m_DeathParticleMaterial = std::make_shared<NFSEngine::Material>();
+        m_DeathParticleMaterial->AlbedoMap = texture;
+        m_ParticleShader
+            = NFSEngine::Shader::Create("StarParticle", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
     }
 
     virtual void OnDisable() override {
@@ -177,6 +238,38 @@ protected:
     }
 
     virtual void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (m_IsDead) {
+            float dtSec = deltaTime.GetSeconds();
+            m_DeathTimer -= dtSec;
+
+            if (p_RigidBody) {
+                p_RigidBody->Velocity = glm::vec3(0.0f);
+            }
+
+            if (m_DeathTimer > 1.1f && !m_HasExploded) {
+                m_Owner->GetTransform()->Move(glm::vec3(0.0f, 12.0f * dtSec, 0.0f));
+                m_Owner->GetTransform()->Rotate(glm::vec3(0.0f, 1500.0f * dtSec, 0.0f));
+            } else if (m_DeathTimer > 0.7f && !m_HasExploded) {
+                m_Owner->GetTransform()->Rotate(glm::vec3(0.0f, 1500.0f * dtSec, 0.0f));
+            } else if (m_DeathTimer <= 0.7f && !m_HasExploded) {
+                m_HasExploded = true;
+
+                int childCount = m_Owner->GetTransform()->GetChildCount();
+                for (int i = 0; i < childCount; ++i) {
+                    auto* childObj = m_Owner->GetTransform()->GetChild(i)->GetOwner();
+                    if (childObj->name == "PlayerModel") {
+                        childObj->GetTransform()->SetScale(glm::vec3(0.0f));
+                    }
+                }
+
+                SpawnDeathParticles();
+            } else if (m_DeathTimer <= 0.0f) {
+                Respawn();
+            }
+
+            return;
+        }
+
         m_InputDirection.x = NFSEngine::InputActionManager::GetFloat("MoveX");
         m_InputDirection.z = NFSEngine::InputActionManager::GetFloat("MoveZ");
 
@@ -194,6 +287,9 @@ protected:
 
     virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
         if (!p_RigidBody || !m_CameraTransform) return;
+
+        if (m_IsDead) return;
+
         float dt = static_cast<float>(deltaTime);
 
         UpdateStates();
@@ -213,6 +309,24 @@ protected:
     }
 
 private:
+    void SpawnDeathParticles() {
+        if (!m_DeathParticleMaterial || !m_ParticleShader) return;
+
+        NFSEngine::ParticleProperties p;
+        p.lifeTime = 0.7f;
+        p.colorBegin = glm::vec4(1.0f, 0.8f, 0.2f, 1.0f);
+        p.colorEnd = glm::vec4(1.0f, 0.2f, 0.2f, 0.0f);
+        p.sizeBegin = 2.5f;
+        p.sizeEnd = 0.1f;
+        p.sizeVariation = 1.0f;
+        p.rotationVariation = 360.0f;
+        p.velocityVariation = glm::vec3(30.0f, 30.0f, 30.0f);
+
+        glm::vec3 spawnPos = m_Owner->GetTransform()->GetWorldPosition() + glm::vec3(0.0f, 1.0f, 0.0f);
+        NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_DeathParticleMaterial, m_ParticleShader, p, 0.1f, 150, 40,
+                                           spawnPos);
+    }
+
     void UpdateStates() {
         if (p_RigidBody->IsGrounded) {
 

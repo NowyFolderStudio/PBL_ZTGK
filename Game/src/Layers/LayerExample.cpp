@@ -398,14 +398,13 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     {
         NFS_PROFILE_SCOPE("LayerExample: Player & Logic Update");
         if (m_Player) {
-            auto* lm = m_Scene->FindWithTag(NFSEngine::Tags::LivesManager);
-            auto* livesComp = lm ? lm->GetComponent<LivesManager>() : nullptr;
             auto* cc = m_Player->GetComponent<CharacterController>();
             float playerY = m_Player->GetTransform()->GetPosition().y;
 
-            if (playerY < m_DeathPlaneY || (livesComp && livesComp->GetLives() <= 0)) {
-                if (cc) cc->Respawn();
-                if (livesComp) livesComp->ResetLives();
+            if (playerY < m_DeathPlaneY) {
+                if (cc && !cc->IsDead()) {
+                    cc->Die();
+                }
             }
         }
 
