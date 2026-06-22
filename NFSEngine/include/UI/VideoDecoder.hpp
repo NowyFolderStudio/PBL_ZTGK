@@ -1,3 +1,4 @@
+#include "nfspch.h"
 
 namespace NFSEngine {
     class VideoDecoder {
@@ -10,6 +11,7 @@ namespace NFSEngine {
         virtual void* GetVideoData() = 0;
         virtual uint32_t GetWidth() const = 0;
         virtual uint32_t GetHeight() const = 0;
+        virtual uint32_t GetDataSize() const = 0;
         virtual double GetFPS() const = 0;
 
         virtual bool HasAudio() const { return false; }

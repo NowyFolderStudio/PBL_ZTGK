@@ -33,6 +33,10 @@ namespace NFSEngine {
         auto& group = m_TrackGroups[component->TrackName];
         group.erase(std::remove(group.begin(), group.end(), component), group.end());
     }
+    void AudioManager::ClearAllPatterns() {
+        m_TrackGroups.clear();
+        NFS_CORE_INFO("[AudioManager] Cleared all registered track patterns.");
+    }
 
     void AudioManager::SetActivePatternInTrack(const std::string& trackName, const std::string& patternName) {
         if (m_TrackGroups.find(trackName) == m_TrackGroups.end()) return;

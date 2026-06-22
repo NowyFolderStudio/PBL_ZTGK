@@ -6,23 +6,24 @@
 
 namespace NFSEngine {
 
-	class AudioManager {
-	public:
-		static void Init();
-		static void Shutdown();
+    class AudioManager {
+    public:
+        static void Init();
+        static void Shutdown();
 
-		static void Update(DeltaTime deltaTime);
+        static void Update(DeltaTime deltaTime);
 
-		static void RegisterPattern(AudioPatternComponent* component);
-		static void UnregisterPattern(AudioPatternComponent* component);
+        static void RegisterPattern(AudioPatternComponent* component);
+        static void UnregisterPattern(AudioPatternComponent* component);
+        static void ClearAllPatterns();
 
-		static void SetActivePatternInTrack(const std::string& trackName, const std::string& patternName);
+        static void SetActivePatternInTrack(const std::string& trackName, const std::string& patternName);
 
-		static void MuteTrack(const std::string& trackName, bool mute);
-		static void SetTrackVolume(const std::string& trackName, float volume);
+        static void MuteTrack(const std::string& trackName, bool mute);
+        static void SetTrackVolume(const std::string& trackName, float volume);
 
-	private:
-		static std::unordered_map<std::string, std::vector<AudioPatternComponent*>> m_TrackGroups;
-	};
+    private:
+        static std::unordered_map<std::string, std::vector<AudioPatternComponent*>> m_TrackGroups;
+    };
 
-}
+} // namespace NFSEngine

@@ -56,6 +56,7 @@ namespace NFSEngine {
         void* GetVideoData() override { return m_RGBBuffer.data(); }
         uint32_t GetWidth() const override { return m_Width; }
         uint32_t GetHeight() const override { return m_Height; }
+        uint32_t GetDataSize() const override { return GetWidth() * GetHeight() * 3; }
         double GetFPS() const override { return m_FPS; }
 
         bool HasAudio() const override { return m_HasAudio; }

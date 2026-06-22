@@ -1,6 +1,7 @@
 #include "Components/AudioPatternComponent.hpp"
 #include "Events/NotePlayedEvent.hpp"
 #include "Core/Application.hpp"
+#include "Core/AudioManager.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -12,6 +13,7 @@ namespace NFSEngine {
         for (auto& voice : m_Voices) {
             ma_sound_uninit(&voice);
         }
+        NFSEngine::AudioManager::UnregisterPattern(this);
     }
 
     void AudioPatternComponent::LoadSound(const std::string& filepath) {
