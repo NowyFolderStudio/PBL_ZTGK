@@ -1,0 +1,15 @@
+{
+  "patternName": "HitHatPattern01",
+  "audioFile": "assets/audio/sounds/hihat_opened02.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 1,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    }
+  ]
+}

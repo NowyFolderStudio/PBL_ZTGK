@@ -1,0 +1,356 @@
+{
+  "patternName": "SubPianoPattern01",
+  "audioFile": "assets/audio/sounds/detuned-rally-house-stab.wav",
+  "rootNote": "A4",
+  "lengthInBars": 2,
+  "notes": [
+    // AKORD 1
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "A#6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "D7",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "F7",
+      "length": 2
+    }, // -
+    // AKORD 1
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 4,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 4,
+      "note": "A#6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 4,
+      "note": "D7",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 4,
+      "note": "F7",
+      "length": 2
+    }, // -
+    // AKORD 3
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 3,
+      "note": "D#6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 3,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 3,
+      "note": "A#6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 3,
+      "note": "D7",
+      "length": 2
+    }, // -
+    // AKORD 2
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "C6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "D#6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "A#6",
+      "length": 2
+    }, // -
+    // AKORD 2
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 4,
+      "note": "C6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 4,
+      "note": "D#6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 4,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 4,
+      "note": "A#6",
+      "length": 2
+    }, // -
+    // AKORD 4
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 3,
+      "note": "D6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 3,
+      "note": "F6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 3,
+      "note": "A6",
+      "length": 2
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 3,
+      "note": "C7",
+      "length": 2
+    }, // -
+    // AKORD 3
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "D#6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "A#6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 1,
+      "note": "D7",
+      "length": 2
+    }, // -
+    // AKORD 3
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 4,
+      "note": "D#6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 4,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 4,
+      "note": "A#6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 1,
+      "16th": 4,
+      "note": "D7",
+      "length": 2
+    }, // -
+    // AKORD 1
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 3,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 3,
+      "note": "A#6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 3,
+      "note": "D7",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 2,
+      "16th": 3,
+      "note": "F7",
+      "length": 2
+    }, // -
+    // AKORD 4
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "D6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "F6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "A6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 1,
+      "note": "C7",
+      "length": 2
+    }, // -
+    // AKORD 4
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 4,
+      "note": "D6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 4,
+      "note": "F6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 4,
+      "note": "A6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 3,
+      "16th": 4,
+      "note": "C7",
+      "length": 2
+    }, // -
+    // AKORD 2
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 3,
+      "note": "C6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 3,
+      "note": "D#6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 3,
+      "note": "G6",
+      "length": 2
+    },
+    {
+      "bar": 2,
+      "beat": 4,
+      "16th": 3,
+      "note": "A#6",
+      "length": 2
+    } // -
+  ]
+}

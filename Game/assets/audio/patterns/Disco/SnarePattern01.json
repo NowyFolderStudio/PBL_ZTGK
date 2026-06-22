@@ -1,0 +1,22 @@
+{
+  "patternName": "SnarePattern01",
+  "audioFile": "assets/audio/sounds/snare03.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 1,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    }
+  ]
+}

@@ -8,13 +8,13 @@
 #include "Renderer/Particle.hpp"
 #include "Renderer/Skybox.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
-#include "Components/AudioPatternComponent.hpp"
 #include "Renderer/Framebuffer.hpp"
 #include "Renderer/EnvironmentMap.hpp"
 #include "Components/HUDComponent.hpp"
 #include "Components/DancingWall.hpp"
 #include "SceneLoader/SceneLoader.hpp"
 #include "Components/LoadingScreenComponent.hpp"
+#include "Components/MusicDirector.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -70,7 +70,7 @@ private:
 
     std::unique_ptr<NFSEngine::EnvironmentMap> m_EnvironmentMap;
 
-    NFSEngine::RhythmSequencer m_Sequencer;
+    MusicDirector* m_CachedMusicDirector = nullptr;
 
     NFSEngine::Camera* m_CachedCamera = nullptr;
     NFSEngine::CameraController* m_CachedCameraController = nullptr;

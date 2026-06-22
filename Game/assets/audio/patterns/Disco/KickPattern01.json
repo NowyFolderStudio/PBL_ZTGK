@@ -1,0 +1,36 @@
+{
+  "patternName": "KickPattern01",
+  "audioFile": "assets/audio/sounds/kick_hiphop01.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 1,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 1,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 3,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    },
+    {
+      "bar": 1,
+      "beat": 4,
+      "16th": 1,
+      "note": "A4",
+      "length": 4
+    }
+  ]
+}

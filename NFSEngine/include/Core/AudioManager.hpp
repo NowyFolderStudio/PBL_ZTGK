@@ -17,7 +17,8 @@ namespace NFSEngine {
         static void UnregisterPattern(AudioPatternComponent* component);
         static void ClearAllPatterns();
 
-        static void SetActivePatternInTrack(const std::string& trackName, const std::string& patternName);
+		static void SetActivePatternInTrack(const std::string& trackName, const std::string& patternName);
+		static void SetTrackPitchOffset(const std::string& trackName, float pitchOffsetModifier);
 
         static void MuteTrack(const std::string& trackName, bool mute);
         static void SetTrackVolume(const std::string& trackName, float volume);

@@ -6,6 +6,7 @@
 #include "Layers/OptionsLayer.hpp"
 #include "Layers/LayerExample.hpp"
 #include "Layers/LayerZmoreq.hpp"
+#include "Layers/LayerGuga.hpp"
 
 GameManager& GameManager::Get() {
     static GameManager instance;
@@ -60,6 +61,7 @@ void GameManager::ChangeState(GameState newState) {
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
 
         // m_CurrentLayer = new LayerZmoreq();
+        // m_CurrentLayer = new LayerGuga();
         m_CurrentLayer = new LayerExample();
         app.PushLayer(m_CurrentLayer);
 

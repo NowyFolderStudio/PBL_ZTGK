@@ -14,6 +14,8 @@ namespace NFSEngine {
 		int trackID = 0;
 		float pitchOffset = 0.0f;
 		std::string noteName;
+
+		bool isEvent = false;
 	};
 
 	struct Pattern {

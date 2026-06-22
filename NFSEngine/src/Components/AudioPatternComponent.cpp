@@ -53,6 +53,8 @@ namespace NFSEngine {
     void AudioPatternComponent::PlayNote(float pitchOffset, int lengthIn16ths) {
         if (!m_IsLoaded) return;
 
+        if (m_IsMuted) return;
+
         float pitchMultiplier = std::pow(2.0f, pitchOffset / 12.0f);
         ma_sound* currentVoice = &m_Voices[m_CurrentVoiceIndex];
 
@@ -111,11 +113,12 @@ namespace NFSEngine {
                 for (const auto& note : m_CurrentPattern.notes) {
                     if (note.bar == localBar && note.beat == currentBeat && note.sixteenth == current16th) {
 
-                        PlayNote(note.pitchOffset, note.lengthIn16ths);
+                        PlayNote(note.pitchOffset + GlobalPitchModifier, note.lengthIn16ths);
 
-                        NotePlayedEvent noteEvent(TrackName, m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat,
-                                                  current16th);
-                        Application::Get().OnEvent(noteEvent);
+                        if (note.isEvent) {
+                            NotePlayedEvent noteEvent(TrackName, m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat, current16th);
+                            Application::Get().OnEvent(noteEvent);
+                        }
                     }
                 }
             }
@@ -138,10 +141,13 @@ namespace NFSEngine {
     }
 
     void AudioPatternComponent::SetVolume(float volume) {
-        m_Volume = volume;
+        m_UnmutedVolume = volume;
 
-        if (m_Volume < 0.0f) {
+        if (m_IsMuted) {
             m_Volume = 0.0f;
+        }
+        else {
+            m_Volume = std::max(volume, 0.0f);
         }
 
         if (m_IsLoaded) {
@@ -149,5 +155,11 @@ namespace NFSEngine {
                 ma_sound_set_volume(&voice, m_Volume);
             }
         }
+    }
+
+    void AudioPatternComponent::SetMute(bool mute) {
+        m_IsMuted = mute;
+
+        SetVolume(m_UnmutedVolume);
     }
 } // namespace NFSEngine

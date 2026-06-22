@@ -3,11 +3,13 @@
 #include <NFSEngine.h>
 
 #include "Components/Aura/AuraManager.hpp"
+#include "Components/MusicDirector.hpp"
 
 class CasetteComponent : public NFSEngine::Component {
 public:
-    explicit CasetteComponent(NFSEngine::GameObject* owner)
-        : NFSEngine::Component(owner) { }
+    std::vector<std::string> TracksToUnlock;
+
+    explicit CasetteComponent(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) { }
 
     std::string GetName() const override { return "CasetteComponent"; }
 
@@ -25,6 +27,16 @@ protected:
 
             if (AuraManager::Instance) {
                 AuraManager::Instance->UnlockNextAura();
+            }
+
+            auto* directorObj = m_Owner->GetScene()->FindGameObject("MusicDirector");
+            if (directorObj) {
+                auto* director = directorObj->GetComponent<MusicDirector>();
+                if (director) {
+                    for (const auto& track : TracksToUnlock) {
+                        director->UnlockTrack(track);
+                    }
+                }
             }
 
             m_Owner->SetActive(false);

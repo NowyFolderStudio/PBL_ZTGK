@@ -28,7 +28,7 @@ namespace NFSEngine {
             return result;
         }
 
-        json data = json::parse(file);
+        json data = json::parse(file, nullptr, true, true);
 
         result.name = data["patternName"];
         result.totalBars = data["lengthInBars"];
@@ -43,6 +43,8 @@ namespace NFSEngine {
             note.beat = noteNode["beat"];
             note.sixteenth = noteNode["16th"];
             note.lengthIn16ths = noteNode.value("length", 4);
+
+            note.isEvent = noteNode.value("event", false);
 
             int targetNoteValue = GetNoteValue(noteNode["note"]);
             note.pitchOffset = static_cast<float>(targetNoteValue - rootNoteValue);

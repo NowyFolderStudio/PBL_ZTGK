@@ -36,6 +36,7 @@
 #include "Components/ConsoleButtonComponent.hpp"
 #include "Components/RotatingPlatform.hpp"
 #include "Components/CDBoxComponent.hpp"
+#include "Components/MusicDirector.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -254,109 +255,35 @@ void LayerExample::OnAttach() {
     camTrigger.CustomDistance = 15.0f;
 
     // Audio
-    m_Sequencer.Start(120.0f);
+    NFSEngine::GameObject* directorObj = m_Scene->CreateGameObject("MusicDirector");
+    auto& directorComp = directorObj->AddComponent<MusicDirector>();
+    directorComp.InitMusic(m_Scene.get());
 
-    NFSEngine::GameObject* bassObj1 = m_Scene->CreateGameObject("BassMusicPlayer1");
-    auto& bassComp1 = bassObj1->AddComponent<NFSEngine::AudioPatternComponent>();
-    bassComp1.TrackName = "Bass";
-    bassComp1.LoadPattern("assets/audio/patterns/BassPatternPrototype.json", &m_Sequencer);
-    bassComp1.SetVolume(1.0);
-    NFSEngine::AudioManager::RegisterPattern(&bassComp1);
+    // --- KASETY ---
+    auto matCassette = std::make_shared<NFSEngine::Material>();
+    matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
 
-    NFSEngine::GameObject* bassObj2 = m_Scene->CreateGameObject("BassMusicPlayer2");
-    auto& bassComp2 = bassObj2->AddComponent<NFSEngine::AudioPatternComponent>();
-    bassComp2.TrackName = "Bass";
-    bassComp2.LoadPattern("assets/audio/patterns/BassPatternPrototype2.json", &m_Sequencer);
-    bassComp2.SetVolume(1.0);
-    NFSEngine::AudioManager::RegisterPattern(&bassComp2);
+    auto* casettePianoObj = m_Scene->CreateGameObject("Casette_Piano");
+    casettePianoObj->GetTransform()->SetPosition(glm::vec3(-50.0f, 19.0f, 65.0f));
+    casettePianoObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    casettePianoObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
+    casettePianoObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    auto& casettePianoComp = casettePianoObj->AddComponent<CasetteComponent>();
+    casettePianoComp.TracksToUnlock.push_back("Piano");
+    casettePianoComp.TracksToUnlock.push_back("SubPiano");
 
-    NFSEngine::GameObject* pianoObj = m_Scene->CreateGameObject("PianoMusicPlayer1");
-    auto& audioComp = pianoObj->AddComponent<NFSEngine::AudioPatternComponent>();
-    audioComp.TrackName = "Piano";
-    audioComp.LoadPattern("assets/audio/patterns/PianoPattern1.json", &m_Sequencer);
-    audioComp.SetVolume(0.5);
-    NFSEngine::AudioManager::RegisterPattern(&audioComp);
-
-    NFSEngine::GameObject* pianoObj2 = m_Scene->CreateGameObject("PianoMusicPlayer2");
-    auto& audioComp2 = pianoObj2->AddComponent<NFSEngine::AudioPatternComponent>();
-    audioComp2.TrackName = "Piano";
-    audioComp2.LoadPattern("assets/audio/patterns/PianoPattern2.json", &m_Sequencer);
-    audioComp2.SetVolume(0.5);
-    NFSEngine::AudioManager::RegisterPattern(&audioComp2);
-
-    NFSEngine::AudioManager::SetActivePatternInTrack("Bass", "BassPatternPrototype");
-    NFSEngine::AudioManager::SetActivePatternInTrack("Piano", "PianoPattern1");
+    auto* casetteBassObj = m_Scene->CreateGameObject("Casette_Bass");
+    casetteBassObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 64.0f));
+    casetteBassObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
+    casetteBassObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
+    casetteBassObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
+    casetteBassComp.TracksToUnlock.push_back("Bass");
 
     // PianoObject
     NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
     auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
     pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
-
-    // Spinning CD
-
-    auto cdShader = NFSEngine::Shader::Create("CDShader", "assets/shaders/lightShader.vert", "assets/shaders/CDShader.frag");
-
-    auto matCD = std::make_shared<NFSEngine::Material>();
-    matCD->name = "DiffractionMaterial";
-    matCD->AlbedoColor = glm::vec3(0.1f, 0.1f, 0.1f);
-    matCD->Metallic = 1.0f;
-    matCD->Roughness = 0.15f;
-
-    matCD->SetInt("u_UseDiffraction", 1);
-    matCD->SetFloat("u_DiffractionDistance", 2000.0f);
-    matCD->SetFloat("u_DiffractionStrength", 2.5f);
-
-    auto* spinningCD = m_Scene->CreateGameObject("SpinningCD");
-    spinningCD->GetTransform()->SetScale(glm::vec3(18.0f, 18.0f, 18.0f));
-    spinningCD->GetTransform()->SetPosition(glm::vec3{ -25.0f, 20.0f, 50.0f });
-
-    auto cdModel = std::make_shared<NFSEngine::Model>("assets/models/CDZTGK.fbx");
-    auto& cdModelComp = spinningCD->AddComponent<NFSEngine::ModelComponent>(cdShader, matCD);
-    cdModelComp.AddLOD(cdModel, 100000.0f);
-
-    // CDPlayer
-
-    auto matCDPlayer = std::make_shared<NFSEngine::Material>();
-    matCDPlayer->AlbedoMap = NFSEngine::Texture::Create("assets/models/Odtwarzacz/odtwarzacz_kolor.001.png");
-
-    auto* cDPlayer = m_Scene->CreateGameObject("CDPlayer");
-    cDPlayer->GetTransform()->SetScale(glm::vec3(3.0f, 3.0f, 3.0f));
-    cDPlayer->GetTransform()->SetPosition(glm::vec3 { -90.0f, 20.0f, 50.0f });
-    cDPlayer->GetTransform()->SetRotation(glm::vec3 { -90.0f, 0.0f, 0.0f });
-
-    auto& colliderCDPlayer = cDPlayer->AddComponent<BoxCollider3DComponent>();
-
-    auto cDPlayerModel = std::make_shared<NFSEngine::Model>("assets/models/Odtwarzacz/odtwarzacz.fbx");
-    auto& cDPlayerModelComp = cDPlayer->AddComponent<NFSEngine::ModelComponent>(m_Shader, matCDPlayer);
-    cDPlayerModelComp.AddLOD(cDPlayerModel, 100000.0f);
-
-    // CDPlayer Button
-
-    auto* playButton = m_Scene->CreateGameObject("CDPlayer_Button");
-
-    playButton->GetTransform()->SetPosition(glm::vec3 { -50.0f, 22.0f, 50.0f });
-
-    playButton->AddComponent<NFSEngine::CubeMesh>(m_ToonShader, matCDPlayer);
-
-    spinningCD->GetTransform()->SetParent(cDPlayer->GetTransform());
-    playButton->GetTransform()->SetParent(cDPlayer->GetTransform());
-
-    auto& cDBoxLogic = cDPlayer->AddComponent<CDBoxComponent>();
-
-    // Microphone test
-
-    auto matMicrophone = std::make_shared<NFSEngine::Material>();
-    matMicrophone->AlbedoMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_kolor2.png");
-    matMicrophone->RoughnessMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_rough.png");
-    matMicrophone->MetallicMap = NFSEngine::Texture::Create("assets/models/RetroMicrophone/mikro_metal.png");
-
-    auto* microphone = m_Scene->CreateGameObject("MicrophoneTest");
-    microphone->GetTransform()->SetPosition(glm::vec3 { -55.0f, 20.0f, 50.0f });
-    microphone->GetTransform()->SetRotation(glm::vec3 { -90.0f, 0.0f, 0.0f });
-
-    auto micModel = std::make_shared<NFSEngine::Model>("assets/models/RetroMicrophone/retro_mikrofon.fbx");
-    auto& micModelComp = microphone->AddComponent<NFSEngine::ModelComponent>(m_Shader, matMicrophone);
-    micModelComp.AddLOD(micModel, 100000.0f);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
@@ -389,6 +316,10 @@ void LayerExample::FinalizeSceneSetup() {
         if (auto* wall = go->GetComponent<DancingWall>()) {
             m_CachedDancingWalls.push_back(wall);
             wall->OnAwake();
+        }
+
+        if (auto* director = go->GetComponent<MusicDirector>()) {
+            m_CachedMusicDirector = director;
         }
     }
 
@@ -458,12 +389,6 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         }
     }
 
-    {
-        NFS_PROFILE_SCOPE("LayerExample: Audio Sequencer Update");
-        m_Sequencer.Update((float)deltaTime);
-
-        NFSEngine::AudioManager::Update(deltaTime);
-    }
     m_DeltaTime = deltaTime;
 
     {
@@ -502,13 +427,11 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
     {
         NFS_PROFILE_SCOPE("LayerExample: Material Uniforms Update");
-        float songPos = m_Sequencer.GetContinuousBeatTime();
-        // matAudio->SetFloat("u_MusicTime", songPos);
-        // matGramophone1->SetFloat("u_MusicTime", songPos);
-        // matGramophone2->SetFloat("u_MusicTime", songPos);
-        // matGramophone3->SetFloat("u_MusicTime", songPos);
-        // matGramophone4->SetFloat("u_MusicTime", songPos);
-        // matGramophone5->SetFloat("u_MusicTime", songPos);
+        float songPos = 0.0f;
+        if (m_CachedMusicDirector) {
+            songPos = m_CachedMusicDirector->Sequencer.GetContinuousBeatTime();
+        }
+
         for (auto mat : m_AnimatedMaterials) {
             mat->SetFloat("u_MusicTime", songPos);
         }

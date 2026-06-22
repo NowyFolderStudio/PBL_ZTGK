@@ -1,0 +1,15 @@
+{
+  "patternName": "ClapPattern01",
+  "audioFile": "assets/audio/sounds/clap04.ogg",
+  "rootNote": "A4",
+  "lengthInBars": 1,
+  "notes": [
+    {
+      "bar": 1,
+      "beat": 2,
+      "16th": 3,
+      "note": "A4",
+      "length": 4
+    }
+  ]
+}

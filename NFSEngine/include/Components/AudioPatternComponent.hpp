@@ -12,6 +12,8 @@
 namespace NFSEngine {
 	class AudioPatternComponent : public Component {
 	public:
+		float GlobalPitchModifier = 0.0f;
+
 		AudioPatternComponent(GameObject* owner) : Component(owner) {};
 		~AudioPatternComponent() override;
 
@@ -21,6 +23,7 @@ namespace NFSEngine {
 		void OnImGuiRender() override;
 
 		void SetVolume(float volume);
+		void SetMute(bool mute);
 
 		float GetVolume() const { return m_Volume; }
 		std::string GetName() const override { return "AudioComponent"; }
@@ -52,5 +55,8 @@ namespace NFSEngine {
 		int m_LastPlayed16thTotal = -1;
 
 		float m_Volume = 1.0f;
+
+		bool m_IsMuted = false;
+		float m_UnmutedVolume = 1.0f;
 	};
 }

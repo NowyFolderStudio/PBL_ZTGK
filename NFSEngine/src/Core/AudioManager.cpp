@@ -51,10 +51,17 @@ namespace NFSEngine {
         }
     }
 
+    void AudioManager::SetTrackPitchOffset(const std::string& trackName, float pitchOffsetModifier) {
+        if (m_TrackGroups.find(trackName) == m_TrackGroups.end()) return;
+        for (auto* comp : m_TrackGroups[trackName]) {
+            comp->GlobalPitchModifier = pitchOffsetModifier;
+        }
+    }
+
     void AudioManager::MuteTrack(const std::string& trackName, bool mute) {
         if (m_TrackGroups.find(trackName) == m_TrackGroups.end()) return;
         for (auto* comp : m_TrackGroups[trackName]) {
-            comp->IsActive = !mute;
+            comp->SetMute(mute);
         }
     }
 
