@@ -109,8 +109,8 @@ void LayerZmoreq::OnAttach() {
     // --- GRACZ ---
     auto animationShader = Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
     auto capsuleModel = std::make_shared<Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
-    auto enemyModel = std::make_shared<Model>("assets/models/glosnik/glosnik_wieza.fbx");
-
+    auto enemyModel = std::make_shared<Model>("assets/models/lowsphere/scene.gltf");
+    
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(Tags::Player);
     m_Player->GetTransform()->SetPosition(m_PlayerSpawnPosition);
@@ -172,12 +172,12 @@ void LayerZmoreq::OnAttach() {
         auto* enemy = m_Scene->CreateGameObject(name);
         enemy->GetTransform()->SetPosition(startPos);
 
-        enemy->GetTransform()->SetScale({ 1.5f, 1.5f, 1.5f });
+        enemy->GetTransform()->SetScale({ 2.0f, 2.0f, 2.0f });
 
         auto& modelComp = enemy->AddComponent<ModelComponent>(m_EnemyGlitchShader, matSample);
         modelComp.AddLOD(enemyModel, 10000.0f);
 
-        auto& boxCollider = enemy->AddComponent<BoxCollider3DComponent>();
+        auto& boxCollider = enemy->AddComponent<CapsuleCollider3DComponent>();
         boxCollider.Offset = glm::vec3(0.0f, -0.75f, 0.0f);
         enemy->AddComponent<RigidBody3DComponent>();
         enemy->AddComponent<DestructibleComponent>(); // Otrzymuje obrażenia
@@ -305,6 +305,7 @@ void LayerZmoreq::OnUpdate(DeltaTime deltaTime) {
 
     m_EnemyGlitchShader->Bind();
     m_EnemyGlitchShader->SetFloat("u_Time", timePassed);
+    m_EnemyGlitchShader->SetFloat("u_Aggro", 1.0f); // to mozna uzaleznic od dystansu do gracza np chyba bedzie cool wygladac
 }
 
 void LayerZmoreq::OnRender() {

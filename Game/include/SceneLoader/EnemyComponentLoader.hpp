@@ -4,9 +4,16 @@
 #include "Core/Scene.hpp"
 #include "Core/GameObject.hpp"
 #include "Components/Enemy/BasicEnemy.hpp"
+#include "Components/ModelComponent.hpp"
+#include "Components/PhysicsComponents.hpp"
+#include "Components/DestructibleComponent.hpp"
+#include "Renderer/Material.hpp"
+#include "Renderer/Model.hpp"
+#include "Renderer/Shader.hpp"
 #include <string>
 #include <sstream>
 #include <algorithm>
+#include <memory>
 
 using namespace NFSEngine;
 
@@ -44,7 +51,29 @@ public:
                 if (!targetObj->HasComponent<RigidBody3DComponent>()) {
                     targetObj->AddComponent<RigidBody3DComponent>();
                 }
+                if (!targetObj->HasComponent<CapsuleCollider3DComponent>()) {
+                    auto& boxCollider = targetObj->AddComponent<CapsuleCollider3DComponent>();
+                    boxCollider.Offset = glm::vec3(0.0f, -0.75f, 0.0f);
+                }
+                if (!targetObj->HasComponent<DestructibleComponent>()) {
+                    targetObj->AddComponent<DestructibleComponent>();
+                }
                 targetObj->AddTag(Tags::Enemy);
+
+                auto material = std::make_shared<Material>();
+                
+                auto shader = Shader::Create("EnemyGlitchShader", "assets/shaders/enemy_glitch.vert", "assets/shaders/enemy_glitch.frag");
+                
+                auto* modelObject = currentScene->CreateGameObject(targetObj->name + "_Visuals");
+                modelObject->GetTransform()->SetParent(targetObj->GetTransform());
+                
+                modelObject->GetTransform()->SetPosition({ 0, 0, 0 });
+                modelObject->GetTransform()->SetScale({ 2.0f, 2.0f, 2.0f });
+
+                auto model = std::make_shared<Model>("assets/models/lowsphere/scene.gltf");
+                
+                modelObject->AddComponent<ModelComponent>(shader, material);
+                modelObject->GetComponent<ModelComponent>()->AddLOD(model, 10000.0f);
 
                 break;
             }
