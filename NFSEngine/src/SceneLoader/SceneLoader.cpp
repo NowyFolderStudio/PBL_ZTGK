@@ -133,6 +133,13 @@ namespace NFSEngine {
                     NFS_CORE_WARN("GameObject ID={0} is trying to reference non-existing parent ID={1}", id, parent_id);
                 }
             }
+
+            if (instanceMap.find(id) != instanceMap.end()) {
+                GameObject* go = instanceMap[id];
+                for (auto& loader : m_Loaders) {
+                    loader->PostLoad(j_obj, go, instanceMap);
+                }
+            }
         }
 
         NFS_CORE_INFO("Loading {0} success!", filepath);
