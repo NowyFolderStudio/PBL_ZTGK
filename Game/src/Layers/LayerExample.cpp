@@ -68,6 +68,7 @@
 #include "SceneLoader/EnemyComponentLoader.hpp"
 #include "SceneLoader/DestructibleComponentLoader.hpp"
 #include "SceneLoader/CDBoxComponentLoader.hpp"
+#include "SceneLoader/InteractivePianoLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -115,6 +116,7 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<EnemyComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<DestructibleComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<CDBoxComponentLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<InteractivePianoLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -260,28 +262,10 @@ void LayerExample::OnAttach() {
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
 
-    // --- KASETY ---
+    // zmiana traców test
+
     auto matCassette = std::make_shared<NFSEngine::Material>();
     matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
-
-    auto* casettePianoObj = m_Scene->CreateGameObject("Casette_Piano");
-    casettePianoObj->GetTransform()->SetPosition(glm::vec3(-50.0f, 19.0f, 65.0f));
-    casettePianoObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
-    casettePianoObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
-    casettePianoObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    auto& casettePianoComp = casettePianoObj->AddComponent<CasetteComponent>();
-    casettePianoComp.TracksToUnlock.push_back("Piano");
-    casettePianoComp.TracksToUnlock.push_back("SubPiano");
-
-    auto* casetteBassObj = m_Scene->CreateGameObject("Casette_Bass");
-    casetteBassObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 64.0f));
-    casetteBassObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
-    casetteBassObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
-    casetteBassObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
-    casetteBassComp.TracksToUnlock.push_back("Bass");
-
-    // zmiana traców test
 
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
@@ -289,11 +273,6 @@ void LayerExample::OnAttach() {
     trigger1->AddComponent<BoxCollider3DComponent>();
     auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
     triggerComp1.TargetTrack = "Bass";
-
-    // PianoObject
-    NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
-    auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
-    pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
