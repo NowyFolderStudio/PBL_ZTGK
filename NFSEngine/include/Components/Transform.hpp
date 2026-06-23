@@ -66,6 +66,7 @@ namespace NFSEngine {
         void SavePreviousWorldPosition();
         void Move(const glm::vec3& moveVector);
         void Rotate(const glm::vec3& rotationVector);
+        void RotateAroundAxis(const glm::vec3& axis, float angleDegrees);
         void Scale(const glm::vec3& scaleVector);
 
         // ImGui

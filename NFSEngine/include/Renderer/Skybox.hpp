@@ -13,4 +13,4 @@ namespace NFSEngine {
         // Wants 6-path Vector: right, left, up, down, front, back
         static std::shared_ptr<Skybox> Create(const std::vector<std::string>& facePaths);
     };
-}
+} // namespace NFSEngine

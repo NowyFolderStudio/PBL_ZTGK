@@ -6,6 +6,7 @@
 #include "Debug/GPUTimer.hpp"
 #include "Core/Application.hpp"
 
+#include "GLFW/glfw3.h"
 #include "Renderer/EnvironmentMap.hpp"
 #include "Components/DirectionalLight.hpp"
 #include "Components/PointLight.hpp"
@@ -194,7 +195,8 @@ namespace NFSEngine {
         }
 
         s_DebugCylinderVAO = std::shared_ptr<VertexArray>(VertexArray::Create());
-        auto cylinderVBO = std::shared_ptr<VertexBuffer>(VertexBuffer::Create(cylinderVertices.data(), cylinderVertices.size() * sizeof(float)));
+        auto cylinderVBO = std::shared_ptr<VertexBuffer>(
+            VertexBuffer::Create(cylinderVertices.data(), cylinderVertices.size() * sizeof(float)));
         cylinderVBO->SetLayout({ { ShaderDataType::Float3, "aPos" } });
         auto cylinderIBO = std::shared_ptr<IndexBuffer>(IndexBuffer::Create(cylinderIndices.data(), cylinderIndices.size()));
 
@@ -899,6 +901,7 @@ namespace NFSEngine {
 
         skybox->Bind(0);
         shader->SetInt("skybox", 0);
+        shader->SetFloat("time", glfwGetTime());
 
         s_SkyboxVAO->Bind();
         s_RendererAPI->DrawArrays(s_SkyboxVAO, 36);

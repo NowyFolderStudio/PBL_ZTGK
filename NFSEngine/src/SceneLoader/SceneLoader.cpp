@@ -94,7 +94,13 @@ namespace NFSEngine {
 
             t->SetPosition(glm::vec3(pos[0], pos[1], pos[2]));
 
-            t->SetRotation(glm::vec3(rot[0], rot[1], rot[2]));
+            glm::quat q;
+            q.x = rot[0];
+            q.y = rot[1];
+            q.z = rot[2];
+            q.w = rot[3];
+
+            t->SetRotation(glm::normalize(q));
 
             t->SetScale(glm::vec3(scl[0], scl[1], scl[2]));
 
@@ -201,7 +207,12 @@ namespace NFSEngine {
                 auto scl = j_obj["transform"]["scale"];
 
                 t->SetPosition(glm::vec3(pos[0], pos[1], pos[2]));
-                t->SetRotation(glm::vec3(rot[0], rot[1], rot[2]));
+                glm::quat q;
+                q.x = rot[0];
+                q.y = rot[1];
+                q.z = rot[2];
+                q.w = rot[3];
+                t->SetRotation(glm::normalize(q));
                 t->SetScale(glm::vec3(scl[0], scl[1], scl[2]));
 
                 for (auto& loader : m_Loaders) {

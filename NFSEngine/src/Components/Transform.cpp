@@ -140,6 +140,18 @@ namespace NFSEngine {
         return glm::quat_cast(glm::mat3(right, up, forward));
     }
 
+    void Transform::RotateAroundAxis(const glm::vec3& axis, float angleDegrees) {
+        if (glm::length(axis) < 0.0001f) return;
+
+        glm::vec3 normalizedAxis = glm::normalize(axis);
+        glm::quat rotationOffset = glm::angleAxis(glm::radians(angleDegrees), normalizedAxis);
+
+        m_Rotation = rotationOffset * m_Rotation;
+
+        m_Rotation = glm::normalize(m_Rotation);
+        SetDirty();
+    }
+
     void Transform::SavePreviousWorldPosition() { m_PreviousWorldPosition = GetWorldPosition(); }
 
     void Transform::OnImGuiRender() {
