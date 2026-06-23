@@ -9,7 +9,8 @@
       "beat": 1,
       "16th": 1,
       "note": "A4",
-      "length": 4
+      "length": 4,
+      "event": true
     }
   ]
 }

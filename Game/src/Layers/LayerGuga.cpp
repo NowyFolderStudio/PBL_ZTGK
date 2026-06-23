@@ -52,13 +52,13 @@ LayerGuga::LayerGuga() {
     m_Scene = nullptr;
 }
 
-LayerGuga::~LayerGuga() {}
+LayerGuga::~LayerGuga() { }
 
 void LayerGuga::OnAttach() {
     m_Scene = std::make_unique<Scene>();
     m_HierarchyPanel = std::make_unique<SceneHierarchyPanel>(m_Scene.get());
 
-    // --- Mened¿ery ---
+    // --- Menedç¸ ry ---
     auto* livesManager = m_Scene->CreateGameObject("LivesManager");
     livesManager->SetTag(Tags::LivesManager);
     livesManager->AddComponent<LivesManager>();
@@ -74,7 +74,7 @@ void LayerGuga::OnAttach() {
     NFSEngine::GameObject* uiObj = m_Scene->CreateGameObject("HUD");
     m_HUD = &uiObj->AddComponent<HUDComponent>();
 
-    // --- Shadery i Materia³y ---
+    // --- Shadery i Materiaç¡‘ ---
     m_Shader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
 
     auto matSample = std::make_shared<Material>();
@@ -83,7 +83,7 @@ void LayerGuga::OnAttach() {
     matSample->MetallicMap = Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_Metalness.png");
     matSample->AOMap = Texture::Create("assets/textures/WoodFloor043/WoodFloor043_1K-PNG_AmbientOcclusion.png");
 
-    // --- Œrodowisko i Skybox ---
+    // --- å®ºodowisko i Skybox ---
     std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
                                        "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
                                        "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
@@ -96,14 +96,14 @@ void LayerGuga::OnAttach() {
     m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
     m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
 
-    // --- Oœwietlenie ---
+    // --- Oæ¸¨ietlenie ---
     auto* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.3f);
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
     sunComp.Intensity = 1.0f;
 
-    // --- POD£OGA ---
+    // --- PODî–•GA ---
     m_Floor = m_Scene->CreateGameObject("Floor_Zmoreq");
     m_Floor->GetTransform()->SetPosition({ 0.0f, -2.0f, 0.0f });
     m_Floor->GetTransform()->SetScale({ 50.0f, 1.0f, 50.0f });
@@ -171,13 +171,13 @@ void LayerGuga::OnAttach() {
         auto& boxCollider = enemy->AddComponent<BoxCollider3DComponent>();
         boxCollider.Offset = glm::vec3(0.0f, -0.75f, 0.0f);
         enemy->AddComponent<RigidBody3DComponent>();
-        enemy->AddComponent<DestructibleComponent>(); // Otrzymuje obra¿enia
+        enemy->AddComponent<DestructibleComponent>(); // Otrzymuje obraç¸ nia
         enemy->AddTag(Tags::Enemy);
 
-        auto& basicEnemyComp = enemy->AddComponent<BasicEnemy>(); // Myœli i atakuje
+        auto& basicEnemyComp = enemy->AddComponent<BasicEnemy>(); // Myæ¸“i i atakuje
         basicEnemyComp.PatrolPointA = startPos;
         basicEnemyComp.PatrolPointB = endPos;
-        };
+    };
 
     SpawnEnemy("Enemy_1", glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(15.0f, 0.0f, 5.0f));
 
@@ -202,14 +202,13 @@ void LayerGuga::OnAttach() {
 
     casetteBassComp.TracksToUnlock.push_back("Bass");
 
-    // zmiana traców test
+    // zmiana tracé«” test
 
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(50.0f, 1.0f, 0.0f));
     trigger1->AddComponent<BoxCollider3DComponent>();
     auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
     triggerComp1.TargetTrack = "Bass";
-
 
     // --- KAMERA ---
     auto* cameraObj = m_Scene->CreateGameObject("MainCamera");
@@ -224,7 +223,7 @@ void LayerGuga::OnAttach() {
     Renderer::OnWindowResize(width, height);
 }
 
-void LayerGuga::OnDetach() {}
+void LayerGuga::OnDetach() { }
 
 void LayerGuga::OnUpdate(DeltaTime deltaTime) {
     NFS_PROFILE_FUNCTION();
@@ -246,8 +245,7 @@ void LayerGuga::OnUpdate(DeltaTime deltaTime) {
                 auto* ct = m_CachedCamera->GetOwner()->GetTransform();
                 DebugCamera::SyncFromTransform(ct->GetPosition(), ct->GetRotation());
             }
-        }
-        else {
+        } else {
             if (m_CachedCameraController) m_CachedCameraController->SetActive(true);
             if (playerController) playerController->SetActive(true);
         }
@@ -278,8 +276,8 @@ void LayerGuga::OnUpdate(DeltaTime deltaTime) {
 void LayerGuga::OnRender() {
     if (m_CachedCamera) {
         Renderer::BeginScene(m_CachedCamera->GetViewMatrix(), m_CachedCamera->GetProjectionMatrix(),
-            m_CachedCamera->GetOwner()->GetTransform()->GetPosition(), m_Scene->GetDirLight(),
-            m_Scene->GetPointLights(), m_Scene->GetSpotLights(), m_EnvironmentMap.get());
+                             m_CachedCamera->GetOwner()->GetTransform()->GetPosition(), m_Scene->GetDirLight(),
+                             m_Scene->GetPointLights(), m_Scene->GetSpotLights(), m_EnvironmentMap.get());
 
         Renderer::DrawSkybox(m_Skybox, m_SkyboxShader);
         if (m_Scene) m_Scene->OnRender();
@@ -311,8 +309,7 @@ void LayerGuga::OnImGuiRender() {
         if (m_UseHDRI) {
             m_EnvironmentMap->GenerateIrradiance(m_EnvironmentMap->GetEnvironmentMapID());
             m_EnvironmentMap->GeneratePrefilterMap(m_EnvironmentMap->GetEnvironmentMapID());
-        }
-        else {
+        } else {
             m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
             m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
         }
@@ -372,7 +369,7 @@ void LayerGuga::OnEvent(Event& e) {
     dispatcher.Dispatch<WindowResizeEvent>([](WindowResizeEvent& ev) {
         Renderer::OnWindowResize(ev.GetWidth(), ev.GetHeight());
         return false;
-        });
+    });
 
     if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
         auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;

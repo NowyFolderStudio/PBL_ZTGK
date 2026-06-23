@@ -15,14 +15,14 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 lightSpaceMatrix;
 
-uniform float u_MusicTime;
+uniform float u_DistToEvent;
 uniform float u_ScaleStrengthY;
 uniform float u_ScaleStrengthXZ;
 uniform float u_BendStrength;
 uniform float u_TwistStrength;
 
 void main() {
-    float distToBeat = abs(fract(u_MusicTime + 0.5) - 0.5);
+    float distToBeat = u_DistToEvent;
     float peak = 1.0 - (distToBeat * 2.0);
     float activePhase = max(0.0, (peak - 0.5) * 2.0);
     float wave = pow(activePhase, 2.0);

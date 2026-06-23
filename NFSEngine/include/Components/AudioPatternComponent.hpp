@@ -10,53 +10,57 @@
 #include <vector>
 
 namespace NFSEngine {
-	class AudioPatternComponent : public Component {
-	public:
-		float GlobalPitchModifier = 0.0f;
+    class AudioPatternComponent : public Component {
+    public:
+        float GlobalPitchModifier = 0.0f;
 
-		AudioPatternComponent(GameObject* owner) : Component(owner) {};
-		~AudioPatternComponent() override;
+        AudioPatternComponent(GameObject* owner)
+            : Component(owner) { };
+        ~AudioPatternComponent() override;
 
-		void LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer);
+        void LoadPattern(const std::string& patternFile, RhythmSequencer* sequencer);
 
-		void OnUpdate(DeltaTime deltaTime) override;
-		void OnImGuiRender() override;
+        void OnUpdate(DeltaTime deltaTime) override;
+        void OnImGuiRender() override;
 
-		void SetVolume(float volume);
-		void SetMute(bool mute);
+        void SetVolume(float volume);
+        void SetMute(bool mute);
 
-		float GetVolume() const { return m_Volume; }
-		std::string GetName() const override { return "AudioComponent"; }
-		std::string GetPatternName() const { return m_CurrentPattern.name; }
+        float GetVolume() const { return m_Volume; }
+        std::string GetName() const override { return "AudioComponent"; }
+        std::string GetPatternName() const { return m_CurrentPattern.name; }
 
-		std::string TrackName = "Default";
-		bool IsActive = true;
+        Pattern GetPattern() const { return m_CurrentPattern; }
+        RhythmSequencer* GetSequencer() const { return m_Sequencer; }
 
-	private:
-		struct VoiceData {
-			bool isPlaying = false;
-			bool isFading = false;
-			float fadeTimer = 0.0f;
-			int stop16thTotal = 0;
-		};
+        std::string TrackName = "Default";
+        bool IsActive = true;
 
-		void LoadSound(const std::string& filepath);
-		void PlayNote(float pitchOffset, int lengthIn16ths);
+    private:
+        struct VoiceData {
+            bool isPlaying = false;
+            bool isFading = false;
+            float fadeTimer = 0.0f;
+            int stop16thTotal = 0;
+        };
 
-		std::vector<ma_sound> m_Voices;
-		std::vector<VoiceData> m_VoiceData;
-		int m_CurrentVoiceIndex = 0;
+        void LoadSound(const std::string& filepath);
+        void PlayNote(float pitchOffset, int lengthIn16ths);
 
-		bool m_IsLoaded = false;
+        std::vector<ma_sound> m_Voices;
+        std::vector<VoiceData> m_VoiceData;
+        int m_CurrentVoiceIndex = 0;
 
-		Pattern m_CurrentPattern;
-		RhythmSequencer* m_Sequencer = nullptr;
+        bool m_IsLoaded = false;
 
-		int m_LastPlayed16thTotal = -1;
+        Pattern m_CurrentPattern;
+        RhythmSequencer* m_Sequencer = nullptr;
 
-		float m_Volume = 1.0f;
+        int m_LastPlayed16thTotal = -1;
 
-		bool m_IsMuted = false;
-		float m_UnmutedVolume = 1.0f;
-	};
-}
+        float m_Volume = 1.0f;
+
+        bool m_IsMuted = false;
+        float m_UnmutedVolume = 1.0f;
+    };
+} // namespace NFSEngine

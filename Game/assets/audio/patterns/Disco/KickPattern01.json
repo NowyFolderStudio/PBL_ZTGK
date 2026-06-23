@@ -9,28 +9,32 @@
       "beat": 1,
       "16th": 1,
       "note": "A4",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 1,
       "note": "A4",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 1,
       "note": "A4",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 1,
       "note": "A4",
-      "length": 4
+      "length": 4,
+      "event": true
     }
   ]
 }

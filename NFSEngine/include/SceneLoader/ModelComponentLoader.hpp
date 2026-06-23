@@ -1,4 +1,6 @@
 #pragma once
+#include "Components/AnimatorComponent.hpp"
+#include "Components/AudioReactiveComponent.hpp"
 #include "Renderer/Material.hpp"
 #include "SceneLoader/IComponentLoader.hpp"
 #include "Components/ModelComponent.hpp"
@@ -34,6 +36,7 @@ namespace NFSEngine {
                             shader = Shader::Create("AudioShader", "assets/shaders/audioShader.vert",
                                                     "assets/shaders/toonShaderNew.frag");
                             material->name = "AnimationMaterial";
+                            targetObj->AddComponent<AudioReactiveComponent>();
                             for (const auto& prop : comp["properties"]) {
                                 std::string propName = prop["name"];
                                 std::string propValue = prop["value"];
@@ -46,6 +49,8 @@ namespace NFSEngine {
                                     material->SetFloat("u_BendStrength", std::stof(propValue));
                                 } else if (propName == "u_TwistStrength") {
                                     material->SetFloat("u_TwistStrength", std::stof(propValue));
+                                } else if (propName == "TargetTrackName") {
+                                    targetObj->GetComponent<AudioReactiveComponent>()->TargetTrackName = propValue;
                                 }
                             }
                         } else if (comp["name"] == "DiffractionCD") {

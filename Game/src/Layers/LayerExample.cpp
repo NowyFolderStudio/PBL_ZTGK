@@ -264,7 +264,7 @@ void LayerExample::OnAttach() {
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
 
-    // zmiana trac�w test
+    // zmiana trac锟絯 test
 
     auto matCassette = std::make_shared<NFSEngine::Material>();
     matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
@@ -286,7 +286,7 @@ void LayerExample::OnAttach() {
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
     casetteBassComp.TracksToUnlock.push_back("Bass");
 
-    // zmiana trac體 test
+    // zmiana trac楂� test
 
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
@@ -431,18 +431,6 @@ void LayerExample::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
         for (auto* keyTrigger : m_CachedPianoKeys) {
             keyTrigger->OnUpdate(deltaTime);
-        }
-    }
-
-    {
-        NFS_PROFILE_SCOPE("LayerExample: Material Uniforms Update");
-        float songPos = 0.0f;
-        if (m_CachedMusicDirector) {
-            songPos = m_CachedMusicDirector->Sequencer.GetContinuousBeatTime();
-        }
-
-        for (auto mat : m_AnimatedMaterials) {
-            mat->SetFloat("u_MusicTime", songPos);
         }
     }
 

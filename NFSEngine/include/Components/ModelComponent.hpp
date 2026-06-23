@@ -38,6 +38,7 @@ namespace NFSEngine {
         }
 
         std::shared_ptr<Material> GetMaterial(int index) { return m_Materials[index]; }
+        std::vector<std::shared_ptr<Material>> GetMaterials() { return m_Materials; }
         BoundingSphere GetCachedLocalSphere() const { return m_LocalBoundingSphere; }
         std::pair<glm::vec3, glm::vec3> GetCachedLocalAABB() const { return m_LocalAABB; }
 

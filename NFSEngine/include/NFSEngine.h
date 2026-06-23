@@ -16,6 +16,7 @@
 #include "Core/Tags.hpp"
 #include "Core/Action.hpp"
 #include "Core/Log.hpp"
+#include "Core/AudioManager.hpp"
 
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/Audio/RhythmSequencer.hpp"
