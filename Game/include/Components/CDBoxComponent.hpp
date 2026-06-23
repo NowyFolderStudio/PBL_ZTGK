@@ -109,6 +109,8 @@ private:
     void OnButtonPressed() {
         if (m_IsEjected) return;
 
+        std::cout << "halo!" << std::endl;
+
         IsPlaying = !IsPlaying;
         m_IsEjected = true;
         m_IsEjecting = true;

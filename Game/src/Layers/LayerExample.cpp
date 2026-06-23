@@ -69,6 +69,7 @@
 #include "SceneLoader/EnemyComponentLoader.hpp"
 #include "SceneLoader/DestructibleComponentLoader.hpp"
 #include "SceneLoader/CDBoxComponentLoader.hpp"
+#include "SceneLoader/InteractivePianoLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -117,6 +118,7 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<DestructibleComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<CDBoxComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<RotatingObjectLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<InteractivePianoLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -262,7 +264,8 @@ void LayerExample::OnAttach() {
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
 
-    // --- KASETY ---
+    // zmiana trac�w test
+
     auto matCassette = std::make_shared<NFSEngine::Material>();
     matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
 
@@ -291,11 +294,6 @@ void LayerExample::OnAttach() {
     trigger1->AddComponent<BoxCollider3DComponent>();
     auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
     triggerComp1.TargetTrack = "Bass";
-
-    // PianoObject
-    NFSEngine::GameObject* pianoManagerObj = m_Scene->CreateGameObject("PianoManager");
-    auto& pianoLogic = pianoManagerObj->AddComponent<InteractivePiano>();
-    pianoLogic.LoadPiano("assets/audio/sounds/piano01.ogg");
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
