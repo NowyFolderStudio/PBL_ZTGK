@@ -27,4 +27,5 @@ private:
 
     float m_VideoAccumulator = 0.0f;
     bool m_videoEnded = false;
+    bool m_Skipped = false;
 };

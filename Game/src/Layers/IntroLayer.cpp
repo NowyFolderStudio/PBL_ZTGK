@@ -11,6 +11,7 @@ IntroLayer::~IntroLayer() {
 }
 
 void IntroLayer::OnAttach() {
+    m_Skipped = false;
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
     m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
@@ -68,7 +69,7 @@ void IntroLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
             }
         }
 
-        if (m_VideoDecoder->IsFinished()) {
+        if (m_VideoDecoder->IsFinished() || m_Skipped == true) {
             GameManager::Get().RequestStateChange(GameState::Playing);
             NFS_INFO("Intro ended");
             return;
@@ -91,4 +92,13 @@ void IntroLayer::OnRender() {
     NFSEngine::UIRenderer::End();
 }
 
-void IntroLayer::OnEvent(NFSEngine::Event& e) { }
+void IntroLayer::OnEvent(NFSEngine::Event& e) {
+    if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
+        auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::Space || keyEvent.GetKeyCode() == NFSEngine::Key::Enter
+            || keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
+            m_Skipped = true;
+            e.Handled = true;
+        }
+    }
+}
