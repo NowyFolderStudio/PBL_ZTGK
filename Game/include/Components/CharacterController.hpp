@@ -538,17 +538,6 @@ private:
             p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, targetVel.x, currentAcc * dt);
             p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, targetVel.z, currentAcc * dt);
 
-            glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
-            float speed = glm::length(currentXZ);
-            if (speed > 0.5f) {
-                float alignment = glm::dot(currentXZ / speed, moveVector);
-                if (alignment > 0.0f) {
-                    float projectedSpeed = glm::dot(currentXZ, moveVector);
-                    p_RigidBody->Velocity.x = moveVector.x * projectedSpeed;
-                    p_RigidBody->Velocity.z = moveVector.z * projectedSpeed;
-                }
-            }
-
         } else {
             if (p_RigidBody->IsGrounded) {
                 glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
