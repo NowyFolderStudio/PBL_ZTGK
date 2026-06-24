@@ -371,8 +371,8 @@ protected:
 
 private:
     void InitTutorialUI() {
-        float originalWidth = 2500.0f;
-        float originalHeight = 3750.0f;
+        float originalWidth = 400.0f;
+        float originalHeight = 600.0f;
         float aspectRatio = originalWidth / originalHeight;
 
         float targetHeight = 300.0f;
