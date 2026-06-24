@@ -270,11 +270,6 @@ void LayerExample::OnAttach() {
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
 
-<<<<<<< HEAD
-    // zmiana trac閿熺弹 test
-
-=======
->>>>>>> refs/remotes/origin/main
     auto matCassette = std::make_shared<NFSEngine::Material>();
     matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
 
@@ -295,9 +290,6 @@ void LayerExample::OnAttach() {
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
     casetteBassComp.TracksToUnlock.push_back("Bass");
 
-<<<<<<< HEAD
-    // zmiana trac妤傦拷 test
-=======
     auto matRzutka = std::make_shared<NFSEngine::Material>();
     matRzutka->AlbedoMap = NFSEngine::Texture::Create("assets/models/Rzutka/color_rzutka_neonpink.png");
 
@@ -309,7 +301,6 @@ void LayerExample::OnAttach() {
     rzutkaObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
     auto& rzutkaComp = rzutkaObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matRzutka);
     rzutkaComp.AddLOD(rzutkaModel, 10000.0f);
->>>>>>> refs/remotes/origin/main
 
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
