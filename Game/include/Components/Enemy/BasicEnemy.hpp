@@ -8,6 +8,7 @@
 #include "EnemyAttackState.hpp"
 #include "Components/CharacterController.hpp"
 #include "Components/DestructibleComponent.hpp"
+#include "Components/ModelComponent.hpp"
 
 class BasicEnemy : public NFSEngine::Component {
 public:
@@ -29,9 +30,9 @@ public:
     glm::vec3 PatrolPointA = glm::vec3(0.0f);
     glm::vec3 PatrolPointB = glm::vec3(0.0f);
 
-    float MovementSpeed = 3.0f;
-    float ChaseSpeed = 5.0f;
-    float DetectionRadius = 5.0f;
+    float MovementSpeed = 5.0f;
+    float ChaseSpeed = 7.0f;
+    float DetectionRadius = 15.0f;
     float DamageCooldown = 2.0f;
     float KnockBackStrength = 25.0f;
 
@@ -107,9 +108,15 @@ protected:
     bool m_MovingToB = true;
     float m_LastDamageTime = 0.0f;
 
+    NFSEngine::ModelComponent* m_VisualModel = nullptr;
+    float m_TimeAccumulator = 0.0f;
+    float m_CurrentAggro = 0.0f;
+
     void OnStart() override {
         m_RigidBody = GetOwner()->GetComponent<NFSEngine::RigidBody3DComponent>();
         m_Collider = GetOwner()->GetComponent<NFSEngine::ColliderComponent>();
+
+        m_VisualModel = GetOwner()->GetComponent<NFSEngine::ModelComponent>();
 
         const auto& gameObjects = GetOwner()->GetScene()->GetAllGameObjects();
         for (const auto& go : gameObjects) {
@@ -144,6 +151,30 @@ protected:
         if (m_LastDamageTime > 0.0f) {
             m_LastDamageTime -= deltaTime.GetSeconds();
         }
+
         if (m_CurrentState) m_CurrentState->Update(this, deltaTime);
+
+        if (m_VisualModel) {
+            auto mat = m_VisualModel->GetMaterial(0);
+
+            if (mat) {
+                float targetAggro = 0.0f;
+                if (m_Player) {
+                    float dist = glm::distance(GetPosition(), GetPlayerPosition());
+                    if (dist <= DetectionRadius) {
+                        targetAggro = 1.0f - glm::clamp((dist / DetectionRadius), 0.0f, 1.0f);
+                    }
+                }
+
+                m_CurrentAggro = glm::mix(m_CurrentAggro, targetAggro, deltaTime.GetSeconds() * 3.0f);
+
+                float timeMultiplier = 1.0f + (m_CurrentAggro * 4.0f);
+
+                m_TimeAccumulator += deltaTime.GetSeconds() * timeMultiplier;
+
+                mat->SetFloat("u_Time", m_TimeAccumulator);
+                mat->SetFloat("u_Aggro", m_CurrentAggro);
+            }
+        }
     }
 };

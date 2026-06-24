@@ -37,6 +37,7 @@ namespace NFSEngine {
                                                     "assets/shaders/toonShaderNew.frag");
                             material->name = "AnimationMaterial";
                             targetObj->AddComponent<AudioReactiveComponent>();
+                            material->SetFloat("u_IsActive", 1.0f);
                             for (const auto& prop : comp["properties"]) {
                                 std::string propName = prop["name"];
                                 std::string propValue = prop["value"];

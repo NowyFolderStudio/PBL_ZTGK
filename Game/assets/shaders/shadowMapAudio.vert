@@ -10,12 +10,14 @@ uniform float u_ScaleStrengthXZ;
 uniform float u_BendStrength;
 uniform float u_TwistStrength;
 
+uniform float u_IsActive = 1.0;
+
 void main()
 {
     float distToBeat = u_DistToEvent;
     float peak = 1.0 - (distToBeat * 2.0);
     float activePhase = max(0.0, (peak - 0.5) * 2.0);
-    float wave = pow(activePhase, 2.0);
+    float wave = pow(activePhase, 2.0) * u_IsActive;
 
     vec3 localPos = aPos;
 
