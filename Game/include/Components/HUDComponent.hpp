@@ -91,6 +91,7 @@ private:
 
     NFSEngine::UIObject* m_DialoguePortrait = nullptr;
     NFSEngine::UIObject* m_DialogueName = nullptr;
+    NFSEngine::UIObject* m_DialogueNameShadow = nullptr;
     NFSEngine::UIObject* m_DialogueShadow = nullptr;
     NFSEngine::UIObject* m_DialogueMsg = nullptr;
 
@@ -580,15 +581,26 @@ private:
     }
 
     void InitDialogueUI() { /* Bez zmian */
-        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 120.0f;
+        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 100.0f;
         const float textStartX = 650.0f;
 
         NFSEngine::UI::ImageParameters portraitParams;
-        portraitParams.position = glm::vec3(650.0f - 200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 200.0f, 10.0f);
-        portraitParams.width = 250.0f;
-        portraitParams.height = 250.0f;
-        portraitParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        portraitParams.position = glm::vec3(650.0f - 200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 150.0f, 10.0f);
+        portraitParams.width = 640.0f;
+        portraitParams.height = 360.0f;
+        portraitParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
         m_DialoguePortrait = &NFSEngine::UI::Image(*m_Canvas, portraitParams);
+        m_DialoguePortrait->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+
+        NFSEngine::UI::LabelParameters nameShadowParams;
+        nameShadowParams.position = glm::vec3(textStartX + 3.0f, bottomY - 137.0f, 10.1f);
+        nameShadowParams.text = "";
+        nameShadowParams.font = NFSEngine::DialogueManager::Get().GetFont();
+        nameShadowParams.scale = 1.2f;
+        nameShadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        m_DialogueNameShadow = &NFSEngine::UI::Label(*m_Canvas, nameShadowParams);
+        m_DialogueNameShadow->Transform.Pivot.x = 0.0f;
+        m_DialogueNameShadow->Transform.Pivot.y = 0.0f;
 
         NFSEngine::UI::LabelParameters nameParams;
         nameParams.position = glm::vec3(textStartX, bottomY - 140.0f, 10.1f);
@@ -655,6 +667,7 @@ private:
 
         if (dialogue.IsVisible) {
             SetLabelState(m_DialogueName, dialogue.SpeakerName + ":", 1.0f);
+            SetLabelState(m_DialogueNameShadow, dialogue.SpeakerName + ":", 1.0f);
             SetLabelState(m_DialogueShadow, dialogue.DisplayedMessage, 1.0f);
             SetLabelState(m_DialogueMsg, dialogue.DisplayedMessage, 1.0f);
 
@@ -663,12 +676,19 @@ private:
                 imgComp->Color.a = 1.0f;
 
                 if (m_CurrentPortraitPath != dialogue.PortraitPath && !dialogue.PortraitPath.empty()) {
-                    imgComp->TexturePtr = NFSEngine::Texture::Create(dialogue.PortraitPath);
+
+                    NFSEngine::TextureParameters portraitParams;
+                    portraitParams.WrapS = NFSEngine::TextureWrap::Clamp;
+                    portraitParams.WrapT = NFSEngine::TextureWrap::Clamp;
+                    portraitParams.sRGB = false;
+
+                    imgComp->TexturePtr = NFSEngine::Texture::Create(dialogue.PortraitPath, portraitParams);
                     m_CurrentPortraitPath = dialogue.PortraitPath;
                 }
             }
         } else {
             SetLabelState(m_DialogueName, "", 0.0f);
+            SetLabelState(m_DialogueNameShadow, "", 0.0f);
             SetLabelState(m_DialogueShadow, "", 0.0f);
             SetLabelState(m_DialogueMsg, "", 0.0f);
 

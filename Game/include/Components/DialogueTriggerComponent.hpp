@@ -16,7 +16,7 @@ public:
 
     std::string SpeakerName = "Grandpa";
     std::string Message = "Look at that jump!";
-    std::string PortraitPath = "assets/textures/cat.png";
+    std::string PortraitPath = "assets/textures/ui/portrait.png";
     float Duration = 5.0f;
     bool TriggerOnce = false;
 

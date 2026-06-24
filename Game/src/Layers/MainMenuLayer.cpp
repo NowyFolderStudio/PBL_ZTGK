@@ -17,7 +17,7 @@ void MainMenuLayer::OnAttach() {
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
     m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/menu_lq.mpg")) {
+    if (m_VideoDecoder->OpenFile("assets/videos/menu_lq.mpg", true)) {
         NFSEngine::TextureParameters texParams;
         texParams.Channels = 3;
         texParams.GenerateMipmaps = false;
@@ -179,7 +179,7 @@ void MainMenuLayer::BuildUI() {
     startParams.font = m_Font.get();
     startParams.textColor = normalColor;
     startParams.textScale = m_ButtonScales[0];
-    startParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::Playing); };
+    startParams.onClick = []() { GameManager::Get().RequestStateChange(GameState::Intro); };
     startParams.onHover = [this]() { m_FocusedIndex = 0; };
 
     auto& startBtn = NFSEngine::UI::Button(*m_Canvas, startParams);

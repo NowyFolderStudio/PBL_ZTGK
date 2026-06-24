@@ -22,7 +22,7 @@ namespace NFSEngine {
             }
         }
 
-        bool OpenFile(const std::string& path) override {
+        virtual bool OpenFile(const std::string& path, bool loop = true) {
             StopThread();
 
             if (m_PLM) plm_destroy(m_PLM);
@@ -32,7 +32,8 @@ namespace NFSEngine {
                 NFS_CORE_ERROR("Can't load file: {}", path);
                 return false;
             }
-            plm_set_loop(m_PLM, 1);
+
+            plm_set_loop(m_PLM, loop ? 1 : 0);
             plm_set_audio_enabled(m_PLM, 0);
 
             m_Width = plm_get_width(m_PLM);
@@ -43,8 +44,9 @@ namespace NFSEngine {
             m_FrontBuffer.resize(m_Width * m_Height * 3);
             m_BackBuffer.resize(m_Width * m_Height * 3);
             m_FrameReady = false;
+            m_IsFinished = false;
 
-            StartThread(); // Odpalamy wątek w tle!
+            StartThread();
 
             return true;
         }
@@ -60,6 +62,8 @@ namespace NFSEngine {
 
             return true;
         }
+
+        bool IsFinished() const { return m_IsFinished; }
 
         void* GetVideoData() override { return m_FrontBuffer.data(); }
         uint32_t GetWidth() const override { return m_Width; }
@@ -100,6 +104,10 @@ namespace NFSEngine {
                 if (frame) {
                     plm_frame_to_rgb(frame, m_BackBuffer.data(), stride);
                     m_FrameReady = true;
+                } else {
+                    if (plm_has_ended(m_PLM)) {
+                        m_IsFinished = true;
+                    }
                 }
             }
         }
@@ -118,6 +126,6 @@ namespace NFSEngine {
         std::condition_variable m_CV;
         std::atomic<bool> m_Running { false };
         std::atomic<bool> m_FrameReady { false };
+        std::atomic<bool> m_IsFinished { false };
     };
-
 } // namespace NFSEngine

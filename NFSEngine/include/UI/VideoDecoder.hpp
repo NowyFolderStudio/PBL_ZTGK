@@ -5,8 +5,10 @@ namespace NFSEngine {
     public:
         virtual ~VideoDecoder() = default;
 
-        virtual bool OpenFile(const std::string& path) = 0;
+        virtual bool OpenFile(const std::string& path, bool loop = true) = 0;
         virtual bool ReadNextFrame() = 0;
+
+        virtual bool IsFinished() const = 0;
 
         virtual void* GetVideoData() = 0;
         virtual uint32_t GetWidth() const = 0;

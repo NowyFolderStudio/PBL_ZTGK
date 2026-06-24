@@ -7,6 +7,7 @@
 #include "Layers/LayerExample.hpp"
 #include "Layers/LayerZmoreq.hpp"
 #include "Layers/LayerGuga.hpp"
+#include "Layers/IntroLayer.hpp"
 
 GameManager& GameManager::Get() {
     static GameManager instance;
@@ -61,6 +62,11 @@ void GameManager::ChangeState(GameState newState) {
         m_CurrentLayer = new MainMenuLayer();
         app.PushLayer(m_CurrentLayer);
         break;
+    case GameState::Intro:
+        m_CurrentLayer = new IntroLayer();
+        app.PushLayer(m_CurrentLayer);
+        break;
+
     case GameState::Playing: {
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
 
