@@ -7,6 +7,7 @@
 #include "Aura/AuraManager.hpp"
 #include "Components/Transform.hpp"
 #include "Core/Audio/AudioEngine.hpp"
+#include "Components/Managers/TutorialManager.hpp"
 #include "Managers/ScoreManager.hpp"
 #include "Managers/LivesManager.hpp"
 #include "Renderer/Texture.hpp"
@@ -102,6 +103,19 @@ private:
     float m_PulseStrengthScore = 0.10f;
     float m_PulseStrengthCooldown = 0.10f;
 
+    // TUTORIAL
+    NFSEngine::UIObject* m_TutorialTexture = nullptr;
+    bool m_TutorialShown = false;
+
+    size_t m_TutorialShowEventId = 0;
+    size_t m_TutorialHideEventId = 0;
+
+    float m_TutorialTargetAlpha = 0.0f;
+    float m_TutorialCurrentAlpha = 0.0f;
+
+    float m_TutorialLerpSpeed = 20;
+    std::unordered_map<TutorialPanel, std::shared_ptr<NFSEngine::Texture>> m_TutorialTextures;
+
 protected:
     void OnAwake() override {
         if (m_Canvas == nullptr) {
@@ -116,6 +130,27 @@ protected:
         InitAuraUI();
         InitCooldownUI();
         InitDialogueUI();
+        InitTutorialUI();
+
+        if (TutorialManager::Instance) {
+            m_TutorialShowEventId = TutorialManager::Instance->OnShowTutorial.AddListener([this](TutorialPanel panel) {
+                if (m_TutorialTexture && m_TutorialTexture->HasComponent<NFSEngine::ImageComponent>()) {
+
+                    // Podmieniamy teksturę korzystając z tych załadowanych do pamięci
+                    if (m_TutorialTextures.find(panel) != m_TutorialTextures.end()) {
+                        m_TutorialTexture->GetComponent<NFSEngine::ImageComponent>()->TexturePtr = m_TutorialTextures[panel];
+                    }
+                }
+
+                this->m_TutorialTargetAlpha = 1.0f;
+                this->m_TutorialShown = true;
+            });
+
+            m_TutorialHideEventId = TutorialManager::Instance->OnHideTutorial.AddListener([this]() {
+                this->m_TutorialTargetAlpha = 0.0f;
+                this->m_TutorialShown = false;
+            });
+        }
 
         if (AuraManager::Instance) {
             UpdateAuraVisuals(AuraManager::Instance->CurrentAura);
@@ -217,6 +252,11 @@ protected:
 
         float scorePulseMult = 1.0f + (smoothPulse * m_PulseStrengthScore);
 
+        if (m_TutorialTexture && m_TutorialTexture->HasComponent<NFSEngine::ImageComponent>()) {
+            m_TutorialCurrentAlpha += (m_TutorialTargetAlpha - m_TutorialCurrentAlpha) * m_TutorialLerpSpeed * deltaTime;
+            m_TutorialTexture->GetComponent<NFSEngine::ImageComponent>()->Color.a = m_TutorialCurrentAlpha;
+        }
+
         for (size_t i = 0; i < m_FullNotes.size(); i++) {
             if (i < m_FullNotesBaseWidths.size()) {
 
@@ -315,6 +355,12 @@ protected:
             LivesManager::Instance->OnLivesChanged.RemoveListener(m_LivesEventId);
             m_LivesEventId = 0;
         }
+        if (TutorialManager::Instance && m_TutorialShowEventId != 0) {
+            TutorialManager::Instance->OnShowTutorial.RemoveListener(m_TutorialShowEventId);
+            TutorialManager::Instance->OnHideTutorial.RemoveListener(m_TutorialHideEventId);
+            m_TutorialShowEventId = 0;
+            m_TutorialHideEventId = 0;
+        }
     }
 
     void SetVignetteColor(const glm::vec4& color) {
@@ -324,6 +370,69 @@ protected:
     }
 
 private:
+    void InitTutorialUI() {
+        float originalWidth = 2500.0f;
+        float originalHeight = 3750.0f;
+        float aspectRatio = originalWidth / originalHeight;
+
+        float targetHeight = 400.0f;
+        float targetWidth = targetHeight * aspectRatio;
+
+        NFSEngine::UI::ImageParameters tutParams;
+        tutParams.position = glm::vec3(1920.0f / 2.0f, (NFSEngine::UIRenderer::VIRTUAL_HEIGHT / 2.0f) - 250.0f, 50.0f);
+        tutParams.width = targetWidth;
+        tutParams.height = targetHeight;
+        tutParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+
+        m_TutorialTexture = &NFSEngine::UI::Image(*m_Canvas, tutParams);
+        m_TutorialTexture->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+
+        // --- PRELOADING TEKSTUR ---
+        NFSEngine::TextureParameters texParam;
+        texParam.WrapS = NFSEngine::TextureWrap::Clamp;
+        texParam.WrapT = NFSEngine::TextureWrap::Clamp;
+
+        m_TutorialTextures[TutorialPanel::Walk]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_ruch.png", texParam);
+        m_TutorialTextures[TutorialPanel::LookAround]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_patrzenie.png", texParam);
+        m_TutorialTextures[TutorialPanel::Jump]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_jump.png", texParam);
+        m_TutorialTextures[TutorialPanel::Checkpoint]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_checkpoint.png", texParam);
+        m_TutorialTextures[TutorialPanel::Pause]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_pause.png", texParam);
+        m_TutorialTextures[TutorialPanel::WallJump]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_walljump.png", texParam);
+        m_TutorialTextures[TutorialPanel::Aura]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_aura.png", texParam);
+        m_TutorialTextures[TutorialPanel::DoubleJump]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_doublejump.png", texParam);
+    }
+
+    std::string GetTutorialTexturePath(TutorialPanel panel) {
+        switch (panel) {
+        case TutorialPanel::Walk:
+            return "assets/textures/ui/tutorial/tutorial_ruch.png";
+        case TutorialPanel::LookAround:
+            return "assets/textures/ui/tutorial/tutorial_patrzenie.png";
+        case TutorialPanel::Jump:
+            return "assets/textures/ui/tutorial/tutorial_jump.png";
+        case TutorialPanel::Checkpoint:
+            return "assets/textures/ui/tutorial/tutorial_checkpoint.png";
+        case TutorialPanel::Pause:
+            return "assets/textures/ui/tutorial/tutorial_pause.png";
+        case TutorialPanel::WallJump:
+            return "assets/textures/ui/tutorial/tutorial_walljump.png";
+        case TutorialPanel::Aura:
+            return "assets/textures/ui/tutorial/tutorial_aura.png";
+        case TutorialPanel::DoubleJump:
+            return "assets/textures/ui/tutorial/tutorial_doublejump.png";
+        default:
+            return "";
+        }
+    }
+
     void InitVignetteUI() { /* Bez zmian */
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;

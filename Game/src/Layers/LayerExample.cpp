@@ -7,8 +7,10 @@
 #include "Components/CoinComponent.hpp"
 #include "Components/HazardComponent.hpp"
 #include "Components/CheckpointComponent.hpp"
+#include "Components/Managers/TutorialManager.hpp"
 #include "Components/ParticleEmitterComponent.hpp"
 #include "Components/StartingPoint.hpp"
+#include "Components/TutorialTriggerComponent.hpp"
 #include "Components/ZoneCameraTriggerComponent.hpp"
 #include "Components/Managers/ScoreManager.hpp"
 #include "Components/Managers/LivesManager.hpp"
@@ -62,6 +64,7 @@
 #include "SceneLoader/SceneLoader.hpp"
 #include "SceneLoader/CoinComponentLoader.hpp"
 #include "SceneLoader/CheckpointComponentLoader.hpp"
+#include "SceneLoader/TutorialTriggerLoader.hpp"
 #include "SceneLoader/WallJumpLoader.hpp"
 #include "SceneLoader/ZoneCameraTriggerComponentLoader.hpp"
 #include "SceneLoader/DancingWallLoader.hpp"
@@ -132,12 +135,16 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<PortalComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<DialogueComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<StartingPointLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<TutorialTriggerLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
 
     NFSEngine::GameObject* uiObj = m_Scene->CreateGameObject("HUD");
     m_HUD = &uiObj->AddComponent<HUDComponent>();
+    NFSEngine::GameObject* tutorialManager = m_Scene->CreateGameObject("TutorialManager");
+    tutorialManager->AddComponent<TutorialManager>();
+    tutorialManager->Awake();
 
     NFSEngine::GameObject* loadingObj = m_Scene->CreateGameObject("LoadingScreen");
     m_LoadingScreen = &loadingObj->AddComponent<LoadingScreenComponent>();

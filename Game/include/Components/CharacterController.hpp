@@ -1,5 +1,6 @@
 #pragma once
 #include <NFSEngine.h>
+#include <glm/geometric.hpp>
 #include <memory>
 #include <vector>
 #include "Components/AnimatorComponent.hpp"
@@ -283,7 +284,6 @@ protected:
         if (NFSEngine::InputActionManager::IsDown("Dash")) {
             Dash();
         }
-
     }
 
     virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
@@ -394,8 +394,12 @@ private:
             return glm::vec3(0.0f);
         }
 
-        glm::vec3 camPos = m_CameraTransform->GetPosition();
-        glm::vec3 playerPos = m_Owner->GetTransform()->GetPosition();
+        glm::vec3 camPos = m_CameraTransform->GetWorldPosition();
+        glm::vec3 playerPos = m_Owner->GetTransform()->GetWorldPosition();
+
+        float inputLenght = m_InputDirection.length();
+
+        glm::vec3 normalizedDirection = glm::normalize(m_InputDirection);
 
         glm::vec3 forward = playerPos - camPos;
         forward.y = 0.0f;
