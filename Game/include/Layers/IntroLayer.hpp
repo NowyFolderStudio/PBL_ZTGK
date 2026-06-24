@@ -23,9 +23,13 @@ private:
     std::unique_ptr<NFSEngine::PLMpegDecoder> m_VideoDecoder;
     std::shared_ptr<NFSEngine::Texture> m_VideoTexture;
 
+    std::shared_ptr<NFSEngine::Texture> m_SkipTexture;
+    NFSEngine::UIObject* m_SkipGraphic = nullptr;
+
     NFSEngine::UIObject* m_VideoImage = nullptr;
 
     float m_VideoAccumulator = 0.0f;
     bool m_videoEnded = false;
     bool m_Skipped = false;
+    float m_SkipTimer = 0.0f;
 };

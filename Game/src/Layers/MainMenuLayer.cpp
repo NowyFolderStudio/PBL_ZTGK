@@ -78,7 +78,7 @@ void MainMenuLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
     if (input.IsDown("UIConfirm")) {
         if (m_FocusedIndex == 0)
-            GameManager::Get().RequestStateChange(GameState::Playing);
+            GameManager::Get().RequestStateChange(GameState::Intro);
         else if (m_FocusedIndex == 1)
             GameManager::Get().OpenOptions();
         else if (m_FocusedIndex == 2)
