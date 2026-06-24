@@ -14,11 +14,11 @@ public:
 
     std::string GetName() const override { return "DialogueTriggerComponent"; }
 
-    std::string SpeakerName = "Cat";
+    std::string SpeakerName = "Grandpa";
     std::string Message = "Look at that jump!";
     std::string PortraitPath = "assets/textures/cat.png";
     float Duration = 5.0f;
-    bool TriggerOnce = true;
+    bool TriggerOnce = false;
 
 protected:
     void OnAwake() override { }

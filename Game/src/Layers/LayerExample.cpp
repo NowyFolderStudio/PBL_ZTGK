@@ -73,6 +73,8 @@
 #include "SceneLoader/CDBoxComponentLoader.hpp"
 #include "SceneLoader/InteractivePianoLoader.hpp"
 #include "SceneLoader/DartComponentLoader.hpp"
+#include "SceneLoader/PortalComponentLoader.hpp"
+#include "SceneLoader/DialogueComponentLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -125,6 +127,8 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<ConsolePuzzleLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<ButtonActivatorLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<DartComponentLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<PortalComponentLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<DialogueComponentLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");

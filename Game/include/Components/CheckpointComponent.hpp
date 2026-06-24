@@ -14,6 +14,12 @@ public:
     explicit CheckpointComponent(NFSEngine::GameObject* owner)
         : NFSEngine::Component(owner) { }
 
+    ~CheckpointComponent() {
+        if (s_ActiveCheckpoint == this) {
+            s_ActiveCheckpoint = nullptr;
+        }
+    }
+
     std::string GetName() const override { return "CheckpointComponent"; }
 
     glm::vec3 SpawnOffset = glm::vec3(0.0f);

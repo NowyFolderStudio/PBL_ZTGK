@@ -23,6 +23,7 @@
 #include "Components/HUDComponent.hpp"
 #include "Components/Managers/DialogueManager.hpp"
 #include "Components/DialogueTriggerComponent.hpp"
+#include "Components/PortalComponent.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -110,7 +111,7 @@ void LayerZmoreq::OnAttach() {
     auto animationShader = Shader::Create("AnimationShader", "assets/shaders/animation.vert", "assets/shaders/PBRShader.frag");
     auto capsuleModel = std::make_shared<Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
     auto enemyModel = std::make_shared<Model>("assets/models/lowsphere/scene.gltf");
-    
+
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(Tags::Player);
     m_Player->GetTransform()->SetPosition(m_PlayerSpawnPosition);
@@ -250,8 +251,6 @@ void LayerZmoreq::OnDetach() { }
 void LayerZmoreq::OnUpdate(DeltaTime deltaTime) {
     NFS_PROFILE_FUNCTION();
     m_DeltaTime = deltaTime;
-
-    NFSEngine::DialogueManager::Get().Update(deltaTime.GetSeconds());
 
     // --- Debug Camera Logic ---
     bool editorActive = DebugCamera::IsActive();
