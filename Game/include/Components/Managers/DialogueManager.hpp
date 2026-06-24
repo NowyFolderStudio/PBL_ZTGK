@@ -1,5 +1,8 @@
 #pragma once
 #include <string>
+#include <memory>
+#include "UI/UIFactory.hpp"
+#include "UI/UIRenderer.hpp"
 
 namespace NFSEngine {
 
@@ -28,12 +31,15 @@ namespace NFSEngine {
 
         const ActiveDialogue& GetActiveDialogue() const { return m_ActiveDialogue; }
 
+        NFSEngine::Text* GetFont();
+
     private:
         DialogueManager() = default;
         DialogueManager(const DialogueManager&) = delete;
         DialogueManager& operator=(const DialogueManager&) = delete;
 
         ActiveDialogue m_ActiveDialogue;
+        std::shared_ptr<NFSEngine::Text> m_Font;
     };
 
 } // namespace NFSEngine
