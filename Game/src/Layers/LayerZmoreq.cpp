@@ -24,6 +24,7 @@
 #include "Components/Managers/DialogueManager.hpp"
 #include "Components/DialogueTriggerComponent.hpp"
 #include "Components/PortalComponent.hpp"
+#include "Components/MusicDirector.hpp"
 
 // Core & Renderer
 #include "Core/Log.hpp"
@@ -60,9 +61,15 @@ void LayerZmoreq::OnAttach() {
     livesManager->SetTag(Tags::LivesManager);
     livesManager->AddComponent<LivesManager>();
 
-    auto* scoreManager = m_Scene->CreateGameObject("ScoreManager");
-    scoreManager->SetTag(Tags::ScoreManager);
+    // ScoreManager
+    NFSEngine::GameObject* scoreManager = m_Scene->CreateGameObject("ScoreManager");
+    scoreManager->SetTag(NFSEngine::Tags::ScoreManager);
     scoreManager->AddComponent<ScoreManager>();
+
+    // MusicDirector (i pewnie też LivesManager, HUD itp.)
+    NFSEngine::GameObject* directorObj = m_Scene->CreateGameObject("MusicDirector");
+    auto& directorComp = directorObj->AddComponent<MusicDirector>();
+    directorComp.InitMusic(m_Scene.get());
 
     auto* auraManager = m_Scene->CreateGameObject("AuraManager");
     auraManager->AddComponent<AuraManager>();

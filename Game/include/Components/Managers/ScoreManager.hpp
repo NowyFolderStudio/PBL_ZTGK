@@ -1,6 +1,7 @@
 #pragma once
 
 #include <NFSEngine.h>
+#include "GameManager.hpp"
 
 class ScoreManager : public NFSEngine::Component {
 public:
@@ -20,14 +21,15 @@ public:
     NFSEngine::Action<int> OnScoreChanged;
 
     void AddScore(int points) {
-        m_Score += points;
-        OnScoreChanged.Invoke(m_Score);
+        GameManager::Get().PlayerScore += points;
+        OnScoreChanged.Invoke(GameManager::Get().PlayerScore);
     }
 
-    int GetScore() const { return m_Score; }
+    int GetScore() const { return GameManager::Get().PlayerScore; }
+
     void ResetScore() {
-        m_Score = 0;
-        OnScoreChanged.Invoke(m_Score);
+        GameManager::Get().PlayerScore = 0;
+        OnScoreChanged.Invoke(0);
     }
 
 protected:
@@ -35,7 +37,4 @@ protected:
         if (Instance != nullptr && Instance != this) return;
         Instance = this;
     }
-
-private:
-    int m_Score = 0;
 };

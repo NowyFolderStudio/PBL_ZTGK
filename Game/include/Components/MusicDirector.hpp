@@ -9,6 +9,8 @@
 #include "Components/AudioPatternComponent.hpp"
 #include "Components/Aura/AuraManager.hpp"
 #include "Core/Scene.hpp"
+#include "GameManager.hpp"
+#include <algorithm>
 
 struct AuraPatternSet {
     std::string AuraFirstPattern;
@@ -21,7 +23,8 @@ public:
 
     std::vector<std::string> PitchReactiveTracks = { "Bass" };
 
-    MusicDirector(NFSEngine::GameObject* owner) : Component(owner) {}
+    MusicDirector(NFSEngine::GameObject* owner)
+        : Component(owner) { }
     std::string GetName() const override { return "MusicDirector"; }
 
     void InitMusic(NFSEngine::Scene* scene) {
@@ -112,9 +115,18 @@ public:
 
         SetupProgressions();
 
-        NFSEngine::AudioManager::MuteTrack("Bass", true);
-        NFSEngine::AudioManager::MuteTrack("Piano", true);
-        NFSEngine::AudioManager::MuteTrack("SubPiano", true);
+        auto& unlocked = GameManager::Get().UnlockedMusicTracks;
+
+        bool hasBass = std::find(unlocked.begin(), unlocked.end(), "Bass") != unlocked.end();
+        NFSEngine::AudioManager::MuteTrack("Bass", !hasBass);
+
+        bool hasPiano = std::find(unlocked.begin(), unlocked.end(), "Piano") != unlocked.end();
+        NFSEngine::AudioManager::MuteTrack("Piano", !hasPiano);
+
+        bool hasSubPiano = std::find(unlocked.begin(), unlocked.end(), "SubPiano") != unlocked.end();
+        NFSEngine::AudioManager::MuteTrack("SubPiano", !hasSubPiano);
+
+        m_TrackStageIndex = GameManager::Get().GlobalTrackStages;
     }
 
     void OnStart() override {
@@ -147,6 +159,11 @@ public:
     void UnlockTrack(const std::string& trackName) {
         if (trackName.empty()) return;
         NFSEngine::AudioManager::MuteTrack(trackName, false);
+
+        auto& unlocked = GameManager::Get().UnlockedMusicTracks;
+        if (std::find(unlocked.begin(), unlocked.end(), trackName) == unlocked.end()) {
+            unlocked.push_back(trackName);
+        }
     }
 
     void AdvanceTrackStage(const std::string& trackName) {
@@ -156,6 +173,8 @@ public:
             if (m_TrackStageIndex[trackName] >= m_TrackProgressions[trackName].size()) {
                 m_TrackStageIndex[trackName] = 0;
             }
+
+            GameManager::Get().GlobalTrackStages[trackName] = m_TrackStageIndex[trackName];
 
             ApplyAuraStateImmediate(m_LastKnownAura);
         }
@@ -172,7 +191,7 @@ private:
 
         m_TrackProgressions["Bass"].push_back({ "BassPattern02", "BassPattern01" }); // Etap 1
 
-        m_TrackProgressions["Bass"].push_back({"BassPatternPrototype2", "BassPatternPrototype"}); // Etap 2
+        m_TrackProgressions["Bass"].push_back({ "BassPatternPrototype2", "BassPatternPrototype" }); // Etap 2
 
         m_TrackStageIndex["Bass"] = 0;
 
@@ -192,8 +211,7 @@ private:
 
                 if (aura == AuraType::First) {
                     NFSEngine::AudioManager::SetActivePatternInTrack(trackName, progressionList[currentStage].AuraFirstPattern);
-                }
-                else if (aura == AuraType::Second) {
+                } else if (aura == AuraType::Second) {
                     NFSEngine::AudioManager::SetActivePatternInTrack(trackName, progressionList[currentStage].AuraSecondPattern);
                 }
             }
@@ -203,13 +221,13 @@ private:
     void ApplyHealthStateImmediate(int currentLives) {
         float pitchModifier = 0.0f;
 
-        if (currentLives == 2) pitchModifier = 12.0f;
-        else if (currentLives <= 1) pitchModifier = 24.0f;
+        if (currentLives == 2)
+            pitchModifier = 12.0f;
+        else if (currentLives <= 1)
+            pitchModifier = 24.0f;
 
         for (const auto& trackName : PitchReactiveTracks) {
             NFSEngine::AudioManager::SetTrackPitchOffset(trackName, pitchModifier);
         }
     }
-
-    
 };
