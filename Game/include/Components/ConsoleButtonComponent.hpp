@@ -52,8 +52,6 @@ protected:
                                                        &m_ButtonSound);
             if (result == MA_SUCCESS) {
                 m_SoundLoaded = true;
-            } else {
-                NFS_CORE_ERROR("consolebutton: Couldnt load sound ", SoundFilePath);
             }
         }
 

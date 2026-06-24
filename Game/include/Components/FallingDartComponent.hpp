@@ -1,0 +1,68 @@
+#pragma once
+
+#include <NFSEngine.h>
+#include <glm/gtx/quaternion.hpp>
+
+class FallingDartComponent : public NFSEngine::Component {
+public:
+    FallingDartComponent(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {}
+
+    std::string GetName() const override { return "FallingDartComponent"; }
+
+    float FallSpeed = 240.0f;
+    float TipOffset = 0.0f;
+    float StayDuration = 2.0f;
+
+    void Fire(glm::vec3 targetPos, NFSEngine::GameObject* indicator) {
+        m_TargetPosition = targetPos;
+        m_LinkedIndicator = indicator;
+        m_IsFalling = true;
+        m_DespawnTimer = 0.0f;
+
+        GetOwner()->SetActive(true);
+        glm::vec3 myPos = GetOwner()->GetTransform()->GetPosition();
+        m_FlightDirection = glm::normalize(m_TargetPosition - myPos);
+
+        glm::quat lookRot = glm::quatLookAt(m_FlightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
+
+
+        GetOwner()->GetTransform()->SetRotation(lookRot);
+    }
+
+protected:
+    void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (m_IsFalling) {
+            auto* transform = GetOwner()->GetTransform();
+            glm::vec3 currentPos = transform->GetPosition();
+
+            currentPos += m_FlightDirection * FallSpeed * deltaTime.GetSeconds();
+            transform->SetPosition(currentPos);
+
+            glm::vec3 upVector = transform->GetRotation() * glm::vec3(0.0f, 1.0f, 0.0f);
+
+            glm::vec3 currentTipPosition = currentPos - (upVector * TipOffset);
+
+            if (currentTipPosition.y <= m_TargetPosition.y) {
+                m_IsFalling = false;
+                transform->SetPosition(m_TargetPosition + (upVector * TipOffset));
+
+                if (m_LinkedIndicator) {
+                    m_LinkedIndicator->SetActive(false);
+                }
+            }
+        }
+        else {
+            m_DespawnTimer += deltaTime.GetSeconds();
+            if (m_DespawnTimer >= StayDuration) {
+                GetOwner()->SetActive(false);
+            }
+        }
+    }
+
+private:
+    glm::vec3 m_TargetPosition;
+    glm::vec3 m_FlightDirection;
+    bool m_IsFalling = false;
+    float m_DespawnTimer = 0.0f;
+    NFSEngine::GameObject* m_LinkedIndicator = nullptr;
+};

@@ -72,6 +72,7 @@
 #include "SceneLoader/DestructibleComponentLoader.hpp"
 #include "SceneLoader/CDBoxComponentLoader.hpp"
 #include "SceneLoader/InteractivePianoLoader.hpp"
+#include "SceneLoader/DartComponentLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -123,6 +124,7 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<InteractivePianoLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<ConsolePuzzleLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<ButtonActivatorLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<DartComponentLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -268,8 +270,11 @@ void LayerExample::OnAttach() {
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
 
+<<<<<<< HEAD
     // zmiana trac閿熺弹 test
 
+=======
+>>>>>>> refs/remotes/origin/main
     auto matCassette = std::make_shared<NFSEngine::Material>();
     matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
 
@@ -290,7 +295,21 @@ void LayerExample::OnAttach() {
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
     casetteBassComp.TracksToUnlock.push_back("Bass");
 
+<<<<<<< HEAD
     // zmiana trac妤傦拷 test
+=======
+    auto matRzutka = std::make_shared<NFSEngine::Material>();
+    matRzutka->AlbedoMap = NFSEngine::Texture::Create("assets/models/Rzutka/color_rzutka_neonpink.png");
+
+    auto* rzutkaObj = m_Scene->CreateGameObject("Rzutka");
+    rzutkaObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 35.0f, 64.0f));
+    rzutkaObj->GetTransform()->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
+    rzutkaObj->GetTransform()->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
+    auto rzutkaModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/rzutka.fbx");
+    rzutkaObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
+    auto& rzutkaComp = rzutkaObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matRzutka);
+    rzutkaComp.AddLOD(rzutkaModel, 10000.0f);
+>>>>>>> refs/remotes/origin/main
 
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
@@ -334,6 +353,10 @@ void LayerExample::FinalizeSceneSetup() {
 
         if (auto* director = go->GetComponent<MusicDirector>()) {
             m_CachedMusicDirector = director;
+        }
+
+        if (auto* dartCtrl = go->GetComponent<DartController>()) {
+            m_CachedDartControllers.push_back(dartCtrl);
         }
     }
 
@@ -566,6 +589,10 @@ void LayerExample::OnEvent(NFSEngine::Event& e) {
 
     for (auto* wall : m_CachedDancingWalls) {
         wall->OnEvent(e);
+    }
+
+    for (auto* dartCtrl : m_CachedDartControllers) {
+        dartCtrl->OnEvent(e);
     }
 
     NFSEngine::EventDispatcher dispatcher(e);
