@@ -3,7 +3,8 @@
 #include <NFSEngine.h>
 #include "Components/ModelComponent.hpp"
 #include "Components/PhysicsComponents.hpp" 
-#include "Components/DartRainAttackManager.hpp"
+#include "Components/DartRainAttackManager.hpp" 
+#include "Components/DartStairsComponent.hpp"
 #include <string>
 #include <vector>
 
@@ -33,6 +34,14 @@ public:
         }
     }
 
+    void StartStairsPhase() {
+        SetDetailedCollidersActive(true); 
+
+        if (m_StairsManager) {
+            m_StairsManager->StartTransition();
+        }
+    }
+
 protected:
     void OnStart() override {
         NFSEngine::GameObject* blackSlice = nullptr;
@@ -53,21 +62,38 @@ protected:
         }
 
         if (!blackSlice || !whiteSlice) {
+            NFS_CORE_WARN("DartController: Nie znaleziono SliceBlack1 lub SliceWhite1!");
             return;
         }
 
+        m_AllSlices.push_back(blackSlice);
+        m_AllSlices.push_back(whiteSlice);
+
         for (int i = 1; i < 9; i++) {
             float currentAngle = i * 40.0f;
-            CloneSlice(blackSlice, "SliceBlack" + std::to_string(i + 1), currentAngle);
-            CloneSlice(whiteSlice, "SliceWhite" + std::to_string(i + 1), currentAngle);
+            auto* bClone = CloneSlice(blackSlice, "SliceBlack" + std::to_string(i + 1), currentAngle);
+            auto* wClone = CloneSlice(whiteSlice, "SliceWhite" + std::to_string(i + 1), currentAngle);
+            
+            m_AllSlices.push_back(bClone);
+            m_AllSlices.push_back(wClone);
         }
 
         CollectAndDeactivateColliders(GetOwner());
-
+        
         SetDetailedCollidersActive(false);
 
         m_RainAttack = &GetOwner()->AddComponent<DartRainAttackComponent>();
-        m_RainAttack->IsActive = true;
+        m_RainAttack->IsActive = false;
+        
+        m_RainAttack->TargetTrack = "Kick"; 
+        m_RainAttack->NotesDelay = 1; 
+
+        m_RainAttack->PlayerTransform = GetOwner()->GetScene()->FindWithTag(NFSEngine::Tags::Player);
+        
+        m_StairsManager = &GetOwner()->AddComponent<DartStairsComponent>();
+        m_StairsManager->AllSlices = m_AllSlices; 
+
+        StartStairsPhase();
     }
 
 public:
@@ -79,13 +105,15 @@ public:
 
 private:
     std::vector<NFSEngine::GameObject*> m_ColliderGroups;
+    std::vector<NFSEngine::GameObject*> m_AllSlices;
     NFSEngine::GameObject* m_FullCollider = nullptr;
 
     DartRainAttackComponent* m_RainAttack = nullptr;
+    DartStairsComponent* m_StairsManager = nullptr;
 
     void CollectAndDeactivateColliders(NFSEngine::GameObject* node) {
         if ((node->name.find("colliders") != std::string::npos || node->name.find("Colliders") != std::string::npos) &&
-            node->name.find("FullCollider") == std::string::npos) {
+             node->name.find("FullCollider") == std::string::npos) {
             m_ColliderGroups.push_back(node);
         }
 
@@ -122,7 +150,7 @@ private:
             newBoxCol.Offset = origBoxCol->Offset;
             newBoxCol.IsTrigger = origBoxCol->IsTrigger;
         }
-
+        
         if (auto* origCylCol = original->GetComponent<NFSEngine::CylinderCollider3DComponent>()) {
             auto& newCylCol = copy->AddComponent<NFSEngine::CylinderCollider3DComponent>();
             newCylCol.Radius = origCylCol->Radius;
@@ -137,7 +165,7 @@ private:
             newSphereCol.Offset = origSphereCol->Offset;
             newSphereCol.IsTrigger = origSphereCol->IsTrigger;
         }
-
+        
         if (auto* origCapCol = original->GetComponent<NFSEngine::CapsuleCollider3DComponent>()) {
             auto& newCapCol = copy->AddComponent<NFSEngine::CapsuleCollider3DComponent>();
             newCapCol.Radius = origCapCol->Radius;
@@ -156,7 +184,7 @@ private:
     }
 
     NFSEngine::GameObject* CloneSlice(NFSEngine::GameObject* original, const std::string& newName, float angleOffset) {
-
+        
         NFSEngine::GameObject* parentObj = nullptr;
         if (original->GetTransform()->GetParent()) {
             parentObj = original->GetTransform()->GetParent()->GetOwner();

@@ -283,6 +283,13 @@ protected:
         if (NFSEngine::InputActionManager::IsDown("Dash")) {
             Dash();
         }
+
+        if (p_RigidBody && p_RigidBody->IsGrounded && !m_IsDashing && m_WallJumpLockCounter <= 0.0f
+            && !IsTouchingJumpableWall()) {
+            glm::vec3 targetVel = GetMovementVector() * MaxSpeed;
+            p_RigidBody->Velocity.x = targetVel.x;
+            p_RigidBody->Velocity.z = targetVel.z;
+        }
     }
 
     virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
