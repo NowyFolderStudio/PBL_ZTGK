@@ -15,6 +15,7 @@
 #include "SceneLoader/SceneLoader.hpp"
 #include "Components/LoadingScreenComponent.hpp"
 #include "Components/MusicDirector.hpp"
+#include "Components/DartController.hpp"
 
 // Forward declarations
 class RhythmMover;
@@ -78,6 +79,7 @@ private:
     std::vector<RhythmPlatform*> m_CachedRhythmPlatforms;
     std::vector<RhythmMover*> m_CachedRhythmMovers;
     std::vector<PianoKeyTrigger*> m_CachedPianoKeys;
+    std::vector<DartController*> m_CachedDartControllers;
 
     float m_DeathPlaneY = -50.0f;
     glm::vec3 m_PlayerSpawnPosition = glm::vec3(0.0f, 2.0f, 0.0f);
