@@ -180,7 +180,6 @@ protected:
         m_CurrentVignetteAlpha = 0.5f + (smoothPulse * 0.5f);
         SetVignetteColor(glm::vec4(m_CurrentVignetteColor, m_CurrentVignetteAlpha));
 
-        // --- PŁYNNE ANIMACJE AUR (Interpolacja zmian) ---
         float auraLerpSpeed = 7.0f * (float)deltaTime;
 
         m_LeftAuraCurrentAlpha += (m_LeftAuraTargetAlpha - m_LeftAuraCurrentAlpha) * auraLerpSpeed;
@@ -189,10 +188,8 @@ protected:
         m_RightAuraCurrentAlpha += (m_RightAuraTargetAlpha - m_RightAuraCurrentAlpha) * auraLerpSpeed;
         m_RightAuraCurrentScale += (m_RightAuraTargetScale - m_RightAuraCurrentScale) * auraLerpSpeed;
 
-        // Bazowy rozmiar aury
         const float baseAuraSize = 300.0f;
 
-        // Dodajemy pulse WYŁĄCZNIE do tej aury, która jest akurat wybrana (TargetScale = 1.0)
         float leftBonusPulse = (m_LeftAuraTargetScale == 1.0f) ? (smoothPulse * m_PulseStrengthAura) : 0.0f;
         float rightBonusPulse = (m_RightAuraTargetScale == 1.0f) ? (smoothPulse * m_PulseStrengthAura) : 0.0f;
 
@@ -208,7 +205,6 @@ protected:
             m_RightAuraImage->Transform.Height = baseAuraSize * (m_RightAuraCurrentScale + rightBonusPulse);
         }
 
-        // --- PULSOWANIE ŻYĆ (SERC) ---
         const float baseHeartSize = 150.0f;
         float heartPulseMult = 1.0f + (smoothPulse * m_PulseStrengthHearts);
         for (auto* heart : m_Hearts) {
@@ -218,7 +214,6 @@ protected:
             }
         }
 
-        // --- PULSOWANIE SCORE (NUTEK) ---
         float scorePulseMult = 1.0f + (smoothPulse * m_PulseStrengthScore);
 
         for (size_t i = 0; i < m_FullNotes.size(); i++) {
@@ -263,23 +258,19 @@ protected:
                 }
             }
         }
-        // --- AKTUALIZACJA PASKA COOLDOWNU ---
+
         if (m_CooldownBg && m_CooldownFill && m_CooldownFrame) {
-            // Kolory podążają za aurą
             glm::vec3 darkColor = m_CurrentVignetteColor * 0.25f;
             m_CooldownBg->GetComponent<NFSEngine::ImageComponent>()->Color = glm::vec4(darkColor, 1.0f);
             m_CooldownFill->GetComponent<NFSEngine::ImageComponent>()->Color = glm::vec4(m_CurrentVignetteColor, 1.0f);
 
-            // Pobieramy stopień napełnienia paska
             float fillRatio = 1.0f;
             if (AuraManager::Instance) {
                 fillRatio = AuraManager::Instance->GetCooldownProgress();
             }
 
-            // Wyliczamy mnożnik pulsu dla paska
             float cdPulseMult = 1.0f + (smoothPulse * m_PulseStrengthCooldown);
 
-            // Wyliczamy rozmiary z uwzględnieniem pulsu (bazowe wartości wzięte prosto z Init)
             float baseFrameW = 464.5f;
             float baseFrameH = 46.0f;
             float baseInnerH = 41.0f;
@@ -289,21 +280,15 @@ protected:
             float currentInnerW = m_MaxCooldownWidth * cdPulseMult;
             float currentInnerH = baseInnerH * cdPulseMult;
 
-            // Aplikujemy puls do ramki
             m_CooldownFrame->Transform.Width = currentFrameW;
             m_CooldownFrame->Transform.Height = currentFrameH;
 
-            // Aplikujemy puls do tła
             m_CooldownBg->Transform.Width = currentInnerW;
             m_CooldownBg->Transform.Height = currentInnerH;
 
-            // Aplikujemy puls do wypełnienia (szerokość skalujemy dodatkowo przez ratio odnowienia)
             m_CooldownFill->Transform.Width = currentInnerW * fillRatio;
             m_CooldownFill->Transform.Height = currentInnerH;
 
-            // KOREKTA POZYCJI WYPEŁNIENIA:
-            // Wewnętrzne tło "puchnie" ze środka. Oznacza to, że jego lewa krawędź przesuwa się lekko w lewo.
-            // Musimy zaktualizować pozycję X paska wypełnienia, by zawsze "przyklejał się" do krawędzi.
             float centerX = 1920.0f / 2.0f;
             m_CooldownFill->Transform.Position.x = centerX - (currentInnerW / 2.0f);
         }
@@ -342,6 +327,8 @@ private:
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
+        texParam.Channels = 4;
+        texParam.sRGB = false;
 
         auto vignetteTex = NFSEngine::Texture::Create("assets/textures/ui/hud/vignette.png", texParam);
 
@@ -483,6 +470,8 @@ private:
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
+        texParam.Channels = 4;
+        texParam.sRGB = false;
 
         auto doubleJumpTex = NFSEngine::Texture::Create("assets/textures/ui/hud/doublejump_aura.png", texParam);
         auto dashTex = NFSEngine::Texture::Create("assets/textures/ui/hud/dash_aura.png", texParam);

@@ -149,8 +149,12 @@ namespace NFSEngine {
 
             if (m_OverrideActive) {
                 float yawDiff = m_OverrideYaw - m_Yaw;
-                if (yawDiff > 180.0f) yawDiff -= 360.0f;
-                if (yawDiff < -180.0f) yawDiff += 360.0f;
+
+                while (yawDiff > 180.0f)
+                    yawDiff -= 360.0f;
+                while (yawDiff < -180.0f)
+                    yawDiff += 360.0f;
+
                 m_Yaw += yawDiff * std::min(1.0f, m_OverrideLerpSpeed * dt);
                 m_Pitch = glm::mix(m_Pitch, m_OverridePitch, m_OverrideLerpSpeed * dt);
 
@@ -162,8 +166,11 @@ namespace NFSEngine {
 
                 if (m_ReturningToOriginal) {
                     float remainingYaw = m_OriginalYaw - m_Yaw;
-                    if (remainingYaw > 180.0f) remainingYaw -= 360.0f;
-                    if (remainingYaw < -180.0f) remainingYaw += 360.0f;
+
+                    while (remainingYaw > 180.0f)
+                        remainingYaw -= 360.0f;
+                    while (remainingYaw < -180.0f)
+                        remainingYaw += 360.0f;
 
                     if (std::abs(remainingYaw) < 0.1f && std::abs(m_Pitch - m_OriginalPitch) < 0.1f
                         && std::abs(m_Distance - m_OriginalDistance) < 0.1f) {
