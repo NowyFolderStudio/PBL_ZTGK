@@ -67,7 +67,7 @@ protected:
         SetDetailedCollidersActive(false);
 
         m_RainAttack = &GetOwner()->AddComponent<DartRainAttackComponent>();
-        m_RainAttack->IsActive = false;
+        m_RainAttack->IsActive = true;
     }
 
 public:

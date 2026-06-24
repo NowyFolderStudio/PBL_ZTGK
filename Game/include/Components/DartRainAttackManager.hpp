@@ -2,11 +2,49 @@
 
 #include <NFSEngine.h>
 #include "Components/FallingDartComponent.hpp"
-#include "Components/CubeMesh.hpp"
+#include "Components/CubeMesh.hpp" // Usuñ to, jeœli ju¿ tego nie u¿ywasz w tym pliku
 #include "Events/NotePlayedEvent.hpp"
 #include <vector>
 #include <string>
 #include <random>
+
+// --- NOWY KOMPONENT: Animacja WskaŸnika ---
+class DartIndicatorComponent : public NFSEngine::Component {
+public:
+    DartIndicatorComponent(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {}
+    std::string GetName() const override { return "DartIndicatorComponent"; }
+
+    glm::vec3 BaseScale = glm::vec3(1.0f); // Dopasuj do skali z Twojego modelu
+    float PulseSpeed = 10.0f;
+    float MinScale = 0.8f;
+    float MaxScale = 1.2f;
+
+    std::shared_ptr<NFSEngine::Material> MaterialRef = nullptr;
+
+    void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (!GetOwner()->IsActive()) return;
+
+        m_Time += deltaTime.GetSeconds();
+
+        // 1. Skalowanie "oddychanie" w osiach X i Z (Y zostaje p³askie na ziemi)
+        // Wynik od 0.0 do 1.0
+        float sineValue = (std::sin(m_Time * PulseSpeed) + 1.0f) * 0.5f;
+
+        // Mapowanie do skali
+        float currentScaleXZ = MinScale + sineValue * (MaxScale - MinScale);
+        GetOwner()->GetTransform()->SetScale(glm::vec3(currentScaleXZ * BaseScale.x, BaseScale.y, currentScaleXZ * BaseScale.z));
+
+        // 2. Miganie œwiat³em Emissive
+        if (MaterialRef) {
+            float emissiveStrength = 1.0f + (sineValue * 4.0f); // Od 1 do 5
+            MaterialRef->SetVec3("u_EmissiveColor", glm::vec3(1.0f, 0.0f, 0.0f) * emissiveStrength);
+        }
+    }
+
+private:
+    float m_Time = 0.0f;
+};
+// ----------------------------------------
 
 struct PendingDartAttack {
     glm::vec3 TargetPosition;
@@ -22,10 +60,10 @@ public:
 
     bool IsActive = true;
     std::string TargetTrack = "Kick";
-    int NotesDelay = 1;
+    int NotesDelay = 4;
 
     float SpawnHeight = 150.0f;
-    float MaxSpawnOffset = 15.0f;
+    float MaxSpawnOffset = 45.0f;
 
     NFSEngine::GameObject* PlayerTransform = nullptr;
 
@@ -38,12 +76,11 @@ public:
 
 protected:
     void OnAwake() override {
-        auto dartShader = NFSEngine::Shader::Create("DartShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShaderNew.frag");
+        auto dartShader = NFSEngine::Shader::Create("DartShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
         auto dartModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/rzutka.fbx");
 
-        auto indicatorShader = NFSEngine::Shader::Create("IndicatorShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShaderNew.frag");
-        auto indicatorMaterial = std::make_shared<NFSEngine::Material>();
-        indicatorMaterial->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
+        auto indicatorShader = NFSEngine::Shader::Create("IndicatorShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+        auto indicatorModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/indicator.obj");
 
         std::random_device rd;
         std::mt19937 gen(rd());
@@ -51,8 +88,17 @@ protected:
 
         for (int i = 0; i < 12; i++) {
             auto* indicatorObj = GetOwner()->GetScene()->CreateGameObject("DartIndicator_" + std::to_string(i));
-            indicatorObj->GetTransform()->SetScale(glm::vec3(2.0f, 0.1f, 2.0f));
-            indicatorObj->AddComponent<NFSEngine::CubeMesh>(indicatorShader, indicatorMaterial);
+
+            auto indicatorMat = std::make_shared<NFSEngine::Material>();
+            indicatorMat->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
+            indicatorMat->SetVec3("u_EmissiveColor", glm::vec3(1.0f, 0.0f, 0.0f) * 2.0f);
+
+            auto& indModelComp = indicatorObj->AddComponent<NFSEngine::ModelComponent>(indicatorShader, indicatorMat);
+            indModelComp.AddLOD(indicatorModel, 10000.0f);
+
+            auto& indLogic = indicatorObj->AddComponent<DartIndicatorComponent>();
+            indLogic.MaterialRef = indicatorMat;
+
             indicatorObj->SetActive(false);
             m_IndicatorPool.push_back(indicatorObj);
 
@@ -89,12 +135,13 @@ private:
 
     bool HandleNotePlayed(NFSEngine::NotePlayedEvent& e) {
         if (!IsActive || e.GetTrackName() != TargetTrack) return false;
+
         if (!PlayerTransform) {
             PlayerTransform = GetOwner()->GetScene()->FindWithTag(NFSEngine::Tags::Player);
             if (!PlayerTransform) return false;
         }
-        glm::vec3 playerPos = PlayerTransform->GetTransform()->GetPosition();
 
+        glm::vec3 playerPos = PlayerTransform->GetTransform()->GetPosition();
         float boardY = GetOwner()->GetTransform()->GetPosition().y;
         glm::vec3 targetPos = glm::vec3(playerPos.x, boardY + 7.85f, playerPos.z);
 
