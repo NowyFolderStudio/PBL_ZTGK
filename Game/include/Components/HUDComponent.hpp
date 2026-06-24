@@ -2,6 +2,7 @@
 
 #include <NFSEngine.h>
 #include <glm/ext/vector_float3.hpp>
+#include <glm/ext/vector_float4.hpp>
 #include <vector>
 #include "Aura/AuraManager.hpp"
 #include "Components/Transform.hpp"
@@ -12,6 +13,7 @@
 #include "UI/UIComponents.hpp"
 #include "UI/UIFactory.hpp"
 #include "Components/Managers/DialogueManager.hpp"
+#include "UI/UIObject.hpp"
 #include <vector>
 #include <string>
 
@@ -52,6 +54,17 @@ private:
     NFSEngine::UIObject* m_RightNameLabel = nullptr;
     NFSEngine::UIObject* m_RightSkillLabel = nullptr;
 
+    NFSEngine::UIObject* m_Vignette = nullptr;
+
+    glm::vec3 m_FirstVignetteColor = { 0.0f, 0.8f, 0.976f };
+    glm::vec3 m_SecondVignetteColor = { 0.6f, 0.9f, 0.37f };
+
+    glm::vec3 m_CurrentVignetteColor = { 0.0f, 0.8f, 0.976f };
+    float m_CurrentVignetteAlpha = 1.0f;
+
+    glm::vec3 m_TargetVignetteColor = { 0.0f, 0.8f, 0.976f };
+    float m_TargetVignetteAlpha = 1.0f;
+
     std::vector<NFSEngine::UIObject*> m_Hearts;
     std::vector<NFSEngine::UIObject*> m_FullNotes;
     size_t m_NumberOfNotes = 9;
@@ -77,6 +90,7 @@ protected:
     }
 
     void OnStart() override {
+        InitVignetteUI();
         InitScoreUI();
         InitHeartsUI();
         InitAuraUI();
@@ -85,8 +99,19 @@ protected:
 
         if (AuraManager::Instance) {
             UpdateAuraText(AuraManager::Instance->CurrentAura);
-            m_AuraEventId
-                = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) { this->UpdateAuraText(newAura); });
+
+            m_TargetVignetteColor
+                = (AuraManager::Instance->CurrentAura == AuraType::First) ? m_FirstVignetteColor : m_SecondVignetteColor;
+            m_CurrentVignetteColor = m_TargetVignetteColor; // Brak animacji w pierwszej klatce
+
+            m_AuraEventId = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) {
+                this->UpdateAuraText(newAura);
+                if (newAura == AuraType::First) {
+                    m_TargetVignetteColor = m_FirstVignetteColor;
+                } else {
+                    m_TargetVignetteColor = m_SecondVignetteColor; // (Błąd naprawiony)
+                }
+            });
         }
 
         if (ScoreManager::Instance) {
@@ -106,6 +131,24 @@ protected:
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
         UpdateDialogueUI();
+
+        float lerpSpeed = 5.0f * (float)deltaTime;
+
+        m_CurrentVignetteColor += (m_TargetVignetteColor - m_CurrentVignetteColor) * lerpSpeed;
+        m_CurrentVignetteAlpha += (m_TargetVignetteAlpha - m_CurrentVignetteAlpha) * lerpSpeed;
+
+        float distToBeat = 99999;
+        if (AuraManager::Instance->CurrentAura == AuraType::First) {
+            distToBeat = NFSEngine::AudioManager::GetDistanceToEventForTrack("Bass");
+        } else if (AuraManager::Instance->CurrentAura == AuraType::Second) {
+            distToBeat = NFSEngine::AudioManager::GetDistanceToEventForTrack("Piano");
+        }
+
+        float peak = 1.0f - (distToBeat * 2.0f);
+        float pulse = std::max(0.0f, (peak - 0.5f) * 2.0f);
+        m_CurrentVignetteAlpha = 0.5f + (pow(pulse, 2.0f) * 0.5f);
+
+        SetVignetteColor(glm::vec4(m_CurrentVignetteColor, m_CurrentVignetteAlpha));
 
         if (m_Canvas) {
             m_Canvas->Update();
@@ -129,7 +172,29 @@ protected:
         }
     }
 
+    void SetVignetteColor(const glm::vec4& color) {
+        if (m_Vignette && m_Vignette->HasComponent<NFSEngine::ImageComponent>()) {
+            m_Vignette->GetComponent<NFSEngine::ImageComponent>()->Color = color;
+        }
+    }
+
 private:
+    void InitVignetteUI() {
+        NFSEngine::TextureParameters texParam;
+        texParam.WrapS = NFSEngine::TextureWrap::Clamp;
+        texParam.WrapT = NFSEngine::TextureWrap::Clamp;
+
+        auto vignetteTex = NFSEngine::Texture::Create("assets/textures/ui/hud/vignette.png", texParam);
+
+        NFSEngine::UI::ImageParameters vignetteParams;
+        vignetteParams.position = glm::vec3(960.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT / 2.0f, 0.1f);
+        vignetteParams.width = 1920.0f;
+        vignetteParams.height = NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
+        vignetteParams.color = glm::vec4(m_CurrentVignetteColor, m_CurrentVignetteAlpha);
+        vignetteParams.texture = vignetteTex;
+
+        m_Vignette = &NFSEngine::UI::Image(*m_Canvas, vignetteParams);
+    }
     void InitScoreUI() {
 
         float originalWidth = 462;
