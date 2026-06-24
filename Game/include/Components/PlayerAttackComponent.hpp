@@ -48,8 +48,8 @@ protected:
             m_Sphere->Radius = AttackRadius;
 
             m_Sphere->OnTriggerEnter = [this](NFSEngine::GameObject* other) {
-                if (other->GetComponent<DestructibleComponent>() != nullptr ||
-                    other->GetComponent<AttackInteractableComponent>() != nullptr) {
+                if (other->GetComponent<DestructibleComponent>() != nullptr
+                    || other->GetComponent<AttackInteractableComponent>() != nullptr) {
                     m_EnemiesInRange.push_back(other);
                 }
             };
@@ -100,11 +100,11 @@ private:
 
         glm::vec3 spawnPosition = m_Owner->GetTransform()->GetWorldPosition() + glm::vec3(0.0f, 1.0f, 0.0f);
 
-        if (AuraManager::Instance->CurrentAura == AuraType::Second) {
+        if (AuraManager::Instance->CurrentAura == AuraType::First) {
             NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_GuitarMaterial, m_ParticleShader, properties, 0.1f, 1000,
                                                250, spawnPosition);
         }
-        if (AuraManager::Instance->CurrentAura == AuraType::First) {
+        if (AuraManager::Instance->CurrentAura == AuraType::Second) {
             NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_PianoMaterial, m_ParticleShader, properties, 0.1f, 1000,
                                                250, spawnPosition);
         }

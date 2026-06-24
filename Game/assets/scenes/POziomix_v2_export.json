@@ -21314,9 +21314,9 @@
             "parent_id": 87474,
             "transform": {
                 "position": [
-                    341.49957275390627,
-                    -54.00058364868164,
-                    89.8870849609375
+                    341.9814147949219,
+                    -53.3605842590332,
+                    87.24175262451172
                 ],
                 "rotation": [
                     0.0,
@@ -21333,6 +21333,454 @@
             "mesh_path": "",
             "texture_path": "",
             "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "ConsolePuzzle",
+                    "properties": [
+                        {
+                            "name": "ButtonOrder",
+                            "type": "String",
+                            "value": "0 1 2 3 4 5 6 7 8",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "WrongColor",
+                            "type": "Color",
+                            "value": "RGBA(1.000, 0.000, 0.000, 1.000)",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "CorrectColor",
+                            "type": "Color",
+                            "value": "RGBA(0.000, 1.000, 0.004, 1.000)",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "SolutionColor",
+                            "type": "Color",
+                            "value": "RGBA(1.000, 0.998, 0.000, 1.000)",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "Buttons",
+                            "type": "GameObject",
+                            "value": "-55238",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "SolutionSpeed",
+                            "type": "Single",
+                            "value": "0.5",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -55238,
+            "name": "Buttons",
+            "parent_id": -23252,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23264,
+            "name": "Button 1",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.001_53030.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        -0.016500018537044526,
+                        0.02359999343752861,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23276,
+            "name": "Button 2",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.002_53790.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        0.0025399774312973024,
+                        0.02359999343752861,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23288,
+            "name": "Button 3",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.003_53770.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        0.02157997339963913,
+                        0.02359999343752861,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23300,
+            "name": "Button 4",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.004_52972.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        -0.016500018537044526,
+                        0.004560002591460943,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23312,
+            "name": "Button 5",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.005_53038.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        0.0025399774312973024,
+                        0.004560002591460943,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23324,
+            "name": "Button 6",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.006_53794.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        0.02157997339963913,
+                        0.0045600030571222309,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23336,
+            "name": "Button 7",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.007_53784.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        -0.016500018537044526,
+                        -0.01447998732328415,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23348,
+            "name": "Button 8",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.008_53792.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        0.0025399785954505207,
+                        -0.01447998732328415,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23360,
+            "name": "Button 9",
+            "parent_id": -55238,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.056666694581508639,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.009_53778.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.01599999889731407,
+                        0.015999995172023774,
+                        0.007999994792044163
+                    ],
+                    "offset": [
+                        0.02157997339963913,
+                        -0.01447998732328415,
+                        0.0035000003408640625
+                    ],
+                    "is_trigger": false
+                }
+            ],
             "cylinder_colliders": [],
             "custom_components": []
         },
@@ -21379,708 +21827,6 @@
             "custom_components": []
         },
         {
-            "id": -23264,
-            "name": "Cube.001",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.001_53030.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        -0.016500018537044526,
-                        0.02359999343752861,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(0.991, 1.000, 0.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "whoosh.wav",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23276,
-            "name": "Cube.002",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.002_53790.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        0.0025399774312973024,
-                        0.02359999343752861,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 0.706, 0.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "bruh.mp3",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23288,
-            "name": "Cube.003",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.003_53770.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        0.02157997339963913,
-                        0.02359999343752861,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 0.000, 0.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "bass!.ogg",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23300,
-            "name": "Cube.004",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.004_52972.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        -0.016500018537044526,
-                        0.004560002591460943,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(0.627, 1.000, 0.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "breath01.ogg",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23312,
-            "name": "Cube.005",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.005_53038.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        0.0025399774312973024,
-                        0.004560002591460943,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(0.000, 1.000, 0.138, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "funk.flac",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23324,
-            "name": "Cube.006",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.006_53794.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        0.02157997339963913,
-                        0.0045600030571222309,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(0.000, 0.837, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "snaph01.ogg",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23336,
-            "name": "Cube.007",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.007_53784.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        -0.016500018537044526,
-                        -0.01447998732328415,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 0.000, 0.970, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "retro1.wav",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23348,
-            "name": "Cube.008",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.008_53792.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        0.0025399785954505207,
-                        -0.01447998732328415,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(0.622, 0.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "retro 2.wav",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": -23360,
-            "name": "Cube.009",
-            "parent_id": -23252,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.009_53778.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/whiteTexture 1.png",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.01599999889731407,
-                        0.015999995172023774,
-                        0.007999994792044163
-                    ],
-                    "offset": [
-                        0.02157997339963913,
-                        -0.01447998732328415,
-                        0.0035000003408640625
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "ConsoleButton",
-                    "properties": [
-                        {
-                            "name": "BaseColor",
-                            "type": "Color",
-                            "value": "RGBA(1.000, 1.000, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveColor",
-                            "type": "Color",
-                            "value": "RGBA(0.000, 0.184, 1.000, 1.000)",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "BaseStrength",
-                            "type": "Single",
-                            "value": "0.9",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "ActiveStrength",
-                            "type": "Single",
-                            "value": "5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "SoundFileName",
-                            "type": "String",
-                            "value": "punch.flac",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "id": -23372,
             "name": "Cube.010",
             "parent_id": -23252,
@@ -22104,7 +21850,21 @@
             },
             "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.010_53044.obj",
             "texture_path": "assets/POziomix_v2_Assets/Textures/konsola3x3_kolor.png",
-            "box_colliders": [],
+            "box_colliders": [
+                {
+                    "size": [
+                        0.00899999774992466,
+                        0.005999996792525053,
+                        0.002999999327585101
+                    ],
+                    "offset": [
+                        -0.031700000166893008,
+                        0.014160055667161942,
+                        0.006700002122670412
+                    ],
+                    "is_trigger": false
+                }
+            ],
             "cylinder_colliders": [],
             "custom_components": []
         },
@@ -22132,7 +21892,21 @@
             },
             "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.011_53786.obj",
             "texture_path": "assets/POziomix_v2_Assets/Textures/konsola3x3_kolor.png",
-            "box_colliders": [],
+            "box_colliders": [
+                {
+                    "size": [
+                        0.00899999774992466,
+                        0.00599999725818634,
+                        0.002999999327585101
+                    ],
+                    "offset": [
+                        -0.031700000166893008,
+                        0.0043200599029660229,
+                        0.006700002122670412
+                    ],
+                    "is_trigger": false
+                }
+            ],
             "cylinder_colliders": [],
             "custom_components": []
         },
@@ -22160,7 +21934,21 @@
             },
             "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.012_52970.obj",
             "texture_path": "assets/POziomix_v2_Assets/Textures/konsola3x3_kolor.png",
-            "box_colliders": [],
+            "box_colliders": [
+                {
+                    "size": [
+                        0.00899999774992466,
+                        0.005999997723847628,
+                        0.002999999327585101
+                    ],
+                    "offset": [
+                        -0.031700000166893008,
+                        -0.0055199372582137589,
+                        0.006700002122670412
+                    ],
+                    "is_trigger": false
+                }
+            ],
             "cylinder_colliders": [],
             "custom_components": []
         },
@@ -22188,7 +21976,21 @@
             },
             "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.013_53774.obj",
             "texture_path": "assets/POziomix_v2_Assets/Textures/konsola3x3_kolor.png",
-            "box_colliders": [],
+            "box_colliders": [
+                {
+                    "size": [
+                        0.00899999774992466,
+                        0.005999997723847628,
+                        0.002999999327585101
+                    ],
+                    "offset": [
+                        -0.031700000166893008,
+                        -0.015359931625425816,
+                        0.006700002122670412
+                    ],
+                    "is_trigger": false
+                }
+            ],
             "cylinder_colliders": [],
             "custom_components": []
         },
@@ -22216,7 +22018,21 @@
             },
             "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.023_53006.obj",
             "texture_path": "assets/POziomix_v2_Assets/Textures/konsola3x3_kolor.png",
-            "box_colliders": [],
+            "box_colliders": [
+                {
+                    "size": [
+                        0.00899999774992466,
+                        0.005999997723847628,
+                        0.0029999997932463886
+                    ],
+                    "offset": [
+                        -0.031700000166893008,
+                        0.024000050500035287,
+                        0.006700002122670412
+                    ],
+                    "is_trigger": false
+                }
+            ],
             "cylinder_colliders": [],
             "custom_components": []
         },
@@ -22249,6 +22065,75 @@
             "custom_components": []
         },
         {
+            "id": -43518,
+            "name": "GameObject",
+            "parent_id": -23412,
+            "transform": {
+                "position": [
+                    -0.03013332188129425,
+                    -0.028566662222146989,
+                    0.005433333572000265
+                ],
+                "rotation": [
+                    0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.006000000052154064,
+                    "height": -0.019999999552965165,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.006",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "-0.02",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "id": -23420,
             "name": "Cylinder.001",
             "parent_id": -23252,
@@ -22275,6 +22160,75 @@
             "box_colliders": [],
             "cylinder_colliders": [],
             "custom_components": []
+        },
+        {
+            "id": -44468,
+            "name": "GameObject (1)",
+            "parent_id": -23420,
+            "transform": {
+                "position": [
+                    -0.01709999144077301,
+                    -0.029899952933192254,
+                    0.006300000008195639
+                ],
+                "rotation": [
+                    0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.003000000026077032,
+                    "height": -0.009999999776482582,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.003",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "-0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
         },
         {
             "id": -23428,
@@ -22305,6 +22259,75 @@
             "custom_components": []
         },
         {
+            "id": -44660,
+            "name": "GameObject (2)",
+            "parent_id": -23428,
+            "transform": {
+                "position": [
+                    -0.006466662045568228,
+                    -0.029899954795837404,
+                    0.00629999628290534
+                ],
+                "rotation": [
+                    0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.003000000026077032,
+                    "height": -0.009999999776482582,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.003",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "-0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "id": -23436,
             "name": "Cylinder.003",
             "parent_id": -23252,
@@ -22331,6 +22354,75 @@
             "box_colliders": [],
             "cylinder_colliders": [],
             "custom_components": []
+        },
+        {
+            "id": -44702,
+            "name": "GameObject (3)",
+            "parent_id": -23436,
+            "transform": {
+                "position": [
+                    0.004266675096005201,
+                    -0.029899954795837404,
+                    0.00629999628290534
+                ],
+                "rotation": [
+                    0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.003000000026077032,
+                    "height": -0.009999999776482582,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.003",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "-0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
         },
         {
             "id": -23444,
@@ -22361,6 +22453,75 @@
             "custom_components": []
         },
         {
+            "id": -44854,
+            "name": "GameObject (4)",
+            "parent_id": -23444,
+            "transform": {
+                "position": [
+                    0.014633344486355782,
+                    -0.029899954795837404,
+                    0.00629999628290534
+                ],
+                "rotation": [
+                    0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.003000000026077032,
+                    "height": -0.009999999776482582,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.003",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "-0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
             "id": -23452,
             "name": "Cylinder.005",
             "parent_id": -23252,
@@ -22389,64 +22550,34 @@
             "custom_components": []
         },
         {
-            "id": -23096,
-            "name": "guzik",
-            "parent_id": 87474,
+            "id": -44904,
+            "name": "GameObject (5)",
+            "parent_id": -23452,
             "transform": {
                 "position": [
-                    329.28277587890627,
-                    -43.319576263427737,
-                    66.68378448486328
+                    0.025266673415899278,
+                    -0.030266620218753816,
+                    0.00629999628290534
                 ],
                 "rotation": [
+                    0.7071068286895752,
                     0.0,
-                    0.2588195204734802,
                     0.0,
-                    0.9659257531166077
+                    0.7071068286895752
                 ],
                 "scale": [
-                    3.0,
-                    2.0,
-                    3.0
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             },
             "mesh_path": "",
             "texture_path": "",
             "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 84868,
-            "name": "Cube",
-            "parent_id": -23096,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube_53214.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/guzik_kolor.png",
-            "box_colliders": [
+            "cylinder_colliders": [
                 {
-                    "size": [
-                        0.019999999552965165,
-                        0.019999993965029718,
-                        0.005999998655170202
-                    ],
+                    "radius": 0.003000000026077032,
+                    "height": -0.009999999776482582,
                     "offset": [
                         0.0,
                         0.0,
@@ -22455,36 +22586,37 @@
                     "is_trigger": false
                 }
             ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": -23104,
-            "name": "Cube.001",
-            "parent_id": -23096,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    100.0,
-                    100.0,
-                    100.0
-                ]
-            },
-            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.001_53212.obj",
-            "texture_path": "assets/POziomix_v2_Assets/Textures/guzik_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.003",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "-0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
         },
         {
             "id": 86042,
@@ -22634,6 +22766,72 @@
                             "name": "CustomPitch",
                             "type": "Single",
                             "value": "20",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "CustomDistance",
+                            "type": "Single",
+                            "value": "20",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -72036,
+            "name": "CameraZone2-2 (2)",
+            "parent_id": 87474,
+            "transform": {
+                "position": [
+                    324.9161682128906,
+                    -37.019569396972659,
+                    73.69229125976563
+                ],
+                "rotation": [
+                    0.0,
+                    -0.49999961256980898,
+                    0.0,
+                    0.8660256862640381
+                ],
+                "scale": [
+                    6.0,
+                    1.0,
+                    3.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [
+                {
+                    "size": [
+                        4.306659698486328,
+                        17.360618591308595,
+                        11.586663246154786
+                    ],
+                    "offset": [
+                        3.66666841506958,
+                        -11.76968765258789,
+                        -3.1666669845581056
+                    ],
+                    "is_trigger": true
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "ZoneCameraTrigger",
+                    "properties": [
+                        {
+                            "name": "CustomYaw",
+                            "type": "Single",
+                            "value": "-90",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "CustomPitch",
+                            "type": "Single",
+                            "value": "40",
                             "vector3_value": []
                         },
                         {
@@ -29833,6 +30031,130 @@
             "box_colliders": [],
             "cylinder_colliders": [],
             "custom_components": []
+        },
+        {
+            "id": -69676,
+            "name": "guzik",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -307.19989013671877,
+                    70.0595474243164,
+                    -329.74163818359377
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    3.0,
+                    3.0,
+                    3.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -69680,
+            "name": "Cube",
+            "parent_id": -69676,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube_53214.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/guzik_kolor_zolty.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.019999999552965165,
+                        0.019999993965029718,
+                        0.005999998655170202
+                    ],
+                    "offset": [
+                        -1.1920928955078126e-7,
+                        0.0,
+                        -1.4901161193847657e-8
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -69688,
+            "name": "Cube.001",
+            "parent_id": -69676,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/POziomix_v2_Assets/Models/Mesh_Cube.001_53212.obj",
+            "texture_path": "assets/POziomix_v2_Assets/Textures/guzik_kolor_zolty.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.014700000174343586,
+                        0.014699996449053288,
+                        0.005999998655170202
+                    ],
+                    "offset": [
+                        -1.1920928955078126e-7,
+                        -2.2026823786829614e-17,
+                        0.0030999842565506698
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "ButtonActivator",
+                    "properties": [
+                        {
+                            "name": "ActivatedObject",
+                            "type": "GameObject",
+                            "value": "-23252",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
         }
     ]
 }

@@ -53,7 +53,9 @@
 #include "Renderer/Material.hpp"
 #include "Platforms/OpenGL/OpenGLTexture.hpp"
 
+#include "SceneLoader/ButtonActivatorLoader.hpp"
 #include "SceneLoader/CasetteComponentLoader.hpp"
+#include "SceneLoader/ConsolePuzzleLoader.hpp"
 #include "SceneLoader/OutlineParametersLoader.hpp"
 #include "SceneLoader/RotatingObjectLoader.hpp"
 #include "SceneLoader/SceneLoader.hpp"
@@ -119,6 +121,8 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<CDBoxComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<RotatingObjectLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<InteractivePianoLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<ConsolePuzzleLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<ButtonActivatorLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -264,7 +268,7 @@ void LayerExample::OnAttach() {
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
 
-    // zmiana trac锟絯 test
+    // zmiana trac閿熺弹 test
 
     auto matCassette = std::make_shared<NFSEngine::Material>();
     matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
@@ -286,7 +290,7 @@ void LayerExample::OnAttach() {
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
     casetteBassComp.TracksToUnlock.push_back("Bass");
 
-    // zmiana trac楂� test
+    // zmiana trac妤傦拷 test
 
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));

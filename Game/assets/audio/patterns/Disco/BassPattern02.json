@@ -9,56 +9,64 @@
       "beat": 1,
       "16th": 1,
       "note": "G5",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 1,
       "note": "D6",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 1,
       "note": "A#5",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 1,
       "note": "D#5",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 1,
       "note": "D#5",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 1,
       "note": "A#5",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 1,
       "note": "C6",
-      "length": 4
+      "length": 4,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 1,
       "note": "F5",
-      "length": 4
+      "length": 4,
+      "event": true
     }
   ]
 }
