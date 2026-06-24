@@ -309,6 +309,16 @@ void LayerExample::OnAttach() {
     auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
     triggerComp1.TargetTrack = "Bass";
 
+    // indicator test
+    auto matIndicator = std::make_shared<NFSEngine::Material>();
+    matIndicator->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
+
+    auto* indicatorObj = m_Scene->CreateGameObject("Indicator");
+    indicatorObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 17.0f, 60.0f));
+    auto indicatorModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/indicator.obj");
+    auto& indicatorComp = indicatorObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matIndicator);
+    indicatorComp.AddLOD(indicatorModel, 10000.0f);
+
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
 
