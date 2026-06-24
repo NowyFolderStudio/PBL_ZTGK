@@ -375,7 +375,7 @@ private:
         float originalHeight = 3750.0f;
         float aspectRatio = originalWidth / originalHeight;
 
-        float targetHeight = 400.0f;
+        float targetHeight = 300.0f;
         float targetWidth = targetHeight * aspectRatio;
 
         NFSEngine::UI::ImageParameters tutParams;
