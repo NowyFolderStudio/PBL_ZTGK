@@ -290,24 +290,22 @@ void LayerExample::OnAttach() {
     auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
     casetteBassComp.TracksToUnlock.push_back("Bass");
 
-    auto matRzutka = std::make_shared<NFSEngine::Material>();
-    matRzutka->AlbedoMap = NFSEngine::Texture::Create("assets/models/Rzutka/color_rzutka_neonpink.png");
-
-    auto* rzutkaObj = m_Scene->CreateGameObject("Rzutka");
-    rzutkaObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 35.0f, 64.0f));
-    rzutkaObj->GetTransform()->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
-    rzutkaObj->GetTransform()->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
-    auto rzutkaModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/rzutka.fbx");
-    rzutkaObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    auto& rzutkaComp = rzutkaObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matRzutka);
-    rzutkaComp.AddLOD(rzutkaModel, 10000.0f);
-
     auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
     trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
     trigger1->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
     trigger1->AddComponent<BoxCollider3DComponent>();
     auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
     triggerComp1.TargetTrack = "Bass";
+
+    // indicator test
+    auto matIndicator = std::make_shared<NFSEngine::Material>();
+    matIndicator->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
+
+    auto* indicatorObj = m_Scene->CreateGameObject("Indicator");
+    indicatorObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 17.0f, 60.0f));
+    auto indicatorModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/indicator.obj");
+    auto& indicatorComp = indicatorObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matIndicator);
+    indicatorComp.AddLOD(indicatorModel, 10000.0f);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
