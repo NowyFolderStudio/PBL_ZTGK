@@ -284,12 +284,6 @@ protected:
             Dash();
         }
 
-        if (p_RigidBody && p_RigidBody->IsGrounded && !m_IsDashing && m_WallJumpLockCounter <= 0.0f
-            && !IsTouchingJumpableWall()) {
-            glm::vec3 targetVel = GetMovementVector() * MaxSpeed;
-            p_RigidBody->Velocity.x = targetVel.x;
-            p_RigidBody->Velocity.z = targetVel.z;
-        }
     }
 
     virtual void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {
@@ -544,11 +538,30 @@ private:
             p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, targetVel.x, currentAcc * dt);
             p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, targetVel.z, currentAcc * dt);
 
+            glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
+            float speed = glm::length(currentXZ);
+            if (speed > 0.5f) {
+                float alignment = glm::dot(currentXZ / speed, moveVector);
+                if (alignment > 0.0f) {
+                    float projectedSpeed = glm::dot(currentXZ, moveVector);
+                    p_RigidBody->Velocity.x = moveVector.x * projectedSpeed;
+                    p_RigidBody->Velocity.z = moveVector.z * projectedSpeed;
+                }
+            }
+
         } else {
             if (p_RigidBody->IsGrounded) {
-
-                p_RigidBody->Velocity.x = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.x, 0.0f, currentDec * dt);
-                p_RigidBody->Velocity.z = NFSEngine::Math::MoveTowards(p_RigidBody->Velocity.z, 0.0f, currentDec * dt);
+                glm::vec3 currentXZ = glm::vec3(p_RigidBody->Velocity.x, 0.0f, p_RigidBody->Velocity.z);
+                float currentSpeed = glm::length(currentXZ);
+                if (currentSpeed > 0.001f) {
+                    float newSpeed = NFSEngine::Math::MoveTowards(currentSpeed, 0.0f, currentDec * dt);
+                    glm::vec3 currentDir = currentXZ / currentSpeed;
+                    p_RigidBody->Velocity.x = currentDir.x * newSpeed;
+                    p_RigidBody->Velocity.z = currentDir.z * newSpeed;
+                } else {
+                    p_RigidBody->Velocity.x = 0.0f;
+                    p_RigidBody->Velocity.z = 0.0f;
+                }
             } else {
                 float dragMultiplier = glm::clamp(1.0f - (AirFriction * dt), 0.0f, 1.0f);
 

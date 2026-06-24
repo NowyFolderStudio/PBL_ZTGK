@@ -141,6 +141,8 @@ namespace NFSEngine {
                         while (angleDiff < -180.0f)
                             angleDiff += 360.0f;
 
+                        if (std::abs(angleDiff) > 135.0f) angleDiff = 0.0f;
+
                         float speedFactor = glm::clamp(glm::length(flatVelocity) / 10.0f, 0.5f, 2.0f);
                         m_Yaw += angleDiff * m_AutoCenterSpeed * speedFactor * dt;
                     }

@@ -211,7 +211,8 @@ namespace NFSEngine {
                                             }
                                         } else {
                                             if (!rigidBody->IsKinematic) {
-                                                transform->Move(info.ContactNormal * info.PenetrationDepth);
+                                                glm::vec3 worldPos = transform->GetWorldPosition();
+                                                transform->SetWorldPosition(worldPos + info.ContactNormal * info.PenetrationDepth);
 
                                                 glm::vec3 velB = glm::vec3(0.0f);
                                                 if (auto* rbB = objB->GetComponent<RigidBody3DComponent>()) {
