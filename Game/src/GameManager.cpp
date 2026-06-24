@@ -17,18 +17,22 @@ void GameManager::Init() { ChangeState(GameState::MainMenu); }
 
 void GameManager::LoadLevel(const std::string& levelPath) {
     m_CurrentLevelPath = levelPath;
-    RequestStateChange(GameState::Playing);
+
+    m_PendingState = GameState::Playing;
+    m_HasPendingState = true;
 }
 
 void GameManager::ChangeState(GameState newState) {
     auto& app = NFSEngine::Application::Get();
 
-    if (m_CurrentState == newState && m_CurrentLayer != nullptr) return;
+    // if (m_CurrentState == newState && m_CurrentLayer != nullptr) return;
 
     for (auto* garbage : m_GarbageLayers) {
         delete garbage;
     }
     m_GarbageLayers.clear();
+
+    NFSEngine::DialogueManager::Get().HideMessage();
 
     if (m_CurrentLayer) {
         app.PopLayer(m_CurrentLayer);
@@ -60,11 +64,17 @@ void GameManager::ChangeState(GameState newState) {
     case GameState::Playing: {
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Locked);
 
-        // m_CurrentLayer = new LayerZmoreq();
-        // m_CurrentLayer = new LayerGuga();
-        m_CurrentLayer = new LayerExample();
-        app.PushLayer(m_CurrentLayer);
+        if (m_CurrentLevelPath == "Example") {
+            m_CurrentLayer = new LayerExample();
+        } else if (m_CurrentLevelPath == "Zmoreq") {
+            m_CurrentLayer = new LayerZmoreq();
+        } else if (m_CurrentLevelPath == "Guga") {
+            m_CurrentLayer = new LayerGuga();
+        } else {
+            m_CurrentLayer = new LayerExample();
+        }
 
+        app.PushLayer(m_CurrentLayer);
         break;
     }
     case GameState::Paused:

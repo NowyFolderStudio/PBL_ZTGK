@@ -7,7 +7,10 @@
 
 class GameManagerLayer : public NFSEngine::Layer {
 public:
-    virtual void OnUpdate(NFSEngine::DeltaTime dt) override { GameManager::Get().ProcessStateChange(); }
+    virtual void OnUpdate(NFSEngine::DeltaTime dt) override {
+        NFSEngine::DialogueManager::Get().Update(dt.GetSeconds());
+        GameManager::Get().ProcessStateChange();
+    }
 };
 
 class GameApp : public NFSEngine::Application {

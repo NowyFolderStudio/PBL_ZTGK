@@ -581,10 +581,10 @@ private:
 
     void InitDialogueUI() { /* Bez zmian */
         const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 120.0f;
-        const float textStartX = 450.0f;
+        const float textStartX = 650.0f;
 
         NFSEngine::UI::ImageParameters portraitParams;
-        portraitParams.position = glm::vec3(200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 200.0f, 10.0f);
+        portraitParams.position = glm::vec3(650.0f - 200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 200.0f, 10.0f);
         portraitParams.width = 250.0f;
         portraitParams.height = 250.0f;
         portraitParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
@@ -593,6 +593,7 @@ private:
         NFSEngine::UI::LabelParameters nameParams;
         nameParams.position = glm::vec3(textStartX, bottomY - 140.0f, 10.1f);
         nameParams.text = "";
+        nameParams.font = NFSEngine::DialogueManager::Get().GetFont();
         nameParams.scale = 1.2f;
         nameParams.color = glm::vec4(0.8f, 0.8f, 0.2f, 0.0f);
         m_DialogueName = &NFSEngine::UI::Label(*m_Canvas, nameParams);
@@ -604,6 +605,7 @@ private:
         shadowParams.text = "";
         shadowParams.scale = 1.8f;
         shadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        shadowParams.font = NFSEngine::DialogueManager::Get().GetFont();
         m_DialogueShadow = &NFSEngine::UI::Label(*m_Canvas, shadowParams);
         m_DialogueShadow->Transform.Pivot.x = 0.0f;
         m_DialogueShadow->Transform.Pivot.y = 0.0f;
@@ -613,6 +615,7 @@ private:
         msgParams.text = "";
         msgParams.scale = 1.8f;
         msgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        msgParams.font = NFSEngine::DialogueManager::Get().GetFont();
         m_DialogueMsg = &NFSEngine::UI::Label(*m_Canvas, msgParams);
         m_DialogueMsg->Transform.Pivot.x = 0.0f;
         m_DialogueMsg->Transform.Pivot.y = 0.0f;
