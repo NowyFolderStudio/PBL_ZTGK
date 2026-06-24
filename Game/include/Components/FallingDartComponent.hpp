@@ -2,6 +2,7 @@
 
 #include <NFSEngine.h>
 #include <glm/gtx/quaternion.hpp>
+#include "Components/Managers/LivesManager.hpp"
 
 class FallingDartComponent : public NFSEngine::Component {
 public:
@@ -9,7 +10,7 @@ public:
 
     std::string GetName() const override { return "FallingDartComponent"; }
 
-    float FallSpeed = 240.0f;
+    float FallSpeed = 120.0f;
     float TipOffset = 0.0f;
     float StayDuration = 2.0f;
 
@@ -18,6 +19,7 @@ public:
         m_LinkedIndicator = indicator;
         m_IsFalling = true;
         m_DespawnTimer = 0.0f;
+        m_HasDealtDamage = false; // Reset flagi przy każdym nowym strzale
 
         GetOwner()->SetActive(true);
         glm::vec3 myPos = GetOwner()->GetTransform()->GetPosition();
@@ -25,11 +27,27 @@ public:
 
         glm::quat lookRot = glm::quatLookAt(m_FlightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
 
-
         GetOwner()->GetTransform()->SetRotation(lookRot);
     }
 
 protected:
+    void OnStart() override {
+        if (auto* boxCol = GetOwner()->GetComponent<NFSEngine::BoxCollider3DComponent>()) {
+            
+            boxCol->OnTriggerEnter = [this](NFSEngine::GameObject* otherObj) {
+                if (m_IsFalling && !m_HasDealtDamage && otherObj->CompareTag(NFSEngine::Tags::Player)) {
+                    
+                    if (LivesManager::Instance) {
+                        LivesManager::Instance->LoseHeart();
+                        m_HasDealtDamage = true;
+                        
+                        NFS_CORE_INFO("Rzutka uderzyła gracza! Pozostało żyć: {0}", LivesManager::Instance->GetLives());
+                    }
+                }
+            };
+        }
+    }
+
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
         if (m_IsFalling) {
             auto* transform = GetOwner()->GetTransform();
@@ -63,6 +81,7 @@ private:
     glm::vec3 m_TargetPosition;
     glm::vec3 m_FlightDirection;
     bool m_IsFalling = false;
+    bool m_HasDealtDamage = false;
     float m_DespawnTimer = 0.0f;
     NFSEngine::GameObject* m_LinkedIndicator = nullptr;
 };

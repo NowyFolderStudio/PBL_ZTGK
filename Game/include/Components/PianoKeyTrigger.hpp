@@ -1,7 +1,6 @@
 #pragma once
 #include <NFSEngine.h>
 
-// Forward declaration zamiast #include
 class InteractivePiano;
 
 class PianoKeyTrigger : public NFSEngine::Component {

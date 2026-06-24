@@ -2,19 +2,19 @@
 
 #include <NFSEngine.h>
 #include "Components/FallingDartComponent.hpp"
-#include "Components/CubeMesh.hpp" // Usuñ to, jeœli ju¿ tego nie u¿ywasz w tym pliku
+#include "Components/CubeMesh.hpp"
 #include "Events/NotePlayedEvent.hpp"
 #include <vector>
 #include <string>
 #include <random>
 
-// --- NOWY KOMPONENT: Animacja WskaŸnika ---
+// --- NOWY KOMPONENT: Animacja Wskaï¿½nika ---
 class DartIndicatorComponent : public NFSEngine::Component {
 public:
     DartIndicatorComponent(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {}
     std::string GetName() const override { return "DartIndicatorComponent"; }
 
-    glm::vec3 BaseScale = glm::vec3(1.0f); // Dopasuj do skali z Twojego modelu
+    glm::vec3 BaseScale = glm::vec3(1.0f);
     float PulseSpeed = 10.0f;
     float MinScale = 0.8f;
     float MaxScale = 1.2f;
@@ -25,16 +25,11 @@ public:
         if (!GetOwner()->IsActive()) return;
 
         m_Time += deltaTime.GetSeconds();
-
-        // 1. Skalowanie "oddychanie" w osiach X i Z (Y zostaje p³askie na ziemi)
-        // Wynik od 0.0 do 1.0
         float sineValue = (std::sin(m_Time * PulseSpeed) + 1.0f) * 0.5f;
 
-        // Mapowanie do skali
         float currentScaleXZ = MinScale + sineValue * (MaxScale - MinScale);
         GetOwner()->GetTransform()->SetScale(glm::vec3(currentScaleXZ * BaseScale.x, BaseScale.y, currentScaleXZ * BaseScale.z));
 
-        // 2. Miganie œwiat³em Emissive
         if (MaterialRef) {
             float emissiveStrength = 1.0f + (sineValue * 4.0f); // Od 1 do 5
             MaterialRef->SetVec3("u_EmissiveColor", glm::vec3(1.0f, 0.0f, 0.0f) * emissiveStrength);
@@ -44,7 +39,6 @@ public:
 private:
     float m_Time = 0.0f;
 };
-// ----------------------------------------
 
 struct PendingDartAttack {
     glm::vec3 TargetPosition;
