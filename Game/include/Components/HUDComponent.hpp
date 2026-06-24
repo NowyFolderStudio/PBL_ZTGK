@@ -14,7 +14,6 @@
 #include "UI/UIFactory.hpp"
 #include "Components/Managers/DialogueManager.hpp"
 #include "UI/UIObject.hpp"
-#include <vector>
 #include <string>
 
 class HUDComponent : public NFSEngine::Component {
@@ -40,19 +39,25 @@ public:
 
 private:
     NFSEngine::Canvas* m_Canvas = nullptr;
-
     NFSEngine::UIObject* m_ScoreLabel = nullptr;
 
-    NFSEngine::UIObject* m_CenterNameLabel = nullptr;
-    NFSEngine::UIObject* m_CenterSkillLabel = nullptr;
+    NFSEngine::UIObject* m_LeftAuraImage = nullptr;
+    NFSEngine::UIObject* m_RightAuraImage = nullptr;
 
-    NFSEngine::UIObject* m_LeftKeyLabel = nullptr;
-    NFSEngine::UIObject* m_LeftNameLabel = nullptr;
-    NFSEngine::UIObject* m_LeftSkillLabel = nullptr;
+    float m_LeftAuraCurrentAlpha = 1.0f;
+    float m_LeftAuraTargetAlpha = 1.0f;
+    float m_LeftAuraCurrentScale = 1.0f;
+    float m_LeftAuraTargetScale = 1.0f;
 
-    NFSEngine::UIObject* m_RightKeyLabel = nullptr;
-    NFSEngine::UIObject* m_RightNameLabel = nullptr;
-    NFSEngine::UIObject* m_RightSkillLabel = nullptr;
+    float m_RightAuraCurrentAlpha = 1.0f;
+    float m_RightAuraTargetAlpha = 1.0f;
+    float m_RightAuraCurrentScale = 1.0f;
+    float m_RightAuraTargetScale = 1.0f;
+
+    NFSEngine::UIObject* m_CooldownBg = nullptr;
+    NFSEngine::UIObject* m_CooldownFill = nullptr;
+    NFSEngine::UIObject* m_CooldownFrame = nullptr;
+    const float m_MaxCooldownWidth = 459.5f;
 
     NFSEngine::UIObject* m_Vignette = nullptr;
 
@@ -65,8 +70,17 @@ private:
     glm::vec3 m_TargetVignetteColor = { 0.0f, 0.8f, 0.976f };
     float m_TargetVignetteAlpha = 1.0f;
 
+    std::shared_ptr<NFSEngine::Texture> m_HeartFullTex = nullptr;
+    std::shared_ptr<NFSEngine::Texture> m_HeartEmptyTex = nullptr;
+
     std::vector<NFSEngine::UIObject*> m_Hearts;
     std::vector<NFSEngine::UIObject*> m_FullNotes;
+    std::vector<NFSEngine::UIObject*> m_BgNotes;
+    std::vector<NFSEngine::UIObject*> m_EmptyNotes;
+
+    std::vector<float> m_FullNotesBaseWidths;
+    std::vector<float> m_FullNotesBaseHeights;
+
     size_t m_NumberOfNotes = 9;
 
     size_t m_AuraEventId = 0;
@@ -82,6 +96,11 @@ private:
 
     std::string m_CurrentPortraitPath = "";
 
+    float m_PulseStrengthAura = 0.15f;
+    float m_PulseStrengthHearts = 0.10f;
+    float m_PulseStrengthScore = 0.10f;
+    float m_PulseStrengthCooldown = 0.10f;
+
 protected:
     void OnAwake() override {
         if (m_Canvas == nullptr) {
@@ -94,22 +113,27 @@ protected:
         InitScoreUI();
         InitHeartsUI();
         InitAuraUI();
-
+        InitCooldownUI();
         InitDialogueUI();
 
         if (AuraManager::Instance) {
-            UpdateAuraText(AuraManager::Instance->CurrentAura);
+            UpdateAuraVisuals(AuraManager::Instance->CurrentAura);
+            m_LeftAuraCurrentAlpha = m_LeftAuraTargetAlpha;
+            m_LeftAuraCurrentScale = m_LeftAuraTargetScale;
+            m_RightAuraCurrentAlpha = m_RightAuraTargetAlpha;
+            m_RightAuraCurrentScale = m_RightAuraTargetScale;
 
             m_TargetVignetteColor
                 = (AuraManager::Instance->CurrentAura == AuraType::First) ? m_FirstVignetteColor : m_SecondVignetteColor;
-            m_CurrentVignetteColor = m_TargetVignetteColor; // Brak animacji w pierwszej klatce
+            m_CurrentVignetteColor = m_TargetVignetteColor;
 
             m_AuraEventId = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) {
-                this->UpdateAuraText(newAura);
+                this->UpdateAuraVisuals(newAura);
+
                 if (newAura == AuraType::First) {
                     m_TargetVignetteColor = m_FirstVignetteColor;
                 } else {
-                    m_TargetVignetteColor = m_SecondVignetteColor; // (Błąd naprawiony)
+                    m_TargetVignetteColor = m_SecondVignetteColor;
                 }
             });
         }
@@ -134,9 +158,7 @@ protected:
 
         float lerpSpeed = 5.0f * (float)deltaTime;
 
-        m_CurrentVignetteColor += (m_TargetVignetteColor - m_CurrentVignetteColor) * lerpSpeed;
-        m_CurrentVignetteAlpha += (m_TargetVignetteAlpha - m_CurrentVignetteAlpha) * lerpSpeed;
-
+        // --- OBLICZANIE PULSU DO RYTMU ---
         float distToBeat = 99999;
         if (AuraManager::Instance->CurrentAura == AuraType::First) {
             distToBeat = NFSEngine::AudioManager::GetDistanceToEventForTrack("Bass");
@@ -144,11 +166,148 @@ protected:
             distToBeat = NFSEngine::AudioManager::GetDistanceToEventForTrack("Piano");
         }
 
+        // Pulse przyjmuje wartość od 0.0 (cisza) do 1.0 (w szczycie uderzenia)
         float peak = 1.0f - (distToBeat * 2.0f);
         float pulse = std::max(0.0f, (peak - 0.5f) * 2.0f);
-        m_CurrentVignetteAlpha = 0.5f + (pow(pulse, 2.0f) * 0.5f);
 
+        // Zmiękczamy puls, by spadek był bardziej naturalny (potęgą)
+        float smoothPulse = pow(pulse, 2.0f);
+
+        // --- ANIMACJA WINIETY ---
+        m_CurrentVignetteColor += (m_TargetVignetteColor - m_CurrentVignetteColor) * lerpSpeed;
+        m_CurrentVignetteAlpha += (m_TargetVignetteAlpha - m_CurrentVignetteAlpha) * lerpSpeed;
+
+        m_CurrentVignetteAlpha = 0.5f + (smoothPulse * 0.5f);
         SetVignetteColor(glm::vec4(m_CurrentVignetteColor, m_CurrentVignetteAlpha));
+
+        // --- PŁYNNE ANIMACJE AUR (Interpolacja zmian) ---
+        float auraLerpSpeed = 7.0f * (float)deltaTime;
+
+        m_LeftAuraCurrentAlpha += (m_LeftAuraTargetAlpha - m_LeftAuraCurrentAlpha) * auraLerpSpeed;
+        m_LeftAuraCurrentScale += (m_LeftAuraTargetScale - m_LeftAuraCurrentScale) * auraLerpSpeed;
+
+        m_RightAuraCurrentAlpha += (m_RightAuraTargetAlpha - m_RightAuraCurrentAlpha) * auraLerpSpeed;
+        m_RightAuraCurrentScale += (m_RightAuraTargetScale - m_RightAuraCurrentScale) * auraLerpSpeed;
+
+        // Bazowy rozmiar aury
+        const float baseAuraSize = 300.0f;
+
+        // Dodajemy pulse WYŁĄCZNIE do tej aury, która jest akurat wybrana (TargetScale = 1.0)
+        float leftBonusPulse = (m_LeftAuraTargetScale == 1.0f) ? (smoothPulse * m_PulseStrengthAura) : 0.0f;
+        float rightBonusPulse = (m_RightAuraTargetScale == 1.0f) ? (smoothPulse * m_PulseStrengthAura) : 0.0f;
+
+        if (m_LeftAuraImage && m_LeftAuraImage->HasComponent<NFSEngine::ImageComponent>()) {
+            m_LeftAuraImage->GetComponent<NFSEngine::ImageComponent>()->Color.a = m_LeftAuraCurrentAlpha;
+            m_LeftAuraImage->Transform.Width = baseAuraSize * (m_LeftAuraCurrentScale + leftBonusPulse);
+            m_LeftAuraImage->Transform.Height = baseAuraSize * (m_LeftAuraCurrentScale + leftBonusPulse);
+        }
+
+        if (m_RightAuraImage && m_RightAuraImage->HasComponent<NFSEngine::ImageComponent>()) {
+            m_RightAuraImage->GetComponent<NFSEngine::ImageComponent>()->Color.a = m_RightAuraCurrentAlpha;
+            m_RightAuraImage->Transform.Width = baseAuraSize * (m_RightAuraCurrentScale + rightBonusPulse);
+            m_RightAuraImage->Transform.Height = baseAuraSize * (m_RightAuraCurrentScale + rightBonusPulse);
+        }
+
+        // --- PULSOWANIE ŻYĆ (SERC) ---
+        const float baseHeartSize = 150.0f;
+        float heartPulseMult = 1.0f + (smoothPulse * m_PulseStrengthHearts);
+        for (auto* heart : m_Hearts) {
+            if (heart) {
+                heart->Transform.Width = baseHeartSize * heartPulseMult;
+                heart->Transform.Height = baseHeartSize * heartPulseMult;
+            }
+        }
+
+        // --- PULSOWANIE SCORE (NUTEK) ---
+        float scorePulseMult = 1.0f + (smoothPulse * m_PulseStrengthScore);
+
+        for (size_t i = 0; i < m_FullNotes.size(); i++) {
+            if (i < m_FullNotesBaseWidths.size()) {
+
+                float baseW = m_FullNotesBaseWidths[i];
+                float baseH = m_FullNotesBaseHeights[i];
+
+                float targetW = baseW * scorePulseMult;
+                float targetH = baseH * scorePulseMult;
+
+                float widthDiff = targetW - baseW;
+                float heightDiff = targetH - baseH;
+
+                float targetWidthTotal = 500.0f;
+                float stepX = (targetWidthTotal - baseW) / (m_NumberOfNotes - 1);
+                float baseX = ((1920.0f - targetWidthTotal) / 2.0f) + (i * stepX);
+                float baseY = 100.0f;
+
+                float targetPosX = baseX - (widthDiff / 2.0f);
+                float targetPosY = baseY - (heightDiff / 2.0f);
+
+                if (m_FullNotes[i]) {
+                    m_FullNotes[i]->Transform.Width = targetW;
+                    m_FullNotes[i]->Transform.Height = targetH;
+                    m_FullNotes[i]->Transform.Position.x = targetPosX;
+                    m_FullNotes[i]->Transform.Position.y = targetPosY;
+                }
+
+                if (i < m_BgNotes.size() && m_BgNotes[i]) {
+                    m_BgNotes[i]->Transform.Width = targetW;
+                    m_BgNotes[i]->Transform.Height = targetH;
+                    m_BgNotes[i]->Transform.Position.x = targetPosX;
+                    m_BgNotes[i]->Transform.Position.y = targetPosY;
+                }
+
+                if (i < m_EmptyNotes.size() && m_EmptyNotes[i]) {
+                    m_EmptyNotes[i]->Transform.Width = targetW;
+                    m_EmptyNotes[i]->Transform.Height = targetH;
+                    m_EmptyNotes[i]->Transform.Position.x = targetPosX;
+                    m_EmptyNotes[i]->Transform.Position.y = targetPosY;
+                }
+            }
+        }
+        // --- AKTUALIZACJA PASKA COOLDOWNU ---
+        if (m_CooldownBg && m_CooldownFill && m_CooldownFrame) {
+            // Kolory podążają za aurą
+            glm::vec3 darkColor = m_CurrentVignetteColor * 0.25f;
+            m_CooldownBg->GetComponent<NFSEngine::ImageComponent>()->Color = glm::vec4(darkColor, 1.0f);
+            m_CooldownFill->GetComponent<NFSEngine::ImageComponent>()->Color = glm::vec4(m_CurrentVignetteColor, 1.0f);
+
+            // Pobieramy stopień napełnienia paska
+            float fillRatio = 1.0f;
+            if (AuraManager::Instance) {
+                fillRatio = AuraManager::Instance->GetCooldownProgress();
+            }
+
+            // Wyliczamy mnożnik pulsu dla paska
+            float cdPulseMult = 1.0f + (smoothPulse * m_PulseStrengthCooldown);
+
+            // Wyliczamy rozmiary z uwzględnieniem pulsu (bazowe wartości wzięte prosto z Init)
+            float baseFrameW = 464.5f;
+            float baseFrameH = 46.0f;
+            float baseInnerH = 41.0f;
+
+            float currentFrameW = baseFrameW * cdPulseMult;
+            float currentFrameH = baseFrameH * cdPulseMult;
+            float currentInnerW = m_MaxCooldownWidth * cdPulseMult;
+            float currentInnerH = baseInnerH * cdPulseMult;
+
+            // Aplikujemy puls do ramki
+            m_CooldownFrame->Transform.Width = currentFrameW;
+            m_CooldownFrame->Transform.Height = currentFrameH;
+
+            // Aplikujemy puls do tła
+            m_CooldownBg->Transform.Width = currentInnerW;
+            m_CooldownBg->Transform.Height = currentInnerH;
+
+            // Aplikujemy puls do wypełnienia (szerokość skalujemy dodatkowo przez ratio odnowienia)
+            m_CooldownFill->Transform.Width = currentInnerW * fillRatio;
+            m_CooldownFill->Transform.Height = currentInnerH;
+
+            // KOREKTA POZYCJI WYPEŁNIENIA:
+            // Wewnętrzne tło "puchnie" ze środka. Oznacza to, że jego lewa krawędź przesuwa się lekko w lewo.
+            // Musimy zaktualizować pozycję X paska wypełnienia, by zawsze "przyklejał się" do krawędzi.
+            float centerX = 1920.0f / 2.0f;
+            m_CooldownFill->Transform.Position.x = centerX - (currentInnerW / 2.0f);
+        }
+        // -----------------------------
 
         if (m_Canvas) {
             m_Canvas->Update();
@@ -179,7 +338,7 @@ protected:
     }
 
 private:
-    void InitVignetteUI() {
+    void InitVignetteUI() { /* Bez zmian */
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
@@ -195,8 +354,8 @@ private:
 
         m_Vignette = &NFSEngine::UI::Image(*m_Canvas, vignetteParams);
     }
-    void InitScoreUI() {
 
+    void InitScoreUI() {
         float originalWidth = 462;
         float originalHeight = 591;
         float aspectRatio = originalWidth / originalHeight;
@@ -204,9 +363,10 @@ private:
         float noteHeight = 100;
         float noteWidth = noteHeight * aspectRatio;
         float targetWidth = 500;
-        glm::vec3 firstPosition = { (1920 - targetWidth) / 2.0f, 1000.0f, 1.0f };
 
+        glm::vec3 firstPosition = { (1920 - targetWidth) / 2.0f, 100.0f, 1.0f };
         float stepX = (targetWidth - noteWidth) / (m_NumberOfNotes - 1);
+
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
@@ -215,41 +375,54 @@ private:
         auto fullTex = NFSEngine::Texture::Create("assets/textures/ui/notes/note_ui_full.png", texParam);
         auto fullExtraTex = NFSEngine::Texture::Create("assets/textures/ui/notes/note_ui_full_extra.png", texParam);
 
+        // Rezerwacja pamięci
+        m_BgNotes.reserve(m_NumberOfNotes);
+        m_EmptyNotes.reserve(m_NumberOfNotes);
+        m_FullNotes.reserve(m_NumberOfNotes);
+        m_FullNotesBaseWidths.reserve(m_NumberOfNotes);
+        m_FullNotesBaseHeights.reserve(m_NumberOfNotes);
+
+        // --- RYSOWANIE TEŁ ---
         for (int i = 0; i < m_NumberOfNotes; ++i) {
             NFSEngine::UI::ImageParameters noteParameters;
-
             glm::vec3 currentPosition = firstPosition;
             currentPosition.x += i * stepX;
-
             noteParameters.position = currentPosition;
             noteParameters.width = noteWidth;
             noteParameters.height = noteHeight;
             noteParameters.color = glm::vec4(1, 1, 1, 1.0f);
             noteParameters.texture = bgTex;
 
-            NFSEngine::UI::Image(*m_Canvas, noteParameters);
+            auto* bgObj = &NFSEngine::UI::Image(*m_Canvas, noteParameters);
+            bgObj->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+            bgObj->Transform.Position.x += (noteWidth / 2.0f);
+            bgObj->Transform.Position.y += (noteHeight / 2.0f);
+            m_BgNotes.push_back(bgObj);
         }
+
+        // --- RYSOWANIE PUSTYCH NUTEK ---
         for (int i = 0; i < m_NumberOfNotes; ++i) {
             NFSEngine::UI::ImageParameters noteParameters;
-
             glm::vec3 currentPosition = firstPosition;
             currentPosition.x += i * stepX;
-
             noteParameters.position = currentPosition + glm::vec3(0, 0, 1 + (1 * i));
             noteParameters.width = noteWidth;
             noteParameters.height = noteHeight;
             noteParameters.color = glm::vec4(1, 1, 1, 1.0f);
             noteParameters.texture = emptyTex;
 
-            NFSEngine::UI::Image(*m_Canvas, noteParameters);
+            auto* emptyObj = &NFSEngine::UI::Image(*m_Canvas, noteParameters);
+            emptyObj->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+            emptyObj->Transform.Position.x += (noteWidth / 2.0f);
+            emptyObj->Transform.Position.y += (noteHeight / 2.0f);
+            m_EmptyNotes.push_back(emptyObj);
         }
-        m_FullNotes.reserve(m_NumberOfNotes);
+
+        // --- RYSOWANIE WYPEŁNIEŃ ---
         for (int i = 0; i < m_NumberOfNotes; ++i) {
             NFSEngine::UI::ImageParameters noteParameters;
-
             glm::vec3 currentPosition = firstPosition;
             currentPosition.x += i * stepX;
-
             noteParameters.position = currentPosition + glm::vec3(0, 0, 2 + (1 * i));
             noteParameters.width = noteWidth;
             noteParameters.height = noteHeight;
@@ -259,24 +432,31 @@ private:
             else
                 noteParameters.texture = fullTex;
 
-            m_FullNotes.push_back(&NFSEngine::UI::Image(*m_Canvas, noteParameters));
+            auto* noteObj = &NFSEngine::UI::Image(*m_Canvas, noteParameters);
+            noteObj->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+            noteObj->Transform.Position.x += (noteWidth / 2.0f);
+            noteObj->Transform.Position.y += (noteHeight / 2.0f);
+
+            m_FullNotes.push_back(noteObj);
+            m_FullNotesBaseWidths.push_back(noteWidth);
+            m_FullNotesBaseHeights.push_back(noteHeight);
         }
     }
 
     void InitHeartsUI() {
         constexpr int k_MaxLives = 3;
 
-        NFSEngine::UI::ImageParameters heartBgParams;
-        heartBgParams.position = glm::vec3(220, 100, 0.8f);
-        heartBgParams.width = 360;
-        heartBgParams.height = 100;
-        heartBgParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.45f);
-        NFSEngine::UI::Image(*m_Canvas, heartBgParams);
+        NFSEngine::TextureParameters texParam;
+        texParam.WrapS = NFSEngine::TextureWrap::Clamp;
+        texParam.WrapT = NFSEngine::TextureWrap::Clamp;
 
-        const float heartSize = 60.0f;
-        const float heartSpacing = 100.0f;
-        const float heartStartX = 120.0f;
-        const float heartY = 100.0f;
+        m_HeartFullTex = NFSEngine::Texture::Create("assets/textures/ui/hud/heart.png", texParam);
+        m_HeartEmptyTex = NFSEngine::Texture::Create("assets/textures/ui/hud/heart_empty.png", texParam);
+
+        const float heartSize = 150.0f;
+        const float heartSpacing = 120.0f;
+        const float heartStartX = 10.0f;
+        const float heartY = 20.0f;
 
         m_Hearts.reserve(k_MaxLives);
         for (int i = 0; i < k_MaxLives; ++i) {
@@ -284,64 +464,169 @@ private:
             heartParams.position = glm::vec3(heartStartX + i * heartSpacing, heartY, 1.0f);
             heartParams.width = heartSize;
             heartParams.height = heartSize;
-            heartParams.color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
-            m_Hearts.push_back(&NFSEngine::UI::Image(*m_Canvas, heartParams));
+
+            heartParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+            heartParams.texture = m_HeartFullTex;
+
+            auto* heartObj = &NFSEngine::UI::Image(*m_Canvas, heartParams);
+
+            // Ustawiamy Pivot na środek grafiki, żeby serca pompowały równomiernie dookoła osi, a nie w prawo-dół
+            heartObj->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+            heartObj->Transform.Position.x += (heartSize / 2.0f);
+            heartObj->Transform.Position.y += (heartSize / 2.0f);
+
+            m_Hearts.push_back(heartObj);
         }
     }
 
-    void InitAuraUI() {
-        const float centerX = 960.0f;
-        const float sideOffset = 340.0f;
-        const float spacing = 35.0f;
+    void InitAuraUI() { /* Bez zmian */
+        NFSEngine::TextureParameters texParam;
+        texParam.WrapS = NFSEngine::TextureWrap::Clamp;
+        texParam.WrapT = NFSEngine::TextureWrap::Clamp;
 
-        auto SetupSideBlock = [&](float x, std::string keyText, NFSEngine::UIObject*& key, NFSEngine::UIObject*& name,
-                                  NFSEngine::UIObject*& skill) {
-            NFSEngine::UI::ImageParameters bg;
-            bg.position = glm::vec3(x, 80.0f, 1.0f);
-            bg.width = 240;
-            bg.height = 120;
-            bg.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.4f);
-            NFSEngine::UI::Image(*m_Canvas, bg);
+        auto doubleJumpTex = NFSEngine::Texture::Create("assets/textures/ui/hud/doublejump_aura.png", texParam);
+        auto dashTex = NFSEngine::Texture::Create("assets/textures/ui/hud/dash_aura.png", texParam);
 
-            NFSEngine::UI::LabelParameters pKey;
-            pKey.position = glm::vec3(x, 80.0f + spacing, 2.0f);
-            pKey.text = keyText;
-            pKey.scale = 0.6f;
-            pKey.color = glm::vec4(0.8f, 0.8f, 0.8f, 1.0f);
-            key = &NFSEngine::UI::Label(*m_Canvas, pKey);
+        float screenBottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
+        float xOffset = 85.0f;
+        float yOffset = 65.0f;
 
-            NFSEngine::UI::LabelParameters pName;
-            pName.position = glm::vec3(x, 80.0f, 2.0f);
-            pName.text = "NONE";
-            name = &NFSEngine::UI::Label(*m_Canvas, pName);
+        NFSEngine::UI::ImageParameters leftParams;
+        leftParams.position = glm::vec3(-xOffset, screenBottomY + yOffset, 1.0f);
+        leftParams.width = 300.0f;
+        leftParams.height = 300.0f;
+        leftParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        leftParams.texture = doubleJumpTex;
+        m_LeftAuraImage = &NFSEngine::UI::Image(*m_Canvas, leftParams);
+        m_LeftAuraImage->Transform.Pivot = glm::vec2(0.0f, 1.0f);
 
-            NFSEngine::UI::LabelParameters pSkill;
-            pSkill.position = glm::vec3(x, 80.0f - spacing, 2.0f);
-            pSkill.text = "(NONE)";
-            pSkill.scale = 0.6f;
-            skill = &NFSEngine::UI::Label(*m_Canvas, pSkill);
-        };
+        NFSEngine::UI::ImageParameters rightParams;
+        rightParams.position = glm::vec3(1920.0f + xOffset, screenBottomY + yOffset, 1.0f);
+        rightParams.width = 300.0f;
+        rightParams.height = 300.0f;
+        rightParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        rightParams.texture = dashTex;
+        m_RightAuraImage = &NFSEngine::UI::Image(*m_Canvas, rightParams);
+        m_RightAuraImage->Transform.Pivot = glm::vec2(1.0f, 1.0f);
+    }
 
-        SetupSideBlock(centerX - sideOffset, "[Q]", m_LeftKeyLabel, m_LeftNameLabel, m_LeftSkillLabel);
-        SetupSideBlock(centerX + sideOffset, "[E]", m_RightKeyLabel, m_RightNameLabel, m_RightSkillLabel);
+    void InitCooldownUI() { /* Bez zmian */
+        float frameWidth = 464.5f;
+        float frameHeight = 46.0f;
 
-        NFSEngine::UI::ImageParameters centerBg;
-        centerBg.position = glm::vec3(centerX, 110.0f, 1.1f);
-        centerBg.width = 320;
-        centerBg.height = 120;
-        centerBg.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.8f);
-        NFSEngine::UI::Image(*m_Canvas, centerBg);
+        float innerWidth = m_MaxCooldownWidth;
+        float innerHeight = 41.0f;
 
-        NFSEngine::UI::LabelParameters pName;
-        pName.position = glm::vec3(centerX, 125.0f, 2.0f);
-        pName.text = "NONE";
-        m_CenterNameLabel = &NFSEngine::UI::Label(*m_Canvas, pName);
+        float centerX = 1920.0f / 2.0f;
+        float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 30.0f;
 
-        NFSEngine::UI::LabelParameters pSkill;
-        pSkill.position = glm::vec3(centerX, 95.0f, 2.0f);
-        pSkill.text = "(NONE)";
-        pSkill.scale = 0.7f;
-        m_CenterSkillLabel = &NFSEngine::UI::Label(*m_Canvas, pSkill);
+        NFSEngine::UI::ImageParameters bgParams;
+        bgParams.position = glm::vec3(centerX, bottomY, 1.5f);
+        bgParams.width = innerWidth;
+        bgParams.height = innerHeight;
+        bgParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        m_CooldownBg = &NFSEngine::UI::Image(*m_Canvas, bgParams);
+        m_CooldownBg->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+
+        NFSEngine::UI::ImageParameters fillParams;
+        fillParams.position = glm::vec3(centerX - (innerWidth / 2.0f), bottomY, 1.6f);
+        fillParams.width = innerWidth;
+        fillParams.height = innerHeight;
+        fillParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        m_CooldownFill = &NFSEngine::UI::Image(*m_Canvas, fillParams);
+        m_CooldownFill->Transform.Pivot = glm::vec2(0.0f, 0.5f);
+
+        NFSEngine::TextureParameters texParam;
+        texParam.WrapS = NFSEngine::TextureWrap::Clamp;
+        texParam.WrapT = NFSEngine::TextureWrap::Clamp;
+        auto frameTex = NFSEngine::Texture::Create("assets/textures/ui/hud/aura_cd_frame.png", texParam);
+
+        NFSEngine::UI::ImageParameters frameParams;
+        frameParams.position = glm::vec3(centerX, bottomY, 1.7f);
+        frameParams.width = frameWidth;
+        frameParams.height = frameHeight;
+        frameParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+        frameParams.texture = frameTex;
+        m_CooldownFrame = &NFSEngine::UI::Image(*m_Canvas, frameParams);
+        m_CooldownFrame->Transform.Pivot = glm::vec2(0.5f, 0.5f);
+    }
+
+    void UpdateHeartVisuals(int currentLives) { /* Bez zmian */
+        for (size_t i = 0; i < m_Hearts.size(); ++i) {
+            if (!m_Hearts[i]) continue;
+
+            auto* img = m_Hearts[i]->GetComponent<NFSEngine::ImageComponent>();
+            if (!img) continue;
+
+            img->Color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
+            if (static_cast<int>(i) < currentLives) {
+                img->TexturePtr = m_HeartFullTex;
+            } else {
+                img->TexturePtr = m_HeartEmptyTex;
+            }
+        }
+    }
+
+    void UpdateAuraVisuals(AuraType newAura) { /* Bez zmian */
+        float activeAlpha = 1.0f;
+        float inactiveAlpha = 0.4f;
+
+        float activeScale = 1.0f;
+        float inactiveScale = 0.8f;
+
+        if (newAura == AuraType::First) {
+            m_LeftAuraTargetAlpha = activeAlpha;
+            m_LeftAuraTargetScale = activeScale;
+
+            m_RightAuraTargetAlpha = inactiveAlpha;
+            m_RightAuraTargetScale = inactiveScale;
+        } else {
+            m_LeftAuraTargetAlpha = inactiveAlpha;
+            m_LeftAuraTargetScale = inactiveScale;
+
+            m_RightAuraTargetAlpha = activeAlpha;
+            m_RightAuraTargetScale = activeScale;
+        }
+    }
+
+    void InitDialogueUI() { /* Bez zmian */
+        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 120.0f;
+        const float textStartX = 450.0f;
+
+        NFSEngine::UI::ImageParameters portraitParams;
+        portraitParams.position = glm::vec3(200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 200.0f, 10.0f);
+        portraitParams.width = 250.0f;
+        portraitParams.height = 250.0f;
+        portraitParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        m_DialoguePortrait = &NFSEngine::UI::Image(*m_Canvas, portraitParams);
+
+        NFSEngine::UI::LabelParameters nameParams;
+        nameParams.position = glm::vec3(textStartX, bottomY - 140.0f, 10.1f);
+        nameParams.text = "";
+        nameParams.scale = 1.2f;
+        nameParams.color = glm::vec4(0.8f, 0.8f, 0.2f, 0.0f);
+        m_DialogueName = &NFSEngine::UI::Label(*m_Canvas, nameParams);
+        m_DialogueName->Transform.Pivot.x = 0.0f;
+        m_DialogueName->Transform.Pivot.y = 0.0f;
+
+        NFSEngine::UI::LabelParameters shadowParams;
+        shadowParams.position = glm::vec3(textStartX + 3.0f, bottomY - 62.0f, 10.0f);
+        shadowParams.text = "";
+        shadowParams.scale = 1.8f;
+        shadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        m_DialogueShadow = &NFSEngine::UI::Label(*m_Canvas, shadowParams);
+        m_DialogueShadow->Transform.Pivot.x = 0.0f;
+        m_DialogueShadow->Transform.Pivot.y = 0.0f;
+
+        NFSEngine::UI::LabelParameters msgParams;
+        msgParams.position = glm::vec3(textStartX, bottomY - 65.0f, 10.1f);
+        msgParams.text = "";
+        msgParams.scale = 1.8f;
+        msgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
+        m_DialogueMsg = &NFSEngine::UI::Label(*m_Canvas, msgParams);
+        m_DialogueMsg->Transform.Pivot.x = 0.0f;
+        m_DialogueMsg->Transform.Pivot.y = 0.0f;
     }
 
     void UpdateScoreText(int newScore) {
@@ -365,105 +650,7 @@ private:
         }
     }
 
-    void UpdateHeartVisuals(int currentLives) {
-        for (size_t i = 0; i < m_Hearts.size(); ++i) {
-            if (!m_Hearts[i]) continue;
-
-            auto* img = m_Hearts[i]->GetComponent<NFSEngine::ImageComponent>();
-            if (!img) continue;
-
-            if (static_cast<int>(i) < currentLives) {
-                img->Color = glm::vec4(0.9f, 0.1f, 0.15f, 1.0f);
-            } else {
-                img->Color = glm::vec4(0.3f, 0.3f, 0.3f, 0.4f);
-            }
-        }
-    }
-    std::string GetAuraName(AuraType aura) {
-        switch (aura) {
-        case AuraType::First:
-            return "PIANO";
-        case AuraType::Second:
-            return "BASS";
-        default:
-            return "UNKNOWN";
-        }
-    }
-
-    std::string GetAuraSkill(AuraType aura) {
-        switch (aura) {
-        case AuraType::First:
-            return "(DOUBLE JUMP)";
-        case AuraType::Second:
-            return "(DASH)";
-        default:
-            return "";
-        }
-    }
-
-    void UpdateAuraText(AuraType newAura) {
-        auto SetText = [&](NFSEngine::UIObject* obj, std::string text, float scale) {
-            if (obj && obj->HasComponent<NFSEngine::TextComponent>()) {
-                auto* tc = obj->GetComponent<NFSEngine::TextComponent>();
-                tc->Color = glm::vec4(1.0f);
-                tc->TextString = text;
-                tc->Scale = scale;
-            }
-        };
-
-        SetText(m_CenterNameLabel, GetAuraName(newAura), 1.0f);
-        SetText(m_CenterSkillLabel, GetAuraSkill(newAura), 0.7f);
-
-        SetText(m_LeftNameLabel, GetAuraName(AuraType::First), 0.8f);
-        SetText(m_LeftSkillLabel, GetAuraSkill(AuraType::First), 0.6f);
-
-        SetText(m_RightNameLabel, GetAuraName(AuraType::Second), 0.8f);
-        SetText(m_RightSkillLabel, GetAuraSkill(AuraType::Second), 0.6f);
-    }
-
-    void InitDialogueUI() {
-        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 120.0f;
-        const float textStartX = 450.0f;
-
-        NFSEngine::UI::ImageParameters portraitParams;
-        portraitParams.position = glm::vec3(200.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 200.0f, 10.0f);
-        portraitParams.width = 250.0f;
-        portraitParams.height = 250.0f;
-        portraitParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-        m_DialoguePortrait = &NFSEngine::UI::Image(*m_Canvas, portraitParams);
-
-        NFSEngine::UI::LabelParameters nameParams;
-        nameParams.position = glm::vec3(textStartX, bottomY - 140.0f, 10.1f);
-        nameParams.text = "";
-        nameParams.scale = 1.2f;
-        nameParams.color = glm::vec4(0.8f, 0.8f, 0.2f, 0.0f);
-        m_DialogueName = &NFSEngine::UI::Label(*m_Canvas, nameParams);
-
-        m_DialogueName->Transform.Pivot.x = 0.0f;
-        m_DialogueName->Transform.Pivot.y = 0.0f;
-
-        NFSEngine::UI::LabelParameters shadowParams;
-        shadowParams.position = glm::vec3(textStartX + 3.0f, bottomY - 62.0f, 10.0f);
-        shadowParams.text = "";
-        shadowParams.scale = 1.8f;
-        shadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-        m_DialogueShadow = &NFSEngine::UI::Label(*m_Canvas, shadowParams);
-
-        m_DialogueShadow->Transform.Pivot.x = 0.0f;
-        m_DialogueShadow->Transform.Pivot.y = 0.0f;
-
-        NFSEngine::UI::LabelParameters msgParams;
-        msgParams.position = glm::vec3(textStartX, bottomY - 65.0f, 10.1f);
-        msgParams.text = "";
-        msgParams.scale = 1.8f;
-        msgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-        m_DialogueMsg = &NFSEngine::UI::Label(*m_Canvas, msgParams);
-
-        m_DialogueMsg->Transform.Pivot.x = 0.0f;
-        m_DialogueMsg->Transform.Pivot.y = 0.0f;
-    }
-
-    void UpdateDialogueUI() {
+    void UpdateDialogueUI() { /* Bez zmian */
         const auto& dialogue = NFSEngine::DialogueManager::Get().GetActiveDialogue();
 
         auto SetLabelState = [](NFSEngine::UIObject* obj, const std::string& text, float alpha) {

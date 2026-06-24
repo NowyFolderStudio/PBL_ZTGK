@@ -2,6 +2,7 @@
 
 #include <NFSEngine.h>
 #include <memory>
+#include <algorithm>
 #include "Core/Audio/AudioClip.hpp"
 #include "Core/Audio/AudioEngine.hpp"
 
@@ -14,7 +15,8 @@ class AuraManager : public NFSEngine::Component {
 public:
     inline static AuraManager* Instance = nullptr;
 
-    AuraManager(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {}
+    AuraManager(NFSEngine::GameObject* owner)
+        : NFSEngine::Component(owner) { }
 
     ~AuraManager() override {
         if (Instance == this) {
@@ -27,9 +29,13 @@ public:
     NFSEngine::Action<AuraType> OnAuraChanged;
     AuraType CurrentAura = AuraType::First;
 
+    float CooldownDuration = 1.0f;
+
 private:
     std::vector<AuraType> m_UnlockedAuras;
     std::shared_ptr<NFSEngine::AudioClip> m_AudioClip;
+
+    float m_CurrentCooldown = 0.0f;
 
 protected:
     void OnAwake() override {
@@ -45,10 +51,19 @@ protected:
         UnlockAura(AuraType::Second);
     }
 
-    void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override {}
-    void OnUpdate(NFSEngine::DeltaTime deltaTime) override {}
-    void OnEnable() override {}
-    void OnDisable() override {}
+    void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
+
+    void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (m_CurrentCooldown > 0.0f) {
+            m_CurrentCooldown -= deltaTime.GetSeconds();
+            if (m_CurrentCooldown < 0.0f) {
+                m_CurrentCooldown = 0.0f;
+            }
+        }
+    }
+
+    void OnEnable() override { }
+    void OnDisable() override { }
 
 public:
     void UnlockAura(AuraType aura) {
@@ -75,9 +90,19 @@ public:
         if (CurrentAura == newAura) return;
         if (!IsAuraUnlocked(newAura)) return;
 
+        if (m_CurrentCooldown > 0.0f) return;
+
         NFSEngine::AudioEngine::PlayClipRandomPitch(m_AudioClip.get(), 0.9, 1.1);
 
         CurrentAura = newAura;
+        m_CurrentCooldown = CooldownDuration; // Resetujemy cooldown po udanej zmianie!
+
         OnAuraChanged.Invoke(newAura);
+    }
+
+    float GetCooldownProgress() const {
+        if (CooldownDuration <= 0.0f) return 1.0f;
+
+        return 1.0f - (m_CurrentCooldown / CooldownDuration);
     }
 };
