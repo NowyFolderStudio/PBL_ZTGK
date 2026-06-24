@@ -1,4 +1,4 @@
-#include "Layers/IntroLayer.hpp"
+﻿#include "Layers/IntroLayer.hpp"
 #include "Core/Log.hpp"
 #include "GameManager.hpp"
 #include <glm/ext/vector_float2.hpp>
@@ -12,6 +12,7 @@ IntroLayer::~IntroLayer() {
 
 void IntroLayer::OnAttach() {
     m_Skipped = false;
+    m_SkipTimer = 0.0f;
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
     m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
@@ -44,6 +45,22 @@ void IntroLayer::OnAttach() {
     bgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
     m_VideoImage = &NFSEngine::UI::Image(*m_Canvas, bgParams);
+
+    NFSEngine::TextureParameters skipTexParams;
+    skipTexParams.WrapS = NFSEngine::TextureWrap::Clamp;
+    skipTexParams.WrapT = NFSEngine::TextureWrap::Clamp;
+    skipTexParams.sRGB = false;
+
+    m_SkipTexture = NFSEngine::Texture::Create("assets/textures/ui/tutorial_skip.png", skipTexParams);
+
+    NFSEngine::UI::ImageParameters skipParams;
+    skipParams.position
+        = glm::vec3(NFSEngine::UIRenderer::VIRTUAL_WIDTH - 250.0f, NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 100.0f, 0.5f);
+    skipParams.width = 381.5f;
+    skipParams.height = 540.0f;
+    skipParams.texture = m_SkipTexture;
+    skipParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    m_SkipGraphic = &NFSEngine::UI::Image(*m_Canvas, skipParams);
 }
 
 void IntroLayer::OnDetach() { }
@@ -69,7 +86,7 @@ void IntroLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
             }
         }
 
-        if (m_VideoDecoder->IsFinished() || m_Skipped == true) {
+        if (m_VideoDecoder->IsFinished() || m_Skipped) {
             GameManager::Get().RequestStateChange(GameState::Playing);
             NFS_INFO("Intro ended");
             return;
@@ -78,6 +95,29 @@ void IntroLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
         if (m_VideoAccumulator > frameTime * 2.0f) {
             m_VideoAccumulator = 0.0f;
         }
+    }
+
+    bool isHoldingSkip = false;
+
+    if (NFSEngine::Input::IsControllerButtonPressed(0, NFSEngine::ControllerButtons::Start)
+        || NFSEngine::Input::IsControllerButtonPressed(0, NFSEngine::ControllerButtons::A)
+        || NFSEngine::Input::IsControllerButtonPressed(0, NFSEngine::ControllerButtons::B)
+        || NFSEngine::Input::IsControllerButtonPressed(0, NFSEngine::ControllerButtons::X)) {
+        isHoldingSkip = true;
+    }
+
+    if (NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Space) || NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Enter)
+        || NFSEngine::Input::IsKeyPressed(NFSEngine::Key::Escape)) {
+        isHoldingSkip = true;
+    }
+
+    if (isHoldingSkip) {
+        m_SkipTimer += deltaTime.GetSeconds();
+        if (m_SkipTimer >= 2.0f) {
+            m_Skipped = true;
+        }
+    } else {
+        m_SkipTimer = 0.0f;
     }
 }
 
@@ -92,13 +132,4 @@ void IntroLayer::OnRender() {
     NFSEngine::UIRenderer::End();
 }
 
-void IntroLayer::OnEvent(NFSEngine::Event& e) {
-    if (e.GetEventType() == NFSEngine::EventType::KeyPressed) {
-        auto& keyEvent = (NFSEngine::KeyPressedEvent&)e;
-        if (keyEvent.GetKeyCode() == NFSEngine::Key::Space || keyEvent.GetKeyCode() == NFSEngine::Key::Enter
-            || keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
-            m_Skipped = true;
-            e.Handled = true;
-        }
-    }
-}
+void IntroLayer::OnEvent(NFSEngine::Event& e) { }
