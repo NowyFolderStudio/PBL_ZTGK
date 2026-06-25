@@ -81,6 +81,9 @@
 #include "SceneLoader/PortalComponentLoader.hpp"
 #include "SceneLoader/DialogueComponentLoader.hpp"
 #include "SceneLoader/StartingPointLoader.hpp"
+#include "SceneLoader/MusicTriggerComponentLoader.hpp"
+#include "SceneLoader/PointLightLoader.hpp"
+#include "SceneLoader/SpotLightLoader.hpp"
 #include "GameManager.hpp"
 #include "Core/Application.hpp"
 
@@ -138,6 +141,9 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<StartingPointLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<TutorialTriggerLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<DoorLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<MusicTriggerComponentLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<PointLightLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<SpotLightLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
@@ -220,24 +226,11 @@ void LayerExample::OnAttach() {
     // ================= CREATING PLAYER END ==================
 
     // Lighting
-    NFSEngine::GameObject* lightObj = m_Scene->CreateGameObject("PointLight_1");
-    lightObj->GetTransform()->SetPosition({ -55.0f, 13.0f, 55.0f });
-    auto& lightComp = lightObj->AddComponent<NFSEngine::PointLight>();
-    lightComp.Color = { 1.0f, 0.3f, 0.3f };
-    lightComp.Intensity = 120.0f;
-
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.6f);
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
     sunComp.Intensity = 1.0f;
-
-    NFSEngine::GameObject* spotObj = m_Scene->CreateGameObject("MainSpotLight");
-    spotObj->GetTransform()->SetPosition({ 0.0f, 3.5f, -3.0f });
-    auto& spotComp = spotObj->AddComponent<NFSEngine::SpotLight>();
-    spotComp.Color = { 0.1f, 0.2f, 0.93f };
-    spotComp.Direction = { 0.0f, -1.0f, -0.5f };
-    spotComp.Intensity = 130.0f;
 
     // Camera
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
@@ -285,55 +278,6 @@ void LayerExample::OnAttach() {
     NFSEngine::GameObject* directorObj = m_Scene->CreateGameObject("MusicDirector");
     auto& directorComp = directorObj->AddComponent<MusicDirector>();
     directorComp.InitMusic(m_Scene.get());
-
-    auto matCassette = std::make_shared<NFSEngine::Material>();
-    matCassette->AlbedoColor = glm::vec3(0.8f, 0.2f, 0.2f);
-
-    auto* casettePianoObj = m_Scene->CreateGameObject("Casette_Piano");
-    casettePianoObj->GetTransform()->SetPosition(glm::vec3(-50.0f, 19.0f, 65.0f));
-    casettePianoObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
-    casettePianoObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
-    casettePianoObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    auto& casettePianoComp = casettePianoObj->AddComponent<CasetteComponent>();
-    casettePianoComp.TracksToUnlock.push_back("Piano");
-    casettePianoComp.TracksToUnlock.push_back("SubPiano");
-
-    auto* casetteBassObj = m_Scene->CreateGameObject("Casette_Bass");
-    casetteBassObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 64.0f));
-    casetteBassObj->GetTransform()->SetScale(glm::vec3(1.5f, 1.5f, 1.5f));
-    casetteBassObj->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
-    casetteBassObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    auto& casetteBassComp = casetteBassObj->AddComponent<CasetteComponent>();
-    casetteBassComp.TracksToUnlock.push_back("Bass");
-
-    auto matRzutka = std::make_shared<NFSEngine::Material>();
-    matRzutka->AlbedoMap = NFSEngine::Texture::Create("assets/models/Rzutka/color_rzutka_neonpink.png");
-
-    auto* rzutkaObj = m_Scene->CreateGameObject("Rzutka");
-    rzutkaObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 35.0f, 64.0f));
-    rzutkaObj->GetTransform()->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
-    rzutkaObj->GetTransform()->SetRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
-    auto rzutkaModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/rzutka.fbx");
-    rzutkaObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-    auto& rzutkaComp = rzutkaObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matRzutka);
-    rzutkaComp.AddLOD(rzutkaModel, 10000.0f);
-
-    auto* trigger1 = m_Scene->CreateGameObject("Bass_Trigger_1");
-    trigger1->GetTransform()->SetPosition(glm::vec3(-60.0f, 19.0f, 67.0f));
-    trigger1->AddComponent<NFSEngine::CubeMesh>(m_Shader, matCassette);
-    trigger1->AddComponent<BoxCollider3DComponent>();
-    auto& triggerComp1 = trigger1->AddComponent<MusicTriggerComponent>();
-    triggerComp1.TargetTrack = "Bass";
-
-    // indicator test
-    auto matIndicator = std::make_shared<NFSEngine::Material>();
-    matIndicator->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
-
-    auto* indicatorObj = m_Scene->CreateGameObject("Indicator");
-    indicatorObj->GetTransform()->SetPosition(glm::vec3(-60.0f, 17.0f, 60.0f));
-    auto indicatorModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/indicator.obj");
-    auto& indicatorComp = indicatorObj->AddComponent<NFSEngine::ModelComponent>(m_Shader, matIndicator);
-    indicatorComp.AddLOD(indicatorModel, 10000.0f);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();
     uint32_t height = NFSEngine::Application::Get().GetWindow().GetHeight();
