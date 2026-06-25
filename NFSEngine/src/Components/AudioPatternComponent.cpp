@@ -116,7 +116,8 @@ namespace NFSEngine {
                         PlayNote(note.pitchOffset + GlobalPitchModifier, note.lengthIn16ths);
 
                         if (note.isEvent) {
-                            NotePlayedEvent noteEvent(TrackName, m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat, current16th);
+                            NotePlayedEvent noteEvent(TrackName, m_CurrentPattern.name, note.noteName, absoluteBar, currentBeat,
+                                                      current16th);
                             Application::Get().OnEvent(noteEvent);
                         }
                     }
@@ -145,8 +146,7 @@ namespace NFSEngine {
 
         if (m_IsMuted) {
             m_Volume = 0.0f;
-        }
-        else {
+        } else {
             m_Volume = std::max(volume, 0.0f);
         }
 

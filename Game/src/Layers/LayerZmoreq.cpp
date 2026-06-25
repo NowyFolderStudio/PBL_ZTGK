@@ -211,8 +211,8 @@ void LayerZmoreq::OnAttach() {
     };
 
     // Spawnowanie 2 przeciwników
-    SpawnEnemy("Enemy_1", glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(15.0f, 0.0f, 5.0f));
-    SpawnEnemy("Enemy_2", glm::vec3(-8.0f, 0.0f, -8.0f), glm::vec3(-2.0f, 0.0f, -8.0f));
+    // SpawnEnemy("Enemy_1", glm::vec3(5.0f, 0.0f, 5.0f), glm::vec3(15.0f, 0.0f, 5.0f));
+    // SpawnEnemy("Enemy_2", glm::vec3(-8.0f, 0.0f, -8.0f), glm::vec3(-2.0f, 0.0f, -8.0f));
 
     // Spawnowanie piramidki ze skrzynek koło środka
     SpawnCrate("Crate_BottomLeft", glm::vec3(3.0f, -1.0f, -4.0f));

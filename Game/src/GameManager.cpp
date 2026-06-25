@@ -8,6 +8,7 @@
 #include "Layers/LayerZmoreq.hpp"
 #include "Layers/LayerGuga.hpp"
 #include "Layers/IntroLayer.hpp"
+#include "Core/AudioManager.hpp"
 
 GameManager& GameManager::Get() {
     static GameManager instance;
@@ -34,6 +35,8 @@ void GameManager::ChangeState(GameState newState) {
     m_GarbageLayers.clear();
 
     NFSEngine::DialogueManager::Get().HideMessage();
+
+    NFSEngine::AudioManager::ClearAllPatterns();
 
     if (m_CurrentLayer) {
         app.PopLayer(m_CurrentLayer);

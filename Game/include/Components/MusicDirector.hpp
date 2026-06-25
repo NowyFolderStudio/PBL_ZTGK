@@ -9,8 +9,6 @@
 #include "Components/AudioPatternComponent.hpp"
 #include "Components/Aura/AuraManager.hpp"
 #include "Core/Scene.hpp"
-#include "GameManager.hpp"
-#include <algorithm>
 
 struct AuraPatternSet {
     std::string AuraFirstPattern;
@@ -115,18 +113,9 @@ public:
 
         SetupProgressions();
 
-        auto& unlocked = GameManager::Get().UnlockedMusicTracks;
-
-        bool hasBass = std::find(unlocked.begin(), unlocked.end(), "Bass") != unlocked.end();
-        NFSEngine::AudioManager::MuteTrack("Bass", !hasBass);
-
-        bool hasPiano = std::find(unlocked.begin(), unlocked.end(), "Piano") != unlocked.end();
-        NFSEngine::AudioManager::MuteTrack("Piano", !hasPiano);
-
-        bool hasSubPiano = std::find(unlocked.begin(), unlocked.end(), "SubPiano") != unlocked.end();
-        NFSEngine::AudioManager::MuteTrack("SubPiano", !hasSubPiano);
-
-        m_TrackStageIndex = GameManager::Get().GlobalTrackStages;
+        NFSEngine::AudioManager::MuteTrack("Bass", true);
+        NFSEngine::AudioManager::MuteTrack("Piano", true);
+        NFSEngine::AudioManager::MuteTrack("SubPiano", true);
     }
 
     void OnStart() override {
@@ -159,11 +148,6 @@ public:
     void UnlockTrack(const std::string& trackName) {
         if (trackName.empty()) return;
         NFSEngine::AudioManager::MuteTrack(trackName, false);
-
-        auto& unlocked = GameManager::Get().UnlockedMusicTracks;
-        if (std::find(unlocked.begin(), unlocked.end(), trackName) == unlocked.end()) {
-            unlocked.push_back(trackName);
-        }
     }
 
     void AdvanceTrackStage(const std::string& trackName) {
@@ -173,8 +157,6 @@ public:
             if (m_TrackStageIndex[trackName] >= m_TrackProgressions[trackName].size()) {
                 m_TrackStageIndex[trackName] = 0;
             }
-
-            GameManager::Get().GlobalTrackStages[trackName] = m_TrackStageIndex[trackName];
 
             ApplyAuraStateImmediate(m_LastKnownAura);
         }
