@@ -1,11 +1,11 @@
 #include "Core/AudioManager.hpp"
 #include <algorithm>
-#include <cmath> // potrzebne do std::abs i std::fmod
+#include <cmath>
 
 namespace NFSEngine {
 
     std::unordered_map<std::string, std::vector<AudioPatternComponent*>> AudioManager::m_TrackGroups;
-    std::unordered_map<std::string, float> AudioManager::m_TrackDistances; // Definicja statycznej mapy
+    std::unordered_map<std::string, float> AudioManager::m_TrackDistances;
 
     void AudioManager::Init() { NFS_CORE_INFO("[AudioManager] Initialized tracks managing system."); }
 
@@ -54,6 +54,15 @@ namespace NFSEngine {
     }
 
     void AudioManager::ClearAllPatterns() {
+        for (auto& pair : m_TrackGroups) {
+            for (auto* comp : pair.second) {
+                if (comp) {
+                    comp->IsActive = false;
+                    comp->SetMute(true);
+                }
+            }
+        }
+
         m_TrackGroups.clear();
         m_TrackDistances.clear();
         NFS_CORE_INFO("[AudioManager] Cleared all registered track patterns.");

@@ -1,5 +1,4 @@
 #pragma once
-
 #include <NFSEngine.h>
 
 enum class GameState {
@@ -29,10 +28,6 @@ private:
 
 public:
     int PlayerScore = 0;
-
-    std::vector<std::string> UnlockedMusicTracks;
-
-    std::unordered_map<std::string, size_t> GlobalTrackStages;
 
     static GameManager& Get();
     void Init();
