@@ -3,6 +3,7 @@
 #include <NFSEngine.h>
 #include <glm/gtx/quaternion.hpp>
 #include "Components/Managers/LivesManager.hpp"
+#include "Components/CharacterController.hpp"
 
 class FallingDartComponent : public NFSEngine::Component {
 public:
@@ -27,9 +28,15 @@ public:
                 boxCol->OnTriggerEnter = [this](NFSEngine::GameObject* otherObj) {
 
                     if (m_IsFalling && !m_HasDealtDamage && otherObj->CompareTag(NFSEngine::Tags::Player)) {
-                        if (LivesManager::Instance) {
-                            LivesManager::Instance->LoseHeart();
-                            m_HasDealtDamage = true;
+                        auto* charCtrl = otherObj->GetComponent<CharacterController>();
+                        if (charCtrl) {
+                            glm::vec3 dartPos = GetOwner()->GetTransform()->GetWorldPosition();
+
+                            bool damageTaken = charCtrl->TakeDamage(dartPos, 0.0f);
+
+                            if (damageTaken) {
+                                m_HasDealtDamage = true;
+                            }
                         }
                     }
                     };

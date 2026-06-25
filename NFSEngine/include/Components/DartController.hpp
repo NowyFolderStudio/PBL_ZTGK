@@ -3,6 +3,7 @@
 #include <NFSEngine.h>
 #include "Components/DartRainAttackManager.hpp"
 #include "Components/PhysicsComponents.hpp"
+#include "Components/CharacterController.hpp"
 #include <string>
 #include <vector>
 
@@ -26,6 +27,10 @@ protected:
 
         m_RainAttack->TargetTrack = "Bass";
         m_RainAttack->PlayerTransform = GetOwner()->GetScene()->FindWithTag(NFSEngine::Tags::Player);
+
+        if (m_RainAttack->PlayerTransform) {
+            m_PlayerController = m_RainAttack->PlayerTransform->GetComponent<CharacterController>();
+        }
 
         int childCount = GetOwner()->GetTransform()->GetChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -64,8 +69,16 @@ public:
         }
     }
 
-    void OnUpdate(NFSEngine::DeltaTime deltaTime) override {}
+    void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (m_RainAttack && m_RainAttack->IsActive && m_PlayerController) {
+            if (m_PlayerController->IsDead()) {
+                NFS_CORE_INFO("DartController: Gracz mial aktywny atak rzutkami, ale umarl! Resetuje mechanizm.");
+                SetRainAttackActive(false);
+            }
+        }
+    }
 
 private:
     DartRainAttackComponent* m_RainAttack = nullptr;
+    CharacterController* m_PlayerController = nullptr;
 };

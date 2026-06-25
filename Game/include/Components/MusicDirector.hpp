@@ -183,9 +183,17 @@ private:
         m_TrackProgressions["SubPiano"].push_back({ "SubPiano01", "SubPiano01" });
         m_TrackStageIndex["SubPiano"] = 0;
 
-        m_TrackProgressions["Kick"].push_back({ "k" });
-        m_TrackProgressions["Kick"].push_back({ "KickPattern01" });
-        m_TrackStageIndex["Kick"] = 0;
+        m_TrackProgressions["HitHat"].push_back({ "k" });
+        m_TrackProgressions["HitHat"].push_back({ "HitHatPattern01" });
+        m_TrackStageIndex["HitHat"] = 0;
+
+        m_TrackProgressions["Snare"].push_back({ "k" });
+        m_TrackProgressions["Snare"].push_back({ "SnarePattern01" });
+        m_TrackStageIndex["Snare"] = 0;
+
+        m_TrackProgressions["Clap"].push_back({ "k" });
+        m_TrackProgressions["Clap"].push_back({ "ClapPattern01" });
+        m_TrackStageIndex["Clap"] = 0;
     }
 
     void ApplyAuraStateImmediate(AuraType aura) {
