@@ -48,6 +48,8 @@ private:
         if (value == "WallJump") return TutorialPanel::WallJump;
         if (value == "Aura") return TutorialPanel::Aura;
         if (value == "DoubleJump") return TutorialPanel::DoubleJump;
+        if (value == "CDPlayer") return TutorialPanel::CDPlayer;
+        if (value == "Attack") return TutorialPanel::Attack;
 
         NFS_WARN("Unknown TutorialPanel value: {0}. Defaulting to Walk.", value);
         return TutorialPanel::Walk;

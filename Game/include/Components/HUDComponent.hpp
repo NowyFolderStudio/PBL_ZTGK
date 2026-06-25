@@ -415,6 +415,12 @@ private:
             = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_aura.png", texParam);
         m_TutorialTextures[TutorialPanel::DoubleJump]
             = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_doublejump.png", texParam);
+        m_TutorialTextures[TutorialPanel::CDPlayer]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_cdplayer.png", texParam);
+
+        m_TutorialTextures[TutorialPanel::Attack]
+            = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_attack.png", texParam);
+
     }
 
     std::string GetTutorialTexturePath(TutorialPanel panel) {

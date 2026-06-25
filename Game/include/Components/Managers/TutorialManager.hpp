@@ -11,7 +11,9 @@ enum class TutorialPanel {
     Checkpoint,
     WallJump,
     Aura,
-    DoubleJump
+    DoubleJump,
+    CDPlayer,
+    Attack
 };
 
 class TutorialManager : public NFSEngine::Component {
