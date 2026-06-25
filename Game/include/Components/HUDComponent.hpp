@@ -42,6 +42,8 @@ private:
     NFSEngine::Canvas* m_Canvas = nullptr;
     NFSEngine::UIObject* m_ScoreLabel = nullptr;
 
+    bool m_LastCanShowUI = false;
+
     NFSEngine::UIObject* m_LeftAuraImage = nullptr;
     NFSEngine::UIObject* m_RightAuraImage = nullptr;
 
@@ -190,6 +192,11 @@ protected:
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
+        if (AuraManager::Instance && AuraManager::Instance->CanShowUI != m_LastCanShowUI) {
+            m_LastCanShowUI = AuraManager::Instance->CanShowUI;
+
+            UpdateAuraVisuals(AuraManager::Instance->CurrentAura);
+        }
         UpdateDialogueUI();
 
         float lerpSpeed = 5.0f * (float)deltaTime;
@@ -607,6 +614,10 @@ private:
         rightParams.texture = dashTex;
         m_RightAuraImage = &NFSEngine::UI::Image(*m_Canvas, rightParams);
         m_RightAuraImage->Transform.Pivot = glm::vec2(1.0f, 1.0f);
+
+        if (AuraManager::Instance) {
+            UpdateAuraVisuals(AuraManager::Instance->CurrentAura);
+        }
     }
 
     void InitCooldownUI() { /* Bez zmian */
@@ -668,6 +679,11 @@ private:
     }
 
     void UpdateAuraVisuals(AuraType newAura) { /* Bez zmian */
+        if (!AuraManager::Instance->CanShowUI) {
+            m_LeftAuraTargetAlpha = 0.0f;
+            m_RightAuraTargetAlpha = 0.0f;
+            return;
+        }
         float activeAlpha = 1.0f;
         float inactiveAlpha = 0.4f;
 

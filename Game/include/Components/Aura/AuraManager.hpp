@@ -30,6 +30,7 @@ public:
     AuraType CurrentAura = AuraType::First;
 
     float CooldownDuration = 1.0f;
+    bool CanShowUI = false;
 
 private:
     std::vector<AuraType> m_UnlockedAuras;
@@ -46,10 +47,7 @@ protected:
         m_AudioClip = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/dj_scratch.mp3");
     }
 
-    void OnStart() override {
-        UnlockAura(AuraType::First);
-        UnlockAura(AuraType::Second);
-    }
+    void OnStart() override { }
 
     void OnFixedUpdate(NFSEngine::DeltaTime deltaTime) override { }
 
@@ -67,14 +65,19 @@ protected:
 
 public:
     void UnlockAura(AuraType aura) {
+        CanShowUI = true;
         if (std::find(m_UnlockedAuras.begin(), m_UnlockedAuras.end(), aura) == m_UnlockedAuras.end()) {
             m_UnlockedAuras.push_back(aura);
         }
     }
 
     void UnlockNextAura() {
+        CanShowUI = true;
+
         static const std::vector<AuraType> progressionOrder = { AuraType::First, AuraType::Second };
         size_t currentProgress = m_UnlockedAuras.size();
+        UnlockAura(AuraType::First);
+        UnlockAura(AuraType::Second);
 
         if (currentProgress < progressionOrder.size()) {
             AuraType nextAura = progressionOrder[currentProgress];

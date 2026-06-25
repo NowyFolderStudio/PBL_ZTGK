@@ -9,6 +9,7 @@
 #include "Layers/LayerGuga.hpp"
 #include "Layers/LayerExample2.hpp"
 #include "Layers/LayerExample3.hpp"
+#include "Layers/LayerExample4.hpp"
 #include "Layers/IntroLayer.hpp"
 #include "Layers/OutroLayer.hpp"
 #include "Core/AudioManager.hpp"
@@ -82,8 +83,10 @@ void GameManager::ChangeState(GameState newState) {
             m_CurrentLayer = new LayerExample2();
         } else if (m_CurrentLevelPath == "Example3") {
             m_CurrentLayer = new LayerExample3();
+        } else if (m_CurrentLevelPath == "Example4") {
+            m_CurrentLayer = new LayerExample4();
         } else {
-            m_CurrentLayer = new LayerExample();
+            m_CurrentLayer = new LayerExample2();
         }
 
         app.PushLayer(m_CurrentLayer);
