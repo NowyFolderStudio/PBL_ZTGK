@@ -7,6 +7,8 @@
 #include "Layers/LayerExample.hpp"
 #include "Layers/LayerZmoreq.hpp"
 #include "Layers/LayerGuga.hpp"
+#include "Layers/LayerExample2.hpp"
+#include "Layers/LayerExample3.hpp"
 #include "Layers/IntroLayer.hpp"
 #include "Layers/OutroLayer.hpp"
 #include "Core/AudioManager.hpp"
@@ -76,10 +78,10 @@ void GameManager::ChangeState(GameState newState) {
 
         if (m_CurrentLevelPath == "Example") {
             m_CurrentLayer = new LayerExample();
-        } else if (m_CurrentLevelPath == "Zmoreq") {
-            m_CurrentLayer = new LayerZmoreq();
-        } else if (m_CurrentLevelPath == "Guga") {
-            m_CurrentLayer = new LayerGuga();
+        } else if (m_CurrentLevelPath == "Example2") {
+            m_CurrentLayer = new LayerExample2();
+        } else if (m_CurrentLevelPath == "Example3") {
+            m_CurrentLayer = new LayerExample3();
         } else {
             m_CurrentLayer = new LayerExample();
         }
