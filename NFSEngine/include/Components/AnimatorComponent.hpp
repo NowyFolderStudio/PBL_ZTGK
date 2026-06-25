@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include "imgui.h"
+
 namespace NFSEngine {
 
     class AnimatorComponent : public Component {

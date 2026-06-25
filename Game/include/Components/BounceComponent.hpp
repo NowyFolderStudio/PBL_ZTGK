@@ -1,6 +1,9 @@
 #pragma once
+#include "Core/Audio/AudioClip.hpp"
+#include "Core/Audio/AudioEngine.hpp"
 #include <NFSEngine.h>
 #include <algorithm>
+#include <memory>
 
 class BounceComponent : public NFSEngine::Component {
 public:
@@ -26,12 +29,16 @@ protected:
                 }
             };
         }
+        m_AudioClip = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/snare03.ogg");
     }
 
 private:
+    std::shared_ptr<NFSEngine::AudioClip> m_AudioClip;
     void ApplyBounce(NFSEngine::GameObject* targetObject, glm::vec3 contactNormal) {
         auto* rb = targetObject->GetComponent<NFSEngine::RigidBody3DComponent>();
         if (!rb) return;
+
+        NFSEngine::AudioEngine::PlayClip(m_AudioClip.get());
 
         glm::vec3 bounceUp = m_Owner->GetTransform()->GetUp();
         float alignment = glm::dot(contactNormal, bounceUp);

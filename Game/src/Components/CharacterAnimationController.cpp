@@ -15,6 +15,13 @@ void CharacterAnimationController::OnStart() {
 
 void CharacterAnimationController::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     m_WalkParticlesTimer += deltaTime;
+
+    if (m_Rigidbody->IsGrounded) {
+        m_TimeSinceGrounded = 0.0f;
+    } else {
+        m_TimeSinceGrounded += deltaTime;
+    }
+
     UpdateStates();
     ChangeAnimation();
 }
@@ -75,15 +82,35 @@ void CharacterAnimationController::ChangeAnimation() {
             float animationOffset = -90.0f;
 
             m_Controller->GetOwner()->GetTransform()->SetWorldRotation(glm::vec3(0.0f, wallYawDegrees + animationOffset, 0.0f));
-
             m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
         } else if (m_HorizontalSpeed > 0) {
             m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-            m_Animator->PlayAnimationBlended(2, 0.075f, false);
+
+            if (m_TimeSinceGrounded > m_FallAnimationDelay) {
+                m_Animator->PlayAnimationBlended(2, 0.075f, false);
+            } else {
+                if (m_InMotion) {
+                    m_Animator->PlayAnimationBlended(1, 0.1f, true);
+                    m_Animator->SetAnimationSpeed(m_VerticalSpeed / m_MaxSpeed);
+                } else {
+                    m_Animator->PlayAnimationBlended(0, 0.1f, true);
+                }
+            }
+
         } else {
             m_Owner->GetTransform()->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
-            m_Animator->PlayAnimationBlended(3, 0.075f, false);
+
+            if (m_TimeSinceGrounded > m_FallAnimationDelay) {
+                m_Animator->PlayAnimationBlended(3, 0.075f, false);
+            } else {
+                if (m_InMotion) {
+                    m_Animator->PlayAnimationBlended(1, 0.1f, true);
+                    m_Animator->SetAnimationSpeed(m_VerticalSpeed / m_MaxSpeed);
+                } else {
+                    m_Animator->PlayAnimationBlended(0, 0.1f, true);
+                }
+            }
         }
     }
 }

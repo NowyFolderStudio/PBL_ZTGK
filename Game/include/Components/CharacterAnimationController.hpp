@@ -52,6 +52,9 @@ private:
     NFSEngine::ParticleProperties m_WalkParticleProperties;
     int m_JumpParticlesCount = 10;
 
+    float m_TimeSinceGrounded = 0.0f;
+    float m_FallAnimationDelay = 0.05f;
+
     int m_WalkParticlesCount = 3;
     float m_WalkParticlesTime = 0.1f;
     float m_WalkParticlesTimer = 0;
