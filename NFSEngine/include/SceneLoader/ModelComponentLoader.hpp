@@ -14,6 +14,7 @@ namespace NFSEngine {
         std::shared_ptr<Material> m_CachedCDMaterial = nullptr;
 
         std::shared_ptr<Shader> m_CachedBasicShader = nullptr;
+        std::shared_ptr<Shader> m_CachedEnemyShader = nullptr;
         std::shared_ptr<Texture> m_CachedRampTexture = nullptr;
         std::unordered_map<std::string, std::shared_ptr<Model>> m_ModelCache;
         std::unordered_map<std::string, std::shared_ptr<Texture>> m_TextureCache;
@@ -29,6 +30,7 @@ namespace NFSEngine {
                 material = std::make_shared<NFSEngine::Material>();
 
                 bool isDiffractionCD = false;
+                bool isEnemyGlitch = false;
 
                 if (j_obj.contains("custom_components")) {
                     for (const auto& comp : j_obj["custom_components"]) {
@@ -57,6 +59,9 @@ namespace NFSEngine {
                         } else if (comp["name"] == "DiffractionCD") {
                             isDiffractionCD = true;
                         }
+                        else if (comp["name"] == "EnemyComponentd" || comp["name"] == "EnemyComp") {
+                            isEnemyGlitch = true;
+                        }
                     }
                 }
 
@@ -79,6 +84,11 @@ namespace NFSEngine {
                         m_CachedCDMaterial->SetFloat("u_DiffractionStrength", 2.5f);
                     }
                     material = m_CachedCDMaterial;
+                } else if (isEnemyGlitch) {
+                    if (!m_CachedEnemyShader) {
+                        m_CachedEnemyShader = Shader::Create("EnemyGlitchShader", "assets/shaders/enemy_glitch.vert", "assets/shaders/enemy_glitch.frag");
+                    }
+                    shader = m_CachedEnemyShader;
                 } else if (!shader) {
                     if (!m_CachedBasicShader) {
                         m_CachedBasicShader = Shader::Create("BasicShader", "assets/shaders/lightShader.vert",

@@ -41,6 +41,7 @@
 #include "Components/CDBoxComponent.hpp"
 #include "Components/MusicDirector.hpp"
 #include "Components/MusicTriggerComponent.hpp"
+#include "Components/DartRainAttackManager.hpp"
 
 // Core & Renderer
 #include "Core/DeltaTime.hpp"
@@ -144,7 +145,7 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<MusicTriggerComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<PointLightLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<SpotLightLoader>());
-    m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
+    m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/PoziomGuga_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
 

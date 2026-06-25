@@ -171,7 +171,7 @@ private:
 
     void SetupProgressions() {
 
-        m_TrackProgressions["Bass"].push_back({ "BassPattern02s", "BassPattern01s" }); // Etap 1
+        m_TrackProgressions["Bass"].push_back({ "BassPattern02", "BassPattern01" }); // Etap 1
 
         m_TrackProgressions["Bass"].push_back({ "BassPatternPrototype2", "BassPatternPrototype" }); // Etap 2
 
@@ -182,6 +182,10 @@ private:
 
         m_TrackProgressions["SubPiano"].push_back({ "SubPiano01", "SubPiano01" });
         m_TrackStageIndex["SubPiano"] = 0;
+
+        m_TrackProgressions["Kick"].push_back({ "k" });
+        m_TrackProgressions["Kick"].push_back({ "KickPattern01" });
+        m_TrackStageIndex["Kick"] = 0;
     }
 
     void ApplyAuraStateImmediate(AuraType aura) {

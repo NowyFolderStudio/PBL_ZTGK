@@ -10,57 +10,65 @@
       "beat": 1,
       "16th": 1,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 1,
       "16th": 1,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 1,
       "16th": 1,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 1,
       "16th": 1,
       "note": "F6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
-    // AKORD 1 
+    // AKORD 1
     {
       "bar": 1,
       "beat": 1,
       "16th": 3,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 1,
       "16th": 3,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 1,
       "16th": 3,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 1,
       "16th": 3,
       "note": "F6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 1
     {
@@ -68,28 +76,32 @@
       "beat": 2,
       "16th": 1,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 1,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 1,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 1,
       "note": "F6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 3
     {
@@ -97,28 +109,32 @@
       "beat": 2,
       "16th": 3,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 3,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 3,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 2,
       "16th": 3,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 2
     {
@@ -126,28 +142,32 @@
       "beat": 3,
       "16th": 1,
       "note": "C5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 1,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 1,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 1,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 2
     {
@@ -155,28 +175,32 @@
       "beat": 3,
       "16th": 3,
       "note": "C5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 3,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 3,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 3,
       "16th": 3,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 2
     {
@@ -184,28 +208,32 @@
       "beat": 4,
       "16th": 1,
       "note": "C5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 1,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 1,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 1,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 4
     {
@@ -213,28 +241,32 @@
       "beat": 4,
       "16th": 3,
       "note": "D5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 3,
       "note": "F5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 3,
       "note": "A5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 1,
       "beat": 4,
       "16th": 3,
       "note": "C6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 3
     {
@@ -242,28 +274,32 @@
       "beat": 1,
       "16th": 1,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 1,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 1,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 1,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 3
     {
@@ -271,28 +307,32 @@
       "beat": 1,
       "16th": 3,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 3,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 3,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 1,
       "16th": 3,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 3
     {
@@ -300,28 +340,32 @@
       "beat": 2,
       "16th": 1,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 1,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 1,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 1,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 1
     {
@@ -329,28 +373,32 @@
       "beat": 2,
       "16th": 3,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 3,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 3,
       "note": "D6",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 2,
       "16th": 3,
       "note": "F6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 4
     {
@@ -358,28 +406,32 @@
       "beat": 3,
       "16th": 1,
       "note": "D5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 1,
       "note": "F5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 1,
       "note": "A5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 1,
       "note": "C6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 4
     {
@@ -387,28 +439,32 @@
       "beat": 3,
       "16th": 3,
       "note": "D5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 3,
       "note": "F5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 3,
       "note": "A5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 3,
       "16th": 3,
       "note": "C6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 4
     {
@@ -416,28 +472,32 @@
       "beat": 4,
       "16th": 1,
       "note": "D5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 1,
       "note": "F5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 1,
       "note": "A5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 1,
       "note": "C6",
-      "length": 2
+      "length": 2,
+      "event": true
     }, // -
     // AKORD 2
     {
@@ -445,28 +505,32 @@
       "beat": 4,
       "16th": 3,
       "note": "C5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 3,
       "note": "D#5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 3,
       "note": "G5",
-      "length": 2
+      "length": 2,
+      "event": true
     },
     {
       "bar": 2,
       "beat": 4,
       "16th": 3,
       "note": "A#5",
-      "length": 2
+      "length": 2,
+      "event": true
     } // -
   ]
 }

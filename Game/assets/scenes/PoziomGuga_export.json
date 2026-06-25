@@ -2135,1829 +2135,6 @@
             "custom_components": []
         },
         {
-            "id": 53360,
-            "name": "Dart",
-            "parent_id": 52776,
-            "transform": {
-                "position": [
-                    92.0,
-                    4.099999904632568,
-                    94.94798278808594
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    10.0,
-                    10.0,
-                    10.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": [
-                {
-                    "name": "DartController",
-                    "properties": []
-                }
-            ]
-        },
-        {
-            "id": 53396,
-            "name": "m",
-            "parent_id": 53360,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859994888305666,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_czerwony_środek_53588.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53394,
-            "name": "middle",
-            "parent_id": 53360,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859994888305666,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_środek_zielony_53584.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 52842,
-            "name": "Collider",
-            "parent_id": 53394,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    -0.000009999999747378752
-                ],
-                "rotation": [
-                    0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071068286895752
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [
-                {
-                    "radius": 0.00139999995008111,
-                    "height": 0.0010000000474974514,
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "CylinderCollider",
-                    "properties": [
-                        {
-                            "name": "radius",
-                            "type": "Single",
-                            "value": "0.0014",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "height",
-                            "type": "Single",
-                            "value": "0.001",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "offset",
-                            "type": "Vector3",
-                            "value": "0,0,0",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "isTrigger",
-                            "type": "Boolean",
-                            "value": "False",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "id": 49038,
-            "name": "SliceBlack1",
-            "parent_id": 53360,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53346,
-            "name": "inner1",
-            "parent_id": 49038,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.6963642835617065,
-                    0.12278785556554795,
-                    0.12278785556554795,
-                    0.6963642835617065
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0000305175781
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_ciemny_dół_53594.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50634,
-            "name": "Colliders",
-            "parent_id": 53346,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50840,
-            "name": "Collider",
-            "parent_id": 50634,
-            "transform": {
-                "position": [
-                    -0.0008000003872439265,
-                    -0.005800001323223114,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.087155781686306,
-                    0.9961947798728943
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.008999999612569809,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53308,
-            "name": "Collider (3)",
-            "parent_id": 50634,
-            "transform": {
-                "position": [
-                    -0.0005000026430934668,
-                    -0.008100006729364396,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.0610484816133976,
-                    0.9981347918510437
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.001500000013038516,
-                        0.0044999998062849049,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 52220,
-            "name": "Collider (4)",
-            "parent_id": 50634,
-            "transform": {
-                "position": [
-                    0.0004999983357265592,
-                    -0.008100006729364396,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.061048611998558047,
-                    0.9981347918510437
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.001500000013038516,
-                        0.0044999998062849049,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49640,
-            "name": "Collider (2)",
-            "parent_id": 50634,
-            "transform": {
-                "position": [
-                    0.0,
-                    -0.006600003223866224,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0010000000474974514,
-                        0.007400000002235174,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49314,
-            "name": "Collider (1)",
-            "parent_id": 50634,
-            "transform": {
-                "position": [
-                    0.0007699996349401772,
-                    -0.005800002720206976,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0871557891368866,
-                    0.9961947202682495
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.008999999612569809,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53366,
-            "name": "outer1",
-            "parent_id": 49038,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.6963643431663513,
-                    0.12278781086206436,
-                    0.12278782576322556,
-                    0.6963642239570618
-                ],
-                "scale": [
-                    400.0000305175781,
-                    400.0000305175781,
-                    400.0000305175781
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_ciemny_góra_53578.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49604,
-            "name": "Colliders",
-            "parent_id": 53366,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50234,
-            "name": "Collider",
-            "parent_id": 49604,
-            "transform": {
-                "position": [
-                    -0.002219999907538295,
-                    -0.014050000347197056,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.087155781686306,
-                    0.9961947202682495
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.006000000052154064,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 52576,
-            "name": "Collider (1)",
-            "parent_id": 49604,
-            "transform": {
-                "position": [
-                    0.002219999907538295,
-                    -0.014050000347197056,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.087155781686306,
-                    0.9961947202682495
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.006000000052154064,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49864,
-            "name": "Collider (2)",
-            "parent_id": 49604,
-            "transform": {
-                "position": [
-                    0.0009899999713525177,
-                    -0.014139999635517598,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.04361940547823906,
-                    0.9990482926368713
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0024999999441206457,
-                        0.005950000137090683,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 51790,
-            "name": "Collider (3)",
-            "parent_id": 49604,
-            "transform": {
-                "position": [
-                    -0.0009899999713525177,
-                    -0.014139999635517598,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.04361940547823906,
-                    0.9990482926368713
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0024999999441206457,
-                        0.005950000137090683,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53364,
-            "name": "inner2",
-            "parent_id": 49038,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.6963643431663513,
-                    0.12278781086206436,
-                    0.12278782576322556,
-                    0.6963642239570618
-                ],
-                "scale": [
-                    400.0000305175781,
-                    400.0000305175781,
-                    400.0000305175781
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_czerwony_dół_53590.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49296,
-            "name": "Colliders",
-            "parent_id": 53364,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.17364825308322907,
-                    0.9848077893257141
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49468,
-            "name": "collider",
-            "parent_id": 49296,
-            "transform": {
-                "position": [
-                    -0.004569423850625753,
-                    -0.009776783175766468,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    7.4505797087454088e-9,
-                    -0.2164396196603775,
-                    0.9762960076332092
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0019000000320374966,
-                        0.0007999999797903001,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49910,
-            "name": "collider (1)",
-            "parent_id": 49296,
-            "transform": {
-                "position": [
-                    -0.002784010721370578,
-                    -0.01042662002146244,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    7.4505797087454088e-9,
-                    -0.13052614033222199,
-                    0.9914448857307434
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0019000000320374966,
-                        0.0007999999797903001,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53342,
-            "name": "outer2",
-            "parent_id": 49038,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.6963643431663513,
-                    0.12278781086206436,
-                    0.12278782576322556,
-                    0.6963642239570618
-                ],
-                "scale": [
-                    400.0000305175781,
-                    400.0000305175781,
-                    400.0000305175781
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_czerwony_góra_53576.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50630,
-            "name": "Colliders",
-            "parent_id": 53342,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50178,
-            "name": "collider",
-            "parent_id": 50630,
-            "transform": {
-                "position": [
-                    -0.001500000013038516,
-                    -0.01759999990463257,
-                    0.0
-                ],
-                "rotation": [
-                    -5.960463766996327e-8,
-                    1.4901159417490817e-8,
-                    -0.04361932352185249,
-                    0.9990482330322266
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.003100000089034438,
-                        0.0010000000474974514,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 51024,
-            "name": "collider (1)",
-            "parent_id": 50630,
-            "transform": {
-                "position": [
-                    0.001500000013038516,
-                    -0.01759999990463257,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.04361940547823906,
-                    0.9990482926368713
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.003100000089034438,
-                        0.0010000000474974514,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53092,
-            "name": "SliceWhite1",
-            "parent_id": 53360,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53380,
-            "name": "outer1",
-            "parent_id": 53092,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_jasnt_góra_53586.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50626,
-            "name": "Colliders",
-            "parent_id": 53380,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.1736481636762619,
-                    0.9848077893257141
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 48636,
-            "name": "Collider",
-            "parent_id": 50626,
-            "transform": {
-                "position": [
-                    0.002719265641644597,
-                    -0.013961966149508953,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -2.2351741790771486e-8,
-                    0.08715572208166123,
-                    0.9961947798728943
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.006000000052154064,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50016,
-            "name": "Collider (1)",
-            "parent_id": 50626,
-            "transform": {
-                "position": [
-                    0.006891500670462847,
-                    -0.012443394400179387,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -2.980232594040899e-8,
-                    0.2588191032409668,
-                    0.9659258127212524
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.006000000052154064,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 48742,
-            "name": "Collider (2)",
-            "parent_id": 50626,
-            "transform": {
-                "position": [
-                    0.005766460672020912,
-                    -0.012948650866746903,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -2.2351741790771486e-8,
-                    0.21643966436386109,
-                    0.976296067237854
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0024999999441206457,
-                        0.005950000137090683,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50464,
-            "name": "Collider (3)",
-            "parent_id": 50626,
-            "transform": {
-                "position": [
-                    0.0039058695547282697,
-                    -0.013625852763652802,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -1.4901162970204497e-8,
-                    0.13052619993686677,
-                    0.9914448857307434
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0024999999441206457,
-                        0.005950000137090683,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53382,
-            "name": "inner1",
-            "parent_id": 53092,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_jasny_dół_53582.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 52736,
-            "name": "Colliders",
-            "parent_id": 53382,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.1736481636762619,
-                    0.9848077893257141
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 51742,
-            "name": "Collider",
-            "parent_id": 52736,
-            "transform": {
-                "position": [
-                    0.001231963629834354,
-                    -0.005723833106458187,
-                    0.0
-                ],
-                "rotation": [
-                    5.960464477539063e-8,
-                    -3.725290298461914e-9,
-                    0.0871557891368866,
-                    0.9961947798728943
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.008999999612569809,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 48748,
-            "name": "Collider (1)",
-            "parent_id": 52736,
-            "transform": {
-                "position": [
-                    0.002300517400726676,
-                    -0.007782525382936001,
-                    0.0
-                ],
-                "rotation": [
-                    5.960465188081798e-8,
-                    -7.450581485102248e-9,
-                    0.11320333182811737,
-                    0.9935718774795532
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.001500000013038516,
-                        0.0044999998062849049,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 52334,
-            "name": "Collider (2)",
-            "parent_id": 52736,
-            "transform": {
-                "position": [
-                    0.003240210935473442,
-                    -0.007440508808940649,
-                    0.0
-                ],
-                "rotation": [
-                    8.940698137394065e-8,
-                    -2.2351745343485164e-8,
-                    0.23344549536705018,
-                    0.972369909286499
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.001500000013038516,
-                        0.0044999998062849049,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 48584,
-            "name": "Collider (3)",
-            "parent_id": 52736,
-            "transform": {
-                "position": [
-                    0.0022573352325707676,
-                    -0.0062019722536206249,
-                    0.0
-                ],
-                "rotation": [
-                    8.94069742685133e-8,
-                    -7.450581485102248e-9,
-                    0.17364825308322907,
-                    0.9848077893257141
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0010000000474974514,
-                        0.007400000002235174,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50528,
-            "name": "Collider (4)",
-            "parent_id": 52736,
-            "transform": {
-                "position": [
-                    0.0027072811499238016,
-                    -0.00518686231225729,
-                    0.0
-                ],
-                "rotation": [
-                    5.960465188081798e-8,
-                    -1.4901162970204497e-8,
-                    0.25881916284561159,
-                    0.9659258127212524
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0005000000237487257,
-                        0.008999999612569809,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53400,
-            "name": "inner2",
-            "parent_id": 53092,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_zielony_dół_53580.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 49158,
-            "name": "Colliders",
-            "parent_id": 53400,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.1736481636762619,
-                    0.9848077893257141
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 48654,
-            "name": "collider",
-            "parent_id": 49158,
-            "transform": {
-                "position": [
-                    0.0027840095572173597,
-                    -0.010426617227494717,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -2.2351740014414646e-8,
-                    0.13052618503570558,
-                    0.9914448857307434
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0019000000320374966,
-                        0.0007999999797903001,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 51100,
-            "name": "collider (1)",
-            "parent_id": 49158,
-            "transform": {
-                "position": [
-                    0.004569425247609615,
-                    -0.009776778519153595,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -2.9802322387695315e-8,
-                    0.21643966436386109,
-                    0.976296067237854
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.0019000000320374966,
-                        0.0007999999797903001,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 53344,
-            "name": "outer2",
-            "parent_id": 53092,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5859997272491457,
-                    0.0
-                ],
-                "rotation": [
-                    -0.7071068286895752,
-                    0.0,
-                    0.0,
-                    0.7071067094802856
-                ],
-                "scale": [
-                    400.0,
-                    400.0,
-                    400.0
-                ]
-            },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_zielony_góra_53592.obj",
-            "texture_path": "assets/PoziomGuga_Assets/Textures/dart_kawalek_kolor.png",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 52300,
-            "name": "Colliders",
-            "parent_id": 53344,
-            "transform": {
-                "position": [
-                    0.0,
-                    0.0,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                    -0.1736481636762619,
-                    0.9848077893257141
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 51614,
-            "name": "collider",
-            "parent_id": 52300,
-            "transform": {
-                "position": [
-                    0.004610015079379082,
-                    -0.01705162413418293,
-                    0.0
-                ],
-                "rotation": [
-                    -5.960465188081798e-8,
-                    -1.4901162970204497e-8,
-                    0.13052628934383393,
-                    0.9914448857307434
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.003100000089034438,
-                        0.0010000000474974514,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 51892,
-            "name": "collider (1)",
-            "parent_id": 52300,
-            "transform": {
-                "position": [
-                    0.007429095450788736,
-                    -0.01602555625140667,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -2.2351741790771486e-8,
-                    0.21643966436386109,
-                    0.976296067237854
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [
-                {
-                    "size": [
-                        0.003100000089034438,
-                        0.0010000000474974514,
-                        0.0010000000474974514
-                    ],
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "cylinder_colliders": [],
-            "custom_components": []
-        },
-        {
-            "id": 50680,
-            "name": "FullCollider",
-            "parent_id": 53360,
-            "transform": {
-                "position": [
-                    0.0,
-                    2.5350000858306886,
-                    0.0
-                ],
-                "rotation": [
-                    0.0,
-                    -0.087155781686306,
-                    0.0,
-                    0.9961947202682495
-                ],
-                "scale": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            },
-            "mesh_path": "",
-            "texture_path": "",
-            "box_colliders": [],
-            "cylinder_colliders": [
-                {
-                    "radius": 7.329999923706055,
-                    "height": 0.5,
-                    "offset": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "is_trigger": false
-                }
-            ],
-            "custom_components": [
-                {
-                    "name": "CylinderCollider",
-                    "properties": [
-                        {
-                            "name": "radius",
-                            "type": "Single",
-                            "value": "7.33",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "height",
-                            "type": "Single",
-                            "value": "0.5",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "offset",
-                            "type": "Vector3",
-                            "value": "0,0,0",
-                            "vector3_value": []
-                        },
-                        {
-                            "name": "isTrigger",
-                            "type": "Boolean",
-                            "value": "False",
-                            "vector3_value": []
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "id": 52626,
             "name": "Platformy",
             "parent_id": 52776,
@@ -15082,13 +13259,13 @@
         },
         {
             "id": -9950,
-            "name": "Cube",
+            "name": "MusicTrigger",
             "parent_id": 52776,
             "transform": {
                 "position": [
-                    -31.059999465942384,
+                    -12.779999732971192,
                     38.31999969482422,
-                    94.52999877929688
+                    101.19000244140625
                 ],
                 "rotation": [
                     0.0,
@@ -15097,12 +13274,12 @@
                     1.0
                 ],
                 "scale": [
-                    1.0,
-                    1.0,
-                    1.0
+                    5.0,
+                    5.0,
+                    5.0
                 ]
             },
-            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube_886.obj",
+            "mesh_path": "",
             "texture_path": "",
             "box_colliders": [
                 {
@@ -15127,7 +13304,7 @@
                         {
                             "name": "TargetTrack",
                             "type": "String",
-                            "value": "Bass",
+                            "value": "Kick",
                             "vector3_value": []
                         }
                     ]
@@ -34057,6 +32234,938 @@
                     ]
                 }
             ]
+        },
+        {
+            "id": -20804,
+            "name": "odtwarzacz 1",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    15.300000190734864,
+                    9.0,
+                    97.30000305175781
+                ],
+                "rotation": [
+                    0.0,
+                    0.7071068286895752,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "CDBoxComponent",
+                    "properties": [
+                        {
+                            "name": "EjectOffset",
+                            "type": "Vector3",
+                            "value": "2.65,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "EjectDuration",
+                            "type": "Single",
+                            "value": "0.5",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "ButtonPressOffset",
+                            "type": "Vector3",
+                            "value": "0.4,0,0",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -20810,
+            "name": "Cube",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube_110432.obj",
+            "texture_path": "assets/PoziomGuga_Assets/Textures/odtwarzacz_kolor_niebieski.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.09993544220924378,
+                        0.09999997168779373,
+                        0.07999997586011887
+                    ],
+                    "offset": [
+                        -0.000032275915145874023,
+                        5.960464477539063e-8,
+                        7.450580596923828e-9
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20820,
+            "name": "Cube.001",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.001_110434.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20828,
+            "name": "Cube.002",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.002_110452.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20836,
+            "name": "Cube.003",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.003_110450.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20844,
+            "name": "Cube.004",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.004_110438.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20852,
+            "name": "Cube.005",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.005_110440.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20860,
+            "name": "Cube.006",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.006_110436.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20868,
+            "name": "Cube.007",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.007_110446.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -20876,
+            "name": "SpinningCD",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    2.0,
+                    -1.2059999704360963,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.7071068286895752,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    300.0,
+                    300.0,
+                    300.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cylinder.001_110442.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.009999999776482582,
+                    "height": 0.0001500000071246177,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "0.00015",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                },
+                {
+                    "name": "DiffractionCD",
+                    "properties": []
+                }
+            ]
+        },
+        {
+            "id": -20888,
+            "name": "Button",
+            "parent_id": -20804,
+            "transform": {
+                "position": [
+                    5.013237476348877,
+                    1.4000000953674317,
+                    -2.3999993801116945
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cylinder_110448.obj",
+            "texture_path": "assets/PoziomGuga_Assets/Textures/odtwarzacz_kolor_niebieski.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.004999999888241291,
+                        0.015999995172023774,
+                        0.015999995172023774
+                    ],
+                    "offset": [
+                        -0.00013235979713499546,
+                        6.193295121192932e-8,
+                        6.51925802230835e-9
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "EnemyComp",
+                    "properties": []
+                }
+            ]
+        },
+        {
+            "id": -22468,
+            "name": "odtwarzacz 1 (1)",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    70.80000305175781,
+                    -5.199999809265137,
+                    97.30000305175781
+                ],
+                "rotation": [
+                    0.0,
+                    0.7071068286895752,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    5.0,
+                    5.0,
+                    5.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "CDBoxComponent",
+                    "properties": [
+                        {
+                            "name": "EjectOffset",
+                            "type": "Vector3",
+                            "value": "2.65,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "EjectDuration",
+                            "type": "Single",
+                            "value": "0.5",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "ButtonPressOffset",
+                            "type": "Vector3",
+                            "value": "0.4,0,0",
+                            "vector3_value": []
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": -22448,
+            "name": "Cube",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube_110432.obj",
+            "texture_path": "assets/PoziomGuga_Assets/Textures/odtwarzacz_kolor_niebieski.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.09993544220924378,
+                        0.09999997168779373,
+                        0.07999997586011887
+                    ],
+                    "offset": [
+                        -0.000032275915145874023,
+                        5.960464477539063e-8,
+                        7.450580596923828e-9
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22450,
+            "name": "Cube.001",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.001_110434.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22452,
+            "name": "Cube.002",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.002_110452.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22454,
+            "name": "Cube.003",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.003_110450.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22456,
+            "name": "Cube.004",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.004_110438.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22458,
+            "name": "Cube.005",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.005_110440.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22460,
+            "name": "Cube.006",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.006_110436.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22462,
+            "name": "Cube.007",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cube.007_110446.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -22464,
+            "name": "SpinningCD",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    2.0,
+                    -1.2059999704360963,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.7071068286895752,
+                    0.0,
+                    0.7071068286895752
+                ],
+                "scale": [
+                    300.0,
+                    300.0,
+                    300.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cylinder.001_110442.obj",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [
+                {
+                    "radius": 0.009999999776482582,
+                    "height": 0.0001500000071246177,
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "custom_components": [
+                {
+                    "name": "CylinderCollider",
+                    "properties": [
+                        {
+                            "name": "radius",
+                            "type": "Single",
+                            "value": "0.01",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "height",
+                            "type": "Single",
+                            "value": "0.00015",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "offset",
+                            "type": "Vector3",
+                            "value": "0,0,0",
+                            "vector3_value": []
+                        },
+                        {
+                            "name": "isTrigger",
+                            "type": "Boolean",
+                            "value": "False",
+                            "vector3_value": []
+                        }
+                    ]
+                },
+                {
+                    "name": "DiffractionCD",
+                    "properties": []
+                }
+            ]
+        },
+        {
+            "id": -22466,
+            "name": "Button",
+            "parent_id": -22468,
+            "transform": {
+                "position": [
+                    5.013237476348877,
+                    1.4000000953674317,
+                    -2.3999993801116945
+                ],
+                "rotation": [
+                    -0.7071068286895752,
+                    0.0,
+                    0.0,
+                    0.7071067094802856
+                ],
+                "scale": [
+                    100.0,
+                    100.0,
+                    100.0
+                ]
+            },
+            "mesh_path": "assets/PoziomGuga_Assets/Models/Mesh_Cylinder_110448.obj",
+            "texture_path": "assets/PoziomGuga_Assets/Textures/odtwarzacz_kolor_niebieski.png",
+            "box_colliders": [
+                {
+                    "size": [
+                        0.004999999888241291,
+                        0.015999995172023774,
+                        0.015999995172023774
+                    ],
+                    "offset": [
+                        -0.00013235979713499546,
+                        6.193295121192932e-8,
+                        6.51925802230835e-9
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -23116,
+            "name": "DartNew",
+            "parent_id": 0,
+            "transform": {
+                "position": [
+                    -61.619998931884769,
+                    15.550000190734864,
+                    43.09000015258789
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    10.0,
+                    10.0,
+                    10.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [],
+            "cylinder_colliders": [],
+            "custom_components": [
+                {
+                    "name": "DartController",
+                    "properties": []
+                }
+            ]
+        },
+        {
+            "id": -24138,
+            "name": "DartStart",
+            "parent_id": -23116,
+            "transform": {
+                "position": [
+                    0.0,
+                    0.5180000066757202,
+                    0.0
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
+        },
+        {
+            "id": -25036,
+            "name": "DartEnd",
+            "parent_id": -23116,
+            "transform": {
+                "position": [
+                    0.3840000033378601,
+                    0.5870000123977661,
+                    -5.758999824523926
+                ],
+                "rotation": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "mesh_path": "",
+            "texture_path": "",
+            "box_colliders": [
+                {
+                    "size": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "offset": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "is_trigger": false
+                }
+            ],
+            "cylinder_colliders": [],
+            "custom_components": []
         }
     ]
 }

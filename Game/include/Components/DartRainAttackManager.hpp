@@ -4,6 +4,7 @@
 #include "Components/FallingDartComponent.hpp"
 #include "Components/CubeMesh.hpp"
 #include "Events/NotePlayedEvent.hpp"
+#include "Components/ModelComponent.hpp"
 #include <vector>
 #include <string>
 #include <random>
@@ -100,10 +101,10 @@ private:
 
         glm::vec3 playerPos = PlayerTransform->GetTransform()->GetPosition();
         float boardY = GetOwner()->GetTransform()->GetPosition().y;
-        glm::vec3 targetPos = glm::vec3(playerPos.x, boardY + 7.85f, playerPos.z);
+        glm::vec3 targetPos = glm::vec3(playerPos.x, boardY, playerPos.z);
 
         auto* indicatorObj = GetOwner()->GetScene()->CreateGameObject("DartIndicator_Dyn");
-        indicatorObj->GetTransform()->SetPosition(targetPos);
+        indicatorObj->GetTransform()->SetPosition(targetPos + glm::vec3(0.0f, 0.85f, 0.0f));
 
         auto indicatorMat = std::make_shared<NFSEngine::Material>();
         indicatorMat->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
