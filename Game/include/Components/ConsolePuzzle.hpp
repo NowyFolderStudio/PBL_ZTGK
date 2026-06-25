@@ -1,10 +1,12 @@
 #pragma once
 #include "Components/ActivatebleComponent.hpp"
 #include "Components/Component.hpp"
+#include "Components/Doors.hpp"
 #include "ConsolePuzzleButton.hpp"
 #include "Core/Audio/AudioClip.hpp"
 #include "Core/Audio/AudioEngine.hpp"
 #include "Core/GameObject.hpp"
+#include "Core/Scene.hpp"
 #include <glm/ext/vector_float3.hpp>
 #include <memory>
 #include <vector>
@@ -97,6 +99,7 @@ protected:
         correctSound = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/note.mp3");
         solutionSound = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/snaph01.ogg");
         wrongSound = std::make_shared<NFSEngine::AudioClip>("assets/audio/sounds/whoosh.wav");
+        m_Doors = GetOwner()->GetScene()->FindGameObject("drzwi")->GetComponent<Doors>();
     }
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
@@ -136,6 +139,7 @@ protected:
     }
 
 private:
+    Doors* m_Doors;
     int m_PressedButtons = 0;
     bool m_Solved = false;
     std::vector<ConsolePuzzleButton*> m_ConsoleButtons;
@@ -150,6 +154,6 @@ private:
 
         m_SequenceTimer = 1.0f;
 
-        // TODO: Doors/portal open
+        m_Doors->Open();
     }
 };

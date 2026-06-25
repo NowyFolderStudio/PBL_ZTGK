@@ -59,6 +59,7 @@
 #include "SceneLoader/ButtonActivatorLoader.hpp"
 #include "SceneLoader/CasetteComponentLoader.hpp"
 #include "SceneLoader/ConsolePuzzleLoader.hpp"
+#include "SceneLoader/DoorLoader.hpp"
 #include "SceneLoader/OutlineParametersLoader.hpp"
 #include "SceneLoader/RotatingObjectLoader.hpp"
 #include "SceneLoader/SceneLoader.hpp"
@@ -136,6 +137,7 @@ void LayerExample::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<DialogueComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<StartingPointLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<TutorialTriggerLoader>());
+    m_SceneLoader.RegisterLoader(std::make_unique<DoorLoader>());
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), "assets/scenes/POziomix_v2_export.json");
 
     m_Shader = NFSEngine::Shader::Create("BasicShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
