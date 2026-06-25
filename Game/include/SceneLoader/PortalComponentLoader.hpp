@@ -51,10 +51,14 @@ public:
                 }
 
                 portalComp.OnTriggerCallback = [targetLevel = portalComp.TargetName]() {
-                    NFS_INFO("Portal activated! Changing level to: {0}", targetLevel);
-                    GameManager::Get().LoadLevel(targetLevel);
-                };
+                    NFS_INFO("Portal activated! Target: {0}", targetLevel);
 
+                    if (targetLevel == "Outro") {
+                        GameManager::Get().RequestStateChange(GameState::Outro);
+                    } else {
+                        GameManager::Get().LoadLevel(targetLevel);
+                    }
+                };
                 break;
             }
         }

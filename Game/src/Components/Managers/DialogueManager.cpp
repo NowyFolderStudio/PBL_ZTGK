@@ -12,7 +12,7 @@ namespace NFSEngine {
 
     NFSEngine::Text* DialogueManager::GetFont() {
         if (!m_Font) {
-            m_Font = std::make_shared<NFSEngine::Text>("assets/fonts/Pulang.ttf", 48);
+            m_Font = std::make_shared<NFSEngine::Text>("assets/fonts/Pulang.ttf", 36);
         }
         return m_Font.get();
     }

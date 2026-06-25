@@ -8,6 +8,7 @@
 #include "Layers/LayerZmoreq.hpp"
 #include "Layers/LayerGuga.hpp"
 #include "Layers/IntroLayer.hpp"
+#include "Layers/OutroLayer.hpp"
 #include "Core/AudioManager.hpp"
 
 GameManager& GameManager::Get() {
@@ -86,6 +87,11 @@ void GameManager::ChangeState(GameState newState) {
         app.PushLayer(m_CurrentLayer);
         break;
     }
+    case GameState::Outro:
+        m_CurrentLayer = new OutroLayer();
+        app.PushLayer(m_CurrentLayer);
+        break;
+
     case GameState::Paused:
         break;
     }

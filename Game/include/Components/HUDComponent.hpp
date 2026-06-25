@@ -690,7 +690,7 @@ private:
     }
 
     void InitDialogueUI() { /* Bez zmian */
-        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 100.0f;
+        const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 150.0f;
         const float textStartX = 650.0f;
 
         NFSEngine::UI::ImageParameters portraitParams;

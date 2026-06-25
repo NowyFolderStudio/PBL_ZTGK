@@ -6,6 +6,7 @@ enum class GameState {
     Intro,
     Playing,
     Paused,
+    Outro,
     GameOver
 };
 
