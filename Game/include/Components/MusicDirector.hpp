@@ -173,7 +173,7 @@ private:
 
         m_TrackProgressions["Bass"].push_back({ "BassPattern02", "BassPattern01" }); // Etap 1
 
-        m_TrackProgressions["Bass"].push_back({ "BassPatternPrototype2", "BassPatternPrototype" }); // Etap 2
+        m_TrackProgressions["Bass"].push_back({  "BassPattern02",  "BassPattern01"}); // Etap 2
 
         m_TrackStageIndex["Bass"] = 0;
 
