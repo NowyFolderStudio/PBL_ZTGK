@@ -41,6 +41,7 @@ public:
     void OpenOptions();
     void CloseOptions();
     bool IsOptionsOpen() const { return m_OptionsOverlay != nullptr; }
+    void ResetLevelPath();
 
     void RequestStateChange(GameState newState);
     void ProcessStateChange();

@@ -65,7 +65,7 @@ void GameManager::ChangeState(GameState newState) {
     switch (m_CurrentState) {
     case GameState::MainMenu:
         app.GetWindow().SetCursorMode(NFSEngine::CursorMode::Normal);
-
+        ResetLevelPath();
         m_CurrentLayer = new MainMenuLayer();
         app.PushLayer(m_CurrentLayer);
         break;
@@ -159,6 +159,10 @@ void GameManager::ProcessStateChange() {
     ChangeState(m_PendingState);
 
     m_HasPendingState = false;
+}
+
+void GameManager::ResetLevelPath() {
+    m_CurrentLevelPath = "assets/scenes/Poziomix_v2_export.json";
 }
 
 GameState GameManager::GetCurrentState() const { return m_CurrentState; }

@@ -39,7 +39,7 @@ public:
     float JumpHeight = 5.0f;
     float FallMultiplier = 2.0f;
     float LowJumpMultiplier = 3.0f;
-    int MaxJumps = 2;
+    int MaxJumps = 1;
 
     // Wall jump settings
     float WallSlideSpeed = 2.0f;
@@ -633,7 +633,7 @@ private:
     void UpdateAbilities(AuraType currentAura) {
         int oldMaxJumps = MaxJumps;
 
-        if (currentAura == AuraType::First) {
+        if (currentAura == AuraType::First && AuraManager::Instance->IsAuraUnlocked(AuraType::First)) {
             MaxJumps = 2;
         } else {
             MaxJumps = 1;
@@ -648,7 +648,8 @@ private:
             m_JumpsRemaining = MaxJumps;
         }
 
-        if (currentAura == AuraType::Second) {
+        // Dash działa TYLKO, gdy druga aura jest aktywna ORAZ odblokowana
+        if (currentAura == AuraType::Second && AuraManager::Instance->IsAuraUnlocked(AuraType::Second)) {
             m_IsDashUnlocked = true;
         } else {
             m_IsDashUnlocked = false;

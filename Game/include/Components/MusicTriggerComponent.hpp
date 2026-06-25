@@ -24,7 +24,7 @@ protected:
             if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
             m_Triggered = true;
-
+            AuraManager::Instance->ChangeAura(AuraType::Second);
             auto* directorObj = m_Owner->GetScene()->FindGameObject("MusicDirector");
             if (directorObj) {
                 auto* director = directorObj->GetComponent<MusicDirector>();
