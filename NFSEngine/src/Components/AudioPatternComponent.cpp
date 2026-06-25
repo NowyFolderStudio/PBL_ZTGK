@@ -162,4 +162,13 @@ namespace NFSEngine {
 
         SetVolume(m_UnmutedVolume);
     }
+
+    void AudioPatternComponent::SetActive(bool active) {
+        if (IsActive == active) return;
+        IsActive = active;
+
+        if (IsActive && m_Sequencer) {
+            m_LastPlayed16thTotal = m_Sequencer->GetCurrent16thTotal() - 1;
+        }
+    }
 } // namespace NFSEngine

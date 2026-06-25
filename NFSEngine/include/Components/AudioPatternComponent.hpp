@@ -25,6 +25,7 @@ namespace NFSEngine {
 
         void SetVolume(float volume);
         void SetMute(bool mute);
+        void SetActive(bool active);
 
         float GetVolume() const { return m_Volume; }
         std::string GetName() const override { return "AudioComponent"; }

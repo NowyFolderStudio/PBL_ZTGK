@@ -10,43 +10,42 @@ public:
 
     std::string GetName() const override { return "FallingDartComponent"; }
 
-    float FallSpeed = 120.0f;
+    float FallSpeed = 200.0f;
     float TipOffset = 0.0f;
     float StayDuration = 2.0f;
+    bool m_ColliderHooked = false;
 
     void Fire(glm::vec3 targetPos, NFSEngine::GameObject* indicator) {
         m_TargetPosition = targetPos;
         m_LinkedIndicator = indicator;
         m_IsFalling = true;
         m_DespawnTimer = 0.0f;
-        m_HasDealtDamage = false; // Reset flagi przy każdym nowym strzale
+        m_HasDealtDamage = false;
 
-        GetOwner()->SetActive(true);
+        if (!m_ColliderHooked) {
+            if (auto* boxCol = GetOwner()->GetComponent<NFSEngine::BoxCollider3DComponent>()) {
+                boxCol->OnTriggerEnter = [this](NFSEngine::GameObject* otherObj) {
+
+                    if (m_IsFalling && !m_HasDealtDamage && otherObj->CompareTag(NFSEngine::Tags::Player)) {
+                        if (LivesManager::Instance) {
+                            LivesManager::Instance->LoseHeart();
+                            m_HasDealtDamage = true;
+                        }
+                    }
+                    };
+                m_ColliderHooked = true;
+            }
+        }
+
         glm::vec3 myPos = GetOwner()->GetTransform()->GetPosition();
         m_FlightDirection = glm::normalize(m_TargetPosition - myPos);
 
         glm::quat lookRot = glm::quatLookAt(m_FlightDirection, glm::vec3(0.0f, 1.0f, 0.0f));
-
         GetOwner()->GetTransform()->SetRotation(lookRot);
     }
 
 protected:
-    void OnStart() override {
-        if (auto* boxCol = GetOwner()->GetComponent<NFSEngine::BoxCollider3DComponent>()) {
-            
-            boxCol->OnTriggerEnter = [this](NFSEngine::GameObject* otherObj) {
-                if (m_IsFalling && !m_HasDealtDamage && otherObj->CompareTag(NFSEngine::Tags::Player)) {
-                    
-                    if (LivesManager::Instance) {
-                        LivesManager::Instance->LoseHeart();
-                        m_HasDealtDamage = true;
-                        
-                        NFS_CORE_INFO("Rzutka uderzyła gracza! Pozostało żyć: {0}", LivesManager::Instance->GetLives());
-                    }
-                }
-            };
-        }
-    }
+    void OnStart() override {}
 
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
         if (m_IsFalling) {
@@ -57,22 +56,17 @@ protected:
             transform->SetPosition(currentPos);
 
             glm::vec3 upVector = transform->GetRotation() * glm::vec3(0.0f, 1.0f, 0.0f);
-
             glm::vec3 currentTipPosition = currentPos - (upVector * TipOffset);
 
             if (currentTipPosition.y <= m_TargetPosition.y) {
                 m_IsFalling = false;
                 transform->SetPosition(m_TargetPosition + (upVector * TipOffset));
-
-                if (m_LinkedIndicator) {
-                    m_LinkedIndicator->SetActive(false);
-                }
             }
         }
         else {
             m_DespawnTimer += deltaTime.GetSeconds();
             if (m_DespawnTimer >= StayDuration) {
-                GetOwner()->SetActive(false);
+                GetOwner()->Destroy();
             }
         }
     }

@@ -8,7 +8,6 @@
 #include <string>
 #include <random>
 
-// --- NOWY KOMPONENT: Animacja Wska�nika ---
 class DartIndicatorComponent : public NFSEngine::Component {
 public:
     DartIndicatorComponent(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {}
@@ -18,11 +17,20 @@ public:
     float PulseSpeed = 10.0f;
     float MinScale = 0.8f;
     float MaxScale = 1.2f;
+    float Timer = 0.0f;
+    float Lifetime = 0.8f;
 
     std::shared_ptr<NFSEngine::Material> MaterialRef = nullptr;
 
+    void Reset() { Timer = 0.0f; m_Time = 0.0f; }
+
     void OnUpdate(NFSEngine::DeltaTime deltaTime) override {
-        if (!GetOwner()->IsActive()) return;
+
+        Timer += deltaTime.GetSeconds();
+        if (Timer >= Lifetime) {
+            GetOwner()->Destroy();
+            return;
+        }
 
         m_Time += deltaTime.GetSeconds();
         float sineValue = (std::sin(m_Time * PulseSpeed) + 1.0f) * 0.5f;
@@ -31,19 +39,13 @@ public:
         GetOwner()->GetTransform()->SetScale(glm::vec3(currentScaleXZ * BaseScale.x, BaseScale.y, currentScaleXZ * BaseScale.z));
 
         if (MaterialRef) {
-            float emissiveStrength = 1.0f + (sineValue * 4.0f); // Od 1 do 5
+            float emissiveStrength = 1.0f + (sineValue * 4.0f);
             MaterialRef->SetVec3("u_EmissiveColor", glm::vec3(1.0f, 0.0f, 0.0f) * emissiveStrength);
         }
     }
 
 private:
     float m_Time = 0.0f;
-};
-
-struct PendingDartAttack {
-    glm::vec3 TargetPosition;
-    int RemainingNotes;
-    NFSEngine::GameObject* IndicatorInstance;
 };
 
 class DartRainAttackComponent : public NFSEngine::Component {
@@ -53,10 +55,9 @@ public:
     std::string GetName() const override { return "DartRainAttackComponent"; }
 
     bool IsActive = true;
-    std::string TargetTrack = "Kick";
-    int NotesDelay = 4;
+    std::string TargetTrack = "Bass";
 
-    float SpawnHeight = 150.0f;
+    float SpawnHeight = 100.0f;
     float MaxSpawnOffset = 45.0f;
 
     NFSEngine::GameObject* PlayerTransform = nullptr;
@@ -68,52 +69,18 @@ public:
         "assets/models/Rzutka/color_rzutka_silver_neonpink.png"
     };
 
+    std::shared_ptr<NFSEngine::Shader> m_DartShader;
+    std::shared_ptr<NFSEngine::Model> m_DartModel;
+    std::shared_ptr<NFSEngine::Shader> m_IndicatorShader;
+    std::shared_ptr<NFSEngine::Model> m_IndicatorModel;
+
 protected:
     void OnAwake() override {
-        auto dartShader = NFSEngine::Shader::Create("DartShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-        auto dartModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/rzutka.fbx");
+        m_DartShader = NFSEngine::Shader::Create("DartShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+        m_DartModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/rzutka.fbx");
 
-        auto indicatorShader = NFSEngine::Shader::Create("IndicatorShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
-        auto indicatorModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/indicator.obj");
-
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_int_distribution<> texDist(0, DartTexturePaths.size() - 1);
-
-        for (int i = 0; i < 12; i++) {
-            auto* indicatorObj = GetOwner()->GetScene()->CreateGameObject("DartIndicator_" + std::to_string(i));
-
-            auto indicatorMat = std::make_shared<NFSEngine::Material>();
-            indicatorMat->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
-            indicatorMat->SetVec3("u_EmissiveColor", glm::vec3(1.0f, 0.0f, 0.0f) * 2.0f);
-
-            auto& indModelComp = indicatorObj->AddComponent<NFSEngine::ModelComponent>(indicatorShader, indicatorMat);
-            indModelComp.AddLOD(indicatorModel, 10000.0f);
-
-            auto& indLogic = indicatorObj->AddComponent<DartIndicatorComponent>();
-            indLogic.MaterialRef = indicatorMat;
-
-            indicatorObj->SetActive(false);
-            m_IndicatorPool.push_back(indicatorObj);
-
-            auto* dartObj = GetOwner()->GetScene()->CreateGameObject("PooledDart_" + std::to_string(i));
-            dartObj->GetTransform()->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
-
-            auto dartMat = std::make_shared<NFSEngine::Material>();
-            std::string randomTexPath = DartTexturePaths[texDist(gen)];
-            dartMat->AlbedoMap = NFSEngine::Texture::Create(randomTexPath);
-
-            auto& modelComp = dartObj->AddComponent<NFSEngine::ModelComponent>(dartShader, dartMat);
-            modelComp.AddLOD(dartModel, 10000.0f);
-
-            dartObj->AddComponent<FallingDartComponent>();
-
-            auto& boxCol = dartObj->AddComponent<NFSEngine::BoxCollider3DComponent>();
-            boxCol.IsTrigger = true;
-
-            dartObj->SetActive(false);
-            m_DartPool.push_back(dartObj);
-        }
+        m_IndicatorShader = NFSEngine::Shader::Create("IndicatorShader", "assets/shaders/lightShader.vert", "assets/shaders/PBRShader.frag");
+        m_IndicatorModel = std::make_shared<NFSEngine::Model>("assets/models/Rzutka/indicator.obj");
     }
 
 public:
@@ -123,10 +90,6 @@ public:
     }
 
 private:
-    std::vector<NFSEngine::GameObject*> m_DartPool;
-    std::vector<NFSEngine::GameObject*> m_IndicatorPool;
-    std::vector<PendingDartAttack> m_PendingAttacks;
-
     bool HandleNotePlayed(NFSEngine::NotePlayedEvent& e) {
         if (!IsActive || e.GetTrackName() != TargetTrack) return false;
 
@@ -139,54 +102,42 @@ private:
         float boardY = GetOwner()->GetTransform()->GetPosition().y;
         glm::vec3 targetPos = glm::vec3(playerPos.x, boardY + 7.85f, playerPos.z);
 
-        NFSEngine::GameObject* freeIndicator = nullptr;
-        for (auto* ind : m_IndicatorPool) {
-            if (!ind->IsActive()) {
-                freeIndicator = ind;
-                freeIndicator->GetTransform()->SetPosition(targetPos);
-                freeIndicator->SetActive(true);
-                break;
-            }
-        }
+        auto* indicatorObj = GetOwner()->GetScene()->CreateGameObject("DartIndicator_Dyn");
+        indicatorObj->GetTransform()->SetPosition(targetPos);
 
-        PendingDartAttack attack;
-        attack.TargetPosition = targetPos;
-        attack.RemainingNotes = NotesDelay;
-        attack.IndicatorInstance = freeIndicator;
-        m_PendingAttacks.push_back(attack);
+        auto indicatorMat = std::make_shared<NFSEngine::Material>();
+        indicatorMat->AlbedoColor = glm::vec3(1.0f, 0.0f, 0.0f);
+        indicatorMat->SetVec3("u_EmissiveColor", glm::vec3(1.0f, 0.0f, 0.0f) * 2.0f);
 
-        ProcessPendingAttacks();
+        auto& indModelComp = indicatorObj->AddComponent<NFSEngine::ModelComponent>(m_IndicatorShader, indicatorMat);
+        indModelComp.AddLOD(m_IndicatorModel, 10000.0f);
 
-        return false;
-    }
+        auto& indLogic = indicatorObj->AddComponent<DartIndicatorComponent>();
+        indLogic.MaterialRef = indicatorMat;
 
-    void ProcessPendingAttacks() {
-        for (int i = m_PendingAttacks.size() - 1; i >= 0; i--) {
-            m_PendingAttacks[i].RemainingNotes--;
 
-            if (m_PendingAttacks[i].RemainingNotes <= 0) {
-                SpawnDart(m_PendingAttacks[i]);
-                m_PendingAttacks.erase(m_PendingAttacks.begin() + i);
-            }
-        }
-    }
-
-    void SpawnDart(const PendingDartAttack& attackInfo) {
         float randomX = -MaxSpawnOffset + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (MaxSpawnOffset * 2)));
         float randomZ = -MaxSpawnOffset + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (MaxSpawnOffset * 2)));
+        glm::vec3 spawnPosition = targetPos + glm::vec3(randomX, SpawnHeight, randomZ);
 
-        glm::vec3 spawnPosition = attackInfo.TargetPosition + glm::vec3(randomX, SpawnHeight, randomZ);
+        auto* dartObj = GetOwner()->GetScene()->CreateGameObject("PooledDart_Dyn");
+        dartObj->GetTransform()->SetScale(glm::vec3(2.0f, 2.0f, 2.0f));
+        dartObj->GetTransform()->SetPosition(spawnPosition);
 
-        for (auto* dartObj : m_DartPool) {
-            if (!dartObj->IsActive()) {
-                dartObj->GetTransform()->SetPosition(spawnPosition);
+        auto dartMat = std::make_shared<NFSEngine::Material>();
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> texDist(0, DartTexturePaths.size() - 1);
+        dartMat->AlbedoMap = NFSEngine::Texture::Create(DartTexturePaths[texDist(gen)]);
 
-                auto* dartLogic = dartObj->GetComponent<FallingDartComponent>();
-                if (dartLogic) {
-                    dartLogic->Fire(attackInfo.TargetPosition, attackInfo.IndicatorInstance);
-                }
-                break;
-            }
-        }
+        auto& modelComp = dartObj->AddComponent<NFSEngine::ModelComponent>(m_DartShader, dartMat);
+        modelComp.AddLOD(m_DartModel, 10000.0f);
+
+        dartObj->AddComponent<NFSEngine::BoxCollider3DComponent>().IsTrigger = true;
+
+        auto& dartLogic = dartObj->AddComponent<FallingDartComponent>();
+        dartLogic.Fire(targetPos, indicatorObj);
+
+        return false;
     }
 };

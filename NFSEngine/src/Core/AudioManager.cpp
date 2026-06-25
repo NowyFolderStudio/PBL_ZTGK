@@ -73,10 +73,11 @@ namespace NFSEngine {
 
         for (auto* comp : m_TrackGroups[trackName]) {
             if (comp->GetPatternName() == patternName) {
-                comp->IsActive = true;
+                comp->SetActive(true);
                 NFS_CORE_INFO("[AudioManager] {} set to active on channel {}", patternName, trackName);
             } else {
-                comp->IsActive = false;
+                comp->SetActive(false);
+                NFS_CORE_INFO("[AudioManager] {} set to NOTactive on channel {}", patternName, trackName);
             }
         }
     }
