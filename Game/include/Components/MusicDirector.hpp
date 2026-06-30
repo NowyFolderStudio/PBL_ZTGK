@@ -184,15 +184,15 @@ private:
         m_TrackStageIndex["SubPiano"] = 0;
 
         m_TrackProgressions["HitHat"].push_back({ "k" });
-        m_TrackProgressions["HitHat"].push_back({ "HitHatPattern01" });
+        m_TrackProgressions["HitHat"].push_back({ "HitHatPattern01", "HitHatPattern01" });
         m_TrackStageIndex["HitHat"] = 0;
 
         m_TrackProgressions["Snare"].push_back({ "k" });
-        m_TrackProgressions["Snare"].push_back({ "SnarePattern01" });
+        m_TrackProgressions["Snare"].push_back({ "SnarePattern01", "SnarePattern01" });
         m_TrackStageIndex["Snare"] = 0;
 
         m_TrackProgressions["Clap"].push_back({ "k" });
-        m_TrackProgressions["Clap"].push_back({ "ClapPattern01" });
+        m_TrackProgressions["Clap"].push_back({ "ClapPattern01", "ClapPattern01" });
         m_TrackStageIndex["Clap"] = 0;
     }
 
