@@ -132,10 +132,7 @@ protected:
         }
 
         if (auto* destructible = GetOwner()->GetComponent<DestructibleComponent>()) {
-            destructible->OnDestroyed = [this]() {
-                NFS_CORE_INFO("Wrog zabity! Zatrzymaj logike AI!");
-                ChangeState(nullptr);
-            };
+            destructible->OnDestroyed = [this]() { ChangeState(nullptr); };
         }
 
         ChangeState(StatePatrol);

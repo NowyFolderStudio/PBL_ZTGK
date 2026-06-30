@@ -25,35 +25,29 @@ public:
 
     std::string GetName() const override { return "CharacterController"; };
 
-    // Run settings
     float MaxSpeed = 18.0f;
     float Acceleration = 80.0f;
     float Deceleration = 80.0f;
     float AirControl = 0.5f;
     float AirFriction = 0.5f;
 
-    // Rotation settings
     float TurnSmoothTime = 0.1f;
 
-    // Jump settings
     float JumpHeight = 5.0f;
     float FallMultiplier = 2.0f;
     float LowJumpMultiplier = 3.0f;
     int MaxJumps = 1;
 
-    // Wall jump settings
     float WallSlideSpeed = 2.0f;
     float WallJumpPushForce = 15.0f;
     float WallJumpLockTime = 0.2f;
 
-    // Dash settings
     float DashSpeed = 35.0f;
     float DashUpwardForce = 13.0f;
     float DashDuration = 0.4f;
     float DashGravityScale = 0.2f;
     float DashAirControl = 0.8f;
 
-    // Coyote time and jump buffer settings
     float CoyoteTime = 0.15f;
     float JumpBufferTime = 0.15f;
     float WallCoyoteTime = 0.15f;

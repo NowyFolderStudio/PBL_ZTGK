@@ -57,8 +57,6 @@ protected:
 
                 s_ActiveCheckpoint = this;
                 m_IsActive = true;
-
-                NFS_CORE_INFO("Checkpoint {0} został aktywowany!", m_Owner->name);
             }
         };
     }

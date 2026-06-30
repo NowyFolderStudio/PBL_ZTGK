@@ -117,9 +117,6 @@ void MainMenuLayer::BuildUI() {
     glm::vec4 shadowColor(0.0f, 0.0f, 0.0f, 1.0f);
     float shadowZ = 0.45f;
 
-    // ==========================================
-    // 1. Start Button
-    // ==========================================
     NFSEngine::UI::LabelParameters startShadow;
     startShadow.position = glm::vec3(leftStart + m_ShadowOffset.x, currentY + m_ShadowOffset.y, shadowZ);
     startShadow.text = "Play";
@@ -149,9 +146,6 @@ void MainMenuLayer::BuildUI() {
 
     currentY += elementSpacing;
 
-    // ==========================================
-    // 2. Options Button
-    // ==========================================
     NFSEngine::UI::LabelParameters optionsShadow;
     optionsShadow.position = glm::vec3(leftStart + m_ShadowOffset.x, currentY + m_ShadowOffset.y, shadowZ);
     optionsShadow.text = "Options";
@@ -179,9 +173,6 @@ void MainMenuLayer::BuildUI() {
 
     currentY += elementSpacing;
 
-    // ==========================================
-    // 3. Quit Button
-    // ==========================================
     NFSEngine::UI::LabelParameters quitShadow;
     quitShadow.position = glm::vec3(leftStart + m_ShadowOffset.x, currentY + m_ShadowOffset.y, shadowZ);
     quitShadow.text = "Exit";
@@ -207,10 +198,6 @@ void MainMenuLayer::BuildUI() {
     auto& quitBtn = NFSEngine::UI::Button(*m_Canvas, quitParams);
     m_ButtonTexts[2] = quitBtn.GetComponent<NFSEngine::TextComponent>();
     m_PierdolniczekPosition[2] = glm::vec2(445, currentY);
-
-    // ==========================================
-    // 4. Pierdolniczek
-    // ==========================================
 
     NFSEngine::TextureParameters ptrParams;
     ptrParams.WrapS = NFSEngine::TextureWrap::Clamp;

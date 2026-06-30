@@ -30,10 +30,6 @@ void IntroLayer::OnAttach() {
             uint32_t dataSize = m_VideoDecoder->GetDataSize();
             m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
         }
-
-        NFS_INFO("We got into intro gz!!");
-    } else {
-        NFS_CORE_ERROR("[MainMenuLayer]: Can't load intro video!");
     }
 
     NFSEngine::UI::ImageParameters bgParams;
