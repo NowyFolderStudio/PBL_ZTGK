@@ -22,6 +22,10 @@ namespace NFSEngine {
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
 
+        void ChangeSensitivity(float multiplier) {
+            m_SensitivityMultiplier = multiplier;
+        }
+
         void SetCameraOverride(float yaw, float pitch, float distance) {
             if (!m_OverrideActive) {
                 m_OriginalYaw = m_Yaw;
@@ -113,8 +117,8 @@ namespace NFSEngine {
                     float deltaY = mouseY - m_LastMouseY;
 
                     if (std::abs(deltaX) > 0.01f || std::abs(deltaY) > 0.01f) {
-                        m_Yaw += deltaX * m_Sensitivity;
-                        m_Pitch = std::clamp(m_Pitch + (deltaY * m_Sensitivity), -45.0f, 85.0f);
+                        m_Yaw += deltaX * m_Sensitivity * m_SensitivityMultiplier;
+                        m_Pitch = std::clamp(m_Pitch + (deltaY * m_Sensitivity * m_SensitivityMultiplier), -45.0f, 85.0f);
                         hasManualInput = true;
                     }
                 }
@@ -131,8 +135,8 @@ namespace NFSEngine {
                 float lookY = InputActionManager::GetFloat("LookY");
 
                 if (std::abs(lookX) > 0.01f || std::abs(lookY) > 0.01f) {
-                    m_Yaw += lookX * m_ControllerSensitivity * dt;
-                    m_Pitch = std::clamp(m_Pitch + lookY * m_ControllerSensitivity * dt, -45.0f, 85.0f);
+                    m_Yaw += lookX * m_ControllerSensitivity * m_SensitivityMultiplier * dt;
+                    m_Pitch = std::clamp(m_Pitch + lookY * m_ControllerSensitivity * m_SensitivityMultiplier * dt, -45.0f, 85.0f);
                     hasManualInput = true;
                 }
             }
@@ -294,6 +298,7 @@ namespace NFSEngine {
         float m_Yaw = 0.0f, m_Pitch = 25.0f;
         float m_Sensitivity = 0.12f;
         float m_ControllerSensitivity = 100.f;
+        float m_SensitivityMultiplier = 1.0f;
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
 
