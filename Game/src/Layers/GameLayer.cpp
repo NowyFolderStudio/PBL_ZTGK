@@ -3,8 +3,6 @@
 #include "SceneLoader/CoinComponentLoader.hpp"
 #include "Components/Camera.hpp"
 
-// It doesn't work now
-
 GameLayer::GameLayer(const std::string& levelPath)
     : m_LevelFilePath(levelPath) { }
 

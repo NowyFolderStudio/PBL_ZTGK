@@ -99,7 +99,7 @@ namespace NFSEngine {
 
     void PhysicsSystem::Update(const std::vector<RigidBody3DComponent*>& rigidBodies,
                                const std::vector<ColliderComponent*>& allColliders, DeltaTime deltaTime) {
-        NFS_PROFILE_FUNCTION();
+
         float dt = static_cast<float>(deltaTime);
 
         for (auto* col : allColliders) {
@@ -109,147 +109,139 @@ namespace NFSEngine {
         }
 
         std::set<std::pair<ColliderComponent*, ColliderComponent*>> currentFrameTriggers;
-        {
-            NFS_PROFILE_SCOPE("Physics: Clear Grid");
-            for (auto& [key, colliders] : m_Grid) {
-                colliders.clear();
-            }
+
+        for (auto& [key, colliders] : m_Grid) {
+            colliders.clear();
         }
 
-        {
-            NFS_PROFILE_SCOPE("Physics: Populate Grid");
-            for (auto* col : allColliders) {
-                if (!col->GetOwner()->IsActive()) continue;
+        for (auto* col : allColliders) {
+            if (!col->GetOwner()->IsActive()) continue;
 
-                AABB box = GetColliderBounds(col);
+            AABB box = GetColliderBounds(col);
 
-                GridKey minKey = GetGridKey(box.Min);
-                GridKey maxKey = GetGridKey(box.Max);
+            GridKey minKey = GetGridKey(box.Min);
+            GridKey maxKey = GetGridKey(box.Max);
 
-                for (int x = minKey.x; x <= maxKey.x; ++x) {
-                    for (int y = minKey.y; y <= maxKey.y; ++y) {
-                        for (int z = minKey.z; z <= maxKey.z; ++z) {
-                            GridKey key = { x, y, z };
-                            m_Grid[key].push_back(col);
-                        }
+            for (int x = minKey.x; x <= maxKey.x; ++x) {
+                for (int y = minKey.y; y <= maxKey.y; ++y) {
+                    for (int z = minKey.z; z <= maxKey.z; ++z) {
+                        GridKey key = { x, y, z };
+                        m_Grid[key].push_back(col);
                     }
                 }
             }
         }
-        {
 
-            NFS_PROFILE_SCOPE("Physics: Check Collisions & Move");
-            for (auto* rigidBody : rigidBodies) {
-                rigidBody->PreviousVelocity = rigidBody->Velocity;
-                GameObject* objA = rigidBody->GetOwner();
+        for (auto* rigidBody : rigidBodies) {
+            rigidBody->PreviousVelocity = rigidBody->Velocity;
+            GameObject* objA = rigidBody->GetOwner();
 
-                if (!objA->IsActive()) continue;
+            if (!objA->IsActive()) continue;
 
-                auto* colA = objA->GetComponent<ColliderComponent>();
-                if (!colA) continue;
+            auto* colA = objA->GetComponent<ColliderComponent>();
+            if (!colA) continue;
 
-                auto* transform = objA->GetTransform();
+            auto* transform = objA->GetTransform();
 
-                rigidBody->IsGrounded = false;
-                rigidBody->IsTouchingWall = false;
-                rigidBody->WallNormal = glm::vec3(0.0f);
-                rigidBody->TouchedWallObject = nullptr;
+            rigidBody->IsGrounded = false;
+            rigidBody->IsTouchingWall = false;
+            rigidBody->WallNormal = glm::vec3(0.0f);
+            rigidBody->TouchedWallObject = nullptr;
 
-                if (!rigidBody->IsKinematic) {
-                    if (rigidBody->UseGravity) {
-                        rigidBody->Acceleration += Gravity;
-                    }
-                } else {
-                    if (glm::length(rigidBody->AngularVelocity) > 0.0001f) {
-                        transform->Rotate(rigidBody->AngularVelocity * dt);
-                    }
+            if (!rigidBody->IsKinematic) {
+                if (rigidBody->UseGravity) {
+                    rigidBody->Acceleration += Gravity;
                 }
-                rigidBody->Velocity += rigidBody->Acceleration * dt;
-                rigidBody->Acceleration = glm::vec3(0.0f);
+            } else {
+                if (glm::length(rigidBody->AngularVelocity) > 0.0001f) {
+                    transform->Rotate(rigidBody->AngularVelocity * dt);
+                }
+            }
+            rigidBody->Velocity += rigidBody->Acceleration * dt;
+            rigidBody->Acceleration = glm::vec3(0.0f);
 
-                glm::vec3 moveDelta = rigidBody->Velocity * dt;
-                transform->Move(moveDelta);
+            glm::vec3 moveDelta = rigidBody->Velocity * dt;
+            transform->Move(moveDelta);
 
-                glm::vec3 myPos = transform->GetWorldPosition();
-                GridKey myKey = GetGridKey(myPos);
+            glm::vec3 myPos = transform->GetWorldPosition();
+            GridKey myKey = GetGridKey(myPos);
 
-                std::unordered_set<ColliderComponent*> checkedColliders;
+            std::unordered_set<ColliderComponent*> checkedColliders;
 
-                for (int x = -1; x <= 1; ++x) {
-                    for (int y = -1; y <= 1; ++y) {
-                        for (int z = -1; z <= 1; ++z) {
+            for (int x = -1; x <= 1; ++x) {
+                for (int y = -1; y <= 1; ++y) {
+                    for (int z = -1; z <= 1; ++z) {
 
-                            GridKey searchKey = { myKey.x + x, myKey.y + y, myKey.z + z };
+                        GridKey searchKey = { myKey.x + x, myKey.y + y, myKey.z + z };
 
-                            auto it = m_Grid.find(searchKey);
-                            if (it != m_Grid.end()) {
-                                for (auto* colB : it->second) {
-                                    GameObject* objB = colB->GetOwner();
-                                    if (objA == objB) continue;
+                        auto it = m_Grid.find(searchKey);
+                        if (it != m_Grid.end()) {
+                            for (auto* colB : it->second) {
+                                GameObject* objB = colB->GetOwner();
+                                if (objA == objB) continue;
 
-                                    if (!checkedColliders.insert(colB).second) {
-                                        continue;
-                                    }
+                                if (!checkedColliders.insert(colB).second) {
+                                    continue;
+                                }
 
-                                    CollisionInfo info = CheckCollision(colA, colB);
+                                CollisionInfo info = CheckCollision(colA, colB);
 
-                                    if (info.IsColliding) {
+                                if (info.IsColliding) {
 
-                                        if (colA->IsTrigger || colB->IsTrigger) {
+                                    if (colA->IsTrigger || colB->IsTrigger) {
 
-                                            auto pair = (colA < colB) ? std::make_pair(colA, colB) : std::make_pair(colB, colA);
-                                            currentFrameTriggers.insert(pair);
+                                        auto pair = (colA < colB) ? std::make_pair(colA, colB) : std::make_pair(colB, colA);
+                                        currentFrameTriggers.insert(pair);
 
-                                            bool isNewCollision = m_TriggerPairs.find(pair) == m_TriggerPairs.end();
+                                        bool isNewCollision = m_TriggerPairs.find(pair) == m_TriggerPairs.end();
 
-                                            if (isNewCollision) {
-                                                if (colA->OnTriggerEnter) colA->OnTriggerEnter(objB);
-                                                if (colB->OnTriggerEnter) colB->OnTriggerEnter(objA);
-                                            } else {
-                                                if (colA->OnTriggerStay) colA->OnTriggerStay(objB);
-                                                if (colB->OnTriggerStay) colB->OnTriggerStay(objA);
-                                            }
+                                        if (isNewCollision) {
+                                            if (colA->OnTriggerEnter) colA->OnTriggerEnter(objB);
+                                            if (colB->OnTriggerEnter) colB->OnTriggerEnter(objA);
                                         } else {
-                                            if (!rigidBody->IsKinematic) {
-                                                glm::vec3 worldPos = transform->GetWorldPosition();
-                                                transform->SetWorldPosition(worldPos + info.ContactNormal * info.PenetrationDepth);
+                                            if (colA->OnTriggerStay) colA->OnTriggerStay(objB);
+                                            if (colB->OnTriggerStay) colB->OnTriggerStay(objA);
+                                        }
+                                    } else {
+                                        if (!rigidBody->IsKinematic) {
+                                            glm::vec3 worldPos = transform->GetWorldPosition();
+                                            transform->SetWorldPosition(worldPos + info.ContactNormal * info.PenetrationDepth);
 
-                                                glm::vec3 velB = glm::vec3(0.0f);
-                                                if (auto* rbB = objB->GetComponent<RigidBody3DComponent>()) {
-                                                    velB = rbB->Velocity;
-                                                }
-
-                                                glm::vec3 relativeVelocity = rigidBody->Velocity - velB;
-                                                float velAlongNormal = glm::dot(relativeVelocity, info.ContactNormal);
-
-                                                if (velAlongNormal < 0.0f) {
-                                                    float restitution = 0.0f;
-                                                    float j = -(1.0f + restitution) * velAlongNormal;
-
-                                                    float maxImpulse = 50.0f;
-                                                    if (j > maxImpulse) {
-                                                        j = maxImpulse;
-                                                    }
-
-                                                    glm::vec3 impulseVector = info.ContactNormal * j;
-
-                                                    rigidBody->Velocity += impulseVector;
-                                                }
+                                            glm::vec3 velB = glm::vec3(0.0f);
+                                            if (auto* rbB = objB->GetComponent<RigidBody3DComponent>()) {
+                                                velB = rbB->Velocity;
                                             }
 
-                                            if (colA->OnCollisionEnter) colA->OnCollisionEnter(objB, info.ContactNormal);
-                                            if (colB->OnCollisionEnter) colB->OnCollisionEnter(objA, -info.ContactNormal);
+                                            glm::vec3 relativeVelocity = rigidBody->Velocity - velB;
+                                            float velAlongNormal = glm::dot(relativeVelocity, info.ContactNormal);
 
-                                            if (info.ContactNormal.y > 0.7f) {
-                                                rigidBody->IsGrounded = true;
-                                                rigidBody->TouchedFloorObject = objB; // TODO: Rework to use one object
-                                                rigidBody->FloorNormal = info.ContactNormal;
+                                            if (velAlongNormal < 0.0f) {
+                                                float restitution = 0.0f;
+                                                float j = -(1.0f + restitution) * velAlongNormal;
 
-                                            } else if (std::abs(info.ContactNormal.y) < 0.3f) {
-                                                rigidBody->IsTouchingWall = true;
-                                                rigidBody->WallNormal = info.ContactNormal;
-                                                rigidBody->TouchedWallObject = objB;
+                                                float maxImpulse = 50.0f;
+                                                if (j > maxImpulse) {
+                                                    j = maxImpulse;
+                                                }
+
+                                                glm::vec3 impulseVector = info.ContactNormal * j;
+
+                                                rigidBody->Velocity += impulseVector;
                                             }
+                                        }
+
+                                        if (colA->OnCollisionEnter) colA->OnCollisionEnter(objB, info.ContactNormal);
+                                        if (colB->OnCollisionEnter) colB->OnCollisionEnter(objA, -info.ContactNormal);
+
+                                        if (info.ContactNormal.y > 0.7f) {
+                                            rigidBody->IsGrounded = true;
+                                            rigidBody->TouchedFloorObject = objB; // TODO: Rework to use one object
+                                            rigidBody->FloorNormal = info.ContactNormal;
+
+                                        } else if (std::abs(info.ContactNormal.y) < 0.3f) {
+                                            rigidBody->IsTouchingWall = true;
+                                            rigidBody->WallNormal = info.ContactNormal;
+                                            rigidBody->TouchedWallObject = objB;
                                         }
                                     }
                                 }
@@ -259,19 +251,17 @@ namespace NFSEngine {
                 }
             }
         }
-        {
-            NFS_PROFILE_SCOPE("Physics: Triggers Update");
-            for (const auto& pair : m_TriggerPairs) {
-                if (currentFrameTriggers.find(pair) == currentFrameTriggers.end()) {
-                    if (pair.first && pair.second) {
-                        if (pair.first->OnTriggerExit) pair.first->OnTriggerExit(pair.second->GetOwner());
-                        if (pair.second->OnTriggerExit) pair.second->OnTriggerExit(pair.first->GetOwner());
-                    }
+
+        for (const auto& pair : m_TriggerPairs) {
+            if (currentFrameTriggers.find(pair) == currentFrameTriggers.end()) {
+                if (pair.first && pair.second) {
+                    if (pair.first->OnTriggerExit) pair.first->OnTriggerExit(pair.second->GetOwner());
+                    if (pair.second->OnTriggerExit) pair.second->OnTriggerExit(pair.first->GetOwner());
                 }
             }
-
-            m_TriggerPairs = std::move(currentFrameTriggers);
         }
+
+        m_TriggerPairs = std::move(currentFrameTriggers);
     };
 
     void PhysicsSystem::RemoveCollider(ColliderComponent* collider) {

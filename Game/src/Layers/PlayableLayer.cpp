@@ -1,6 +1,5 @@
 #include "Layers/PlayableLayer.hpp"
 
-// Components
 #include "Components/AnimatorComponent.hpp"
 #include "Components/BounceComponent.hpp"
 #include "Components/CubeMesh.hpp"
@@ -41,7 +40,6 @@
 #include "Components/MusicDirector.hpp"
 #include "Components/MusicTriggerComponent.hpp"
 
-// Core & Renderer
 #include "Core/Log.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
@@ -100,7 +98,6 @@ void PlayableLayer::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
-    // --- Managers ---
     auto* livesManager = m_Scene->CreateGameObject("LivesManager");
     livesManager->SetTag(NFSEngine::Tags::LivesManager);
     livesManager->AddComponent<LivesManager>();
@@ -126,7 +123,6 @@ void PlayableLayer::OnAttach() {
     auto* loadingObj = m_Scene->CreateGameObject("LoadingScreen");
     m_LoadingScreen = &loadingObj->AddComponent<LoadingScreenComponent>();
 
-    // --- Skybox and enviro ---
     std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
                                        "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
                                        "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
@@ -139,7 +135,6 @@ void PlayableLayer::OnAttach() {
     m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
     m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
 
-    // --- Player ---
     auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
 
     auto animationShader
@@ -168,7 +163,7 @@ void PlayableLayer::OnAttach() {
     playerModel->AddComponent<CharacterAnimationController>();
     auto particleShader = Shader::Create("particleShader", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
     auto particleShader2 = Shader::Create("particleShader2", "assets/shaders/particle.vert", "assets/shaders/particle.frag");
-    // Particle clouds
+
     auto particleCloudMaterial = std::make_shared<Material>();
     auto cloudParticleTexture = Texture::Create("assets/textures/particles/cloud.png");
     particleCloudMaterial->AlbedoMap = cloudParticleTexture;
@@ -204,20 +199,17 @@ void PlayableLayer::OnAttach() {
     playerMaterial->RampMap = m_RampTexture;
     m_ToonShader = NFSEngine::Shader::Create("ToonShader", "assets/shaders/lightShader.vert", "assets/shaders/toonShader.frag");
 
-    // Lighting
     NFSEngine::GameObject* sunObj = m_Scene->CreateGameObject("Sun");
     auto& sunComp = sunObj->AddComponent<NFSEngine::DirectionalLight>();
     sunComp.Direction = glm::vec3(-0.2f, -1.0f, -0.6f);
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
     sunComp.Intensity = 1.0f;
 
-    // --- Camera ---
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
     cameraObj->AddComponent<NFSEngine::Camera>();
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
     controller.SetTarget(m_Player->GetTransform());
 
-    // --- Init loaders ---
     m_SceneLoader.InitDefaultLoaders();
     m_SceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<CheckpointComponentLoader>());
@@ -246,7 +238,7 @@ void PlayableLayer::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<MusicTriggerComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<PointLightLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<SpotLightLoader>());
-    // Loading scene from file
+
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), m_ScenePath);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();

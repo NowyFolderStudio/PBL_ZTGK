@@ -100,11 +100,11 @@ private:
 
         glm::vec3 spawnPosition = m_Owner->GetTransform()->GetWorldPosition() + glm::vec3(0.0f, 1.0f, 0.0f);
 
-        if (AuraManager::Instance->CurrentAura == AuraType::First) {
+        if (AuraManager::Instance->CurrentAura == AuraType::Blue) {
             NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_GuitarMaterial, m_ParticleShader, properties, 0.1f, 1000,
                                                250, spawnPosition);
         }
-        if (AuraManager::Instance->CurrentAura == AuraType::Second) {
+        if (AuraManager::Instance->CurrentAura == AuraType::Green) {
             NFSEngine::ParticleFactory::Create(m_Owner->GetScene(), m_PianoMaterial, m_ParticleShader, properties, 0.1f, 1000,
                                                250, spawnPosition);
         }
@@ -114,8 +114,6 @@ private:
         glm::vec3 myPos = m_Owner->GetTransform()->GetWorldPosition();
 
         for (auto* target : m_EnemiesInRange) {
-            // Szukamy Destructible. Jeśli to wróg - zada HP. Jeśli to beczka - zada HP.
-            // Jeśli to np. ściana bez DestructibleComponent - zignoruje ją!
             if (auto* destComp = target->GetComponent<DestructibleComponent>()) {
                 destComp->TakeDamage(1, myPos);
             }

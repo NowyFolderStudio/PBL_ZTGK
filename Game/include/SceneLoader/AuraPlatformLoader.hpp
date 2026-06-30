@@ -36,10 +36,10 @@ class AuraPlatformLoader : public NFSEngine::IComponentLoader {
 
     AuraType ParseAuraType(const std::string& auraStr) {
         if (auraStr == "Piano") {
-            return AuraType::First;
+            return AuraType::Blue;
         } else if (auraStr == "Bass") {
-            return AuraType::Second;
+            return AuraType::Green;
         }
-        return AuraType::First;
+        return AuraType::Blue;
     }
 };

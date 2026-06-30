@@ -7,8 +7,8 @@
 #include "Core/Audio/AudioEngine.hpp"
 
 enum class AuraType {
-    First,
-    Second
+    Blue,
+    Green
 };
 
 class AuraManager : public NFSEngine::Component {
@@ -27,7 +27,7 @@ public:
     std::string GetName() const override { return "AuraManager"; }
 
     NFSEngine::Action<AuraType> OnAuraChanged;
-    AuraType CurrentAura = AuraType::First;
+    AuraType CurrentAura = AuraType::Blue;
 
     float CooldownDuration = 1.0f;
     bool CanShowUI = false;
@@ -74,10 +74,10 @@ public:
     void UnlockNextAura() {
         CanShowUI = true;
 
-        static const std::vector<AuraType> progressionOrder = { AuraType::First, AuraType::Second };
+        static const std::vector<AuraType> progressionOrder = { AuraType::Blue, AuraType::Green };
         size_t currentProgress = m_UnlockedAuras.size();
-        UnlockAura(AuraType::First);
-        UnlockAura(AuraType::Second);
+        UnlockAura(AuraType::Blue);
+        UnlockAura(AuraType::Green);
 
         if (currentProgress < progressionOrder.size()) {
             AuraType nextAura = progressionOrder[currentProgress];
@@ -98,7 +98,7 @@ public:
         NFSEngine::AudioEngine::PlayClipRandomPitch(m_AudioClip.get(), 0.9, 1.1);
 
         CurrentAura = newAura;
-        m_CurrentCooldown = CooldownDuration; // Resetujemy cooldown po udanej zmianie!
+        m_CurrentCooldown = CooldownDuration;
 
         OnAuraChanged.Invoke(newAura);
     }

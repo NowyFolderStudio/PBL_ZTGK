@@ -6,14 +6,15 @@
 
 class MusicTriggerComponent : public NFSEngine::Component {
 public:
-	std::string TargetTrack = "Bass";
+    std::string TargetTrack = "Bass";
 
-	explicit MusicTriggerComponent(NFSEngine::GameObject* owner) : NFSEngine::Component(owner) {}
+    explicit MusicTriggerComponent(NFSEngine::GameObject* owner)
+        : NFSEngine::Component(owner) { }
 
-	std::string GetName() const override { return "MusicTriggerComponent"; }
-	
+    std::string GetName() const override { return "MusicTriggerComponent"; }
+
 protected:
-	void OnStart() override {
+    void OnStart() override {
         auto* collider = m_Owner->GetComponent<NFSEngine::ColliderComponent>();
         if (!collider) return;
 
@@ -24,7 +25,7 @@ protected:
             if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
             m_Triggered = true;
-            AuraManager::Instance->ChangeAura(AuraType::Second);
+            AuraManager::Instance->ChangeAura(AuraType::Green);
             auto* directorObj = m_Owner->GetScene()->FindGameObject("MusicDirector");
             if (directorObj) {
                 auto* director = directorObj->GetComponent<MusicDirector>();
@@ -35,7 +36,7 @@ protected:
 
             m_Owner->SetActive(false);
         };
-	}
+    }
 
 private:
     bool m_Triggered = false;

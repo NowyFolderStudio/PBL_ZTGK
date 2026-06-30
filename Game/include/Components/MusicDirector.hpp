@@ -163,7 +163,7 @@ public:
     }
 
 private:
-    AuraType m_LastKnownAura = AuraType::First;
+    AuraType m_LastKnownAura = AuraType::Blue;
     int m_LastKnownLives = 3;
 
     std::unordered_map<std::string, std::vector<AuraPatternSet>> m_TrackProgressions;
@@ -173,7 +173,7 @@ private:
 
         m_TrackProgressions["Bass"].push_back({ "BassPattern02", "BassPattern01" }); // Etap 1
 
-        m_TrackProgressions["Bass"].push_back({  "BassPattern02",  "BassPattern01"}); // Etap 2
+        m_TrackProgressions["Bass"].push_back({ "BassPattern02", "BassPattern01" }); // Etap 2
 
         m_TrackStageIndex["Bass"] = 0;
 
@@ -203,9 +203,9 @@ private:
 
             if (currentStage < progressionList.size()) {
 
-                if (aura == AuraType::First) {
+                if (aura == AuraType::Blue) {
                     NFSEngine::AudioManager::SetActivePatternInTrack(trackName, progressionList[currentStage].AuraFirstPattern);
-                } else if (aura == AuraType::Second) {
+                } else if (aura == AuraType::Green) {
                     NFSEngine::AudioManager::SetActivePatternInTrack(trackName, progressionList[currentStage].AuraSecondPattern);
                 }
             }

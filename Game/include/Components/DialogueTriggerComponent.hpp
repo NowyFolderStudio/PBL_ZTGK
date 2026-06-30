@@ -34,7 +34,7 @@ protected:
 
             if (!other->CompareTag(NFSEngine::Tags::Player)) return;
 
-            NFSEngine::DialogueManager::Get().ShowMessage(SpeakerName, Message, PortraitPath, Duration);
+            DialogueManager::Get().ShowMessage(SpeakerName, Message, PortraitPath, Duration);
             m_HasTriggered = true;
         };
     }

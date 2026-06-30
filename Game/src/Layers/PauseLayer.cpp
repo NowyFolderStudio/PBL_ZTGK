@@ -131,9 +131,6 @@ void PauseLayer::BuildUI() {
     float elementSpacing = 125.0f;
     float indicatorOffsetX = 250.0f;
 
-    // ==========================================
-    // 1. Resume Button
-    // ==========================================
     NFSEngine::UI::LabelParameters resumeShadow;
     resumeShadow.position = glm::vec3(centerX + offsetX + m_ShadowOffset.x, currentY + m_ShadowOffset.y, shadowZ);
     resumeShadow.text = "Resume";
@@ -163,9 +160,6 @@ void PauseLayer::BuildUI() {
 
     currentY += elementSpacing;
 
-    // ==========================================
-    // 2. Options Button
-    // ==========================================
     NFSEngine::UI::LabelParameters optionsShadow;
     optionsShadow.position = glm::vec3(centerX + offsetX + m_ShadowOffset.x, currentY + m_ShadowOffset.y, shadowZ);
     optionsShadow.text = "Options";
@@ -195,9 +189,6 @@ void PauseLayer::BuildUI() {
 
     currentY += elementSpacing;
 
-    // ==========================================
-    // 3. Main Menu Button
-    // ==========================================
     NFSEngine::UI::LabelParameters quitShadow;
     quitShadow.position = glm::vec3(centerX + offsetX + m_ShadowOffset.x, currentY + m_ShadowOffset.y, shadowZ);
     quitShadow.text = "Main Menu";
@@ -224,9 +215,6 @@ void PauseLayer::BuildUI() {
 
     m_PierdolniczekPosition[2] = glm::vec2(centerX + offsetX - (m_Font->GetTextWidth("Main Menu", 2) / 2) - 50, currentY);
 
-    // ==========================================
-    // 4. Pierdolniczek
-    // ==========================================
     NFSEngine::TextureParameters ptrParams;
     ptrParams.WrapS = NFSEngine::TextureWrap::Clamp;
     ptrParams.WrapT = NFSEngine::TextureWrap::Clamp;

@@ -37,20 +37,15 @@ float noise(vec3 x) {
 
 
 void main() {
-    // Calculating noise base
     vec3 noisePos = vec3(TexCoord * u_NoiseScale, u_Time * u_AnimSpeed);
     float n = noise(noisePos);
     
-    // Calculating waves/lines
     float v = sin(6.283185 * u_LineDensity * n);
     
-    // Antyaliasing
     v = smoothstep(1.0, 0.0, 0.5 * abs(v) / fwidth(v));
     
-    // Calculating colors
     vec3 rainbowColor = 0.5 + 0.5 * sin(12.0 * n + vec3(0.0, 2.1, -2.1));
     
-    // Mixing colors
     vec3 bgColor = vec3(0.02);
     vec3 finalColor = mix(bgColor, rainbowColor, v);
 

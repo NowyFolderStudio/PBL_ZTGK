@@ -38,7 +38,7 @@ void GameManager::ChangeState(GameState newState) {
     }
     m_GarbageLayers.clear();
 
-    NFSEngine::DialogueManager::Get().HideMessage();
+    DialogueManager::Get().HideMessage();
 
     NFSEngine::AudioManager::ClearAllPatterns();
 
@@ -161,8 +161,6 @@ void GameManager::ProcessStateChange() {
     m_HasPendingState = false;
 }
 
-void GameManager::ResetLevelPath() {
-    m_CurrentLevelPath = "assets/scenes/Poziomix_v2_export.json";
-}
+void GameManager::ResetLevelPath() { m_CurrentLevelPath = "assets/scenes/Poziomix_v2_export.json"; }
 
 GameState GameManager::GetCurrentState() const { return m_CurrentState; }

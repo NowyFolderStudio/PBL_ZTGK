@@ -34,8 +34,6 @@ void OutroLayer::OnAttach() {
 
     float completionPercentage = (static_cast<float>(finalScore) / maxPossibleScore) * 100.0f;
 
-    NFS_CORE_INFO("Outro: Final Score = {}, Max = {}, Percentage = {}%", finalScore, maxPossibleScore, completionPercentage);
-
     if (completionPercentage >= 30.0f) {
         m_UnlockedComics.push_back(NFSEngine::Texture::Create("assets/textures/ui/outro/comic1.png", texParams));
     }

@@ -229,7 +229,7 @@ void LayerGuga::OnUpdate(DeltaTime deltaTime) {
     NFS_PROFILE_FUNCTION();
     m_DeltaTime = deltaTime;
 
-    NFSEngine::DialogueManager::Get().Update(deltaTime.GetSeconds());
+    DialogueManager::Get().Update(deltaTime.GetSeconds());
 
     // --- Debug Camera Logic ---
     bool editorActive = DebugCamera::IsActive();

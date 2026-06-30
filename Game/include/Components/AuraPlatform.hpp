@@ -12,7 +12,7 @@ public:
 
     std::string GetName() const override { return "AuraPlatform"; }
 
-    AuraType RequiredAura = AuraType::First;
+    AuraType RequiredAura = AuraType::Blue;
 
 protected:
     NFSEngine::ColliderComponent* m_Collider = nullptr;

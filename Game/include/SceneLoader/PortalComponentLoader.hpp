@@ -45,14 +45,11 @@ public:
                     if (propValue.empty()) continue;
 
                     if (propName == "TargetName") {
-                        NFS_INFO("Setting portal target name to: {0}", propValue);
                         portalComp.TargetName = propValue;
                     }
                 }
 
                 portalComp.OnTriggerCallback = [targetLevel = portalComp.TargetName]() {
-                    NFS_INFO("Portal activated! Target: {0}", targetLevel);
-
                     if (targetLevel == "Outro") {
                         GameManager::Get().RequestStateChange(GameState::Outro);
                     } else {

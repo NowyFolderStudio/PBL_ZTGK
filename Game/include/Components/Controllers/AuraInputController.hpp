@@ -19,9 +19,9 @@ protected:
         if (!AuraManager::Instance) return;
 
         if (NFSEngine::InputActionManager::IsDown("SelectFirstAura")) {
-            AuraManager::Instance->ChangeAura(AuraType::First);
+            AuraManager::Instance->ChangeAura(AuraType::Blue);
         } else if (NFSEngine::InputActionManager::IsDown("SelectSecondAura")) {
-            AuraManager::Instance->ChangeAura(AuraType::Second);
+            AuraManager::Instance->ChangeAura(AuraType::Green);
         }
     }
 

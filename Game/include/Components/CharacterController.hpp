@@ -633,7 +633,7 @@ private:
     void UpdateAbilities(AuraType currentAura) {
         int oldMaxJumps = MaxJumps;
 
-        if (currentAura == AuraType::First && AuraManager::Instance->IsAuraUnlocked(AuraType::First)) {
+        if (currentAura == AuraType::Blue && AuraManager::Instance->IsAuraUnlocked(AuraType::Blue)) {
             MaxJumps = 2;
         } else {
             MaxJumps = 1;
@@ -648,8 +648,7 @@ private:
             m_JumpsRemaining = MaxJumps;
         }
 
-        // Dash działa TYLKO, gdy druga aura jest aktywna ORAZ odblokowana
-        if (currentAura == AuraType::Second && AuraManager::Instance->IsAuraUnlocked(AuraType::Second)) {
+        if (currentAura == AuraType::Green && AuraManager::Instance->IsAuraUnlocked(AuraType::Green)) {
             m_IsDashUnlocked = true;
         } else {
             m_IsDashUnlocked = false;

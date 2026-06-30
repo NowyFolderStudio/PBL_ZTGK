@@ -90,7 +90,7 @@ private:
     size_t m_ScoreEventId = 0;
     size_t m_LivesEventId = 0;
 
-    const std::vector<AuraType> m_AuraOrder = { AuraType::First, AuraType::Second };
+    const std::vector<AuraType> m_AuraOrder = { AuraType::Blue, AuraType::Green };
 
     NFSEngine::UIObject* m_DialoguePortrait = nullptr;
     NFSEngine::UIObject* m_DialogueName = nullptr;
@@ -105,7 +105,6 @@ private:
     float m_PulseStrengthScore = 0.10f;
     float m_PulseStrengthCooldown = 0.10f;
 
-    // TUTORIAL
     NFSEngine::UIObject* m_TutorialTexture = nullptr;
     bool m_TutorialShown = false;
 
@@ -138,7 +137,6 @@ protected:
             m_TutorialShowEventId = TutorialManager::Instance->OnShowTutorial.AddListener([this](TutorialPanel panel) {
                 if (m_TutorialTexture && m_TutorialTexture->HasComponent<NFSEngine::ImageComponent>()) {
 
-                    // Podmieniamy teksturę korzystając z tych załadowanych do pamięci
                     if (m_TutorialTextures.find(panel) != m_TutorialTextures.end()) {
                         m_TutorialTexture->GetComponent<NFSEngine::ImageComponent>()->TexturePtr = m_TutorialTextures[panel];
                     }
@@ -162,13 +160,13 @@ protected:
             m_RightAuraCurrentScale = m_RightAuraTargetScale;
 
             m_TargetVignetteColor
-                = (AuraManager::Instance->CurrentAura == AuraType::First) ? m_FirstVignetteColor : m_SecondVignetteColor;
+                = (AuraManager::Instance->CurrentAura == AuraType::Blue) ? m_FirstVignetteColor : m_SecondVignetteColor;
             m_CurrentVignetteColor = m_TargetVignetteColor;
 
             m_AuraEventId = AuraManager::Instance->OnAuraChanged.AddListener([this](AuraType newAura) {
                 this->UpdateAuraVisuals(newAura);
 
-                if (newAura == AuraType::First) {
+                if (newAura == AuraType::Blue) {
                     m_TargetVignetteColor = m_FirstVignetteColor;
                 } else {
                     m_TargetVignetteColor = m_SecondVignetteColor;
@@ -201,22 +199,18 @@ protected:
 
         float lerpSpeed = 5.0f * (float)deltaTime;
 
-        // --- OBLICZANIE PULSU DO RYTMU ---
         float distToBeat = 99999;
-        if (AuraManager::Instance->CurrentAura == AuraType::First) {
+        if (AuraManager::Instance->CurrentAura == AuraType::Blue) {
             distToBeat = NFSEngine::AudioManager::GetDistanceToEventForTrack("Bass");
-        } else if (AuraManager::Instance->CurrentAura == AuraType::Second) {
+        } else if (AuraManager::Instance->CurrentAura == AuraType::Green) {
             distToBeat = NFSEngine::AudioManager::GetDistanceToEventForTrack("Piano");
         }
 
-        // Pulse przyjmuje wartość od 0.0 (cisza) do 1.0 (w szczycie uderzenia)
         float peak = 1.0f - (distToBeat * 2.0f);
         float pulse = std::max(0.0f, (peak - 0.5f) * 2.0f);
 
-        // Zmiękczamy puls, by spadek był bardziej naturalny (potęgą)
         float smoothPulse = pow(pulse, 2.0f);
 
-        // --- ANIMACJA WINIETY ---
         m_CurrentVignetteColor += (m_TargetVignetteColor - m_CurrentVignetteColor) * lerpSpeed;
         m_CurrentVignetteAlpha += (m_TargetVignetteAlpha - m_CurrentVignetteAlpha) * lerpSpeed;
 
@@ -340,7 +334,6 @@ protected:
             float centerX = 1920.0f / 2.0f;
             m_CooldownFill->Transform.Position.x = centerX - (currentInnerW / 2.0f);
         }
-        // -----------------------------
 
         if (m_Canvas) {
             m_Canvas->Update();
@@ -394,7 +387,6 @@ private:
         m_TutorialTexture = &NFSEngine::UI::Image(*m_Canvas, tutParams);
         m_TutorialTexture->Transform.Pivot = glm::vec2(0.5f, 0.5f);
 
-        // --- PRELOADING TEKSTUR ---
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
@@ -420,7 +412,6 @@ private:
 
         m_TutorialTextures[TutorialPanel::Attack]
             = NFSEngine::Texture::Create("assets/textures/ui/tutorial/tutorial_attack.png", texParam);
-
     }
 
     std::string GetTutorialTexturePath(TutorialPanel panel) {
@@ -446,7 +437,7 @@ private:
         }
     }
 
-    void InitVignetteUI() { /* Bez zmian */
+    void InitVignetteUI() {
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
@@ -485,14 +476,12 @@ private:
         auto fullTex = NFSEngine::Texture::Create("assets/textures/ui/notes/note_ui_full.png", texParam);
         auto fullExtraTex = NFSEngine::Texture::Create("assets/textures/ui/notes/note_ui_full_extra.png", texParam);
 
-        // Rezerwacja pamięci
         m_BgNotes.reserve(m_NumberOfNotes);
         m_EmptyNotes.reserve(m_NumberOfNotes);
         m_FullNotes.reserve(m_NumberOfNotes);
         m_FullNotesBaseWidths.reserve(m_NumberOfNotes);
         m_FullNotesBaseHeights.reserve(m_NumberOfNotes);
 
-        // --- RYSOWANIE TEŁ ---
         for (int i = 0; i < m_NumberOfNotes; ++i) {
             NFSEngine::UI::ImageParameters noteParameters;
             glm::vec3 currentPosition = firstPosition;
@@ -510,7 +499,6 @@ private:
             m_BgNotes.push_back(bgObj);
         }
 
-        // --- RYSOWANIE PUSTYCH NUTEK ---
         for (int i = 0; i < m_NumberOfNotes; ++i) {
             NFSEngine::UI::ImageParameters noteParameters;
             glm::vec3 currentPosition = firstPosition;
@@ -528,7 +516,6 @@ private:
             m_EmptyNotes.push_back(emptyObj);
         }
 
-        // --- RYSOWANIE WYPEŁNIEŃ ---
         for (int i = 0; i < m_NumberOfNotes; ++i) {
             NFSEngine::UI::ImageParameters noteParameters;
             glm::vec3 currentPosition = firstPosition;
@@ -580,7 +567,6 @@ private:
 
             auto* heartObj = &NFSEngine::UI::Image(*m_Canvas, heartParams);
 
-            // Ustawiamy Pivot na środek grafiki, żeby serca pompowały równomiernie dookoła osi, a nie w prawo-dół
             heartObj->Transform.Pivot = glm::vec2(0.5f, 0.5f);
             heartObj->Transform.Position.x += (heartSize / 2.0f);
             heartObj->Transform.Position.y += (heartSize / 2.0f);
@@ -589,7 +575,7 @@ private:
         }
     }
 
-    void InitAuraUI() { /* Bez zmian */
+    void InitAuraUI() {
         NFSEngine::TextureParameters texParam;
         texParam.WrapS = NFSEngine::TextureWrap::Clamp;
         texParam.WrapT = NFSEngine::TextureWrap::Clamp;
@@ -626,7 +612,7 @@ private:
         }
     }
 
-    void InitCooldownUI() { /* Bez zmian */
+    void InitCooldownUI() {
         float frameWidth = 464.5f;
         float frameHeight = 46.0f;
 
@@ -667,7 +653,7 @@ private:
         m_CooldownFrame->Transform.Pivot = glm::vec2(0.5f, 0.5f);
     }
 
-    void UpdateHeartVisuals(int currentLives) { /* Bez zmian */
+    void UpdateHeartVisuals(int currentLives) {
         for (size_t i = 0; i < m_Hearts.size(); ++i) {
             if (!m_Hearts[i]) continue;
 
@@ -684,7 +670,7 @@ private:
         }
     }
 
-    void UpdateAuraVisuals(AuraType newAura) { /* Bez zmian */
+    void UpdateAuraVisuals(AuraType newAura) {
         if (!AuraManager::Instance->CanShowUI) {
             m_LeftAuraTargetAlpha = 0.0f;
             m_RightAuraTargetAlpha = 0.0f;
@@ -696,7 +682,7 @@ private:
         float activeScale = 1.0f;
         float inactiveScale = 0.8f;
 
-        if (newAura == AuraType::First) {
+        if (newAura == AuraType::Blue) {
             m_LeftAuraTargetAlpha = activeAlpha;
             m_LeftAuraTargetScale = activeScale;
 
@@ -711,7 +697,7 @@ private:
         }
     }
 
-    void InitDialogueUI() { /* Bez zmian */
+    void InitDialogueUI() {
         const float bottomY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT - 150.0f;
         const float textStartX = 650.0f;
 
@@ -726,7 +712,7 @@ private:
         NFSEngine::UI::LabelParameters nameShadowParams;
         nameShadowParams.position = glm::vec3(textStartX + 3.0f, bottomY - 137.0f, 10.1f);
         nameShadowParams.text = "";
-        nameShadowParams.font = NFSEngine::DialogueManager::Get().GetFont();
+        nameShadowParams.font = DialogueManager::Get().GetFont();
         nameShadowParams.scale = 1.2f;
         nameShadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
         m_DialogueNameShadow = &NFSEngine::UI::Label(*m_Canvas, nameShadowParams);
@@ -736,7 +722,7 @@ private:
         NFSEngine::UI::LabelParameters nameParams;
         nameParams.position = glm::vec3(textStartX, bottomY - 140.0f, 10.1f);
         nameParams.text = "";
-        nameParams.font = NFSEngine::DialogueManager::Get().GetFont();
+        nameParams.font = DialogueManager::Get().GetFont();
         nameParams.scale = 1.2f;
         nameParams.color = glm::vec4(0.8f, 0.8f, 0.2f, 0.0f);
         m_DialogueName = &NFSEngine::UI::Label(*m_Canvas, nameParams);
@@ -748,7 +734,7 @@ private:
         shadowParams.text = "";
         shadowParams.scale = 1.8f;
         shadowParams.color = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
-        shadowParams.font = NFSEngine::DialogueManager::Get().GetFont();
+        shadowParams.font = DialogueManager::Get().GetFont();
         m_DialogueShadow = &NFSEngine::UI::Label(*m_Canvas, shadowParams);
         m_DialogueShadow->Transform.Pivot.x = 0.0f;
         m_DialogueShadow->Transform.Pivot.y = 0.0f;
@@ -758,7 +744,7 @@ private:
         msgParams.text = "";
         msgParams.scale = 1.8f;
         msgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 0.0f);
-        msgParams.font = NFSEngine::DialogueManager::Get().GetFont();
+        msgParams.font = DialogueManager::Get().GetFont();
         m_DialogueMsg = &NFSEngine::UI::Label(*m_Canvas, msgParams);
         m_DialogueMsg->Transform.Pivot.x = 0.0f;
         m_DialogueMsg->Transform.Pivot.y = 0.0f;
@@ -785,8 +771,8 @@ private:
         }
     }
 
-    void UpdateDialogueUI() { /* Bez zmian */
-        const auto& dialogue = NFSEngine::DialogueManager::Get().GetActiveDialogue();
+    void UpdateDialogueUI() {
+        const auto& dialogue = DialogueManager::Get().GetActiveDialogue();
 
         auto SetLabelState = [](NFSEngine::UIObject* obj, const std::string& text, float alpha) {
             if (obj && obj->HasComponent<NFSEngine::TextComponent>()) {
