@@ -1,6 +1,6 @@
 #include "Layers/PlayableLayer.hpp"
 
-// Komponenty
+// Components
 #include "Components/AnimatorComponent.hpp"
 #include "Components/BounceComponent.hpp"
 #include "Components/CubeMesh.hpp"
@@ -19,7 +19,6 @@
 #include "Components/PlayerAttackComponent.hpp"
 #include "Components/CharacterAnimationController.hpp"
 #include "Components/Controllers/AuraInputController.hpp"
-#include "Core/Log.hpp"
 #include "Components/ModelComponent.hpp"
 #include "Components/RhythmMover.hpp"
 #include "Components/InteractivePiano.hpp"
@@ -43,6 +42,7 @@
 #include "Components/MusicTriggerComponent.hpp"
 
 // Core & Renderer
+#include "Core/Log.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/AudioManager.hpp"
@@ -100,7 +100,7 @@ void PlayableLayer::OnAttach() {
     m_Scene = std::make_unique<NFSEngine::Scene>();
     m_HierarchyPanel = std::make_unique<NFSEngine::SceneHierarchyPanel>(m_Scene.get());
 
-    // --- Menedżery ---
+    // --- Managers ---
     auto* livesManager = m_Scene->CreateGameObject("LivesManager");
     livesManager->SetTag(NFSEngine::Tags::LivesManager);
     livesManager->AddComponent<LivesManager>();
@@ -126,7 +126,7 @@ void PlayableLayer::OnAttach() {
     auto* loadingObj = m_Scene->CreateGameObject("LoadingScreen");
     m_LoadingScreen = &loadingObj->AddComponent<LoadingScreenComponent>();
 
-    // --- Skybox i Środowisko ---
+    // --- Skybox and enviro ---
     std::vector<std::string> faces = { "assets/textures/skybox/testSkybox2/px.png", "assets/textures/skybox/testSkybox2/nx.png",
                                        "assets/textures/skybox/testSkybox2/py.png", "assets/textures/skybox/testSkybox2/ny.png",
                                        "assets/textures/skybox/testSkybox2/pz.png", "assets/textures/skybox/testSkybox2/nz.png" };
@@ -139,7 +139,7 @@ void PlayableLayer::OnAttach() {
     m_EnvironmentMap->GenerateIrradiance(m_Skybox->GetRendererID());
     m_EnvironmentMap->GeneratePrefilterMap(m_Skybox->GetRendererID());
 
-    // --- Gracz ---
+    // --- Player ---
     auto capsuleModel = std::make_shared<NFSEngine::Model>("assets/models/Player/Glowna_postac_baked_animations.fbx");
 
     auto animationShader
@@ -147,7 +147,6 @@ void PlayableLayer::OnAttach() {
     m_Player = m_Scene->CreateGameObject("Player");
     m_Player->AddTag(NFSEngine::Tags::Player);
     m_Player->GetTransform()->SetPosition(glm::vec3(-45.0f, 30.7f, 37.0f));
-    // m_Player->GetTransform()->SetPosition(glm::vec3(115.0f, 100.0f, 5.0f));
     auto playerMaterial = std::make_shared<Material>();
     auto* playerModel = m_Scene->CreateGameObject("PlayerModel");
     playerModel->GetTransform()->SetParent(m_Player->GetTransform());
@@ -212,14 +211,13 @@ void PlayableLayer::OnAttach() {
     sunComp.Color = glm::vec3(0.99f, 0.98f, 0.82f);
     sunComp.Intensity = 1.0f;
 
-    // --- Kamera ---
+    // --- Camera ---
     NFSEngine::GameObject* cameraObj = m_Scene->CreateGameObject("MainCamera");
     cameraObj->AddComponent<NFSEngine::Camera>();
     auto& controller = cameraObj->AddComponent<NFSEngine::CameraController>();
     controller.SetTarget(m_Player->GetTransform());
 
-    // --- Loadery ---
-    m_SceneLoader.InitDefaultLoaders();
+    // --- Init loaders ---
     m_SceneLoader.InitDefaultLoaders();
     m_SceneLoader.RegisterLoader(std::make_unique<CoinComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<CheckpointComponentLoader>());
@@ -248,7 +246,7 @@ void PlayableLayer::OnAttach() {
     m_SceneLoader.RegisterLoader(std::make_unique<MusicTriggerComponentLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<PointLightLoader>());
     m_SceneLoader.RegisterLoader(std::make_unique<SpotLightLoader>());
-    // Ładujemy scenę z podanej ścieżki!
+    // Loading scene from file
     m_SceneLoader.LoadSceneAsync(m_Scene.get(), m_ScenePath);
 
     uint32_t width = NFSEngine::Application::Get().GetWindow().GetWidth();

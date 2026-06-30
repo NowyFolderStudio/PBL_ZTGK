@@ -1,6 +1,6 @@
 #include "Layers/LayerExample.hpp"
 
-// Komponenty
+// Components
 #include "Components/AnimatorComponent.hpp"
 #include "Components/BounceComponent.hpp"
 #include "Components/CubeMesh.hpp"
@@ -19,7 +19,6 @@
 #include "Components/PlayerAttackComponent.hpp"
 #include "Components/CharacterAnimationController.hpp"
 #include "Components/Controllers/AuraInputController.hpp"
-#include "Core/Log.hpp"
 #include "Components/ModelComponent.hpp"
 #include "Components/RhythmMover.hpp"
 #include "Components/InteractivePiano.hpp"
@@ -44,6 +43,7 @@
 #include "Components/DartRainAttackManager.hpp"
 
 // Core & Renderer
+#include "Core/Log.hpp"
 #include "Core/DeltaTime.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/AudioManager.hpp"

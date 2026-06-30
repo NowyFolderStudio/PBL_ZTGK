@@ -147,10 +147,8 @@ namespace NFSEngine {
             if (cullingEnabled && transform) {
                 bool visible = true;
 
-                // --- ZOPTYMALIZOWANY CULLING ---
-                if (cullingMode == 0) { // Sfera
-                    // UWAGA: Pobieramy wcześniej zcache'owaną sferę, NIE LICZYMY JEJ OD NOWA!
-                    // Wymaga dopisania GetCachedLocalSphere() w Twojej klasie renderującej
+                // --- FRUSTUM CULLING ---
+                if (cullingMode == 0) { // Sphere
                     BoundingSphere localSphere;
                     if (auto* mc = gameObject->GetComponent<ModelComponent>()) {
                         if (mc) localSphere = mc->GetCachedLocalSphere();
@@ -159,7 +157,6 @@ namespace NFSEngine {
                     }
 
                     if (localSphere.Radius > 0.0f) {
-                        // Reszta logiki wyliczania sfery jest OK, bo to tylko jedna macierz i wektor
                         glm::mat4 global = transform->GetGlobalMatrix();
                         glm::vec4 worldCenter = global * glm::vec4(localSphere.Center, 1.0f);
 
@@ -177,7 +174,6 @@ namespace NFSEngine {
                         }
                     }
                 } else { // AABB
-                    // UWAGA: Pobieramy wcześniej zcache'owane AABB
                     std::pair<glm::vec3, glm::vec3> localAABB;
                     if (auto* mc = gameObject->GetComponent<ModelComponent>())
                         localAABB = mc->GetCachedLocalAABB();
@@ -218,8 +214,6 @@ namespace NFSEngine {
 
                 if (!visible) continue;
             }
-
-            // Odpalamy Render tylko na obiektach, o których już WIEMY, że mają co rysować
             gameObject->Render();
         }
     }

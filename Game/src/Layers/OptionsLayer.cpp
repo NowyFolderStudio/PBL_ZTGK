@@ -6,38 +6,36 @@
 #include "Core/Log.hpp"
 #include <cmath>
 
-OptionsLayer::OptionsLayer() { m_Canvas = nullptr; }
+OptionsLayer::OptionsLayer() {
+    m_Canvas = nullptr;
+    m_BackgroundCanvas = nullptr;
+}
 
 OptionsLayer::~OptionsLayer() {
-    if (m_Canvas) delete m_Canvas;
+    delete m_Canvas;
+    delete m_BackgroundCanvas;
 }
 
 void OptionsLayer::OnAttach() {
     m_Canvas = new NFSEngine::Canvas();
+    m_BackgroundCanvas = new NFSEngine::Canvas();
 
     m_Font = std::make_shared<NFSEngine::Text>("assets/fonts/Super-Pandora.ttf", 72);
 
-    m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/bg_lq.mpg")) {
-        NFSEngine::TextureParameters texParams;
-        texParams.Channels = 3;
-        texParams.GenerateMipmaps = false;
-        texParams.WrapS = NFSEngine::TextureWrap::Clamp;
-        texParams.WrapT = NFSEngine::TextureWrap::Clamp;
-        texParams.sRGB = false;
-
-        m_VideoTexture = NFSEngine::Texture::Create(m_VideoDecoder->GetWidth(), m_VideoDecoder->GetHeight(), texParams);
-
-        if (m_VideoTexture && m_VideoDecoder->ReadNextFrame()) {
-            uint32_t dataSize = m_VideoDecoder->GetDataSize();
-            m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
-        }
-    } else {
-        NFS_CORE_ERROR("[OptionsLayer]: Can't load background video!");
-    }
-
     for (int i = 0; i < 5; ++i) {
         m_RowScales[i] = (i == m_FocusedRow) ? 1.1f : 0.8f;
+    }
+    auto& bgVideoObj = m_BackgroundCanvas->CreateUIObject();
+    const float centerX = NFSEngine::UIRenderer::VIRTUAL_WIDTH / 2.0f;
+    const float centerY = NFSEngine::UIRenderer::VIRTUAL_HEIGHT / 2.0f;
+    bgVideoObj.Transform.Position = glm::vec3(centerX, centerY, 0.1f);
+    bgVideoObj.Transform.Width = NFSEngine::UIRenderer::VIRTUAL_WIDTH;
+    bgVideoObj.Transform.Height = -NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
+
+    auto& videoComp = bgVideoObj.AddComponent<NFSEngine::VideoComponent>();
+
+    if (!videoComp.OpenFile("assets/videos/bg_lq.mpg")) {
+        videoComp.Color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
     }
 
     SyncResolutionIndex();
@@ -47,30 +45,8 @@ void OptionsLayer::OnAttach() {
 void OptionsLayer::OnDetach() { }
 
 void OptionsLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
-    if (m_Canvas) m_Canvas->Update();
-
-    if (m_VideoDecoder && m_VideoTexture) {
-        m_VideoAccumulator += deltaTime.GetSeconds();
-        float frameTime = 1.0f / static_cast<float>(m_VideoDecoder->GetFPS());
-
-        int framesDecodedThisTick = 0;
-
-        while (m_VideoAccumulator >= frameTime && framesDecodedThisTick < 2) {
-            if (m_VideoDecoder->ReadNextFrame()) {
-                uint32_t dataSize = m_VideoDecoder->GetDataSize();
-                m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
-
-                m_VideoAccumulator -= frameTime;
-                framesDecodedThisTick++;
-            } else {
-                break;
-            }
-        }
-
-        if (m_VideoAccumulator > frameTime * 2.0f) {
-            m_VideoAccumulator = 0.0f;
-        }
-    }
+    if (m_BackgroundCanvas) m_BackgroundCanvas->Update(deltaTime);
+    if (m_Canvas) m_Canvas->Update(deltaTime);
 
     auto& input = NFSEngine::InputActionManager::Get();
     bool uiChanged = false;
@@ -180,6 +156,9 @@ void OptionsLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
 void OptionsLayer::OnRender() {
     NFSEngine::UIRenderer::Begin();
+    if (m_BackgroundCanvas) {
+        m_BackgroundCanvas->Draw();
+    }
     if (m_Canvas) {
         m_Canvas->Draw();
     }
@@ -213,18 +192,6 @@ void OptionsLayer::BuildUI() {
     glm::vec4 shadowColor(0.0f, 0.0f, 0.0f, 1.0f);
     glm::vec4 labelShadowColor(1.0f, 1.0f, 1.0f, 0.3f);
     float shadowZ = 0.45f;
-
-    NFSEngine::UI::ImageParameters bgParams;
-    bgParams.position = glm::vec3(centerX, centerY, 0.1f);
-    bgParams.width = NFSEngine::UIRenderer::VIRTUAL_WIDTH;
-    bgParams.height = -NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
-
-    if (m_VideoTexture) {
-        bgParams.texture = m_VideoTexture;
-    } else {
-        bgParams.color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
-    }
-    NFSEngine::UI::Image(*m_Canvas, bgParams);
 
     float currentY = 200.0f;
     float elementSpacing = 120.0f;

@@ -1,9 +1,6 @@
 #include "Layers/MainMenuLayer.hpp"
-#include "Core/Log.hpp"
+#include "NFSEngine.h"
 #include "GameManager.hpp"
-#include "Renderer/Texture.hpp"
-#include "UI/UIFactory.hpp"
-#include "UI/UIRenderer.hpp"
 #include <glm/ext/vector_float2.hpp>
 #include <memory>
 
@@ -16,24 +13,6 @@ MainMenuLayer::~MainMenuLayer() {
 void MainMenuLayer::OnAttach() {
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
-    m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/menu_lq.mpg", true)) {
-        NFSEngine::TextureParameters texParams;
-        texParams.Channels = 3;
-        texParams.GenerateMipmaps = false;
-        texParams.WrapS = NFSEngine::TextureWrap::Clamp;
-        texParams.WrapT = NFSEngine::TextureWrap::Clamp;
-        texParams.sRGB = false;
-
-        m_VideoTexture = NFSEngine::Texture::Create(m_VideoDecoder->GetWidth(), m_VideoDecoder->GetHeight(), texParams);
-
-        if (m_VideoTexture && m_VideoDecoder->ReadNextFrame()) {
-            uint32_t dataSize = m_VideoDecoder->GetDataSize();
-            m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
-        }
-    } else {
-        NFS_CORE_ERROR("[MainMenuLayer]: Can't load background video!");
-    }
     m_Font = std::make_shared<NFSEngine::Text>("assets/fonts/Super-Pandora.ttf", 72);
     BuildUI();
 }
@@ -43,30 +22,7 @@ void MainMenuLayer::OnDetach() { }
 void MainMenuLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     if (GameManager::Get().IsOptionsOpen()) return;
 
-    if (m_Canvas) m_Canvas->Update();
-
-    if (m_VideoDecoder && m_VideoTexture) {
-        m_VideoAccumulator += deltaTime.GetSeconds();
-        float frameTime = 1.0f / static_cast<float>(m_VideoDecoder->GetFPS());
-
-        int framesDecodedThisTick = 0;
-
-        while (m_VideoAccumulator >= frameTime && framesDecodedThisTick < 2) {
-            if (m_VideoDecoder->ReadNextFrame()) {
-                uint32_t dataSize = m_VideoDecoder->GetDataSize();
-                m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
-
-                m_VideoAccumulator -= frameTime;
-                framesDecodedThisTick++;
-            } else {
-                break;
-            }
-        }
-
-        if (m_VideoAccumulator > frameTime * 2.0f) {
-            m_VideoAccumulator = 0.0f;
-        }
-    }
+    if (m_Canvas) m_Canvas->Update(deltaTime);
 
     auto& input = NFSEngine::InputActionManager::Get();
 
@@ -144,12 +100,16 @@ void MainMenuLayer::BuildUI() {
     bgParams.height = -NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
     bgParams.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-    if (m_VideoTexture) {
-        bgParams.texture = m_VideoTexture;
-    } else {
-        bgParams.color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
+    auto& bgVideoObj = m_Canvas->CreateUIObject();
+    bgVideoObj.Transform.Position = glm::vec3(centerX, centerY, 0.1f);
+    bgVideoObj.Transform.Width = NFSEngine::UIRenderer::VIRTUAL_WIDTH;
+    bgVideoObj.Transform.Height = -NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
+
+    auto& videoComp = bgVideoObj.AddComponent<NFSEngine::VideoComponent>();
+
+    if (!videoComp.OpenFile("assets/videos/menu_lq.mpg")) {
+        videoComp.Color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
     }
-    NFSEngine::UI::Image(*m_Canvas, bgParams);
 
     float currentY = 650.0f;
     float elementSpacing = 125.0f;

@@ -1,5 +1,7 @@
 #include "UI/Canvas.hpp"
+#include "Core/DeltaTime.hpp"
 #include "UI/ButtonLogic.hpp"
+#include "UI/VideoComponent.hpp"
 #include <iostream>
 
 namespace NFSEngine {
@@ -40,8 +42,14 @@ namespace NFSEngine {
 
         for (const auto& uiObject : m_UIObjects) {
             if (uiObject->HasComponent<ImageComponent>()) {
-                ImageComponent* image = uiObject->GetComponent<ImageComponent>();
+                auto* image = uiObject->GetComponent<ImageComponent>();
                 UIRenderer::DrawQuad(uiObject->Transform, *image);
+            }
+
+            else if (uiObject->HasComponent<VideoComponent>()) {
+                auto* video = uiObject->GetComponent<VideoComponent>();
+                ImageComponent imgParams(video->TexturePtr, video->Color);
+                UIRenderer::DrawQuad(uiObject->Transform, imgParams);
             }
 
             if (uiObject->HasComponent<TextComponent>()) {
@@ -50,10 +58,13 @@ namespace NFSEngine {
         }
     }
 
-    void Canvas::Update() {
+    void Canvas::Update(DeltaTime deltaTime) {
         for (const auto& uiObject : m_UIObjects) {
             if (uiObject->HasComponent<ButtonLogic>()) {
                 uiObject->GetComponent<ButtonLogic>()->Update();
+            }
+            if (uiObject->HasComponent<VideoComponent>()) {
+                uiObject->GetComponent<VideoComponent>()->Update(deltaTime);
             }
         }
     }

@@ -38,6 +38,7 @@
 #include "UI/UIFactory.hpp"
 #include "UI/UIObject.hpp"
 #include "UI/UIRenderer.hpp"
+#include "UI/VideoComponent.hpp"
 
 #include "Components/Component.hpp"
 #include "Components/CubeMesh.hpp"

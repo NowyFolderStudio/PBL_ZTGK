@@ -14,24 +14,6 @@ PauseLayer::~PauseLayer() {
 void PauseLayer::OnAttach() {
     NFSEngine::UIRenderer::Init();
     m_Canvas = new NFSEngine::Canvas();
-    m_VideoDecoder = std::make_unique<NFSEngine::PLMpegDecoder>();
-    if (m_VideoDecoder->OpenFile("assets/videos/pause_lq.mpg")) {
-        NFSEngine::TextureParameters texParams;
-        texParams.Channels = 3;
-        texParams.GenerateMipmaps = false;
-        texParams.WrapS = NFSEngine::TextureWrap::Clamp;
-        texParams.WrapT = NFSEngine::TextureWrap::Clamp;
-        texParams.sRGB = false;
-
-        m_VideoTexture = NFSEngine::Texture::Create(m_VideoDecoder->GetWidth(), m_VideoDecoder->GetHeight(), texParams);
-
-        if (m_VideoTexture && m_VideoDecoder->ReadNextFrame()) {
-            uint32_t dataSize = m_VideoDecoder->GetDataSize();
-            m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
-        }
-    } else {
-        NFS_CORE_ERROR("[MainMenuLayer]: Can't load background video!");
-    }
     m_Font = std::make_shared<NFSEngine::Text>("assets/fonts/Super-Pandora.ttf", 72);
     BuildUI();
 }
@@ -40,33 +22,10 @@ void PauseLayer::OnDetach() { }
 
 void PauseLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
     if (GameManager::Get().IsOptionsOpen()) return;
-    if (m_Canvas) m_Canvas->Update();
+    if (m_Canvas) m_Canvas->Update(deltaTime);
 
     m_CreationTimer += (float)deltaTime;
     if (m_CreationTimer < 0.1f) return;
-
-    if (m_VideoDecoder && m_VideoTexture) {
-        m_VideoAccumulator += deltaTime.GetSeconds();
-        float frameTime = 1.0f / static_cast<float>(m_VideoDecoder->GetFPS());
-
-        int framesDecodedThisTick = 0;
-
-        while (m_VideoAccumulator >= frameTime && framesDecodedThisTick < 2) {
-            if (m_VideoDecoder->ReadNextFrame()) {
-                uint32_t dataSize = m_VideoDecoder->GetDataSize();
-                m_VideoTexture->SetData(m_VideoDecoder->GetVideoData(), dataSize);
-
-                m_VideoAccumulator -= frameTime;
-                framesDecodedThisTick++;
-            } else {
-                break;
-            }
-        }
-
-        if (m_VideoAccumulator > frameTime * 2.0f) {
-            m_VideoAccumulator = 0.0f;
-        }
-    }
 
     auto& input = NFSEngine::InputActionManager::Get();
 
@@ -156,16 +115,16 @@ void PauseLayer::BuildUI() {
     glm::vec4 shadowColor(0.0f, 0.0f, 0.0f, 1.0f);
     float shadowZ = 0.45f;
 
-    NFSEngine::UI::ImageParameters bgParams;
-    bgParams.position = glm::vec3(centerX, centerY, 0.1f);
-    bgParams.width = NFSEngine::UIRenderer::VIRTUAL_WIDTH;
-    bgParams.height = -NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
-    if (m_VideoTexture) {
-        bgParams.texture = m_VideoTexture;
-    } else {
-        bgParams.color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
+    auto& bgVideoObj = m_Canvas->CreateUIObject();
+    bgVideoObj.Transform.Position = glm::vec3(centerX, centerY, 0.1f);
+    bgVideoObj.Transform.Width = NFSEngine::UIRenderer::VIRTUAL_WIDTH;
+    bgVideoObj.Transform.Height = -NFSEngine::UIRenderer::VIRTUAL_HEIGHT;
+
+    auto& videoComp = bgVideoObj.AddComponent<NFSEngine::VideoComponent>();
+
+    if (!videoComp.OpenFile("assets/videos/pause_lq.mpg")) {
+        videoComp.Color = glm::vec4(0.05f, 0.05f, 0.1f, 1.0f);
     }
-    NFSEngine::UI::Image(*m_Canvas, bgParams);
 
     float currentY = 600.0f;
     float offsetX = -350.0f;
@@ -271,7 +230,7 @@ void PauseLayer::BuildUI() {
     NFSEngine::TextureParameters ptrParams;
     ptrParams.WrapS = NFSEngine::TextureWrap::Clamp;
     ptrParams.WrapT = NFSEngine::TextureWrap::Clamp;
-    ptrParams.sRGB = false; // Zapobiega przyciemnianiu!
+    ptrParams.sRGB = false;
 
     std::shared_ptr<NFSEngine::Texture> pointerTexture
         = NFSEngine::Texture::Create("assets/textures/ui/menu/pierdolniczek.png", ptrParams);

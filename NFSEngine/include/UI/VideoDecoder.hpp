@@ -1,3 +1,4 @@
+#pragma once
 #include "nfspch.h"
 
 namespace NFSEngine {

@@ -21,7 +21,8 @@ public:
     void OnEvent(NFSEngine::Event& e) override;
 
 private:
-    NFSEngine::Canvas* m_Canvas;
+    NFSEngine::Canvas* m_Canvas = nullptr;
+    NFSEngine::Canvas* m_BackgroundCanvas = nullptr;
     int m_CurrentResIndex = 0;
     std::vector<std::pair<int, int>> m_Resolutions = { { 1280, 720 }, { 1600, 900 }, { 1920, 1080 } };
 
@@ -29,10 +30,6 @@ private:
     bool m_NeedsRebuild = false;
 
     std::shared_ptr<NFSEngine::Text> m_Font;
-
-    std::unique_ptr<NFSEngine::PLMpegDecoder> m_VideoDecoder;
-    std::shared_ptr<NFSEngine::Texture> m_VideoTexture;
-    float m_VideoAccumulator = 0.0f;
 
     std::array<float, 5> m_RowScales = { 1.5f, 1.5f, 1.5f, 1.5f, 1.5f };
     glm::vec2 m_ShadowOffset = { 6.0f, 6.0f };

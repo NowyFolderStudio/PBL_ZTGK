@@ -240,7 +240,7 @@ void main()
     // --- Ambient ---
     vec3 ambient = ambientValue * albedo;
 
-    // // --- Rim light ---
+    // --- Rim light ---
     // float rim = 1.0 - max(dot(N, V), 0.0);
     // rim = smoothstep(rimThreshold, rimThreshold, rim);  
     

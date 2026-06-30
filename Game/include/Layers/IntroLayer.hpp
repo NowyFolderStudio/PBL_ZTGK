@@ -29,7 +29,7 @@ private:
     NFSEngine::UIObject* m_VideoImage = nullptr;
 
     float m_VideoAccumulator = 0.0f;
-    bool m_videoEnded = false;
+    bool m_VideoEnded = false;
     bool m_Skipped = false;
     float m_SkipTimer = 0.0f;
 };

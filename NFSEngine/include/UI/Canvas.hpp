@@ -4,6 +4,7 @@
 #include <memory>
 #include <algorithm>
 
+#include "Core/DeltaTime.hpp"
 #include "UI/UIComponents.hpp"
 #include "UI/UIRenderer.hpp"
 #include "UI/UIObject.hpp"
@@ -21,7 +22,7 @@ namespace NFSEngine {
         std::vector<class UIObject*> GetUIObjects() const;
 
         void Draw();
-        void Update();
+        void Update(DeltaTime deltaTime = 0);
 
     private:
         std::vector<std::unique_ptr<UIObject>> m_UIObjects;

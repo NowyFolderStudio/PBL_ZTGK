@@ -3,6 +3,7 @@
 #include <vector>
 #include <memory>
 #include "UIComponents.hpp"
+#include "UI/VideoComponent.hpp"
 
 namespace NFSEngine {
     class UIObject {

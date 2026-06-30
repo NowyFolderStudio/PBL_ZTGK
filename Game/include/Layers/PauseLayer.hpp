@@ -31,10 +31,6 @@ private:
 
     float m_CreationTimer = 0.0f;
 
-    std::unique_ptr<NFSEngine::PLMpegDecoder> m_VideoDecoder;
-    std::shared_ptr<NFSEngine::Texture> m_VideoTexture;
-    float m_VideoAccumulator = 0.0f;
-
     std::shared_ptr<NFSEngine::Text> m_Font;
 
     std::array<float, 3> m_ButtonScales = { 1.5f, 1.0f, 1.0f };
