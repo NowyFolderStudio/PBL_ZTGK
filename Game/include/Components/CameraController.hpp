@@ -17,7 +17,7 @@ namespace NFSEngine {
     class CameraController : public Component {
     public:
         explicit CameraController(GameObject* owner)
-            : Component(owner) { }
+            : Component(owner) {}
 
         [[nodiscard]] std::string GetName() const override { return "CameraController"; }
         void SetTarget(Transform* target) { m_Target = target; }
@@ -36,10 +36,12 @@ namespace NFSEngine {
         }
 
         void ClearCameraOverride() {
-            m_OverrideYaw = m_OriginalYaw;
-            m_OverridePitch = m_OriginalPitch;
-            m_OverrideDistance = m_OriginalDistance;
-            m_ReturningToOriginal = true;
+            m_OriginalYaw = m_Yaw;
+            m_OriginalPitch = m_Pitch;
+            m_OriginalDistance = m_Distance;
+            m_OverrideActive = false;
+            m_ReturningToOriginal = false;
+            m_PostOverrideLockTimer = m_PostOverrideLockDuration;
         }
 
         void ResetMouseDelta() { m_FirstFrame = true; }
@@ -67,6 +69,7 @@ namespace NFSEngine {
                 m_TargetRigidBody
                     = m_Owner->GetScene()->FindGameObjectsWithTag(Tags::Player)[0]->GetComponent<RigidBody3DComponent>();
             }
+
         }
 
         void OnUpdate(DeltaTime deltaTime) override {
@@ -82,8 +85,21 @@ namespace NFSEngine {
 
             bool cursorLocked = (window.GetCursorMode() == CursorMode::Locked);
 
+            if (!m_YawInitialized && m_Target) {
+                glm::quat q = m_Target->GetRotation();
+                float playerYawRad = 2.0f * atan2(q.y, q.w);
+                float camYawRad = atan2(-cos(playerYawRad), -sin(playerYawRad));
+                m_Yaw = glm::degrees(camYawRad);
+                m_OriginalYaw = m_Yaw;
+                m_YawInitialized = true;
+            }
+
             if (dt > 0.2f) {
                 m_FirstFrame = true;
+            }
+
+            if (m_PostOverrideLockTimer > 0.0f) {
+                m_PostOverrideLockTimer = std::max(0.0f, m_PostOverrideLockTimer - dt);
             }
 
             bool hasManualInput = false; // Flaga sprawdzająca, czy gracz rusza kamerą
@@ -92,7 +108,7 @@ namespace NFSEngine {
                 float mouseX = Input::GetMouseX();
                 float mouseY = Input::GetMouseY();
 
-                if (!m_OverrideActive && !m_FirstFrame) {
+                if (!m_OverrideActive && !m_FirstFrame && m_PostOverrideLockTimer <= 0.0f) {
                     float deltaX = mouseX - m_LastMouseX;
                     float deltaY = mouseY - m_LastMouseY;
 
@@ -110,18 +126,18 @@ namespace NFSEngine {
                 m_FirstFrame = true;
             }
 
-            if (!m_OverrideActive) {
+            if (!m_OverrideActive && m_PostOverrideLockTimer <= 0.0f) {
                 float lookX = InputActionManager::GetFloat("LookX");
                 float lookY = InputActionManager::GetFloat("LookY");
 
                 if (std::abs(lookX) > 0.01f || std::abs(lookY) > 0.01f) {
-                    m_Yaw += lookX * m_ControllerSensitivity;
-                    m_Pitch = std::clamp(m_Pitch + lookY * m_ControllerSensitivity, -45.0f, 85.0f);
+                    m_Yaw += lookX * m_ControllerSensitivity * dt;
+                    m_Pitch = std::clamp(m_Pitch + lookY * m_ControllerSensitivity * dt, -45.0f, 85.0f);
                     hasManualInput = true;
                 }
             }
 
-            if (!m_OverrideActive && m_AutoCenterEnabled) {
+            if (!m_OverrideActive && m_AutoCenterEnabled && m_PostOverrideLockTimer <= 0.0f) {
                 if (hasManualInput) {
                     m_TimeSinceLastInput = 0.0f;
                 } else {
@@ -215,7 +231,7 @@ namespace NFSEngine {
             float yawRad = glm::radians(m_Yaw);
             float pitchRad = glm::radians(m_Pitch);
 
-            glm::vec3 direction = { cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad) };
+            glm::vec3 direction = {cos(pitchRad) * cos(yawRad), sin(pitchRad), cos(pitchRad) * sin(yawRad)};
 
             glm::vec3 desiredCameraPos = m_FocusPoint + direction * m_Distance;
 
@@ -247,7 +263,7 @@ namespace NFSEngine {
 
             pTransform->SetPosition(m_FocusPoint + direction * m_CurrentDistance);
 
-            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_FocusPoint, { 0, 1, 0 });
+            glm::mat4 lookAt = glm::lookAt(pTransform->GetPosition(), m_FocusPoint, {0, 1, 0});
             pTransform->SetRotation(glm::degrees(glm::eulerAngles(glm::quat_cast(glm::inverse(lookAt)))));
         }
 
@@ -255,7 +271,7 @@ namespace NFSEngine {
                                                  float maxDistance) const {
             if (m_OverrideActive && !m_ReturningToOriginal) return maxDistance;
 
-            Ray ray { targetPos, direction };
+            Ray ray{targetPos, direction};
             RaycastResult hit;
 
             RaycastOptions options;
@@ -275,9 +291,9 @@ namespace NFSEngine {
         Transform* m_Target = nullptr;
         float m_Distance = 20.0f;
         float m_CurrentDistance = 20.0f;
-        float m_Yaw = 90.0f, m_Pitch = 25.0f;
+        float m_Yaw = 0.0f, m_Pitch = 25.0f;
         float m_Sensitivity = 0.12f;
-        float m_ControllerSensitivity = 2.5f;
+        float m_ControllerSensitivity = 100.f;
         float m_LastMouseX = 0, m_LastMouseY = 0;
         bool m_FirstFrame = true;
 
@@ -286,7 +302,7 @@ namespace NFSEngine {
         float m_OverridePitch = 0.0f;
         float m_OverrideDistance = 0.0f;
         float m_OverrideLerpSpeed = 5.0f;
-        float m_OriginalYaw = 90.0f;
+        float m_OriginalYaw = 0.0f;
         float m_OriginalPitch = 25.0f;
         float m_OriginalDistance = 20.0f;
         bool m_ReturningToOriginal = false;
@@ -298,9 +314,12 @@ namespace NFSEngine {
 
         NFSEngine::RigidBody3DComponent* m_TargetRigidBody = nullptr;
         float m_TimeSinceLastInput = 0.0f;
+        float m_PostOverrideLockTimer = 0.0f;
+        float m_PostOverrideLockDuration = 0.3;
 
         glm::vec3 m_FocusPoint = glm::vec3(0.0f);
         bool m_FocusInitialized = false;
+        bool m_YawInitialized = false;
 
         float m_VerticalDeadzoneUp = 5.0f;
         float m_VerticalDeadzoneDown = 2.5f;
@@ -308,4 +327,4 @@ namespace NFSEngine {
         float m_VerticalSmoothSpeed = 5.0f;
         bool m_CenterOnGround = true;
     };
-} // namespace NFSEngine
+}
