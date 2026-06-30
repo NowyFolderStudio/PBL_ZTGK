@@ -42,9 +42,9 @@ namespace NFSEngine {
         void ClearCameraOverride() {
             m_OriginalYaw = m_Yaw;
             m_OriginalPitch = m_Pitch;
-            m_OriginalDistance = m_Distance;
             m_OverrideActive = false;
             m_ReturningToOriginal = false;
+            m_Distance = m_OriginalDistance;
             m_PostOverrideLockTimer = m_PostOverrideLockDuration;
         }
 
