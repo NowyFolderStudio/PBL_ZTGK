@@ -29,7 +29,7 @@ public:
 
 NFSEngine::Application* NFSEngine::CreateApplication() {
     ApplicationConfig config;
-    config.WindowTitle = "NFS Game Window";
+    config.WindowTitle = "Out Of Tune";
     config.WindowWidth = 1000;
     config.WindowHeight = 600;
 
