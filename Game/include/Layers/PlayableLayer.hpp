@@ -7,6 +7,7 @@
 #include "Renderer/Material.hpp"
 #include "Renderer/Skybox.hpp"
 #include "Renderer/EnvironmentMap.hpp"
+#include "Debug/BenchmarkTool.hpp"
 
 // Komponenty
 #include "Components/HUDComponent.hpp"
@@ -32,7 +33,6 @@ namespace NFSEngine {
 
 class PlayableLayer : public NFSEngine::Layer {
 public:
-    // Konstruktor przyjmuje ścieżkę do pliku JSON
     PlayableLayer(const std::string& scenePath);
     virtual ~PlayableLayer() override;
 
@@ -44,6 +44,7 @@ public:
     virtual void OnEvent(NFSEngine::Event& e) override;
 
 protected:
+    NFSEngine::BenchmarkTool m_BenchmarkTool;
     std::string m_ScenePath;
     std::unique_ptr<NFSEngine::Scene> m_Scene = nullptr;
     NFSEngine::DeltaTime m_DeltaTime;

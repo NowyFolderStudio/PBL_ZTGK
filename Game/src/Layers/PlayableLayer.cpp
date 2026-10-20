@@ -319,6 +319,8 @@ void PlayableLayer::OnUpdate(NFSEngine::DeltaTime deltaTime) {
 
     m_DeltaTime = deltaTime;
 
+    m_BenchmarkTool.RecordFrame(static_cast<double>(deltaTime));
+
     m_Scene->OnUpdate(deltaTime);
 
     if (m_Player) {
@@ -412,6 +414,18 @@ void PlayableLayer::OnEvent(NFSEngine::Event& e) {
 
         if (keyEvent.GetKeyCode() == NFSEngine::Key::Escape) {
             GameManager::Get().TogglePause();
+            e.Handled = true;
+        }
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::F8) {
+            std::string testName = "Benchmark_" + m_ScenePath.substr(m_ScenePath.find_last_of("/\\") + 1);
+            m_BenchmarkTool.Start(testName);
+            NFSEngine::Log::GetCoreLogger()->info("Rozpoczęto benchmark: {}", testName);
+            e.Handled = true;
+        }
+
+        if (keyEvent.GetKeyCode() == NFSEngine::Key::F9) {
+            m_BenchmarkTool.StopAndSave();
+            NFSEngine::Log::GetCoreLogger()->info("Zakończono i zapisano benchmark!");
             e.Handled = true;
         }
     }
